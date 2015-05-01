@@ -1,0 +1,31 @@
+#fr_CA
+tile.uncraftingtable.name=Table de décrafting
+achievement.createDecraftTable=Comme au bon vieux temps
+achievement.createDecraftTable.desc=Craftez une table de décrafting!
+achievement.uncraftAnything=Décraftez un objet!
+achievement.uncraftAnything.desc=Premier objet décrafté!
+achievement.uncraftDiamondHoe=Décraftez une pelle en diamants!
+achievement.uncraftDiamondHoe.desc=On allait pas tarder à mettre les clés sous la porte avec ça.
+achievement.uncraftJunk=Recyclage!
+achievement.uncraftJunk.desc=Cet objet était inutile de toute façon.
+achievement.uncraftDiamondShovel=Ce fût un mauvais investissement.
+achievement.uncraftDiamondShovel.desc=Les pelles en fer ont toujours été meilleures.
+achievement.porteManteauAchievement=Du 4 en 1!
+uncrafting.result.ready=Prêt
+uncrafting.result.impossible=Impossible avec cet objet
+uncrafting.result.needMoreStacks=Il manque %1$s objet(s).
+uncrafting.result.needMoreXP=Il vous manque de l'XP!
+stat.uncrafteditems=Nombre d'objets décraftés
+uncrafting.options.getback=Appuyez sur 'Echap' pour retourner au jeu.
+uncrafting.options=Options de décrafting
+uncrafting.options.hit=Appuyez sur 'O' pour les options
+uncrafting.options.method.jglr=Méthode de jglrxavpok
+uncrafting.options.method.xell75zenen=Méthode de Xell75 & zenen
+uncrafting.options.method.jglr.switchto=Changer pour la méthode de jglrxavpok 
+uncrafting.options.method.xell75zenen.switchto=Changer pour la méthode de Xell75 & zenen
+uncrafting.options.method.using=Méthode utilisée pour le moment
+uncrafting.options.lvl.sliders=Niveaux d'XP
+uncrafting.options.lvl.max=Niveau maximum d'XP requis
+uncrafting.options.lvl.min=Niveau minimum d'XP requis
+
+uncrafting.compute=Calculs

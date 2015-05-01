@@ -1,0 +1,32 @@
+#en_US
+tile.uncrafting_table.name=Uncrafting Table
+achievement.createDecraftTable=Like the ol'days
+achievement.createDecraftTable.desc=Create an Uncrafting Table !
+achievement.uncraftAnything=Uncraft an item!
+achievement.uncraftAnything.desc=You've just uncrafted an item!
+achievement.uncraftDiamondHoe=Uncraft a diamond hoe!
+achievement.uncraftDiamondHoe.desc=We're almost bankrupt.
+achievement.uncraftJunk=Recycling time!
+achievement.uncraftJunk.desc=This item was useless.
+achievement.uncraftDiamondShovel=Time for a cheaper approach.
+achievement.uncraftDiamondShovel.desc=Iron shovels are better.
+achievement.porteManteauAchievement=All in one!
+achievement.porteManteauAchievement.desc=§k <3 All Players
+uncrafting.result.ready=Ready
+uncrafting.result.impossible=Impossible with this
+uncrafting.result.needMoreStacks=Need %1$s more item(s).
+uncrafting.result.needMoreXP=You need more xp!
+stat.uncrafteditems=Uncrafted items
+uncrafting.options.getback=Press 'Esc' to get back to game.
+uncrafting.options=Uncrafting options
+uncrafting.options.hit=Hit 'O' to show options
+uncrafting.options.method.jglr=jglrxavpok's uncrafting method
+uncrafting.options.method.xell75zenen=Xell75 & zenen's uncrafting method
+uncrafting.options.method.jglr.switchto=Switch to jglrxavpok's uncrafting method
+uncrafting.options.method.xell75zenen.switchto=Switch to Xell75 & zenen's uncrafting method
+uncrafting.options.method.using=Currently using
+uncrafting.options.lvl.sliders=XP levels
+uncrafting.options.lvl.max=Max XP level required
+uncrafting.options.lvl.min=Min XP level required
+
+uncrafting.compute=Compute

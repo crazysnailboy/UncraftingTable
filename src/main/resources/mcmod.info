@@ -1,0 +1,15 @@
+[
+	{
+	  "modid": "uncraftingTable",
+	  "name": "Uncrafting Table",
+	  "description": "Revert Crafting",
+	  "version": "1.7.10 - Alpha 1",
+	  "mcversion": "${mcversion}",
+	  "url": "",
+	  "authorList": ["jglrxavpok"],
+	  "credits": "Xell75 and Zenen for their xp-cost equation",
+	  "logoFile": "",
+	  "screenshots": [],
+	  "dependencies": []
+	}
+]
