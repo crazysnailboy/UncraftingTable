@@ -51,7 +51,8 @@ public class UncraftingManager
 				ItemStack s = r.getRecipeOutput();
 				if(s!=null)
 				{
-					if(s.getItem() == item.getItem() && s.stackSize <= item.stackSize && s.getItem() == item.getItem())
+					//if(s.getItem() == item.getItem() && s.stackSize <= item.stackSize && s.getItem() == item.getItem())
+					if(s.getItem() == item.getItem() && s.stackSize <= item.stackSize && s.getItem() == item.getItem() && s.getItemDamage() == item.getItemDamage())
 					{
 						RecipeHandler handler = uncraftingHandlers.get(r.getClass());
 						if(handler != null)
