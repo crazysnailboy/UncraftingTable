@@ -31,7 +31,7 @@ public class ModUncrafting
 {
 
     public static final String  MODID      = "uncraftingTable";
-    public static final String  VERSION    = "1.7.10 Alpha 1";
+    public static final String  VERSION    = "1.7.10 Alpha 2";
     @Instance("uncraftingTable")
     public static ModUncrafting instance;
 
@@ -139,7 +139,7 @@ public class ModUncrafting
         config = new Configuration(event.getSuggestedConfigurationFile());
         config.load();
         standardLevel = config.getInt("standardLevel", Configuration.CATEGORY_GENERAL, 5, 0, 50, "Minimum required level to uncraft an item");
-        maxUsedLevel = config.getInt("standardLevel", Configuration.CATEGORY_GENERAL, 30, 0, 50, "Maximum required level to uncraft an item");
+        maxUsedLevel = config.getInt("maxUsedLevel", Configuration.CATEGORY_GENERAL, 30, 0, 50, "Maximum required level to uncraft an item");
         uncraftMethod = config.getInt("uncraftMethod", Configuration.CATEGORY_GENERAL, 0, 0, 1, "ID of the used uncrafting equation.");
         minLvlServer = standardLevel;
         maxLvlServer = maxUsedLevel;
