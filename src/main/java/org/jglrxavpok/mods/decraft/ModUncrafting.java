@@ -25,13 +25,13 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = ModUncrafting.MODID, name = "Jordy141's SalvagingTable", version = ModUncrafting.VERSION)
+@Mod(modid = ModUncrafting.MODID, name = "jglrxavpok's UncraftingTable", version = ModUncrafting.VERSION)
 
 public class ModUncrafting
 {
 
     public static final String  MODID      = "uncraftingTable";
-    public static final String  VERSION    = "1.7.10 Alpha 2";
+    public static final String  VERSION    = "1.4.2-pre1";
     @Instance("uncraftingTable")
     public static ModUncrafting instance;
 

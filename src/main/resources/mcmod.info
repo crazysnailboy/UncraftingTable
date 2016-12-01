@@ -2,12 +2,12 @@
 	{
 	  "modid": "uncraftingTable",
 	  "name": "Uncrafting Table",
-	  "description": "Revert Crafting",
-	  "version": "1.7.10 - Alpha 1",
+	  "description": "Trade XP to recycle your old useless items into raw materials!",
+	  "version": "1.4.2-pre1",
 	  "mcversion": "${mcversion}",
-	  "url": "",
-	  "authorList": ["jglrxavpok"],
-	  "credits": "Xell75 and Zenen for their xp-cost equation",
+	  "url": "http://jglrxavpok.minecraftforgefrance.fr/mods/",
+	  "authorList": ["jglrxavpok","Jordy141","crazysnailboy"],
+	  "credits": "Made by jglrxavpok. Xell75 and Zenen for their xp-cost equation",
 	  "logoFile": "",
 	  "screenshots": [],
 	  "dependencies": []
