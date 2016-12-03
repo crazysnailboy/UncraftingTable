@@ -24,7 +24,7 @@ public final class DefaultsRecipeHandlers
 		{
 			ItemStack[] stacks = new ItemStack[9];
 			ShapedRecipes shaped = (ShapedRecipes)r;
-			for(int j = 0;j<shaped.recipeItems.length;j++)
+			for (int j = 0;j<shaped.recipeItems.length;j++)
 			{
 				stacks[j] = shaped.recipeItems[j];
 			}
@@ -44,16 +44,16 @@ public final class DefaultsRecipeHandlers
 		{
 			ItemStack[] stacks = new ItemStack[9];
 			ShapelessOreRecipe shaped = (ShapelessOreRecipe)r;
-			for(int j = 0;j<shaped.getInput().size();j++)
+			for (int j = 0;j<shaped.getInput().size();j++)
 			{
-				if(shaped.getInput().get(j) instanceof ItemStack)
+				if (shaped.getInput().get(j) instanceof ItemStack)
 				{
 					stacks[j] = (ItemStack) shaped.getInput().get(j);
 				}
-				else if(shaped.getInput().get(j) instanceof ArrayList)
+				else if (shaped.getInput().get(j) instanceof ArrayList)
 				{
 					Object o = ((ArrayList<?>)shaped.getInput().get(j)).get(0);
-					if(o instanceof ItemStack)
+					if (o instanceof ItemStack)
 					{
 						stacks[j] = (ItemStack)o;
 					}
@@ -75,16 +75,16 @@ public final class DefaultsRecipeHandlers
 		{
 			ItemStack[] stacks = new ItemStack[9];
 			ShapedOreRecipe shaped = (ShapedOreRecipe)r;
-			for(int j = 0;j<shaped.getInput().length;j++)
+			for (int j = 0;j<shaped.getInput().length;j++)
 			{
-				if(shaped.getInput()[j] instanceof ItemStack)
+				if (shaped.getInput()[j] instanceof ItemStack)
 				{
 					stacks[j] = (ItemStack) shaped.getInput()[j];
 				}
-				else if(shaped.getInput()[j] instanceof ArrayList)
+				else if (shaped.getInput()[j] instanceof ArrayList)
 				{
 					Object o = ((ArrayList<?>)shaped.getInput()[j]).get(0);
-					if(o instanceof ItemStack)
+					if (o instanceof ItemStack)
 					{
 						stacks[j] = (ItemStack)o;
 					}
@@ -106,7 +106,7 @@ public final class DefaultsRecipeHandlers
 		{
 			ItemStack[] stacks = new ItemStack[9];
 			ShapelessRecipes shaped = (ShapelessRecipes)r;
-			for(int j = 0;j<shaped.recipeItems.size();j++)
+			for (int j = 0;j<shaped.recipeItems.size();j++)
 			{
 				stacks[j] = (ItemStack) shaped.recipeItems.get(j);
 			}

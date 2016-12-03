@@ -19,43 +19,55 @@ public class UncraftingManager
 
 	public static List<Integer> getStackSizeNeeded(ItemStack item)
 	{
-		List<?> crafts = CraftingManager.getInstance().getRecipeList();
+//		System.out.println("\t" + "getStackSizeNeeded");
+//		System.out.println("\t" + item.getItem().getUnlocalizedName());
+//		System.out.println("\t" + item.getDisplayName());
+		
+		List<?> recipeList = CraftingManager.getInstance().getRecipeList();
 		List<Integer> list = new ArrayList<Integer>();
-		for(int i = 0;i<crafts.size();i++)
+		
+		for (int i = 0 ; i < recipeList.size() ; i++)
 		{
-			IRecipe r = (IRecipe) crafts.get(i);
-			if(r != null)
+			IRecipe r = (IRecipe)recipeList.get(i);
+			if (r != null)
 			{
 				ItemStack s = r.getRecipeOutput();
-				if(s!=null)
+				if (s != null)
 				{
-					if(s.getItem() == item.getItem() && s.getItemDamage() == item.getItemDamage())
+					if (s.getItem() == item.getItem() && s.getItemDamage() == item.getItemDamage())
 					{
 						list.add(s.stackSize);
 					}
 				}
 			}
 		}
+//		System.out.println("\t" + "-----");
+
 		return list;
 	}
 	
 	public static List<ItemStack[]> getUncraftResults(ItemStack item)
 	{
-		List<?> crafts = CraftingManager.getInstance().getRecipeList();
+//		System.out.println("getUncraftResults");
+//		System.out.println(item.getItem().getUnlocalizedName());
+//		System.out.println(item.getDisplayName());
+		
+		List<?> recipeList = CraftingManager.getInstance().getRecipeList();
 		List<ItemStack[]> list = new ArrayList<ItemStack[]>();
-		for(int i = 0;i<crafts.size();i++)
+		
+		for (int i = 0 ; i < recipeList.size() ; i++)
 		{
-			IRecipe r = (IRecipe) crafts.get(i);
-			if(r != null)
+			IRecipe r = (IRecipe)recipeList.get(i);
+			if (r != null)
 			{
 				ItemStack s = r.getRecipeOutput();
-				if(s!=null)
+				if (s != null)
 				{
-					//if(s.getItem() == item.getItem() && s.stackSize <= item.stackSize && s.getItem() == item.getItem())
-					if(s.getItem() == item.getItem() && s.stackSize <= item.stackSize && s.getItem() == item.getItem() && s.getItemDamage() == item.getItemDamage())
+					//if (s.getItem() == item.getItem() && s.stackSize <= item.stackSize && s.getItem() == item.getItem())
+					if (s.getItem() == item.getItem() && s.stackSize <= item.stackSize && s.getItemDamage() == item.getItemDamage())
 					{
 						RecipeHandler handler = uncraftingHandlers.get(r.getClass());
-						if(handler != null)
+						if (handler != null)
 						{
 							list.add(handler.getCraftingGrid(r));
 						}
@@ -67,6 +79,9 @@ public class UncraftingManager
 				}
 			}
 		}
+		
+//		System.out.println("-----");
+		
 		return list;
 	}
 	

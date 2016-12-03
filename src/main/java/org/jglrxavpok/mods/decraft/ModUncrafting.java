@@ -31,7 +31,7 @@ public class ModUncrafting
 {
 
     public static final String  MODID      = "uncraftingTable";
-    public static final String  VERSION    = "1.4.2-pre1";
+    public static final String  VERSION    = "1.4.2-pre2";
     @Instance("uncraftingTable")
     public static ModUncrafting instance;
 
@@ -88,32 +88,32 @@ public class ModUncrafting
     public void onSuccessedUncrafting(SuccessedUncraftingEvent event)
     {
         Item craftedItem = event.getUncrafted().getItem();
-        if(craftedItem == Items.diamond_hoe)
+        if (craftedItem == Items.diamond_hoe)
         {
             event.getPlayer().triggerAchievement(uncraftDiamondHoe);
         }
-        else if(craftedItem == Items.diamond_shovel)
+        else if (craftedItem == Items.diamond_shovel)
         {
             event.getPlayer().triggerAchievement(uncraftDiamondShovel);
         }
 
-        if(craftedItem == Items.leather_leggings)
+        if (craftedItem == Items.leather_leggings)
         {
             event.getPlayer().triggerAchievement(uncraftJunk);
         }
-        else if(craftedItem == Items.leather_helmet)
+        else if (craftedItem == Items.leather_helmet)
         {
             event.getPlayer().triggerAchievement(uncraftJunk);
         }
-        else if(craftedItem == Items.leather_boots)
+        else if (craftedItem == Items.leather_boots)
         {
             event.getPlayer().triggerAchievement(uncraftJunk);
         }
-        else if(craftedItem == Items.leather_chestplate)
+        else if (craftedItem == Items.leather_chestplate)
         {
             event.getPlayer().triggerAchievement(uncraftJunk);
         }
-        else if(craftedItem == Items.glass_bottle)
+        else if (craftedItem == Items.glass_bottle)
         {
             event.getPlayer().triggerAchievement(uncraftJunk);
         }

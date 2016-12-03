@@ -36,7 +36,7 @@ public class InventoryUncraftResult implements IInventory
      */
     public ItemStack decrStackSize(int par1, int par2)
     {
-        if(this.stackResult[par1] != null)
+        if (this.stackResult[par1] != null)
         {
             ItemStack itemstack = this.stackResult[par1];
             this.stackResult[par1] = null;
@@ -55,7 +55,7 @@ public class InventoryUncraftResult implements IInventory
      */
     public ItemStack getStackInSlotOnClosing(int par1)
     {
-        if(this.stackResult[par1] != null)
+        if (this.stackResult[par1] != null)
         {
             ItemStack itemstack = this.stackResult[par1];
             this.stackResult[par1] = null;
@@ -97,9 +97,9 @@ public class InventoryUncraftResult implements IInventory
 
     public boolean isEmpty()
     {
-        for(int i = 0; i < this.stackResult.length; i++ )
+        for (int i = 0; i < this.stackResult.length; i++ )
         {
-            if(stackResult[i] != null)
+            if (stackResult[i] != null)
                 return false;
         }
         return true;
@@ -156,7 +156,7 @@ public class InventoryUncraftResult implements IInventory
 
     public void clearInventory()
     {
-        for(int i = 0;i<stackResult.length;i++)
+        for (int i = 0;i<stackResult.length;i++)
             stackResult[i] = null;
     }
 

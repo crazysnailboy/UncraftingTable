@@ -24,14 +24,14 @@ public class GuiUncraftOptions extends GuiScreen implements ISlider
     public void initGui()
     {
         String methodName = I18n.format("uncrafting.options.method.jglr.switchto");
-        if(methodName == null || "uncrafting.options.method.jglr.switchto".equals(methodName))
+        if (methodName == null || "uncrafting.options.method.jglr.switchto".equals(methodName))
         {
             methodName = "Switch to jglrxavpok's uncrafting method";
         }
         GuiButton uncraftMethod0 = new GuiButton(0, width / 2 - 250 / 2, 40, 250, 20, methodName);
         buttonList.add(uncraftMethod0);
         methodName = I18n.format("uncrafting.options.method.xell75zenen.switchto");
-        if(methodName == null || "uncrafting.options.method.xell75zenen.switchto".equals(methodName))
+        if (methodName == null || "uncrafting.options.method.xell75zenen.switchto".equals(methodName))
         {
             methodName = "Switch to Xell75 and zenen's uncrafting method";
         }
@@ -53,7 +53,7 @@ public class GuiUncraftOptions extends GuiScreen implements ISlider
     public void drawScreen(int par1, int par2, float f)
     {
         this.drawBackground(0);
-        if(ModUncrafting.instance.uncraftMethod == 0)
+        if (ModUncrafting.instance.uncraftMethod == 0)
         {
             maxLevel.visible = false;
         }
@@ -63,7 +63,7 @@ public class GuiUncraftOptions extends GuiScreen implements ISlider
         }
         String methodName = null;
         String methodImg = null;
-        if(ModUncrafting.instance.uncraftMethod == 0)
+        if (ModUncrafting.instance.uncraftMethod == 0)
         {
             methodName = I18n.format("uncrafting.options.method.jglr");
             methodImg = "jglrxavpoksmethod";
@@ -74,7 +74,7 @@ public class GuiUncraftOptions extends GuiScreen implements ISlider
             methodImg = "Xell75s&zenens";
         }
 
-        if(methodImg != null)
+        if (methodImg != null)
         {
             this.mc.renderEngine.bindTexture(new ResourceLocation("uncraftingTable:textures/gui/" + methodImg + ".png"));
             GL11.glPushMatrix();
@@ -97,12 +97,12 @@ public class GuiUncraftOptions extends GuiScreen implements ISlider
 
     public void actionPerformed(GuiButton button)
     {
-        if(button.id == 0)
+        if (button.id == 0)
         {
             ModUncrafting.instance.uncraftMethod = 0;
             ModUncrafting.instance.saveProperties();
         }
-        else if(button.id == 1)
+        else if (button.id == 1)
         {
             ModUncrafting.instance.uncraftMethod = 1;
             ModUncrafting.instance.saveProperties();
@@ -112,17 +112,17 @@ public class GuiUncraftOptions extends GuiScreen implements ISlider
     @Override
     public void onChangeSliderValue(GuiSlider slider)
     {
-        if(slider == minLevel)
+        if (slider == minLevel)
         {
-            if(maxLevel.getValue() < slider.getValue())
+            if (maxLevel.getValue() < slider.getValue())
             {
                 maxLevel.setValue(slider.getValue());
                 maxLevel.updateSlider();
             }
         }
-        else if(slider == maxLevel)
+        else if (slider == maxLevel)
         {
-            if(minLevel.getValue() > slider.getValue())
+            if (minLevel.getValue() > slider.getValue())
             {
                 minLevel.setValue(slider.getValue());
                 minLevel.updateSlider();
