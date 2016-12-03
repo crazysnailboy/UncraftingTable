@@ -33,7 +33,7 @@ public class ModUncrafting
 {
 
     public static final String  MODID      = "uncraftingTable";
-    public static final String  VERSION    = "1.4.2-pre2";
+    public static final String  VERSION    = "1.4.2-pre3";
     
     @Instance("uncraftingTable")
     public static ModUncrafting instance;
@@ -162,7 +162,7 @@ public class ModUncrafting
         MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance().bus().register(this);
         
-        // initalize the block
+        // initialize the block
         uncraftingTable = new BlockUncraftingTable();
         GameRegistry.registerBlock(uncraftingTable, ItemUncraftingTableBlock.class, "uncrafting_table");
         

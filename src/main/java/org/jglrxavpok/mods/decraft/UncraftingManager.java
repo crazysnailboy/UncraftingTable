@@ -51,6 +51,7 @@ public class UncraftingManager
 //		System.out.println("getUncraftResults");
 //		System.out.println(item.getItem().getUnlocalizedName());
 //		System.out.println(item.getDisplayName());
+//		System.out.println("isDamageable: " + item.getItem().isDamageable());
 		
 		List<?> recipeList = CraftingManager.getInstance().getRecipeList();
 		List<ItemStack[]> list = new ArrayList<ItemStack[]>();
@@ -63,8 +64,13 @@ public class UncraftingManager
 				ItemStack s = r.getRecipeOutput();
 				if (s != null)
 				{
-					//if (s.getItem() == item.getItem() && s.stackSize <= item.stackSize && s.getItem() == item.getItem())
-					if (s.getItem() == item.getItem() && s.stackSize <= item.stackSize && s.getItemDamage() == item.getItemDamage())
+					if (
+						(s.getItem() == item.getItem() && s.stackSize <= item.stackSize && item.getItem().isDamageable() == false && s.getItemDamage() == item.getItemDamage())
+						||
+						(s.getItem() == item.getItem() && s.stackSize <= item.stackSize && item.getItem().isDamageable() == true)
+					)
+					
+					//if (s.getItem() == item.getItem() && s.stackSize <= item.stackSize && s.getItemDamage() == item.getItemDamage())
 					{
 						RecipeHandler handler = uncraftingHandlers.get(r.getClass());
 						if (handler != null)
