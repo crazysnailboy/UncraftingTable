@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.Achievement;
 import net.minecraft.stats.StatBasic;
@@ -15,6 +16,9 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraftforge.common.AchievementPage;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
+import cpw.mods.fml.client.config.GuiConfigEntries.*;
+import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -26,14 +30,20 @@ import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-import org.apache.logging.log4j.Logger;
 
-@Mod(modid = ModUncrafting.MODID, name = "jglrxavpok's UncraftingTable", version = ModUncrafting.VERSION)
+import org.apache.logging.log4j.Logger;
+import org.jglrxavpok.mods.decraft.client.config.CycleUncraftMethodEntry;
+
+
+@Mod(modid = ModUncrafting.MODID, name = ModUncrafting.MODNAME, version = ModUncrafting.VERSION, guiFactory = ModUncrafting.GUIFACTORY)
 public class ModUncrafting
 {
 
-    public static final String  MODID      = "uncraftingTable";
-    public static final String  VERSION    = "1.4.2-pre3";
+    public static final String MODID = "uncraftingTable";
+    public static final String MODNAME = "jglrxavpok's UncraftingTable";
+    public static final String VERSION = "1.4.2-pre4";
+    public static final String GUIFACTORY = "org.jglrxavpok.mods.decraft.client.config.UncraftingGuiFactory";
+    
     
     @Instance("uncraftingTable")
     public static ModUncrafting instance;
@@ -42,7 +52,7 @@ public class ModUncrafting
     
     public UnGuiHandler guiHandler = new UnGuiHandler();
 
-    public Achievement craftTable;
+    private Achievement craftTable;
     public Achievement uncraftAny;
     private Achievement uncraftDiamondHoe;
     private Achievement uncraftJunk;
@@ -58,12 +68,11 @@ public class ModUncrafting
     public int uncraftMethod;
     public static int maxUsedLevel;
     public static int standardLevel;
-    private Properties props;
     public int minLvlServer;
     public int maxLvlServer;
 
     private Logger logger;
-    private Configuration config;
+    public static Configuration config;
 
     public Logger getLogger()
     {
@@ -131,6 +140,17 @@ public class ModUncrafting
         }
     }
 
+    
+    @SubscribeEvent
+    public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) 
+    {
+    	if (eventArgs.modID.equals(ModUncrafting.MODID))
+    	{
+    		saveProperties();
+    	}
+    }
+    
+    
     public void saveProperties()
     {
         try
@@ -151,9 +171,28 @@ public class ModUncrafting
         // initialize mod config
         config = new Configuration(event.getSuggestedConfigurationFile());
         config.load();
-        standardLevel = config.getInt("standardLevel", Configuration.CATEGORY_GENERAL, 5, 0, 50, "Minimum required level to uncraft an item");
-        maxUsedLevel = config.getInt("maxUsedLevel", Configuration.CATEGORY_GENERAL, 30, 0, 50, "Maximum required level to uncraft an item");
-        uncraftMethod = config.getInt("uncraftMethod", Configuration.CATEGORY_GENERAL, 0, 0, 1, "ID of the used uncrafting equation.");
+        
+        standardLevel = (int)config.get(Configuration.CATEGORY_GENERAL, "standardLevel", 5, "Minimum required level to uncraft an item", 0, 50)
+    		.setLanguageKey("uncrafting.options.standardLevel")
+    		.setConfigEntryClass(NumberSliderEntry.class)
+    		.getInt();
+        
+        maxUsedLevel = (int)config.get(Configuration.CATEGORY_GENERAL, "maxUsedLevel", 30, "Maximum required level to uncraft an item", 0, 50)
+    		.setLanguageKey("uncrafting.options.maxUsedLevel")
+    		.setConfigEntryClass(NumberSliderEntry.class)
+    		.getInt();
+        
+        uncraftMethod = config.get(Configuration.CATEGORY_GENERAL, "uncraftMethod", 0, "ID of the used uncrafting equation.")
+        	.setLanguageKey("uncrafting.options.method")
+        	.setValidValues(new String[] { "jglrxavpok", "Xell75 & zenen" })
+        	.setConfigEntryClass(CycleUncraftMethodEntry.class)
+        	.getInt();
+        
+        
+        
+        //standardLevel = config.getInt("standardLevel", Configuration.CATEGORY_GENERAL, 5, 0, 50, "Minimum required level to uncraft an item");
+        //maxUsedLevel = config.getInt("maxUsedLevel", Configuration.CATEGORY_GENERAL, 30, 0, 50, "Maximum required level to uncraft an item");
+        //uncraftMethod = config.getInt("uncraftMethod", Configuration.CATEGORY_GENERAL, 0, 0, 1, "ID of the used uncrafting equation.");
         minLvlServer = standardLevel;
         maxLvlServer = maxUsedLevel;
         config.save();
@@ -164,7 +203,7 @@ public class ModUncrafting
         
         // initialize the block
         uncraftingTable = new BlockUncraftingTable();
-        GameRegistry.registerBlock(uncraftingTable, ItemUncraftingTableBlock.class, "uncrafting_table");
+        GameRegistry.registerBlock(uncraftingTable, ItemBlock.class, "uncrafting_table");
         
         // create block crafting recipe
         GameRegistry.addShapedRecipe(new ItemStack(uncraftingTable), new Object[]

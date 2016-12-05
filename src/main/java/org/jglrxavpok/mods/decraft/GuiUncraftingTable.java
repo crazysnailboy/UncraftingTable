@@ -9,7 +9,7 @@ import net.minecraft.entity.player.*;
 import net.minecraft.util.*;
 import net.minecraft.world.*;
 
-import org.jglrxavpok.mods.decraft.ContainerUncraftingTable.State;
+import org.jglrxavpok.mods.decraft.ContainerUncraftingTable.UncraftingStatus;
 import org.lwjgl.input.*;
 import org.lwjgl.opengl.*;
 
@@ -46,11 +46,6 @@ public class GuiUncraftingTable extends GuiContainer
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
         super.drawScreen(mouseX, mouseY, partialTicks);
-        boolean op = false;
-        if (Keyboard.isKeyDown(Keyboard.KEY_O) && op)
-        {
-        	this.player.openGui(ModUncrafting.instance, UnGuiHandler.GUI_OPTIONS, this.worldObj, this.x, this.y, this.z);
-        }
     }
 
     @Override
@@ -73,13 +68,13 @@ public class GuiUncraftingTable extends GuiContainer
             fontRendererObj.drawString(EnumChatFormatting.DARK_GRAY + "" + EnumChatFormatting.UNDERLINE + "" + (ModUncrafting.standardLevel + container.xp) + " levels" + EnumChatFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth((ModUncrafting.standardLevel + container.xp) + " levels") / 2 + 1, ySize - 126 - 10, 0);
             fontRendererObj.drawString(EnumChatFormatting.UNDERLINE + "" + (ModUncrafting.standardLevel + container.xp) + " levels" + EnumChatFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth((ModUncrafting.standardLevel + container.xp) + " levels") / 2, ySize - 127 - 10, darkGreen.getRGB());
 
-            String string = container.result;
+            String string = container.uncraftingStatusText;
             if (string != null)
             {
-                State msgType = container.type;
+                UncraftingStatus msgType = container.uncraftingStatus;
                 EnumChatFormatting format = EnumChatFormatting.GREEN;
                 EnumChatFormatting shadowFormat = EnumChatFormatting.DARK_GRAY;
-                if (msgType == ContainerUncraftingTable.State.ERROR)
+                if (msgType == ContainerUncraftingTable.UncraftingStatus.ERROR)
                 {
                     format = EnumChatFormatting.WHITE;
                     shadowFormat = EnumChatFormatting.DARK_RED;
@@ -103,13 +98,13 @@ public class GuiUncraftingTable extends GuiContainer
             fontRendererObj.drawString(EnumChatFormatting.DARK_GRAY + "" + EnumChatFormatting.UNDERLINE + "" + (ModUncrafting.standardLevel + container.xp) + " levels" + EnumChatFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth((ModUncrafting.standardLevel + container.xp) + " levels") / 2 + 1, height - (ySize - 126 - 10), 0);
             fontRendererObj.drawString(EnumChatFormatting.UNDERLINE + "" + (ModUncrafting.standardLevel + container.xp) + " levels" + EnumChatFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth((ModUncrafting.standardLevel + container.xp) + " levels") / 2, height - (ySize - 127 - 10), darkGreen.getRGB());
 
-            String string = container.result;
+            String string = container.uncraftingStatusText;
             if (string != null)
             {
-                State msgType = container.type;
+                UncraftingStatus msgType = container.uncraftingStatus;
                 EnumChatFormatting format = EnumChatFormatting.GREEN;
                 EnumChatFormatting shadowFormat = EnumChatFormatting.DARK_GRAY;
-                if (msgType == ContainerUncraftingTable.State.ERROR)
+                if (msgType == ContainerUncraftingTable.UncraftingStatus.ERROR)
                 {
                     format = EnumChatFormatting.WHITE;
                     shadowFormat = EnumChatFormatting.DARK_RED;
@@ -117,11 +112,6 @@ public class GuiUncraftingTable extends GuiContainer
                 fontRendererObj.drawString(shadowFormat + string + EnumChatFormatting.RESET, 6 + 1, height - (ySize - 95 + 2 - fontRendererObj.FONT_HEIGHT), 0);
                 fontRendererObj.drawString(format + string + EnumChatFormatting.RESET, 6, height - (ySize - 96 + 2 - fontRendererObj.FONT_HEIGHT), 0);
             }
-        }
-        boolean op = false;
-        String optionsText = I18n.format("uncrafting.options.hit");
-        if (op) {
-            fontRendererObj.drawString(EnumChatFormatting.UNDERLINE + optionsText, xSize - fontRendererObj.getStringWidth(optionsText) - 4, ySize - 96 + 2, 0);
         }
         GL11.glEnable(GL11.GL_LIGHTING);
     }
