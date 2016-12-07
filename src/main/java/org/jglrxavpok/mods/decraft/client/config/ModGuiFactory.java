@@ -7,7 +7,7 @@ import net.minecraft.client.gui.GuiScreen;
 import java.util.Set;
 
 
-public class UncraftingGuiFactory implements IModGuiFactory 
+public class ModGuiFactory implements IModGuiFactory 
 {
     @Override
     public void initialize(Minecraft minecraftInstance) 
@@ -18,7 +18,7 @@ public class UncraftingGuiFactory implements IModGuiFactory
     @Override
     public Class<? extends GuiScreen> mainConfigGuiClass() 
     {
-        return UncraftingGuiConfig.class;
+        return ModGuiConfig.class;
     }
  
     @Override

@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.jglrxavpok.mods.decraft.ModUncrafting;
+import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
 
 import cpw.mods.fml.client.config.ConfigGuiType;
 import cpw.mods.fml.client.config.DummyConfigElement;
@@ -21,18 +22,10 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
 
-public class UncraftingGuiConfig extends GuiConfig
+public class ModGuiConfig extends GuiConfig
 {
-    public UncraftingGuiConfig(GuiScreen parent) 
+    public ModGuiConfig(GuiScreen parent) 
     {
-//    	super(parent, 
-//			new ConfigElement(ModUncrafting.config.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements(), 
-//			ModUncrafting.MODID, 
-//			false, 
-//			false, 
-//			"Uncrafting Table"
-//		);
-    	
     	super(parent, 
  			getConfigElements(), 
 			ModUncrafting.MODID, 
@@ -40,8 +33,6 @@ public class UncraftingGuiConfig extends GuiConfig
 			false, 
 			"Uncrafting Table"
 		);
-    	
-		//titleLine2 = MagicBeans.configFile.getAbsolutePath();
     }
     
     
@@ -49,15 +40,11 @@ public class UncraftingGuiConfig extends GuiConfig
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private static List<IConfigElement> getConfigElements()
     {
-//        List<IConfigElement> list = new ArrayList<IConfigElement>();
+    	Configuration config = ModConfiguration.getConfig();
     	
-//		list.add(new ConfigElement<Integer>(ModUncrafting.config.get(Configuration.CATEGORY_GENERAL, "standardLevel", 5)));
-//		list.add(new ConfigElement<Integer>(ModUncrafting.config.get(Configuration.CATEGORY_GENERAL, "maxUsedLevel", 30)));
-//		list.add(new ConfigElement<Integer>(ModUncrafting.config.get(Configuration.CATEGORY_GENERAL, "uncraftMethod", 0)));
-          	
+    	List<IConfigElement> list = new ConfigElement(config.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements();
     	
-    	List<IConfigElement> list = new ConfigElement(ModUncrafting.config.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements();
-                
+    	//List<IConfigElement> list = new ConfigElement(ModUncrafting.config.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements();
         return list;
     }
     
@@ -65,23 +52,18 @@ public class UncraftingGuiConfig extends GuiConfig
     @Override
     public void initGui()
     {
-        // You can add buttons and initialize fields here
         super.initGui();
-        
     }
 
-    
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
-        // You can do things like create animations, draw additional elements, etc. here
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
     @Override
     protected void actionPerformed(GuiButton button)
     {
-        // You can process any additional buttons you may have added here
         super.actionPerformed(button);
     }
 

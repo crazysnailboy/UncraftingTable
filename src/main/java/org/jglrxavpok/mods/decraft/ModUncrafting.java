@@ -23,6 +23,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -33,6 +34,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 import org.apache.logging.log4j.Logger;
 import org.jglrxavpok.mods.decraft.client.config.CycleUncraftMethodEntry;
+import org.jglrxavpok.mods.decraft.proxy.CommonProxy;
 
 
 @Mod(modid = ModUncrafting.MODID, name = ModUncrafting.MODNAME, version = ModUncrafting.VERSION, guiFactory = ModUncrafting.GUIFACTORY)
@@ -42,16 +44,27 @@ public class ModUncrafting
     public static final String MODID = "uncraftingTable";
     public static final String MODNAME = "jglrxavpok's UncraftingTable";
     public static final String VERSION = "1.4.2-pre4";
-    public static final String GUIFACTORY = "org.jglrxavpok.mods.decraft.client.config.UncraftingGuiFactory";
+    public static final String GUIFACTORY = "org.jglrxavpok.mods.decraft.client.config.ModGuiFactory";
     
-    
+	private static final String CLIENT_PROXY_CLASS = "org.jglrxavpok.mods.decraft.proxy.ClientProxy";
+	private static final String SERVER_PROXY_CLASS = "org.jglrxavpok.mods.decraft.proxy.CommonProxy";
+
+	
     @Instance("uncraftingTable")
     public static ModUncrafting instance;
+    
+	@SidedProxy(clientSide = CLIENT_PROXY_CLASS, serverSide = SERVER_PROXY_CLASS)
+    public static CommonProxy proxy;
+    
+    
+    
 
     public Block uncraftingTable;
     
     public UnGuiHandler guiHandler = new UnGuiHandler();
 
+    // achievements and stats
+    
     private Achievement craftTable;
     public Achievement uncraftAny;
     private Achievement uncraftDiamondHoe;
@@ -59,20 +72,18 @@ public class ModUncrafting
     private Achievement uncraftDiamondShovel;
     public Achievement theHatStandAchievement;
 
-    /**
-     * Number of uncrafted items
-     */
     public StatBasic uncraftedItemsStat;
+    
 
-    private File cfgFile;
-    public int uncraftMethod;
-    public static int maxUsedLevel;
-    public static int standardLevel;
-    public int minLvlServer;
-    public int maxLvlServer;
+//    private File cfgFile;
+//    public int uncraftMethod;
+//    public static int maxUsedLevel;
+//    public static int standardLevel;
+//    public int minLvlServer;
+//    public int maxLvlServer;
 
     private Logger logger;
-    public static Configuration config;
+//    public static Configuration config;
 
     public Logger getLogger()
     {
@@ -82,6 +93,8 @@ public class ModUncrafting
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
+    	proxy.init();
+    	
         NetworkRegistry.INSTANCE.registerGuiHandler(this, guiHandler);
         DefaultsRecipeHandlers.load();
 
@@ -141,61 +154,63 @@ public class ModUncrafting
     }
 
     
-    @SubscribeEvent
-    public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) 
-    {
-    	if (eventArgs.modID.equals(ModUncrafting.MODID))
-    	{
-    		saveProperties();
-    	}
-    }
+//    @SubscribeEvent
+//    public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) 
+//    {
+//    	if (eventArgs.modID.equals(ModUncrafting.MODID))
+//    	{
+//    		saveProperties();
+//    	}
+//    }
     
     
-    public void saveProperties()
-    {
-        try
-        {
-            config.save();
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
+//    public void saveProperties()
+//    {
+//        try
+//        {
+//            config.save();
+//        }
+//        catch(Exception e)
+//        {
+//            e.printStackTrace();
+//        }
+//    }
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
+    	proxy.preInit();
+    	
         logger = event.getModLog();
 
-        // initialize mod config
-        config = new Configuration(event.getSuggestedConfigurationFile());
-        config.load();
-        
-        standardLevel = (int)config.get(Configuration.CATEGORY_GENERAL, "standardLevel", 5, "Minimum required level to uncraft an item", 0, 50)
-    		.setLanguageKey("uncrafting.options.standardLevel")
-    		.setConfigEntryClass(NumberSliderEntry.class)
-    		.getInt();
-        
-        maxUsedLevel = (int)config.get(Configuration.CATEGORY_GENERAL, "maxUsedLevel", 30, "Maximum required level to uncraft an item", 0, 50)
-    		.setLanguageKey("uncrafting.options.maxUsedLevel")
-    		.setConfigEntryClass(NumberSliderEntry.class)
-    		.getInt();
-        
-        uncraftMethod = config.get(Configuration.CATEGORY_GENERAL, "uncraftMethod", 0, "ID of the used uncrafting equation.")
-        	.setLanguageKey("uncrafting.options.method")
-        	.setValidValues(new String[] { "jglrxavpok", "Xell75 & zenen" })
-        	.setConfigEntryClass(CycleUncraftMethodEntry.class)
-        	.getInt();
+//        // initialize mod config
+//        config = new Configuration(event.getSuggestedConfigurationFile());
+//        config.load();
+//        
+//        standardLevel = (int)config.get(Configuration.CATEGORY_GENERAL, "standardLevel", 5, "Minimum required level to uncraft an item", 0, 50)
+//    		.setLanguageKey("uncrafting.options.standardLevel")
+//    		.setConfigEntryClass(NumberSliderEntry.class)
+//    		.getInt();
+//        
+//        maxUsedLevel = (int)config.get(Configuration.CATEGORY_GENERAL, "maxUsedLevel", 30, "Maximum required level to uncraft an item", 0, 50)
+//    		.setLanguageKey("uncrafting.options.maxUsedLevel")
+//    		.setConfigEntryClass(NumberSliderEntry.class)
+//    		.getInt();
+//        
+//        uncraftMethod = config.get(Configuration.CATEGORY_GENERAL, "uncraftMethod", 0, "ID of the used uncrafting equation.")
+//        	.setLanguageKey("uncrafting.options.method")
+//        	.setValidValues(new String[] { "jglrxavpok", "Xell75 & zenen" })
+//        	.setConfigEntryClass(CycleUncraftMethodEntry.class)
+//        	.getInt();
         
         
         
         //standardLevel = config.getInt("standardLevel", Configuration.CATEGORY_GENERAL, 5, 0, 50, "Minimum required level to uncraft an item");
         //maxUsedLevel = config.getInt("maxUsedLevel", Configuration.CATEGORY_GENERAL, 30, 0, 50, "Maximum required level to uncraft an item");
         //uncraftMethod = config.getInt("uncraftMethod", Configuration.CATEGORY_GENERAL, 0, 0, 1, "ID of the used uncrafting equation.");
-        minLvlServer = standardLevel;
-        maxLvlServer = maxUsedLevel;
-        config.save();
+//        minLvlServer = standardLevel;
+//        maxLvlServer = maxUsedLevel;
+//        config.save();
 
         // register for events
         MinecraftForge.EVENT_BUS.register(this);

@@ -10,6 +10,7 @@ import net.minecraft.util.*;
 import net.minecraft.world.*;
 
 import org.jglrxavpok.mods.decraft.ContainerUncraftingTable.UncraftingStatus;
+import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
 import org.lwjgl.input.*;
 import org.lwjgl.opengl.*;
 
@@ -65,8 +66,8 @@ public class GuiUncraftingTable extends GuiContainer
             
             fontRendererObj.drawString(EnumChatFormatting.DARK_GRAY + string1 + EnumChatFormatting.RESET, 24 - fontRendererObj.getStringWidth(string1) / 2 + 1, 22, 0);
             fontRendererObj.drawString(EnumChatFormatting.GRAY + string1 + EnumChatFormatting.RESET, 24 - fontRendererObj.getStringWidth(string1) / 2, 21, 0);
-            fontRendererObj.drawString(EnumChatFormatting.DARK_GRAY + "" + EnumChatFormatting.UNDERLINE + "" + (ModUncrafting.standardLevel + container.xp) + " levels" + EnumChatFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth((ModUncrafting.standardLevel + container.xp) + " levels") / 2 + 1, ySize - 126 - 10, 0);
-            fontRendererObj.drawString(EnumChatFormatting.UNDERLINE + "" + (ModUncrafting.standardLevel + container.xp) + " levels" + EnumChatFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth((ModUncrafting.standardLevel + container.xp) + " levels") / 2, ySize - 127 - 10, darkGreen.getRGB());
+            fontRendererObj.drawString(EnumChatFormatting.DARK_GRAY + "" + EnumChatFormatting.UNDERLINE + "" + (ModConfiguration.standardLevel + container.xp) + " levels" + EnumChatFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth((ModConfiguration.standardLevel + container.xp) + " levels") / 2 + 1, ySize - 126 - 10, 0);
+            fontRendererObj.drawString(EnumChatFormatting.UNDERLINE + "" + (ModConfiguration.standardLevel + container.xp) + " levels" + EnumChatFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth((ModConfiguration.standardLevel + container.xp) + " levels") / 2, ySize - 127 - 10, darkGreen.getRGB());
 
             String string = container.uncraftingStatusText;
             if (string != null)
@@ -95,8 +96,8 @@ public class GuiUncraftingTable extends GuiContainer
             
             fontRendererObj.drawString(EnumChatFormatting.DARK_GRAY + string1 + EnumChatFormatting.RESET, 24 - fontRendererObj.getStringWidth(string1) / 2 + 1, height - 22, 0);
             fontRendererObj.drawString(EnumChatFormatting.GRAY + string1 + EnumChatFormatting.RESET, 24 - fontRendererObj.getStringWidth(string1) / 2, height - 21, 0);
-            fontRendererObj.drawString(EnumChatFormatting.DARK_GRAY + "" + EnumChatFormatting.UNDERLINE + "" + (ModUncrafting.standardLevel + container.xp) + " levels" + EnumChatFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth((ModUncrafting.standardLevel + container.xp) + " levels") / 2 + 1, height - (ySize - 126 - 10), 0);
-            fontRendererObj.drawString(EnumChatFormatting.UNDERLINE + "" + (ModUncrafting.standardLevel + container.xp) + " levels" + EnumChatFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth((ModUncrafting.standardLevel + container.xp) + " levels") / 2, height - (ySize - 127 - 10), darkGreen.getRGB());
+            fontRendererObj.drawString(EnumChatFormatting.DARK_GRAY + "" + EnumChatFormatting.UNDERLINE + "" + (ModConfiguration.standardLevel + container.xp) + " levels" + EnumChatFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth((ModConfiguration.standardLevel + container.xp) + " levels") / 2 + 1, height - (ySize - 126 - 10), 0);
+            fontRendererObj.drawString(EnumChatFormatting.UNDERLINE + "" + (ModConfiguration.standardLevel + container.xp) + " levels" + EnumChatFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth((ModConfiguration.standardLevel + container.xp) + " levels") / 2, height - (ySize - 127 - 10), darkGreen.getRGB());
 
             String string = container.uncraftingStatusText;
             if (string != null)

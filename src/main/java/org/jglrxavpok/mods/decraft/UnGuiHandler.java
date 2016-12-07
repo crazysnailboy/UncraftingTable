@@ -3,6 +3,9 @@ package org.jglrxavpok.mods.decraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
+
+import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
+
 import cpw.mods.fml.common.network.IGuiHandler;
 
 /**
@@ -21,7 +24,7 @@ public class UnGuiHandler implements IGuiHandler
         {
             if (id == GUI_TABLE)
             {
-                ContainerUncraftingTable c = new ContainerUncraftingTable(player.inventory, world, /*world.getBlockMetadata(x, y, z) == 1*/ true, x, y, z, ModUncrafting.standardLevel, ModUncrafting.maxUsedLevel);
+                ContainerUncraftingTable c = new ContainerUncraftingTable(player.inventory, world, /*world.getBlockMetadata(x, y, z) == 1*/ true, x, y, z, ModConfiguration.standardLevel, ModConfiguration.maxUsedLevel);
                 lastServerContainer = c;
                 return c;
             }
@@ -45,7 +48,7 @@ public class UnGuiHandler implements IGuiHandler
             if (id == GUI_TABLE)
             {
                 String name = I18n.format("tile.uncrafting_table.name");
-                return new GuiUncraftingTable(player.inventory, world, name, /*world.getBlockMetadata(x, y, z) == 1*/ false, x, y, z, ModUncrafting.instance.minLvlServer, ModUncrafting.instance.maxLvlServer);
+                return new GuiUncraftingTable(player.inventory, world, name, /*world.getBlockMetadata(x, y, z) == 1*/ false, x, y, z, ModConfiguration.standardLevel, ModConfiguration.maxUsedLevel);
             }
 //            if (id == GUI_OPTIONS)
 //            {

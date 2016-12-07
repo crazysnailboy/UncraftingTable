@@ -2,6 +2,8 @@ package org.jglrxavpok.mods.decraft;
 
 import java.util.*;
 
+import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
+
 import net.minecraft.client.resources.*;
 import net.minecraft.enchantment.*;
 import net.minecraft.entity.item.*;
@@ -35,7 +37,7 @@ public class ContainerUncraftingTable extends Container
     public UncraftingStatus uncraftingStatus = UncraftingStatus.READY;
     public String uncraftingStatusText = I18n.format("uncrafting.result.ready");
     
-    public int xp = 0 - ModUncrafting.standardLevel;
+    public int xp = 0 - ModConfiguration.standardLevel;
     public int x = 0;
     public int y = 0;
     public int z = 0;
@@ -137,7 +139,7 @@ public class ContainerUncraftingTable extends Container
                 {
                     uncraftingStatusText = I18n.format("uncrafting.result.ready");
                     uncraftingStatus = UncraftingStatus.READY;
-                    xp = -ModUncrafting.standardLevel;
+                    xp = -ModConfiguration.standardLevel;
                 }
                 return;
             }
@@ -175,11 +177,12 @@ public class ContainerUncraftingTable extends Container
                         uncraftingStatus = UncraftingStatus.READY;
                         uncraftingStatusText = I18n.format("uncrafting.result.ready");
                     }
-                    if (ModUncrafting.instance.uncraftMethod == 0)
+                    
+                    if (ModConfiguration.uncraftMethod == 0) // (ModUncrafting.instance.uncraftMethod == 0)
                     {
                         xp = 0;
                     }
-                    else if (ModUncrafting.instance.uncraftMethod == 1)
+                    else if (ModConfiguration.uncraftMethod == 1) // (ModUncrafting.instance.uncraftMethod == 1)
                     {
                         ItemStack s1 = calculInput.getStackInSlot(0);
                         int percent = (int) (((double) s1.getItemDamage() / (double) s1.getMaxDamage()) * 100);
@@ -286,7 +289,7 @@ public class ContainerUncraftingTable extends Container
                     
                     if (!playerInventory.player.capabilities.isCreativeMode && uncraftIn.getStackInSlot(0).getItem().getItemEnchantability() > 0)
                     {
-                        if (ModUncrafting.instance.uncraftMethod == 0)
+                        if (ModConfiguration.uncraftMethod == 0) //(ModUncrafting.instance.uncraftMethod == 0)
                         {
                             int count = 0;
                             ItemStack s1 = uncraftIn.getStackInSlot(0);
@@ -312,23 +315,23 @@ public class ContainerUncraftingTable extends Container
                                     }
                                 }
                         }
-                        else if (ModUncrafting.instance.uncraftMethod == 1)
+                        else if (ModConfiguration.uncraftMethod == 1) // (ModUncrafting.instance.uncraftMethod == 1)
                         {
                             ItemStack s1 = uncraftIn.getStackInSlot(0);
                             int percent = (int) (((double) s1.getItemDamage() / (double) s1.getMaxDamage()) * 100);
                             xp = (maxLvl * percent) / 100;
                         }
                     }
-                    if (lvl < ModUncrafting.standardLevel + xp && !player.capabilities.isCreativeMode)
+                    if (lvl < ModConfiguration.standardLevel + xp && !player.capabilities.isCreativeMode)
                     {
                         String r = I18n.format("uncrafting.result.needMoreXP");
                         uncraftingStatusText = r;
                         uncraftingStatus = UncraftingStatus.ERROR;
                         return;
                     }
-                    else if (lvl >= ModUncrafting.standardLevel + xp && !player.capabilities.isCreativeMode)
+                    else if (lvl >= ModConfiguration.standardLevel + xp && !player.capabilities.isCreativeMode)
                     {
-                        player.experienceLevel -= ModUncrafting.standardLevel + xp;
+                        player.experienceLevel -= ModConfiguration.standardLevel + xp;
                     }
                     if (!uncraftOut.isEmpty())
                     {
