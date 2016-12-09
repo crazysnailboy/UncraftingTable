@@ -26,10 +26,12 @@ public class GuiUncraftingTable extends GuiContainer
     private int y;
     private EntityPlayer player;
 
-    public GuiUncraftingTable(InventoryPlayer playerInventory, World world, String blockName, boolean inverted, int x, int y, int z, int min, int max)
+    public GuiUncraftingTable(InventoryPlayer playerInventory, World world, String blockName, boolean inverted, int x, int y, int z)
     {
-        super(new ContainerUncraftingTable(playerInventory, world, inverted, x, y, z, min, max));
-        container = (ContainerUncraftingTable) inventorySlots;
+    	super(new ContainerUncraftingTable(playerInventory, world, inverted));
+        //super(new ContainerUncraftingTable(playerInventory, world, inverted, x, y, z));
+    	
+        container = (ContainerUncraftingTable)inventorySlots;
         this.blockName = blockName;
         this.inverted = inverted;
         this.worldObj = world;
@@ -39,9 +41,6 @@ public class GuiUncraftingTable extends GuiContainer
         this.player = playerInventory.player;
     }
 
-//    public void actionPerformed(GuiButton button)
-//    {
-//    }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
@@ -58,17 +57,35 @@ public class GuiUncraftingTable extends GuiContainer
         
         if (!inverted)
         {
+        	// fontRendererObj.drawString:
+        	// Args: string, x, y, color, dropShadow
+        	
+        	
+        	// render the block name at the top of the gui
             fontRendererObj.drawString(blockName, xSize / 2 - fontRendererObj.getStringWidth(blockName) / 2 + 1, 5, 4210752);
+            
+            // write "inventory" above the player inventory
             fontRendererObj.drawString(I18n.format("container.inventory"), 6, ySize - 96 + 2, 4210752);
 
-            Color darkGreen = new Color(75, 245, 75);
-            String string1 = I18n.format("uncrafting.compute") + ":";
+            // write "compute:" above the input slots
+            String compute = I18n.format("uncrafting.compute") + ":";
+            fontRendererObj.drawString(EnumChatFormatting.DARK_GRAY + compute + EnumChatFormatting.RESET, 24 - fontRendererObj.getStringWidth(compute) / 2 + 1, 22, 0);
+            fontRendererObj.drawString(EnumChatFormatting.GRAY + compute + EnumChatFormatting.RESET, 24 - fontRendererObj.getStringWidth(compute) / 2, 21, 0);
             
-            fontRendererObj.drawString(EnumChatFormatting.DARK_GRAY + string1 + EnumChatFormatting.RESET, 24 - fontRendererObj.getStringWidth(string1) / 2 + 1, 22, 0);
-            fontRendererObj.drawString(EnumChatFormatting.GRAY + string1 + EnumChatFormatting.RESET, 24 - fontRendererObj.getStringWidth(string1) / 2, 21, 0);
-            fontRendererObj.drawString(EnumChatFormatting.DARK_GRAY + "" + EnumChatFormatting.UNDERLINE + "" + (ModConfiguration.standardLevel + container.xp) + " levels" + EnumChatFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth((ModConfiguration.standardLevel + container.xp) + " levels") / 2 + 1, ySize - 126 - 10, 0);
-            fontRendererObj.drawString(EnumChatFormatting.UNDERLINE + "" + (ModConfiguration.standardLevel + container.xp) + " levels" + EnumChatFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth((ModConfiguration.standardLevel + container.xp) + " levels") / 2, ySize - 127 - 10, darkGreen.getRGB());
+            // write the xp cost above the arrow
+            Color darkGreen = new Color(75, 245, 75);
+            fontRendererObj.drawString(EnumChatFormatting.DARK_GRAY + "" + EnumChatFormatting.UNDERLINE + "" + (ModConfiguration.standardLevel + container.uncraftingCost) + " levels" + EnumChatFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth((ModConfiguration.standardLevel + container.uncraftingCost) + " levels") / 2 + 1, ySize - 126 - 10, 0);
+            fontRendererObj.drawString(EnumChatFormatting.UNDERLINE + "" + (ModConfiguration.standardLevel + container.uncraftingCost) + " levels" + EnumChatFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth((ModConfiguration.standardLevel + container.uncraftingCost) + " levels") / 2, ySize - 127 - 10, darkGreen.getRGB());
 
+
+//            // draw the arrow with the cross through it
+//            GL11.glPushMatrix();
+//            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+//            this.mc.renderEngine.bindTexture(new ResourceLocation("uncraftingTable:textures/gui/container/uncrafting_gui.png"));
+//            this.drawTexturedModalRect(75, 32, 176, 0, 28, 21);
+//            GL11.glPopMatrix();
+            
+            
             String string = container.uncraftingStatusText;
             if (string != null)
             {
@@ -96,8 +113,8 @@ public class GuiUncraftingTable extends GuiContainer
             
             fontRendererObj.drawString(EnumChatFormatting.DARK_GRAY + string1 + EnumChatFormatting.RESET, 24 - fontRendererObj.getStringWidth(string1) / 2 + 1, height - 22, 0);
             fontRendererObj.drawString(EnumChatFormatting.GRAY + string1 + EnumChatFormatting.RESET, 24 - fontRendererObj.getStringWidth(string1) / 2, height - 21, 0);
-            fontRendererObj.drawString(EnumChatFormatting.DARK_GRAY + "" + EnumChatFormatting.UNDERLINE + "" + (ModConfiguration.standardLevel + container.xp) + " levels" + EnumChatFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth((ModConfiguration.standardLevel + container.xp) + " levels") / 2 + 1, height - (ySize - 126 - 10), 0);
-            fontRendererObj.drawString(EnumChatFormatting.UNDERLINE + "" + (ModConfiguration.standardLevel + container.xp) + " levels" + EnumChatFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth((ModConfiguration.standardLevel + container.xp) + " levels") / 2, height - (ySize - 127 - 10), darkGreen.getRGB());
+            fontRendererObj.drawString(EnumChatFormatting.DARK_GRAY + "" + EnumChatFormatting.UNDERLINE + "" + (ModConfiguration.standardLevel + container.uncraftingCost) + " levels" + EnumChatFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth((ModConfiguration.standardLevel + container.uncraftingCost) + " levels") / 2 + 1, height - (ySize - 126 - 10), 0);
+            fontRendererObj.drawString(EnumChatFormatting.UNDERLINE + "" + (ModConfiguration.standardLevel + container.uncraftingCost) + " levels" + EnumChatFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth((ModConfiguration.standardLevel + container.uncraftingCost) + " levels") / 2, height - (ySize - 127 - 10), darkGreen.getRGB());
 
             String string = container.uncraftingStatusText;
             if (string != null)

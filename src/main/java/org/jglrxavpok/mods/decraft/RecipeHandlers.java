@@ -9,8 +9,35 @@ import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
-public final class DefaultsRecipeHandlers
+public final class RecipeHandlers
 {
+	
+	/**
+	 * Recipe Handlers return the "crafting grid" depending on a crafting recipe.
+	 * @author jglrxavpok
+	 *
+	 */
+	public static abstract class RecipeHandler
+	{
+		private Class<? extends IRecipe>	recipeType;
+
+		public RecipeHandler(Class<? extends IRecipe> recipe)
+		{
+			this.recipeType = recipe;
+		}
+		
+		public Class<? extends IRecipe> getType()
+		{
+			return recipeType;
+		}
+		
+		/**
+		 * Returns the "crafting grid" depending on the given Recipe
+		 */
+		public abstract ItemStack[] getCraftingGrid(IRecipe s);
+	}
+	
+	
 
 	private static class ShapedRecipeHandler extends RecipeHandler
 	{

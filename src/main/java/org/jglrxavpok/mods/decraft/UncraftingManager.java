@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.jglrxavpok.mods.decraft.RecipeHandlers.RecipeHandler;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -17,6 +19,7 @@ public class UncraftingManager
 
 	private static HashMap<Class<? extends IRecipe>, RecipeHandler>	uncraftingHandlers = new HashMap<Class<? extends IRecipe>, RecipeHandler>();
 
+	
 	public static List<Integer> getStackSizeNeeded(ItemStack item)
 	{
 //		System.out.println("\t" + "getStackSizeNeeded");
@@ -36,7 +39,15 @@ public class UncraftingManager
 				{
 					if (s.getItem() == item.getItem() && s.getItemDamage() == item.getItemDamage())
 					{
-						list.add(s.stackSize);
+						RecipeHandler handler = uncraftingHandlers.get(r.getClass());
+						if (handler != null)
+						{
+							list.add(s.stackSize);
+						}
+//						else 
+//						{
+//							ModUncrafting.instance.getLogger().error("[Uncrafting Table] Unknown recipe type: "+r.getClass().getCanonicalName());
+//						}
 					}
 				}
 			}
@@ -69,18 +80,16 @@ public class UncraftingManager
 						||
 						(s.getItem() == item.getItem() && s.stackSize <= item.stackSize && item.getItem().isDamageable() == true)
 					)
-					
-					//if (s.getItem() == item.getItem() && s.stackSize <= item.stackSize && s.getItemDamage() == item.getItemDamage())
 					{
 						RecipeHandler handler = uncraftingHandlers.get(r.getClass());
 						if (handler != null)
 						{
 							list.add(handler.getCraftingGrid(r));
 						}
-						else 
-						{
-							ModUncrafting.instance.getLogger().error("[Uncrafting Table] Unknown recipe type: "+r.getClass().getCanonicalName());
-						}
+//						else 
+//						{
+//							ModUncrafting.instance.getLogger().error("[Uncrafting Table] Unknown recipe type: "+r.getClass().getCanonicalName());
+//						}
 					}
 				}
 			}

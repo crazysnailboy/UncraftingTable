@@ -72,15 +72,18 @@ public class ModConfiguration {
 		Property propStandardLevel = config.get(Configuration.CATEGORY_GENERAL, "standardLevel", 5, "Minimum required level to uncraft an item", 0, 50);
 		propStandardLevel.setLanguageKey("uncrafting.options.standardLevel");
 		propStandardLevel.setConfigEntryClass(NumberSliderEntry.class);
+		propStandardLevel.setRequiresMcRestart(false);
 		
 		Property propMaxLevel = config.get(Configuration.CATEGORY_GENERAL, "maxUsedLevel", 30, "Maximum required level to uncraft an item", 0, 50);
 		propMaxLevel.setLanguageKey("uncrafting.options.maxUsedLevel");
 		propMaxLevel.setConfigEntryClass(NumberSliderEntry.class);
+		propMaxLevel.setRequiresMcRestart(false);
 
 		Property propUncraftMethod = config.get(Configuration.CATEGORY_GENERAL, "uncraftMethod", 0, "ID of the used uncrafting equation.");
 		propUncraftMethod.setLanguageKey("uncrafting.options.method");
 		propUncraftMethod.setValidValues(new String[] { "jglrxavpok", "Xell75 & zenen" });
 		propUncraftMethod.setConfigEntryClass(CycleUncraftMethodEntry.class);
+		propUncraftMethod.setRequiresMcRestart(false);
 
 		
 		

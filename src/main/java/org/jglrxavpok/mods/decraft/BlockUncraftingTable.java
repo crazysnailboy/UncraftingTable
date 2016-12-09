@@ -66,7 +66,7 @@ public class BlockUncraftingTable extends Block
             //			PacketDispatcher.sendPacketToPlayer(packet, (Player)player);
         }
         	
-    	player.openGui(ModUncrafting.instance, 0, worldIn, x, y, z);
+    	player.openGui(ModUncrafting.instance, UnGuiHandler.GUI_TABLE, worldIn, x, y, z);
     	//System.out.println("player clicked");
         return true;
         /**
@@ -130,32 +130,30 @@ public class BlockUncraftingTable extends Block
 
     @SideOnly(Side.CLIENT)
     /**
-     * From the specified side and block metadata retrieves the blocks texture. Args: side, metadata
-     * 
-     * -> getIcon
+     * Gets the block's texture. Args: side, meta
      */
-   public IIcon getIcon(int par1, int par2)
+   public IIcon getIcon(int side, int meta)
    {
-       if (par2 == 0)
-       {
-          return (IIcon) (par1 == 1 ? this.topBlock : (par1 == 0 ? bottom : (par1 != 3 && par1 != 1 ? this.blockIcon : this.front)));
-       }
-       else
-       {
-            return (IIcon) (par1 == 1 ? this.bottom : (par1 == 0 ? topBlock : (par1 != 3 && par1 != 1 ? this.redstonedBlockIcon : this.redstonedFront)));
-        }
+		if (meta == 0)
+		{
+			return (IIcon) (side == 1 ? this.topBlock : (side == 0 ? bottom : (side != 3 && side != 1 ? this.blockIcon : this.front)));
+		}
+		else
+		{
+			return (IIcon) (side == 1 ? this.bottom : (side == 0 ? topBlock : (side != 3 && side != 1 ? this.redstonedBlockIcon : this.redstonedFront)));
+		}
     }
     
 	@SideOnly(Side.CLIENT)
 	@Override
-    public void registerBlockIcons(IIconRegister par1IconRegister)
+    public void registerBlockIcons(IIconRegister reg)
     {
-        this.blockIcon = par1IconRegister.registerIcon("uncraftingTable:uncrafting_side");
-        this.redstonedBlockIcon = par1IconRegister.registerIcon("uncraftingTable:uncrafting_side_redstoned");
-        this.topBlock = par1IconRegister.registerIcon("uncraftingTable:uncrafting_top");
-        this.front = par1IconRegister.registerIcon("uncraftingTable:uncrafting_front");
-        this.redstonedFront = par1IconRegister.registerIcon("uncraftingTable:uncrafting_front_redstoned");
-        this.bottom = par1IconRegister.registerIcon("uncraftingTable:uncrafting_bottom");
+        this.blockIcon = reg.registerIcon("uncraftingTable:uncrafting_side");
+        this.redstonedBlockIcon = reg.registerIcon("uncraftingTable:uncrafting_side_redstoned");
+        this.topBlock = reg.registerIcon("uncraftingTable:uncrafting_top");
+        this.front = reg.registerIcon("uncraftingTable:uncrafting_front");
+        this.redstonedFront = reg.registerIcon("uncraftingTable:uncrafting_front_redstoned");
+        this.bottom = reg.registerIcon("uncraftingTable:uncrafting_bottom");
     }
 
 }
