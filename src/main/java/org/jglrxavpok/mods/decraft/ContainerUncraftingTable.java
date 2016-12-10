@@ -3,6 +3,9 @@ package org.jglrxavpok.mods.decraft;
 import java.util.*;
 
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
+import org.jglrxavpok.mods.decraft.event.ItemUncraftedEvent;
+import org.jglrxavpok.mods.decraft.event.UncraftingEvent;
+import org.jglrxavpok.mods.decraft.stat.ModAchievements;
 
 import net.minecraft.client.resources.*;
 import net.minecraft.enchantment.*;
@@ -157,6 +160,10 @@ public class ContainerUncraftingTable extends Container
             // if the left hand slot is not empty and the right hand slot is empty
             else if (uncraftIn.getStackInSlot(0) == null)
             {
+            	
+//System.out.println(calculInput.getStackInSlot(0).getItem().getUnlocalizedName());            	
+            	
+            	
             	// get the uncrafting result for the item in the left hand slot
                 List<ItemStack[]> list1 = UncraftingManager.getUncraftResults(calculInput.getStackInSlot(0));
                 ItemStack[] output = null;
@@ -438,11 +445,11 @@ public class ContainerUncraftingTable extends Container
                     //    						e.posZ = playerInv.player.posZ;
                     //    					}
                     //    				}
-                    SuccessedUncraftingEvent sevent = new SuccessedUncraftingEvent(uncraftIn.getStackInSlot(0), items, event.getRequiredNumber(), playerInventory.player);
+                    ItemUncraftedEvent sevent = new ItemUncraftedEvent(playerInventory.player, uncraftIn.getStackInSlot(0), items, event.getRequiredNumber());
                     if (!MinecraftForge.EVENT_BUS.post(sevent))
                     {
                         event.getPlayer().addStat(ModUncrafting.instance.uncraftedItemsStat, event.getRequiredNumber());
-                        event.getPlayer().triggerAchievement(ModUncrafting.instance.uncraftAny);
+                        //event.getPlayer().triggerAchievement(ModUncrafting.instance.uncraftAny);
                     }
                     int i = uncraftIn.getStackInSlot(0).stackSize - event.getRequiredNumber();
                     ItemStack newStack = null;

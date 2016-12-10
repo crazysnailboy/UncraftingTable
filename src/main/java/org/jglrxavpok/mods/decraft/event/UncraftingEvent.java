@@ -1,4 +1,4 @@
-package org.jglrxavpok.mods.decraft;
+package org.jglrxavpok.mods.decraft.event;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

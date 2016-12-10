@@ -9,16 +9,15 @@ import cpw.mods.fml.client.config.GuiConfigEntries;
 import cpw.mods.fml.client.config.IConfigElement;
 import net.minecraft.client.resources.I18n;
 
-//public class CycleUncraftMethodEntry extends cpw.mods.fml.client.config.GuiConfigEntries.CycleValueEntry {
 	
-public class CycleUncraftMethodEntry extends cpw.mods.fml.client.config.GuiConfigEntries.ButtonEntry
+public class UncraftingMethodCycleEntry extends cpw.mods.fml.client.config.GuiConfigEntries.ButtonEntry
 {
 	
     protected final int beforeIndex;
     protected final int defaultIndex;
     protected int       currentIndex;
 
-    public CycleUncraftMethodEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement<String> configElement)
+    public UncraftingMethodCycleEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement<String> configElement)
     {
         super(owningScreen, owningEntryList, configElement);
 

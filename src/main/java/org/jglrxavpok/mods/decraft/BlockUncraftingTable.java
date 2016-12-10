@@ -18,6 +18,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import org.jglrxavpok.mods.decraft.ModUncrafting;
+import org.jglrxavpok.mods.decraft.stat.ModAchievements;
 public class BlockUncraftingTable extends Block
 {
 
@@ -67,11 +68,8 @@ public class BlockUncraftingTable extends Block
         }
         	
     	player.openGui(ModUncrafting.instance, UnGuiHandler.GUI_TABLE, worldIn, x, y, z);
-    	//System.out.println("player clicked");
+		checkForPorteManteau(player, worldIn, x, y, z);
         return true;
-        /**
-         * @see org.jglrxavpok.mods.decraft.ModUncrafting
-         */
     }
 
 //    /**
@@ -127,7 +125,56 @@ public class BlockUncraftingTable extends Block
 //    }
 
    
-
+	private void checkForPorteManteau(EntityPlayer player, World worldIn, int x, int y, int z)
+	{
+		boolean furnace = false;
+		boolean chest = false;
+		boolean workbench = false;
+		
+		// if the block beneath is a fence...
+		if (worldIn.getBlock(x, y - 1, z) == Blocks.fence)
+		{
+			// check if one of the adjacent blocks is a furnace
+			if (
+				(worldIn.getBlock(x + 1, y, z) == Blocks.furnace) || (worldIn.getBlock(x + 1, y, z) == Blocks.lit_furnace) || 
+				(worldIn.getBlock(x - 1, y, z) == Blocks.furnace) || (worldIn.getBlock(x - 1, y, z) == Blocks.lit_furnace) || 
+				(worldIn.getBlock(x, y, z + 1) == Blocks.furnace) || (worldIn.getBlock(x, y, z + 1) == Blocks.lit_furnace) || 
+				(worldIn.getBlock(x, y, z - 1) == Blocks.furnace) || (worldIn.getBlock(x, y, z - 1) == Blocks.lit_furnace)
+			) 
+			{
+				furnace = true;
+			}
+			
+			// check if one of the adjacent blocks is a chest
+			if (
+				(worldIn.getBlock(x + 1, y, z) == Blocks.chest) || 
+				(worldIn.getBlock(x - 1, y, z) == Blocks.chest) || 
+				(worldIn.getBlock(x, y, z + 1) == Blocks.chest) || 
+				(worldIn.getBlock(x, y, z - 1) == Blocks.chest)
+			) 
+			{
+				chest = true;
+			}
+			
+			// check if one of the adjacent blocks is a crafting table
+			if (
+				(worldIn.getBlock(x + 1, y, z) == Blocks.crafting_table) || 
+				(worldIn.getBlock(x - 1, y, z) == Blocks.crafting_table) || 
+				(worldIn.getBlock(x, y, z + 1) == Blocks.crafting_table) || 
+				(worldIn.getBlock(x, y, z - 1) == Blocks.crafting_table)
+			) 
+			{
+				workbench = true;
+			}
+			
+			// if the block is adjacent to all three, trigger the achievement
+			if ((furnace) && (chest) && (workbench)) 
+			{
+				player.triggerAchievement(ModAchievements.porteManteauAchievement);
+			}
+		}
+	}
+	  
     @SideOnly(Side.CLIENT)
     /**
      * Gets the block's texture. Args: side, meta

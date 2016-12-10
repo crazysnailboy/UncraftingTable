@@ -9,17 +9,17 @@ import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
+/**
+ * Recipe Handlers return the "crafting grid" depending on a crafting recipe.
+ * @author jglrxavpok
+ *
+ */
 public final class RecipeHandlers
 {
 	
-	/**
-	 * Recipe Handlers return the "crafting grid" depending on a crafting recipe.
-	 * @author jglrxavpok
-	 *
-	 */
 	public static abstract class RecipeHandler
 	{
-		private Class<? extends IRecipe>	recipeType;
+		private Class<? extends IRecipe> recipeType;
 
 		public RecipeHandler(Class<? extends IRecipe> recipe)
 		{
@@ -39,7 +39,7 @@ public final class RecipeHandlers
 	
 	
 
-	private static class ShapedRecipeHandler extends RecipeHandler
+	public static class ShapedRecipeHandler extends RecipeHandler
 	{
 		public ShapedRecipeHandler(Class<? extends IRecipe> recipe)
 		{
@@ -59,7 +59,7 @@ public final class RecipeHandlers
 		}
 	}
 	
-	private static class ShapelessOreRecipeHandler extends RecipeHandler
+	public static class ShapelessOreRecipeHandler extends RecipeHandler
 	{
 		public ShapelessOreRecipeHandler(Class<? extends IRecipe> recipe)
 		{
@@ -90,7 +90,7 @@ public final class RecipeHandlers
 		}
 	}
 	
-	private static class ShapedOreRecipeHandler extends RecipeHandler
+	public static class ShapedOreRecipeHandler extends RecipeHandler
 	{
 		public ShapedOreRecipeHandler(Class<? extends IRecipe> recipe)
 		{
@@ -121,7 +121,7 @@ public final class RecipeHandlers
 		}
 	}
 	
-	private static class ShapelessRecipeHandler extends RecipeHandler
+	public static class ShapelessRecipeHandler extends RecipeHandler
 	{
 		public ShapelessRecipeHandler(Class<? extends IRecipe> recipe)
 		{
@@ -141,22 +141,22 @@ public final class RecipeHandlers
 		}
 	}
 
-	/**
-	 * Default Recipe Handlers
-	 */
-	public static final RecipeHandler DEFAULT_SHAPELESS_RECIPE_HANDLER = new ShapelessRecipeHandler(ShapelessRecipes.class);
-	public static final RecipeHandler DEFAULT_SHAPED_RECIPE_HANDLER = new ShapedRecipeHandler(ShapedRecipes.class);
-	public static final RecipeHandler DEFAULT_SHAPELESS_ORE_RECIPE_HANDLER = new ShapelessOreRecipeHandler(ShapelessOreRecipe.class);
-	public static final RecipeHandler DEFAULT_SHAPED_ORE_RECIPE_HANDLER = new ShapedOreRecipeHandler(ShapedOreRecipe.class);
-	
-	/**
-	 * Set the default Recipe Handlers
-	 */
-	public static void load()
-	{
-		UncraftingManager.setRecipeHandler(ShapelessRecipes.class, DEFAULT_SHAPELESS_RECIPE_HANDLER);
-		UncraftingManager.setRecipeHandler(ShapedRecipes.class, DEFAULT_SHAPED_RECIPE_HANDLER);
-		UncraftingManager.setRecipeHandler(ShapelessOreRecipe.class, DEFAULT_SHAPELESS_ORE_RECIPE_HANDLER);
-		UncraftingManager.setRecipeHandler(ShapedOreRecipe.class, DEFAULT_SHAPED_ORE_RECIPE_HANDLER);
-	}
+//	/**
+//	 * Default Recipe Handlers
+//	 */
+//	public static final RecipeHandler DEFAULT_SHAPELESS_RECIPE_HANDLER = new ShapelessRecipeHandler(ShapelessRecipes.class);
+//	public static final RecipeHandler DEFAULT_SHAPED_RECIPE_HANDLER = new ShapedRecipeHandler(ShapedRecipes.class);
+//	public static final RecipeHandler DEFAULT_SHAPELESS_ORE_RECIPE_HANDLER = new ShapelessOreRecipeHandler(ShapelessOreRecipe.class);
+//	public static final RecipeHandler DEFAULT_SHAPED_ORE_RECIPE_HANDLER = new ShapedOreRecipeHandler(ShapedOreRecipe.class);
+//	
+//	/**
+//	 * Set the default Recipe Handlers
+//	 */
+//	public static void load()
+//	{
+//		UncraftingManager.setRecipeHandler(ShapelessRecipes.class, DEFAULT_SHAPELESS_RECIPE_HANDLER);
+//		UncraftingManager.setRecipeHandler(ShapedRecipes.class, DEFAULT_SHAPED_RECIPE_HANDLER);
+//		UncraftingManager.setRecipeHandler(ShapelessOreRecipe.class, DEFAULT_SHAPELESS_ORE_RECIPE_HANDLER);
+//		UncraftingManager.setRecipeHandler(ShapedOreRecipe.class, DEFAULT_SHAPED_ORE_RECIPE_HANDLER);
+//	}
 }

@@ -50,7 +50,7 @@ public class UnGuiHandler implements IGuiHandler
             if (id == GUI_TABLE)
             {
                 String name = I18n.format("tile.uncrafting_table.name");
-                return new GuiUncraftingTable(player.inventory, world, name, false, x, y, z);
+                return new GuiUncraftingTable(player.inventory, world, name, false);
                 
 //                return new GuiUncraftingTable(player.inventory, world, name, /*world.getBlockMetadata(x, y, z) == 1*/ false, x, y, z, ModConfiguration.standardLevel, ModConfiguration.maxUsedLevel);
             }

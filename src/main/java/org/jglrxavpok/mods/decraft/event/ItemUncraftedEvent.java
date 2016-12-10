@@ -1,4 +1,4 @@
-package org.jglrxavpok.mods.decraft;
+package org.jglrxavpok.mods.decraft.event;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -9,13 +9,19 @@ import cpw.mods.fml.common.eventhandler.Event;
  * @author jglrxavpok
  *
  */
-public class SuccessedUncraftingEvent extends Event
+public class ItemUncraftedEvent extends Event
 {
 
 	/**
+	 * The player uncrafting the item
+	 */
+	public final EntityPlayer player;
+	
+	/**
 	 * Uncrafted item
 	 */
-	private ItemStack	uncrafted;
+	public final ItemStack uncrafted;
+	
 	/**
 	 * Output of the uncrafting
 	 */
@@ -25,20 +31,16 @@ public class SuccessedUncraftingEvent extends Event
 	 */
 	private int	nbr;
 	/**
-	 * The player uncrafting the item
-	 */
-	private EntityPlayer	p;
-	/**
 	 * When the event was fired (more like created, actually)
 	 */
-	private long	when;
+	private long when;
 
-	public SuccessedUncraftingEvent(ItemStack stack, ItemStack[] output, int required, EntityPlayer player)
+	public ItemUncraftedEvent(EntityPlayer player, ItemStack stack, ItemStack[] output, int required)
 	{
+		this.player = player;
 		uncrafted = stack;
 		out = output;
 		nbr = required;
-		p = player;
 		when = System.currentTimeMillis();
 	}
 	
@@ -55,7 +57,7 @@ public class SuccessedUncraftingEvent extends Event
 	 */
 	public EntityPlayer getPlayer()
 	{
-		return p;
+		return player;
 	}
 	
 	/**

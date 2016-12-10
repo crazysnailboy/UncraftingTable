@@ -1,6 +1,7 @@
 package org.jglrxavpok.mods.decraft.proxy;
 
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
+import org.jglrxavpok.mods.decraft.stat.ModAchievements;
 
 public class ClientProxy extends CommonProxy {
 
@@ -13,6 +14,7 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void init(){
 		super.init();
+		ModAchievements.clientInit();
 	}
 	
 	@Override

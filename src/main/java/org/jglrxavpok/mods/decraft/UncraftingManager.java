@@ -4,11 +4,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.jglrxavpok.mods.decraft.RecipeHandlers.RecipeHandler;
+import org.jglrxavpok.mods.decraft.RecipeHandlers.ShapedOreRecipeHandler;
+import org.jglrxavpok.mods.decraft.RecipeHandlers.ShapedRecipeHandler;
+import org.jglrxavpok.mods.decraft.RecipeHandlers.ShapelessOreRecipeHandler;
+import org.jglrxavpok.mods.decraft.RecipeHandlers.ShapelessRecipeHandler;
+import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
 
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+
+import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.ShapedRecipes;
+import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraftforge.oredict.ShapedOreRecipe;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 /**
  * Main part of the Uncrafting Table. The manager is used to parse the existing recipes and find the correct one depending on the given stack.
@@ -20,14 +34,26 @@ public class UncraftingManager
 	private static HashMap<Class<? extends IRecipe>, RecipeHandler>	uncraftingHandlers = new HashMap<Class<? extends IRecipe>, RecipeHandler>();
 
 	
+//	private List<IRecipe> recipeList = Lists.newArrayList(Iterables.filter(CraftingManager.getInstance().getRecipeList(), IRecipe.class));
+	
+	
 	public static List<Integer> getStackSizeNeeded(ItemStack item)
 	{
 //		System.out.println("\t" + "getStackSizeNeeded");
 //		System.out.println("\t" + item.getItem().getUnlocalizedName());
 //		System.out.println("\t" + item.getDisplayName());
 		
-		List<?> recipeList = CraftingManager.getInstance().getRecipeList();
 		List<Integer> list = new ArrayList<Integer>();
+		
+		Boolean canUncraftItem = ArrayUtils.indexOf(
+			ModConfiguration.uncraftableItems, 
+			GameRegistry.findUniqueIdentifierFor(item.getItem()).toString()
+		) < 0;
+			
+		if (!canUncraftItem) return list;
+		
+		List<?> recipeList = CraftingManager.getInstance().getRecipeList();
+
 		
 		for (int i = 0 ; i < recipeList.size() ; i++)
 		{
@@ -44,10 +70,10 @@ public class UncraftingManager
 						{
 							list.add(s.stackSize);
 						}
-//						else 
-//						{
-//							ModUncrafting.instance.getLogger().error("[Uncrafting Table] Unknown recipe type: "+r.getClass().getCanonicalName());
-//						}
+						else 
+						{
+							ModUncrafting.instance.getLogger().error("[Uncrafting Table] Unknown recipe type: "+r.getClass().getCanonicalName());
+						}
 					}
 				}
 			}
@@ -63,9 +89,18 @@ public class UncraftingManager
 //		System.out.println(item.getItem().getUnlocalizedName());
 //		System.out.println(item.getDisplayName());
 //		System.out.println("isDamageable: " + item.getItem().isDamageable());
+
+		List<ItemStack[]> list = new ArrayList<ItemStack[]>();
+		
+		Boolean canUncraftItem = ArrayUtils.indexOf(
+			ModConfiguration.uncraftableItems, 
+			GameRegistry.findUniqueIdentifierFor(item.getItem()).toString()
+		) < 0;
+		
+		if (!canUncraftItem) return list;
+		
 		
 		List<?> recipeList = CraftingManager.getInstance().getRecipeList();
-		List<ItemStack[]> list = new ArrayList<ItemStack[]>();
 		
 		for (int i = 0 ; i < recipeList.size() ; i++)
 		{
@@ -86,10 +121,10 @@ public class UncraftingManager
 						{
 							list.add(handler.getCraftingGrid(r));
 						}
-//						else 
-//						{
-//							ModUncrafting.instance.getLogger().error("[Uncrafting Table] Unknown recipe type: "+r.getClass().getCanonicalName());
-//						}
+						else
+						{
+							ModUncrafting.instance.getLogger().error("[Uncrafting Table] Unknown recipe type: "+r.getClass().getCanonicalName());
+						}
 					}
 				}
 			}
@@ -100,9 +135,20 @@ public class UncraftingManager
 		return list;
 	}
 	
-	public static void setRecipeHandler(Class<? extends IRecipe> recipe, RecipeHandler handler)
-	{
-		uncraftingHandlers.put(recipe, handler);
+//	public static void setRecipeHandler(Class<? extends IRecipe> recipe, RecipeHandler handler)
+//	{
+//		uncraftingHandlers.put(recipe, handler);
+//	}
+	
+	
+	public static void postInit(){
+		
+		// build the hash map of uncrafting handlers for the different recipe types
+		uncraftingHandlers.put(ShapelessRecipes.class, new ShapelessRecipeHandler(ShapelessRecipes.class));
+		uncraftingHandlers.put(ShapedRecipes.class, new ShapedRecipeHandler(ShapedRecipes.class));
+		uncraftingHandlers.put(ShapelessOreRecipe.class, new ShapelessOreRecipeHandler(ShapelessOreRecipe.class));
+		uncraftingHandlers.put(ShapedOreRecipe.class, new ShapedOreRecipeHandler(ShapedOreRecipe.class));
+		
 	}
 	
 }

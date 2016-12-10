@@ -21,12 +21,9 @@ public class GuiUncraftingTable extends GuiContainer
     private String blockName;
     private boolean inverted;
     private World worldObj;
-    private int x;
-    private int z;
-    private int y;
     private EntityPlayer player;
 
-    public GuiUncraftingTable(InventoryPlayer playerInventory, World world, String blockName, boolean inverted, int x, int y, int z)
+    public GuiUncraftingTable(InventoryPlayer playerInventory, World world, String blockName, boolean inverted)
     {
     	super(new ContainerUncraftingTable(playerInventory, world, inverted));
         //super(new ContainerUncraftingTable(playerInventory, world, inverted, x, y, z));
@@ -35,9 +32,6 @@ public class GuiUncraftingTable extends GuiContainer
         this.blockName = blockName;
         this.inverted = inverted;
         this.worldObj = world;
-        this.x = x;
-        this.y = y;
-        this.z = z;
         this.player = playerInventory.player;
     }
 

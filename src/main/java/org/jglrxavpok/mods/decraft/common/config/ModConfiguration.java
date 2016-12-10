@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import cpw.mods.fml.client.config.GuiConfigEntries.ArrayEntry;
 import cpw.mods.fml.client.config.GuiConfigEntries.NumberSliderEntry;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -15,7 +16,8 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
 import org.jglrxavpok.mods.decraft.ModUncrafting;
-import org.jglrxavpok.mods.decraft.client.config.CycleUncraftMethodEntry;
+import org.jglrxavpok.mods.decraft.client.config.UncraftingMethodCycleEntry;
+import org.jglrxavpok.mods.decraft.client.config.UncraftableItemsArrayEntry;
 
 
 public class ModConfiguration {
@@ -26,6 +28,7 @@ public class ModConfiguration {
     public static int uncraftMethod;
     public static int maxUsedLevel;
     public static int standardLevel;
+    public static String[] uncraftableItems;
 
     
     public static void preInit(){
@@ -82,15 +85,20 @@ public class ModConfiguration {
 		Property propUncraftMethod = config.get(Configuration.CATEGORY_GENERAL, "uncraftMethod", 0, "ID of the used uncrafting equation.");
 		propUncraftMethod.setLanguageKey("uncrafting.options.method");
 		propUncraftMethod.setValidValues(new String[] { "jglrxavpok", "Xell75 & zenen" });
-		propUncraftMethod.setConfigEntryClass(CycleUncraftMethodEntry.class);
+		propUncraftMethod.setConfigEntryClass(UncraftingMethodCycleEntry.class);
 		propUncraftMethod.setRequiresMcRestart(false);
 
+		Property propUncraftableItems = config.get(Configuration.CATEGORY_GENERAL, "uncraftableItems", new String[] { }, "List of IDs for uncraftable items");
+		propUncraftableItems.setLanguageKey("uncrafting.options.uncraftableItems");
+		propUncraftableItems.setConfigEntryClass(UncraftableItemsArrayEntry.class);
+		propUncraftableItems.setRequiresMcRestart(false);
 		
 		
 		List<String> propOrderGeneral = new ArrayList<String>();
 		propOrderGeneral.add(propStandardLevel.getName());
 		propOrderGeneral.add(propMaxLevel.getName());
 		propOrderGeneral.add(propUncraftMethod.getName());
+		propOrderGeneral.add(propUncraftableItems.getName());
 		config.setCategoryPropertyOrder(Configuration.CATEGORY_GENERAL, propOrderGeneral);
 		
 		
@@ -100,6 +108,7 @@ public class ModConfiguration {
 			standardLevel = propStandardLevel.getInt();
 			maxUsedLevel = propMaxLevel.getInt();
 			uncraftMethod = propUncraftMethod.getInt();
+			uncraftableItems = propUncraftableItems.getStringList();
 					
 		}
 		
@@ -107,6 +116,7 @@ public class ModConfiguration {
 		propStandardLevel.set(standardLevel);
 		propMaxLevel.set(maxUsedLevel);
 		propUncraftMethod.set(uncraftMethod);
+		propUncraftableItems.set(uncraftableItems);
 		
 		
 		if (config.hasChanged()) {
