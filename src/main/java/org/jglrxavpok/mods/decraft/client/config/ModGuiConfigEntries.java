@@ -4,9 +4,10 @@ import net.minecraftforge.fml.client.config.GuiConfig;
 import net.minecraftforge.fml.client.config.GuiConfigEntries;
 import net.minecraftforge.fml.client.config.IConfigElement;
 
+
 public class ModGuiConfigEntries {
 	
-	public class UncraftableItemsArrayEntry extends GuiConfigEntries.ArrayEntry {
+	public static class UncraftableItemsArrayEntry extends net.minecraftforge.fml.client.config.GuiConfigEntries.ArrayEntry {
 
 		public UncraftableItemsArrayEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement configElement) {
 			super(owningScreen, owningEntryList, configElement);
@@ -20,12 +21,13 @@ public class ModGuiConfigEntries {
 		
 	}
 	
-	public class UncraftingMethodCycleEntry extends GuiConfigEntries.ButtonEntry
+	
+	public static class UncraftingMethodCycleEntry extends net.minecraftforge.fml.client.config.GuiConfigEntries.ButtonEntry
 	{
 		
 	    protected final int beforeIndex;
 	    protected final int defaultIndex;
-	    protected int       currentIndex;
+	    protected int currentIndex;
 
 	    public UncraftingMethodCycleEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement configElement)
 	    {

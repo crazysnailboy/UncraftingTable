@@ -18,11 +18,11 @@ public class ModAchievements {
 	private static AchievementEventHandler achievementEventHandler = new AchievementEventHandler();
 	
     public static Achievement craftTable = new Achievement("createDecraftTable", "createDecraftTable", 1 - 2 - 2, -1 - 3, ModUncrafting.uncraftingTable, null);
-    public static Achievement uncraftAny = new Achievement("uncraftAnything", "uncraftAnything", 2 - 2, -2 - 2, Items.diamond_hoe, craftTable);
-    public static Achievement uncraftDiamondHoe = new Achievement("uncraftDiamondHoe", "uncraftDiamondHoe", 2 - 2, 0 - 2, Items.diamond_hoe, uncraftAny);
-    public static Achievement uncraftJunk = new Achievement("uncraftJunk", "uncraftJunk", 1 - 2, -1 - 2, Items.leather_boots, uncraftAny);
-    public static Achievement uncraftDiamondShovel = new Achievement("uncraftDiamondShovel", "uncraftDiamondShovel", 3 - 2, -1 - 2, Items.diamond_shovel, uncraftAny);
-    public static Achievement porteManteauAchievement = new Achievement("porteManteauAchievement", "porteManteauAchievement", 3 - 2, -4 - 2, Blocks.oak_fence, craftTable);
+    public static Achievement uncraftAny = new Achievement("uncraftAnything", "uncraftAnything", 2 - 2, -2 - 2, Items.DIAMOND_HOE, craftTable);
+    public static Achievement uncraftDiamondHoe = new Achievement("uncraftDiamondHoe", "uncraftDiamondHoe", 2 - 2, 0 - 2, Items.DIAMOND_HOE, uncraftAny);
+    public static Achievement uncraftJunk = new Achievement("uncraftJunk", "uncraftJunk", 1 - 2, -1 - 2, Items.LEATHER_BOOTS, uncraftAny);
+    public static Achievement uncraftDiamondShovel = new Achievement("uncraftDiamondShovel", "uncraftDiamondShovel", 3 - 2, -1 - 2, Items.DIAMOND_SHOVEL, uncraftAny);
+    public static Achievement porteManteauAchievement = new Achievement("porteManteauAchievement", "porteManteauAchievement", 3 - 2, -4 - 2, Blocks.OAK_FENCE, craftTable);
 
     
     
@@ -63,7 +63,7 @@ public class ModAchievements {
 	    	
 	    	if (item == Item.getItemFromBlock(ModUncrafting.uncraftingTable))
 			{
-	    		event.player.triggerAchievement(craftTable);
+	    		event.player.addStat(craftTable);
 			}
         }
     	
@@ -75,27 +75,27 @@ public class ModAchievements {
 		@SubscribeEvent
         public void onItemUncrafted(ItemUncraftedEvent event)
     	{
-            event.player.triggerAchievement(uncraftAny);
+            event.player.addStat(uncraftAny);
 			
 	        Item uncraftedItem = event.getUncrafted().getItem();
 	        
-	        if (uncraftedItem == Items.diamond_hoe)
+	        if (uncraftedItem == Items.DIAMOND_HOE)
 	        {
-	            event.player.triggerAchievement(uncraftDiamondHoe);
+	            event.player.addStat(uncraftDiamondHoe);
 	        }
-	        else if (uncraftedItem == Items.diamond_shovel)
+	        else if (uncraftedItem == Items.DIAMOND_SHOVEL)
 	        {
-	            event.player.triggerAchievement(uncraftDiamondShovel);
+	            event.player.addStat(uncraftDiamondShovel);
 	        }
 	        else if (
-	    		(uncraftedItem == Items.leather_leggings) ||
-	    		(uncraftedItem == Items.leather_helmet) ||
-	    		(uncraftedItem == Items.leather_boots) ||
-	    		(uncraftedItem == Items.leather_chestplate) ||
-	    		(uncraftedItem == Items.glass_bottle)
+	    		(uncraftedItem == Items.LEATHER_LEGGINGS) ||
+	    		(uncraftedItem == Items.LEATHER_HELMET) ||
+	    		(uncraftedItem == Items.LEATHER_BOOTS) ||
+	    		(uncraftedItem == Items.LEATHER_CHESTPLATE) ||
+	    		(uncraftedItem == Items.GLASS_BOTTLE)
 	        )
 	        {
-	            event.player.triggerAchievement(uncraftJunk);
+	            event.player.addStat(uncraftJunk);
 	        }
     	}
     	

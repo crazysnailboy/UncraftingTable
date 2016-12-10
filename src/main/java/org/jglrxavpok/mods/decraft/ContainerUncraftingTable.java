@@ -269,21 +269,22 @@ public class ContainerUncraftingTable extends Container
                     int lvl = player.experienceLevel;
                     uncraftingCost = 0;
                     
-                    if (!EnchantmentHelper.getEnchantments(uncraftIn.getStackInSlot(0)).isEmpty() && calculInput.getStackInSlot(0) != null && calculInput.getStackInSlot(0).getItem() == Items.book)
+                    if (!EnchantmentHelper.getEnchantments(uncraftIn.getStackInSlot(0)).isEmpty() && calculInput.getStackInSlot(0) != null && calculInput.getStackInSlot(0).getItem() == Items.BOOK)
                     {
                         Map enchantsMap = EnchantmentHelper.getEnchantments(uncraftIn.getStackInSlot(0));
-                        Iterator<?> i = enchantsMap.keySet().iterator();
-                        Map<Integer, Integer> tmpMap = new LinkedHashMap<Integer, Integer>();
+//                        Iterator<?> i = enchantsMap.keySet().iterator();
+//                        Map<Enchantment, Integer> tmpMap = new LinkedHashMap<Enchantment, Integer>();
                         ArrayList<ItemStack> stacks = new ArrayList<ItemStack>();
-                        while (i.hasNext())
-                        {
-                            int id = (Integer) i.next();
-                            tmpMap.put(id, (Integer) enchantsMap.get(id));
-                            ItemStack stack = new ItemStack(Items.enchanted_book, 1);
-                            EnchantmentHelper.setEnchantments(tmpMap, stack);
-                            stacks.add(stack);
-                            tmpMap.clear();
-                        }
+//                        while (i.hasNext())
+//                        {
+//                            int id = (Integer) i.next();
+//                            tmpMap.put(id, (Integer) enchantsMap.get(id));
+                            ItemStack stack = new ItemStack(Items.ENCHANTED_BOOK, 1);
+                        EnchantmentHelper.setEnchantments(enchantsMap, stack);
+//                            EnchantmentHelper.setEnchantments(tmpMap, stack);
+                        stacks.add(stack);
+//                            tmpMap.clear();
+//                        }
                         int nbr = calculInput.getStackInSlot(0).stackSize;
                         for (ItemStack s : stacks)
                         {
@@ -471,9 +472,9 @@ public class ContainerUncraftingTable extends Container
     }
 
     @Override
-    public ItemStack slotClick(int slotId, int clickedButton, int mode, EntityPlayer player)
-    {
-        ItemStack itemStack = super.slotClick(slotId, clickedButton, mode, player);
+    public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player)
+    {    
+        ItemStack itemStack = super.slotClick(slotId, dragType, clickTypeIn, player);
         
         if (inventorySlots.size() > slotId && slotId >= 0)
         {
@@ -489,19 +490,6 @@ public class ContainerUncraftingTable extends Container
             	{
                     this.onCraftMatrixChanged(uncraftIn);
             	}
-            	
-//                if (
-//    				((Slot)inventorySlots.get(slotId)).inventory == calculInput 
-//					|| 
-//					((Slot)inventorySlots.get(slotId)).inventory == playerInventory
-//            	)
-//                {
-//                    this.onCraftMatrixChanged(calculInput);
-//                }
-//                else if (((Slot) inventorySlots.get(slotId)).inventory == uncraftIn)
-//                {
-//                    this.onCraftMatrixChanged(uncraftIn);
-//                }
             }
         }
         return itemStack;

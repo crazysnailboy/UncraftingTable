@@ -48,7 +48,7 @@ public class UncraftingManager
 		
 		Boolean canUncraftItem = ArrayUtils.indexOf(
 			ModConfiguration.uncraftableItems, 
-			GameRegistry.findUniqueIdentifierFor(item.getItem()).toString()
+			Item.REGISTRY.getNameForObject(item.getItem()).toString()
 		) < 0;
 			
 		if (!canUncraftItem) return list;
@@ -95,7 +95,7 @@ public class UncraftingManager
 		
 		Boolean canUncraftItem = ArrayUtils.indexOf(
 			ModConfiguration.uncraftableItems, 
-			GameRegistry.findUniqueIdentifierFor(item.getItem()).toString()
+			Item.REGISTRY.getNameForObject(item.getItem()).toString()
 		) < 0;
 		
 		if (!canUncraftItem) return list;

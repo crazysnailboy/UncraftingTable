@@ -2,7 +2,7 @@ package org.jglrxavpok.mods.decraft;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;

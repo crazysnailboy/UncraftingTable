@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraftforge.fml.client.config.GuiConfigEntries.ArrayEntry;
+import net.minecraftforge.fml.client.config.GuiConfigEntries.CycleValueEntry;
 import net.minecraftforge.fml.client.config.GuiConfigEntries.NumberSliderEntry;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -89,6 +90,7 @@ public class ModConfiguration {
 
 		Property propUncraftableItems = config.get(Configuration.CATEGORY_GENERAL, "uncraftableItems", new String[] { }, "List of IDs for uncraftable items");
 		propUncraftableItems.setLanguageKey("uncrafting.options.uncraftableItems");
+//		propUncraftableItems.setConfigEntryClass(UncraftableItemsArrayEntry.class);
 		propUncraftableItems.setConfigEntryClass(ModGuiConfigEntries.UncraftableItemsArrayEntry.class);
 		propUncraftableItems.setRequiresMcRestart(false);
 		
@@ -132,7 +134,7 @@ public class ModConfiguration {
 		@SubscribeEvent //(priority = EventPriority.NORMAL)
 		public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) 
 		{
-			if (ModUncrafting.MODID.equals(event.modID) && !event.isWorldRunning)
+			if (ModUncrafting.MODID.equals(event.getModID()) && !event.isWorldRunning())
 			{
 				syncFromGUI();
 			}

@@ -3,7 +3,7 @@ package org.jglrxavpok.mods.decraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
 
 /**
  * 
@@ -151,7 +151,7 @@ public class InventoryUncraftResult implements IInventory
 	}
 
 	@Override
-	public IChatComponent getDisplayName() {
+	public ITextComponent getDisplayName() {
 		// TODO Auto-generated method stub
 		return null;
 	}

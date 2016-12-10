@@ -36,7 +36,7 @@ public class CommonProxy {
         // create block crafting recipe
         GameRegistry.addShapedRecipe(new ItemStack(ModUncrafting.uncraftingTable), new Object[]
         {
-            "SSS", "SXS", "SSS", 'X', Blocks.crafting_table, 'S', Blocks.cobblestone
+            "SSS", "SXS", "SSS", 'X', Blocks.CRAFTING_TABLE, 'S', Blocks.COBBLESTONE
         });
         
         // initialize the achievements
