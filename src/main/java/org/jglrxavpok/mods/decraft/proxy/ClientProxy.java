@@ -1,7 +1,7 @@
 package org.jglrxavpok.mods.decraft.proxy;
 
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
-import org.jglrxavpok.mods.decraft.stat.ModAchievements;
+import org.jglrxavpok.mods.decraft.stats.ModAchievements;
 
 public class ClientProxy extends CommonProxy {
 

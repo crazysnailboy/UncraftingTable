@@ -11,7 +11,7 @@ import cpw.mods.fml.common.network.IGuiHandler;
 /**
  * @author jglrxavpok
  */
-public class UnGuiHandler implements IGuiHandler
+public class ModGuiHandler implements IGuiHandler
 {
     //private ContainerUncraftingTable lastServerContainer;
 	
@@ -28,10 +28,6 @@ public class UnGuiHandler implements IGuiHandler
             if (id == GUI_TABLE)
             {
             	return new ContainerUncraftingTable(player.inventory, world, true);
-            	
-//                ContainerUncraftingTable c = new ContainerUncraftingTable(player.inventory, world, /*world.getBlockMetadata(x, y, z) == 1*/ true, x, y, z, ModConfiguration.standardLevel, ModConfiguration.maxUsedLevel);
-//                lastServerContainer = c;
-//                return c;
             }
         }
         return null;
@@ -49,10 +45,7 @@ public class UnGuiHandler implements IGuiHandler
         {
             if (id == GUI_TABLE)
             {
-                String name = I18n.format("tile.uncrafting_table.name");
-                return new GuiUncraftingTable(player.inventory, world, name, false);
-                
-//                return new GuiUncraftingTable(player.inventory, world, name, /*world.getBlockMetadata(x, y, z) == 1*/ false, x, y, z, ModConfiguration.standardLevel, ModConfiguration.maxUsedLevel);
+                return new GuiUncraftingTable(player.inventory, world, I18n.format("tile.uncrafting_table.name"), false);
             }
         }
         return null;

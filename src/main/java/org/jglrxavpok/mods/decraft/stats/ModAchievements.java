@@ -1,4 +1,4 @@
-package org.jglrxavpok.mods.decraft.stat;
+package org.jglrxavpok.mods.decraft.stats;
 
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.event.ItemUncraftedEvent;

@@ -55,10 +55,10 @@ public class ModUncrafting
     public static CommonProxy proxy;
     
     // blocks
-    public static Block uncraftingTable;
+    public static BlockUncraftingTable uncraftingTable = new BlockUncraftingTable();
 
     // guis
-    public UnGuiHandler guiHandler = new UnGuiHandler();
+    public ModGuiHandler guiHandler = new ModGuiHandler();
 
    
     public StatBasic uncraftedItemsStat;
@@ -77,26 +77,7 @@ public class ModUncrafting
     public void preInit(FMLPreInitializationEvent event)
     {
     	proxy.preInit();
-    	
         logger = event.getModLog();
-
-
-        // register for events
-//        MinecraftForge.EVENT_BUS.register(this);
-//        FMLCommonHandler.instance().bus().register(this);
-        
-        // initialize the block
-        uncraftingTable = new BlockUncraftingTable();
-        GameRegistry.registerBlock(uncraftingTable, ItemBlock.class, "uncrafting_table");
-        
-        // create block crafting recipe
-        GameRegistry.addShapedRecipe(new ItemStack(uncraftingTable), new Object[]
-        {
-                "SSS", "SXS", "SSS", 'X', Blocks.crafting_table, 'S', Blocks.cobblestone
-        });
-        
-        // create the acheivements
-
 
         // initialize the statistics
         uncraftedItemsStat = (StatBasic)(new StatBasic("stat.uncrafteditems", new ChatComponentTranslation("stat.uncrafteditems", new Object[0])).registerStat());
@@ -107,6 +88,7 @@ public class ModUncrafting
     {
     	proxy.init();
     	
+    	// register the gui handler
         NetworkRegistry.INSTANCE.registerGuiHandler(this, guiHandler);
         
 
@@ -118,14 +100,7 @@ public class ModUncrafting
     public void postInit(FMLPostInitializationEvent event)
     {
     	proxy.postInit();
-//    	for ( String uncraftableItem : ModConfiguration.uncraftableItems )
-//    	{
-//    		System.out.println(uncraftableItem);
-//        	Item item = GameData.getItemRegistry().getObject(uncraftableItem);
-//        	System.out.println(item.getItemStackDisplayName(new ItemStack(item, 1, 0)));
-//    	}
+    	
     }
-    
-    
 
 }

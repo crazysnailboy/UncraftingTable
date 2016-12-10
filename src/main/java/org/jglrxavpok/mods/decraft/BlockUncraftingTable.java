@@ -17,8 +17,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-import org.jglrxavpok.mods.decraft.ModUncrafting;
-import org.jglrxavpok.mods.decraft.stat.ModAchievements;
+import org.jglrxavpok.mods.decraft.stats.ModAchievements;
 public class BlockUncraftingTable extends Block
 {
 
@@ -67,7 +66,7 @@ public class BlockUncraftingTable extends Block
             //			PacketDispatcher.sendPacketToPlayer(packet, (Player)player);
         }
         	
-    	player.openGui(ModUncrafting.instance, UnGuiHandler.GUI_TABLE, worldIn, x, y, z);
+    	player.openGui(ModUncrafting.instance, ModGuiHandler.GUI_TABLE, worldIn, x, y, z);
 		checkForPorteManteau(player, worldIn, x, y, z);
         return true;
     }

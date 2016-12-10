@@ -16,8 +16,7 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
 import org.jglrxavpok.mods.decraft.ModUncrafting;
-import org.jglrxavpok.mods.decraft.client.config.UncraftingMethodCycleEntry;
-import org.jglrxavpok.mods.decraft.client.config.UncraftableItemsArrayEntry;
+import org.jglrxavpok.mods.decraft.client.config.ModGuiConfigEntries;
 
 
 public class ModConfiguration {
@@ -85,12 +84,12 @@ public class ModConfiguration {
 		Property propUncraftMethod = config.get(Configuration.CATEGORY_GENERAL, "uncraftMethod", 0, "ID of the used uncrafting equation.");
 		propUncraftMethod.setLanguageKey("uncrafting.options.method");
 		propUncraftMethod.setValidValues(new String[] { "jglrxavpok", "Xell75 & zenen" });
-		propUncraftMethod.setConfigEntryClass(UncraftingMethodCycleEntry.class);
+		propUncraftMethod.setConfigEntryClass(ModGuiConfigEntries.UncraftingMethodCycleEntry.class);
 		propUncraftMethod.setRequiresMcRestart(false);
 
 		Property propUncraftableItems = config.get(Configuration.CATEGORY_GENERAL, "uncraftableItems", new String[] { }, "List of IDs for uncraftable items");
 		propUncraftableItems.setLanguageKey("uncrafting.options.uncraftableItems");
-		propUncraftableItems.setConfigEntryClass(UncraftableItemsArrayEntry.class);
+		propUncraftableItems.setConfigEntryClass(ModGuiConfigEntries.UncraftableItemsArrayEntry.class);
 		propUncraftableItems.setRequiresMcRestart(false);
 		
 		

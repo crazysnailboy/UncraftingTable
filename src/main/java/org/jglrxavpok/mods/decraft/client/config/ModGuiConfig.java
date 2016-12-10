@@ -44,7 +44,6 @@ public class ModGuiConfig extends GuiConfig
     	
     	List<IConfigElement> list = new ConfigElement(config.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements();
     	
-    	//List<IConfigElement> list = new ConfigElement(ModUncrafting.config.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements();
         return list;
     }
     

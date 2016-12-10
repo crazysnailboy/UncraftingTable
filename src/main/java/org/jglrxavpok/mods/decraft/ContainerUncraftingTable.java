@@ -5,7 +5,7 @@ import java.util.*;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
 import org.jglrxavpok.mods.decraft.event.ItemUncraftedEvent;
 import org.jglrxavpok.mods.decraft.event.UncraftingEvent;
-import org.jglrxavpok.mods.decraft.stat.ModAchievements;
+import org.jglrxavpok.mods.decraft.stats.ModAchievements;
 
 import net.minecraft.client.resources.*;
 import net.minecraft.enchantment.*;
