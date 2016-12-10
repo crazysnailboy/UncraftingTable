@@ -15,7 +15,8 @@ import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
-import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -85,8 +86,8 @@ public class UncraftingManager
 	
 	public static List<ItemStack[]> getUncraftResults(ItemStack item)
 	{
-//		System.out.println("getUncraftResults");
-//		System.out.println(item.getItem().getUnlocalizedName());
+		System.out.println("getUncraftResults");
+		System.out.println(item.getItem().getUnlocalizedName());
 //		System.out.println(item.getDisplayName());
 //		System.out.println("isDamageable: " + item.getItem().isDamageable());
 
@@ -104,26 +105,71 @@ public class UncraftingManager
 		
 		for (int i = 0 ; i < recipeList.size() ; i++)
 		{
-			IRecipe r = (IRecipe)recipeList.get(i);
-			if (r != null)
+			IRecipe recipe = (IRecipe)recipeList.get(i);
+			if (recipe != null)
 			{
-				ItemStack s = r.getRecipeOutput();
-				if (s != null)
+				ItemStack recipeOutput = recipe.getRecipeOutput();
+				if (recipeOutput != null)
 				{
-					if (
-						(s.getItem() == item.getItem() && s.stackSize <= item.stackSize && item.getItem().isDamageable() == false && s.getItemDamage() == item.getItemDamage())
-						||
-						(s.getItem() == item.getItem() && s.stackSize <= item.stackSize && item.getItem().isDamageable() == true)
-					)
+					if (recipeOutput.isItemEqual(item))
 					{
-						RecipeHandler handler = uncraftingHandlers.get(r.getClass());
+						System.out.println("Found item equal to " + recipeOutput.getItem().getUnlocalizedName()  + ": " + item.getItem().getUnlocalizedName());
+						
+						System.out.println("Recipe class: " + recipe.getClass().getName());
+						
+						
+						
+						RecipeHandler handler = uncraftingHandlers.get(recipe.getClass());
 						if (handler != null)
 						{
-							list.add(handler.getCraftingGrid(r));
+							System.out.println("Have recipe handler");
+							
+							
+							ItemStack[] itemStacks = handler.getCraftingGrid(recipe);
+							for (ItemStack itemStack : itemStacks )
+							{
+								if (itemStack != null)
+								{
+									Item item2 = itemStack.getItem();
+									if (item2 != null)
+									{
+										System.out.println(item.getUnlocalizedName());
+									}
+								}
+							}
+						}
+					}
+					
+					
+					if (
+						(recipeOutput.getItem() == item.getItem() && recipeOutput.stackSize <= item.stackSize && item.getItem().isDamageable() == false && recipeOutput.getItemDamage() == item.getItemDamage())
+						||
+						(recipeOutput.getItem() == item.getItem() && recipeOutput.stackSize <= item.stackSize && item.getItem().isDamageable() == true)
+					)
+					{
+						RecipeHandler handler = uncraftingHandlers.get(recipe.getClass());
+						if (handler != null)
+						{
+							ItemStack[] itemStacks = handler.getCraftingGrid(recipe);
+							
+							for (ItemStack itemStack : itemStacks )
+							{
+								if (itemStack != null)
+								{
+									Item item2 = itemStack.getItem();
+									if (item2 != null)
+									{
+										System.out.println(item.getUnlocalizedName());
+									}
+								}
+							}
+							
+							
+							list.add(handler.getCraftingGrid(recipe));
 						}
 						else
 						{
-							ModUncrafting.instance.getLogger().error("[Uncrafting Table] Unknown recipe type: "+r.getClass().getCanonicalName());
+							ModUncrafting.instance.getLogger().error("[Uncrafting Table] Unknown recipe type: "+recipe.getClass().getCanonicalName());
 						}
 					}
 				}

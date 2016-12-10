@@ -51,7 +51,7 @@ public class InventoryUncraftResult implements IInventory
      * like when you close a workbench GUI.
      */
     @Override
-    public ItemStack getStackInSlotOnClosing(int index) {
+    public ItemStack removeStackFromSlot(int index) {
     	
         if (this.stackResult[index] != null)
         {
@@ -73,19 +73,19 @@ public class InventoryUncraftResult implements IInventory
     /**
      * Returns the name of the inventory
      */
-	@Override
-	public String getInventoryName() {
-//      return "UncraftResult";
-		return null;
-	}
+//	@Override
+//	public String getInventoryName() {
+////      return "UncraftResult";
+//		return null;
+//	}
     
     /**
      * Returns if the inventory is named
      */
-	@Override
-	public boolean hasCustomInventoryName() {
-		return false;
-	}
+//	@Override
+//	public boolean hasCustomInventoryName() {
+//		return false;
+//	}
 
 	/**
      * Returns the maximum stack size for a inventory slot.
@@ -112,11 +112,11 @@ public class InventoryUncraftResult implements IInventory
     }
     
 	@Override
-	public void openInventory() {
+	public void openInventory(EntityPlayer player) {
 	}
 
 	@Override
-	public void closeInventory() {
+	public void closeInventory(EntityPlayer player) {
 	}
     
     /**
@@ -126,9 +126,6 @@ public class InventoryUncraftResult implements IInventory
     public boolean isItemValidForSlot(int index, ItemStack stack) {
         return true;
     }
-    
-    
-    
     
 
     public boolean isEmpty()
@@ -141,54 +138,46 @@ public class InventoryUncraftResult implements IInventory
         return true;
     }
 
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-//    public String getName()
-//    {
-//        return "UncraftResult";
-//    }
+	@Override
+	public boolean hasCustomName() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
-//    public boolean hasCustomName()
-//    {
-//        return false;
-//    }
+	@Override
+	public IChatComponent getDisplayName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-//    public IChatComponent getDisplayName()
-//    {
-//        return null;
-//    }
+	@Override
+	public int getField(int id) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
-//    public void openInventory(EntityPlayer playerIn)
-//    {
-//    }
+	@Override
+	public void setField(int id, int value) {
+		// TODO Auto-generated method stub
+		
+	}
 
-//    public void closeInventory(EntityPlayer playerIn)
-//    {
-//    }
+	@Override
+	public int getFieldCount() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
-//    public int getField(int id)
-//    {
-//        // TODO Auto-generated method stub
-//        return 0;
-//    }
-
-//    public void setField(int id, int value)
-//    {
-//        // TODO Auto-generated method stub
-//
-//    }
-
-//    public int getFieldCount()
-//    {
-//        // TODO Auto-generated method stub
-//        return 0;
-//    }
-
-//    public void clearInventory()
-//    {
-//        for (int i = 0;i<stackResult.length;i++)
-//            stackResult[i] = null;
-//    }
-
-
+	@Override
+	public void clear() {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

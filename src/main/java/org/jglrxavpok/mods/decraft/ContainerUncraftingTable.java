@@ -160,10 +160,6 @@ public class ContainerUncraftingTable extends Container
             // if the left hand slot is not empty and the right hand slot is empty
             else if (uncraftIn.getStackInSlot(0) == null)
             {
-            	
-//System.out.println(calculInput.getStackInSlot(0).getItem().getUnlocalizedName());            	
-            	
-            	
             	// get the uncrafting result for the item in the left hand slot
                 List<ItemStack[]> list1 = UncraftingManager.getUncraftResults(calculInput.getStackInSlot(0));
                 ItemStack[] output = null;
@@ -216,13 +212,6 @@ public class ContainerUncraftingTable extends Container
                         {
                         	uncraftingCost = 0;
                         }
-                        
-//                        System.out.println("getItemDamage: " + s1.getItemDamage());
-//                        System.out.println("getMaxDamage: " + s1.getMaxDamage());
-//                        int percent = (int)(((double)s1.getItemDamage() / (double)s1.getMaxDamage()) * 100);
-//                        System.out.println("percent: " + percent);
-//                        uncraftingCost = (ModConfiguration.maxUsedLevel * percent) / 100;
-//                        System.out.println("uncraftingCost: " + uncraftingCost);
                         
                     }
                 }
@@ -400,6 +389,10 @@ public class ContainerUncraftingTable extends Container
                         ItemStack currentStack = uncraftOut.getStackInSlot(i);
                         if (s != null)
                         {
+                        	
+                        	System.out.println("displayName: " + s.getDisplayName());
+                        	System.out.println("metaData: " + s.getMetadata());
+                        	
                             int metadata = s.getItemDamage();
                             if (metadata == 32767)
                             {
@@ -523,20 +516,20 @@ public class ContainerUncraftingTable extends Container
         }
         if (!this.worldObj.isRemote)
         {
-            ItemStack itemstack = this.uncraftIn.getStackInSlotOnClosing(0);
+            ItemStack itemstack = this.uncraftIn.removeStackFromSlot(0);
             if (itemstack != null)
             {
                 player.entityDropItem(itemstack, 0.5f);
             }
 
-            itemstack = this.calculInput.getStackInSlotOnClosing(0);
+            itemstack = this.calculInput.getStackInSlot(0);
             if (itemstack != null)
             {
                 player.entityDropItem(itemstack, 0.5f);
             }
             for (int i = 0; i < uncraftOut.getSizeInventory(); i++ )
             {
-                itemstack = this.uncraftOut.getStackInSlotOnClosing(i);
+                itemstack = this.uncraftOut.removeStackFromSlot(i);
 
                 if (itemstack != null)
                 {
@@ -641,9 +634,9 @@ public class ContainerUncraftingTable extends Container
     }
 
     @Override
-    public boolean func_94530_a(ItemStack p_94530_1_, Slot p_94530_2_) //public boolean canMergeSlot(ItemStack stack, Slot slotIn)
+    public boolean canMergeSlot(ItemStack stack, Slot slotIn) //public boolean canMergeSlot(ItemStack stack, Slot slotIn)
     {
-        return !p_94530_2_.inventory.equals(uncraftOut);
+        return !slotIn.inventory.equals(uncraftOut);
     }
 
     @Override

@@ -1,18 +1,18 @@
 package org.jglrxavpok.mods.decraft;
 
-import java.awt.Color;
+import java.awt.*;
+
+import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.inventory.*;
+import net.minecraft.client.resources.*;
+import net.minecraft.entity.player.*;
+import net.minecraft.util.*;
+import net.minecraft.world.*;
 
 import org.jglrxavpok.mods.decraft.ContainerUncraftingTable.UncraftingStatus;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
-import org.lwjgl.opengl.GL11;
-
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import org.lwjgl.input.*;
+import org.lwjgl.opengl.*;
 
 public class GuiUncraftingTable extends GuiContainer
 {

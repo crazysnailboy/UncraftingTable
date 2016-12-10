@@ -2,18 +2,18 @@ package org.jglrxavpok.mods.decraft;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
 
-import cpw.mods.fml.common.network.IGuiHandler;
+import net.minecraftforge.fml.common.network.IGuiHandler;
 
 /**
  * @author jglrxavpok
  */
 public class ModGuiHandler implements IGuiHandler
 {
-    //private ContainerUncraftingTable lastServerContainer;
 	
 	public static final int GUI_TABLE = 0;
 
@@ -23,7 +23,7 @@ public class ModGuiHandler implements IGuiHandler
 	@Override
     public Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z)
     {
-        if (world.getBlock(x,y,z) == ModUncrafting.instance.uncraftingTable)
+        if (world.getBlockState(new BlockPos(x, y, z)).getBlock() == ModUncrafting.instance.uncraftingTable)
         {
             if (id == GUI_TABLE)
             {
@@ -41,11 +41,12 @@ public class ModGuiHandler implements IGuiHandler
     @Override
     public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z)
     {
-        if (world.getBlock(x,y,z) == ModUncrafting.instance.uncraftingTable)
+        if (world.getBlockState(new BlockPos(x, y, z)).getBlock() == ModUncrafting.instance.uncraftingTable)
         {
             if (id == GUI_TABLE)
             {
-                return new GuiUncraftingTable(player.inventory, world, I18n.format("tile.uncrafting_table.name"), false);
+                String name = I18n.format("tile.uncrafting_table.name");
+                return new GuiUncraftingTable(player.inventory, world, name, false);
             }
         }
         return null;

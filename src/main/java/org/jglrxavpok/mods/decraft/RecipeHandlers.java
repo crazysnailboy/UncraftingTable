@@ -1,6 +1,5 @@
 package org.jglrxavpok.mods.decraft;
 
-import java.util.ArrayList;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -77,9 +76,9 @@ public final class RecipeHandlers
 				{
 					stacks[j] = (ItemStack) shaped.getInput().get(j);
 				}
-				else if (shaped.getInput().get(j) instanceof ArrayList)
+				else if (shaped.getInput().get(j) instanceof java.util.List)
 				{
-					Object o = ((ArrayList<?>)shaped.getInput().get(j)).get(0);
+					Object o = ((java.util.List)shaped.getInput().get(j)).get(0);
 					if (o instanceof ItemStack)
 					{
 						stacks[j] = (ItemStack)o;
@@ -108,9 +107,9 @@ public final class RecipeHandlers
 				{
 					stacks[j] = (ItemStack) shaped.getInput()[j];
 				}
-				else if (shaped.getInput()[j] instanceof ArrayList)
+				else if (shaped.getInput()[j] instanceof java.util.List)
 				{
-					Object o = ((ArrayList<?>)shaped.getInput()[j]).get(0);
+					Object o = ((java.util.List)shaped.getInput()[j]).get(0);
 					if (o instanceof ItemStack)
 					{
 						stacks[j] = (ItemStack)o;

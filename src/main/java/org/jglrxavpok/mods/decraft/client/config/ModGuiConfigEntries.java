@@ -1,12 +1,12 @@
 package org.jglrxavpok.mods.decraft.client.config;
 
-import cpw.mods.fml.client.config.GuiConfig;
-import cpw.mods.fml.client.config.GuiConfigEntries;
-import cpw.mods.fml.client.config.IConfigElement;
+import net.minecraftforge.fml.client.config.GuiConfig;
+import net.minecraftforge.fml.client.config.GuiConfigEntries;
+import net.minecraftforge.fml.client.config.IConfigElement;
 
 public class ModGuiConfigEntries {
-
-	public class UncraftableItemsArrayEntry extends cpw.mods.fml.client.config.GuiConfigEntries.ArrayEntry {
+	
+	public class UncraftableItemsArrayEntry extends GuiConfigEntries.ArrayEntry {
 
 		public UncraftableItemsArrayEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement configElement) {
 			super(owningScreen, owningEntryList, configElement);
@@ -17,17 +17,17 @@ public class ModGuiConfigEntries {
 	    {
 	        this.btnValue.displayString = currentValues.length + " item(s)";
 	    }
-	    
+		
 	}
 	
-	public class UncraftingMethodCycleEntry extends cpw.mods.fml.client.config.GuiConfigEntries.ButtonEntry
+	public class UncraftingMethodCycleEntry extends GuiConfigEntries.ButtonEntry
 	{
 		
 	    protected final int beforeIndex;
 	    protected final int defaultIndex;
 	    protected int       currentIndex;
 
-	    public UncraftingMethodCycleEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement<String> configElement)
+	    public UncraftingMethodCycleEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement configElement)
 	    {
 	        super(owningScreen, owningEntryList, configElement);
 
