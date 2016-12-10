@@ -2,13 +2,15 @@ package org.jglrxavpok.mods.decraft.client.config;
 
 import cpw.mods.fml.client.config.GuiConfig;
 import cpw.mods.fml.client.config.GuiConfigEntries;
+import cpw.mods.fml.client.config.GuiConfigEntries.ArrayEntry;
+import cpw.mods.fml.client.config.GuiConfigEntries.ButtonEntry;
 import cpw.mods.fml.client.config.IConfigElement;
 
 public class ModGuiConfigEntries {
 
-	public class UncraftableItemsArrayEntry extends cpw.mods.fml.client.config.GuiConfigEntries.ArrayEntry {
+	public static class ExcludedItemsArrayEntry extends ArrayEntry {
 
-		public UncraftableItemsArrayEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement configElement) {
+		public ExcludedItemsArrayEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement configElement) {
 			super(owningScreen, owningEntryList, configElement);
 		}
 		
@@ -20,7 +22,7 @@ public class ModGuiConfigEntries {
 	    
 	}
 	
-	public class UncraftingMethodCycleEntry extends cpw.mods.fml.client.config.GuiConfigEntries.ButtonEntry
+	public static class UncraftingMethodCycleEntry extends ButtonEntry
 	{
 		
 	    protected final int beforeIndex;
