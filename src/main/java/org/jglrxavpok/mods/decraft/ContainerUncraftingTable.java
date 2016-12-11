@@ -282,36 +282,49 @@ public class ContainerUncraftingTable extends Container
                     
                     if (!EnchantmentHelper.getEnchantments(uncraftIn.getStackInSlot(0)).isEmpty() && calculInput.getStackInSlot(0) != null && calculInput.getStackInSlot(0).getItem() == Items.book)
                     {
-                        Map enchantsMap = EnchantmentHelper.getEnchantments(uncraftIn.getStackInSlot(0));
-                        Iterator<?> i = enchantsMap.keySet().iterator();
-                        Map<Integer, Integer> tmpMap = new LinkedHashMap<Integer, Integer>();
-                        ArrayList<ItemStack> stacks = new ArrayList<ItemStack>();
-                        while (i.hasNext())
+                        int stackSize = calculInput.getStackInSlot(0).stackSize;
+                        
+                        Map itemEnchantments = EnchantmentHelper.getEnchantments(uncraftIn.getStackInSlot(0));
+                        ArrayList<ItemStack> enchantedBooks = new ArrayList<ItemStack>();
+                        if (stackSize == 1)
                         {
-                            int id = (Integer) i.next();
-                            tmpMap.put(id, (Integer)enchantsMap.get(id));
-                            ItemStack stack = new ItemStack(Items.enchanted_book, 1);
-                            EnchantmentHelper.setEnchantments(tmpMap, stack);
-                            stacks.add(stack);
-                            tmpMap.clear();
+                            ItemStack enchantedBook = new ItemStack(Items.enchanted_book, 1);
+                            EnchantmentHelper.setEnchantments(itemEnchantments, enchantedBook);
+                            enchantedBooks.add(enchantedBook);
                         }
-                        int nbr = calculInput.getStackInSlot(0).stackSize;
-                        for (ItemStack s : stacks)
+                        else
                         {
-                            nbr-- ;
-                            if (!playerInventory.addItemStackToInventory(s))
+                            Iterator<?> enchantmentIds = itemEnchantments.keySet().iterator();
+                            while (enchantmentIds.hasNext())
                             {
-                                EntityItem e = playerInventory.player.entityDropItem(s, 0.5f);
+                                int enchantmentId = (Integer)enchantmentIds.next();
+                                Map<Integer, Integer> bookEnchantments = new LinkedHashMap<Integer, Integer>();
+                                bookEnchantments.put(enchantmentId, (Integer)itemEnchantments.get(enchantmentId));
+                                ItemStack enchantedBook = new ItemStack(Items.enchanted_book, 1);
+                                EnchantmentHelper.setEnchantments(bookEnchantments, enchantedBook);
+                                enchantedBooks.add(enchantedBook);
+                                bookEnchantments.clear();
+                            }
+                        }
+                    	
+                        for (ItemStack enchantedBook : enchantedBooks)
+                        {
+                            stackSize-- ;
+                            if (!playerInventory.addItemStackToInventory(enchantedBook))
+                            {
+                                EntityItem e = playerInventory.player.entityDropItem(enchantedBook, 0.5f);
                                 e.posX = playerInventory.player.posX;
                                 e.posY = playerInventory.player.posY;
                                 e.posZ = playerInventory.player.posZ;
                             }
-                            if (nbr <= 0)
+                            if (stackSize <= 0)
                             {
+                                calculInput.setInventorySlotContents(0, null);
                                 break;
                             }
+                            
+                            calculInput.decrStackSize(0, 1);
                         }
-                        calculInput.setInventorySlotContents(0, null);
                     }
                     
                     ItemStack[] items = event.getOutput();
