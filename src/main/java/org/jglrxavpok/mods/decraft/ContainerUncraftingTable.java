@@ -289,7 +289,7 @@ public class ContainerUncraftingTable extends Container
                         while (i.hasNext())
                         {
                             int id = (Integer) i.next();
-                            tmpMap.put(id, (Integer) enchantsMap.get(id));
+                            tmpMap.put(id, (Integer)enchantsMap.get(id));
                             ItemStack stack = new ItemStack(Items.enchanted_book, 1);
                             EnchantmentHelper.setEnchantments(tmpMap, stack);
                             stacks.add(stack);

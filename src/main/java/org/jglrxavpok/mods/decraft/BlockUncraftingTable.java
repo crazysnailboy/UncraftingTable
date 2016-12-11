@@ -21,29 +21,34 @@ import org.jglrxavpok.mods.decraft.stats.ModAchievements;
 public class BlockUncraftingTable extends Block
 {
 
-    private Object redstonedBlockIcon;
-	private Object topBlock;
-	private Object front;
-	private Object redstonedFront;
-	private Object bottom;
-
-	public BlockUncraftingTable()
-    {
-        super(Material.rock);
-        setBlockName("uncrafting_table");
-//        this.setBlockTextureName("uncrafting_table");
-        this.setCreativeTab(CreativeTabs.tabDecorations);
-    }
-
-    /*@SideOnly(Side.CLIENT)
+//  private Object redstonedBlockIcon;
+//	private Object topBlock;
+//	private Object front;
+//	private Object redstonedFront;
+//	private Object bottom;
+	
+    @SideOnly(Side.CLIENT)
     private IIcon topBlock;
+    
     @SideOnly(Side.CLIENT)
     private IIcon front;
     private IIcon bottom;
     private IIcon redstonedBlockIcon;
     private IIcon redstonedFront;
-    private IIcon blockIcon;*/
+    private IIcon blockIcon;
 	
+
+	public BlockUncraftingTable()
+    {
+        super(Material.rock);
+        setBlockName("uncrafting_table");
+        setHardness(3.5F);
+        setStepSound(soundTypePiston);
+        
+//        this.setBlockTextureName("uncrafting_table");
+        this.setCreativeTab(CreativeTabs.tabDecorations);
+    }
+
 	@Override
 	public boolean onBlockActivated(World worldIn, int x, int y, int z, EntityPlayer player, int side, float subX, float subY, float subZ)
     {
