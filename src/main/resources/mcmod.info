@@ -2,13 +2,13 @@
 	{
 	  "modid": "uncraftingTable",
 	  "name": "Uncrafting Table",
-	  "description": "Trade XP to recycle your old useless items into raw materials!",
-	  "version": "1.4.2-pre6",
+	  "description": "\u00A72Trade XP to recycle your old useless items into raw materials!",
+	  "version": "1.6-pre1",
 	  "mcversion": "${mcversion}",
-	  "url": "http://jglrxavpok.minecraftforgefrance.fr/mods/",
-	  "authorList": ["jglrxavpok","Jordy141","crazysnailboy"],
-	  "credits": "Xell75 and Zenen for their xp-cost equation",
-	  "logoFile": "",
+	  "url": "https://github.com/crazysnailboy/uncraftingTable/",
+	  "authorList": ["\u00A7ejglrxavpok","\u00A7aJordy141","\u00A7acrazysnailboy"],
+	  "credits": "\u00A7aNevik_9191\u00A72 for graphics, ideas and testing, \u00A7aXell75\u00A72 and \u00A7aZenen\u00A72 for their xp-cost equation",
+	  "logoFile": "./logo.png",
 	  "screenshots": [],
 	  "dependencies": []
 	}

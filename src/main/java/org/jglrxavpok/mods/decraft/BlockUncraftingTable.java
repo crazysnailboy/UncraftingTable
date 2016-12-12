@@ -7,6 +7,7 @@ import java.util.Random;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -28,16 +29,12 @@ import org.jglrxavpok.mods.decraft.stats.ModAchievements;
 public class BlockUncraftingTable extends Block
 {
 
-    private Object redstonedBlockIcon;
-	private Object topBlock;
-	private Object front;
-	private Object redstonedFront;
-	private Object bottom;
-
 	public BlockUncraftingTable()
     {
         super(Material.ROCK);
         setUnlocalizedName("uncrafting_table");
+        setHardness(3.5F);
+        setSoundType(SoundType.STONE);
         this.setCreativeTab(CreativeTabs.DECORATIONS);
     }
 

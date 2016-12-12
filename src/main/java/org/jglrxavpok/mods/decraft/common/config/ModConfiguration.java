@@ -28,7 +28,7 @@ public class ModConfiguration {
     public static int uncraftMethod;
     public static int maxUsedLevel;
     public static int standardLevel;
-    public static String[] uncraftableItems;
+    public static String[] excludedItems;
 
     
     public static void preInit(){
@@ -88,18 +88,17 @@ public class ModConfiguration {
 		propUncraftMethod.setConfigEntryClass(ModGuiConfigEntries.UncraftingMethodCycleEntry.class);
 		propUncraftMethod.setRequiresMcRestart(false);
 
-		Property propUncraftableItems = config.get(Configuration.CATEGORY_GENERAL, "uncraftableItems", new String[] { }, "List of IDs for uncraftable items");
-		propUncraftableItems.setLanguageKey("uncrafting.options.uncraftableItems");
-//		propUncraftableItems.setConfigEntryClass(UncraftableItemsArrayEntry.class);
-		propUncraftableItems.setConfigEntryClass(ModGuiConfigEntries.UncraftableItemsArrayEntry.class);
-		propUncraftableItems.setRequiresMcRestart(false);
+		Property propExcludedItems = config.get(Configuration.CATEGORY_GENERAL, "excludedItems", new String[] { }, "List of items which cannot be uncrafted");
+		propExcludedItems.setLanguageKey("uncrafting.options.excludedItems");
+		propExcludedItems.setConfigEntryClass(ModGuiConfigEntries.ExcludedItemsArrayEntry.class);
+		propExcludedItems.setRequiresMcRestart(false);
 		
 		
 		List<String> propOrderGeneral = new ArrayList<String>();
 		propOrderGeneral.add(propStandardLevel.getName());
 		propOrderGeneral.add(propMaxLevel.getName());
 		propOrderGeneral.add(propUncraftMethod.getName());
-		propOrderGeneral.add(propUncraftableItems.getName());
+		propOrderGeneral.add(propExcludedItems.getName());
 		config.setCategoryPropertyOrder(Configuration.CATEGORY_GENERAL, propOrderGeneral);
 		
 		
@@ -109,7 +108,7 @@ public class ModConfiguration {
 			standardLevel = propStandardLevel.getInt();
 			maxUsedLevel = propMaxLevel.getInt();
 			uncraftMethod = propUncraftMethod.getInt();
-			uncraftableItems = propUncraftableItems.getStringList();
+			excludedItems = propExcludedItems.getStringList();
 					
 		}
 		
@@ -117,7 +116,7 @@ public class ModConfiguration {
 		propStandardLevel.set(standardLevel);
 		propMaxLevel.set(maxUsedLevel);
 		propUncraftMethod.set(uncraftMethod);
-		propUncraftableItems.set(uncraftableItems);
+		propExcludedItems.set(excludedItems);
 		
 		
 		if (config.hasChanged()) {

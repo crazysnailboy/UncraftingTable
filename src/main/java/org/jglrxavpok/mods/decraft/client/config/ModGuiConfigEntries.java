@@ -7,9 +7,9 @@ import net.minecraftforge.fml.client.config.IConfigElement;
 
 public class ModGuiConfigEntries {
 	
-	public static class UncraftableItemsArrayEntry extends net.minecraftforge.fml.client.config.GuiConfigEntries.ArrayEntry {
+	public static class ExcludedItemsArrayEntry extends net.minecraftforge.fml.client.config.GuiConfigEntries.ArrayEntry {
 
-		public UncraftableItemsArrayEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement configElement) {
+		public ExcludedItemsArrayEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement configElement) {
 			super(owningScreen, owningEntryList, configElement);
 		}
 		
