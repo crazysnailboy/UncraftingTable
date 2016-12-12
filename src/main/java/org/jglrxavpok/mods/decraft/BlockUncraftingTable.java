@@ -22,16 +22,12 @@ import org.jglrxavpok.mods.decraft.stats.ModAchievements;
 public class BlockUncraftingTable extends Block
 {
 
-    private Object redstonedBlockIcon;
-	private Object topBlock;
-	private Object front;
-	private Object redstonedFront;
-	private Object bottom;
-
 	public BlockUncraftingTable()
     {
         super(Material.rock);
         setUnlocalizedName("uncrafting_table");
+        setHardness(3.5F);
+        setStepSound(soundTypePiston);
         this.setCreativeTab(CreativeTabs.tabDecorations);
     }
 

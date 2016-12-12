@@ -2,13 +2,15 @@ package org.jglrxavpok.mods.decraft.client.config;
 
 import net.minecraftforge.fml.client.config.GuiConfig;
 import net.minecraftforge.fml.client.config.GuiConfigEntries;
+import net.minecraftforge.fml.client.config.GuiConfigEntries.ArrayEntry;
+import net.minecraftforge.fml.client.config.GuiConfigEntries.ButtonEntry;
 import net.minecraftforge.fml.client.config.IConfigElement;
 
 public class ModGuiConfigEntries {
 	
-	public class UncraftableItemsArrayEntry extends GuiConfigEntries.ArrayEntry {
+	public static class ExcludedItemsArrayEntry extends ArrayEntry {
 
-		public UncraftableItemsArrayEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement configElement) {
+		public ExcludedItemsArrayEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement configElement) {
 			super(owningScreen, owningEntryList, configElement);
 		}
 		
@@ -20,7 +22,7 @@ public class ModGuiConfigEntries {
 		
 	}
 	
-	public class UncraftingMethodCycleEntry extends GuiConfigEntries.ButtonEntry
+	public static class UncraftingMethodCycleEntry extends ButtonEntry
 	{
 		
 	    protected final int beforeIndex;
