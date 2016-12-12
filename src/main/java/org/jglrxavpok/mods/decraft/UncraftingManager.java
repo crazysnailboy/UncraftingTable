@@ -68,7 +68,7 @@ public class UncraftingManager
 						RecipeHandler handler = getRecipeHandler(recipe);
 						if (handler != null)
 						{
-							list.add(recipeOutput.stackSize);
+							list.add(recipeOutput.getMaxStackSize());
 						}
 						else 
 						{
@@ -105,9 +105,9 @@ public class UncraftingManager
 				if (recipeOutput != null)
 				{
 					if (
-						(recipeOutput.getItem() == item.getItem() && recipeOutput.stackSize <= item.stackSize && item.getItem().isDamageable() == false && recipeOutput.getItemDamage() == item.getItemDamage())
+						(recipeOutput.getItem() == item.getItem() && recipeOutput.getMaxStackSize() <= item.getMaxStackSize() && item.getItem().isDamageable() == false && recipeOutput.getItemDamage() == item.getItemDamage())
 						||
-						(recipeOutput.getItem() == item.getItem() && recipeOutput.stackSize <= item.stackSize && item.getItem().isDamageable() == true)
+						(recipeOutput.getItem() == item.getItem() && recipeOutput.getMaxStackSize() <= item.getMaxStackSize() && item.getItem().isDamageable() == true)
 					)
 					{
 						RecipeHandler handler = getRecipeHandler(recipe);

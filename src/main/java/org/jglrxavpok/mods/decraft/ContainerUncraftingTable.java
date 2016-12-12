@@ -140,12 +140,12 @@ public class ContainerUncraftingTable extends Container
         	System.out.println("inventory == calculInput: " + (inventory == calculInput));
         	
         	// if the left slot is empty
-            if (calculInput.getStackInSlot(0) == null)
+            if (calculInput.getStackInSlot(0).func_190926_b())
             {
                 uncraftingCost = 0;
                 
                 // if the right hand slot is empty
-                if (uncraftIn.getStackInSlot(0) == null)
+                if (uncraftIn.getStackInSlot(0).func_190926_b())
                 {
                 	// set the status to ready
                     uncraftingStatus = UncraftingStatus.READY;
@@ -158,7 +158,7 @@ public class ContainerUncraftingTable extends Container
             }
             
             // if the left hand slot is not empty and the right hand slot is empty
-            else if (uncraftIn.getStackInSlot(0) == null)
+            else if (uncraftIn.getStackInSlot(0).func_190926_b())
             {
             	// get the uncrafting result for the item in the left hand slot
                 List<ItemStack[]> list1 = UncraftingManager.getUncraftResults(calculInput.getStackInSlot(0));
@@ -175,10 +175,10 @@ public class ContainerUncraftingTable extends Container
                 if (!MinecraftForge.EVENT_BUS.post(event))
                 {
                     int nbrStacks = event.getRequiredNumber();
-                    if (nbrStacks > calculInput.getStackInSlot(0).stackSize)
+                    if (nbrStacks > calculInput.getStackInSlot(0).getMaxStackSize())
                     {
                         uncraftingStatus = UncraftingStatus.ERROR;
-                        uncraftingStatusText = I18n.format("uncrafting.result.needMoreStacks", (nbrStacks - calculInput.getStackInSlot(0).stackSize));
+                        uncraftingStatusText = I18n.format("uncrafting.result.needMoreStacks", (nbrStacks - calculInput.getStackInSlot(0).getMaxStackSize()));
                         uncraftingCost = 0 - ModConfiguration.standardLevel;
                         return;
                     }
@@ -231,7 +231,7 @@ public class ContainerUncraftingTable extends Container
         	System.out.println("inventory == uncraftIn: " + (inventory == uncraftIn));
         	
             uncraftingCost = 0;
-            if (uncraftIn.getStackInSlot(0) == null)
+            if (uncraftIn.getStackInSlot(0).func_190926_b())
             {
                 uncraftingStatus = UncraftingStatus.READY;
                 uncraftingStatusText = I18n.format("uncrafting.result.ready");
@@ -256,14 +256,14 @@ public class ContainerUncraftingTable extends Container
             if (!MinecraftForge.EVENT_BUS.post(event))
             {
                 int nbrStacks = event.getRequiredNumber();
-                if (nbrStacks > uncraftIn.getStackInSlot(0).stackSize)
+                if (nbrStacks > uncraftIn.getStackInSlot(0).getMaxStackSize())
                 {
                     uncraftingStatus = UncraftingStatus.ERROR;
-                    uncraftingStatusText = I18n.format("uncrafting.result.needMoreStacks", (nbrStacks - uncraftIn.getStackInSlot(0).stackSize));
+                    uncraftingStatusText = I18n.format("uncrafting.result.needMoreStacks", (nbrStacks - uncraftIn.getStackInSlot(0).getMaxStackSize()));
                     return;
                 }
                 
-                while (uncraftIn.getStackInSlot(0) != null && nbrStacks <= uncraftIn.getStackInSlot(0).stackSize)
+                while (!uncraftIn.getStackInSlot(0).func_190926_b() && nbrStacks <= uncraftIn.getStackInSlot(0).getMaxStackSize())
                 {
                     EntityPlayer player = playerInventory.player;
                     int lvl = player.experienceLevel;
@@ -271,7 +271,7 @@ public class ContainerUncraftingTable extends Container
                     
                     if (!EnchantmentHelper.getEnchantments(uncraftIn.getStackInSlot(0)).isEmpty() && calculInput.getStackInSlot(0) != null && calculInput.getStackInSlot(0).getItem() == Items.BOOK)
                     {
-                        int stackSize = calculInput.getStackInSlot(0).stackSize;
+                        int stackSize = calculInput.getStackInSlot(0).getMaxStackSize();
                         
                         Map itemEnchantments = EnchantmentHelper.getEnchantments(uncraftIn.getStackInSlot(0));
                         ArrayList<ItemStack> enchantedBooks = new ArrayList<ItemStack>();
@@ -371,7 +371,7 @@ public class ContainerUncraftingTable extends Container
                     {
                         player.experienceLevel -= ModConfiguration.standardLevel + uncraftingCost;
                     }
-                    if (!uncraftOut.isEmpty())
+                    if (!uncraftOut.func_191420_l())
                     {
                         for (int i = 0; i < uncraftOut.getSizeInventory(); i++ )
                         {
@@ -400,7 +400,7 @@ public class ContainerUncraftingTable extends Container
                     {
                         ItemStack s = items[i];
                         ItemStack currentStack = uncraftOut.getStackInSlot(i);
-                        if (s != null)
+                        if (s != ItemStack.field_190927_a)
                         {
                         	
                         	System.out.println("displayName: " + s.getDisplayName());
@@ -411,14 +411,14 @@ public class ContainerUncraftingTable extends Container
                             {
                                 metadata = 0;
                             }
-                            ItemStack newStack = null;
-                            if (currentStack != null && 1 + currentStack.stackSize <= s.getMaxStackSize())
+                            ItemStack newStack = ItemStack.field_190927_a;
+                            if (!currentStack.func_190926_b() && 1 + currentStack.getMaxStackSize() <= s.getMaxStackSize())
                             {
-                                newStack = new ItemStack(s.getItem(), 1 + currentStack.stackSize, metadata);
+                                newStack = new ItemStack(s.getItem(), 1 + currentStack.getMaxStackSize(), metadata);
                             }
                             else
                             {
-                                if (currentStack != null && !playerInventory.addItemStackToInventory(currentStack))
+                                if (!currentStack.func_190926_b() && !playerInventory.addItemStackToInventory(currentStack))
                                 {
                                 	if (!worldObj.isRemote)
                                 	{
@@ -434,7 +434,7 @@ public class ContainerUncraftingTable extends Container
                         }
                         else
                         {
-                            uncraftOut.setInventorySlotContents(i, null);
+                            uncraftOut.setInventorySlotContents(i, ItemStack.field_190927_a);
                         }
                     }
                     ItemStack stack = uncraftIn.getStackInSlot(0);
@@ -457,12 +457,16 @@ public class ContainerUncraftingTable extends Container
                         event.getPlayer().addStat(ModUncrafting.instance.uncraftedItemsStat, event.getRequiredNumber());
                         //event.getPlayer().triggerAchievement(ModUncrafting.instance.uncraftAny);
                     }
-                    int i = uncraftIn.getStackInSlot(0).stackSize - event.getRequiredNumber();
+                    int i = uncraftIn.getStackInSlot(0).getMaxStackSize() - event.getRequiredNumber();
                     ItemStack newStack = null;
                     if (i > 0)
                     {
                         newStack = new ItemStack(uncraftIn.getStackInSlot(0).getItem(), i, uncraftIn.getStackInSlot(0).getItemDamage());
                         //newStack = new ItemStack(uncraftIn.getStackInSlot(0).getItem(), i, 0);
+                    }
+                    else
+                    {
+                    	newStack = ItemStack.field_190927_a;
                     }
                     uncraftIn.setInventorySlotContents(0, newStack);
                     this.onCraftMatrixChanged(calculInput);
@@ -551,18 +555,21 @@ public class ContainerUncraftingTable extends Container
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int index)
     {
-        ItemStack itemstack = null;
-        Slot slot = (Slot) this.inventorySlots.get(index);
+        ItemStack itemstack = ItemStack.field_190927_a;
+        Slot slot = (Slot)this.inventorySlots.get(index);
         if (slot != null && slot.getHasStack())
             if (slot.inventory.equals(calculInput))
             {
                 ItemStack itemstack1 = slot.getStack();
-                slot.onPickupFromSlot(player, itemstack1);
+
+//              slot.onPickupFromSlot(player, itemstack1);
+                slot.onSlotChanged(); // in 1.9 / 1.10, onPickupFromSlot just called onSlotChanged with no parameters
+                
                 if (!playerInventory.addItemStackToInventory(itemstack1))
                 {
-                    return null;
+                    return ItemStack.field_190927_a;
                 }
-                slot.putStack(null);
+                slot.putStack(ItemStack.field_190927_a);
             }
             else if (slot.inventory.equals(uncraftIn))
             {
@@ -570,9 +577,9 @@ public class ContainerUncraftingTable extends Container
                 {
                     if (!playerInventory.addItemStackToInventory(slot.getStack()))
                     {
-                        return null;
+                        return ItemStack.field_190927_a;
                     }
-                    slot.putStack(null);
+                    slot.putStack(ItemStack.field_190927_a);
                     slot.onSlotChanged();
                 }
             }
@@ -594,18 +601,19 @@ public class ContainerUncraftingTable extends Container
                 }
                 if (calcInput != null)
                 {
-                    if (calcInput.getStack() == null)
+                    if (!calcInput.getStack().func_190926_b())
                     {
                         calcInput.putStack(slot.getStack());
                         calcInput.onSlotChanged();
-                        slot.putStack(null);
+                        slot.putStack(ItemStack.field_190927_a);
                     }
                     else
                     {
-                        if (slot.getStack() != null)
+                        if (slot.getStack().func_190926_b())
                         {
                             ItemStack i = slot.getStack();
-                            slot.onPickupFromSlot(player, slot.getStack());
+//                            slot.onPickupFromSlot(player, slot.getStack());
+                            slot.onSlotChanged(); // in 1.9 / 1.10, onPickupFromSlot just called onSlotChanged with no parameters
                             slot.putStack(calcInput.getStack().copy());
                             calcInput.putStack(i.copy());
                             this.onCraftMatrixChanged(calculInput);
@@ -613,7 +621,7 @@ public class ContainerUncraftingTable extends Container
                         }
                         else
                         {
-                            return null;
+                            return ItemStack.field_190927_a;
                         }
                     }
                 }
@@ -624,13 +632,13 @@ public class ContainerUncraftingTable extends Container
                 {
                     if (!playerInventory.addItemStackToInventory(slot.getStack()))
                     {
-                        return null;
+                        return ItemStack.field_190927_a;
                     }
-                    slot.putStack(null);
+                    slot.putStack(ItemStack.field_190927_a);
                     slot.onSlotChanged();
                 }
             }
-        return null;
+        return ItemStack.field_190927_a;
     }
 
     @Override

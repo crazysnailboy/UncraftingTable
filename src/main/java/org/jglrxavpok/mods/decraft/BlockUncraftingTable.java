@@ -32,6 +32,7 @@ public class BlockUncraftingTable extends Block
 	public BlockUncraftingTable()
     {
         super(Material.ROCK);
+        setRegistryName("uncrafting_table");
         setUnlocalizedName("uncrafting_table");
         setHardness(3.5F);
         setSoundType(SoundType.STONE);
@@ -40,7 +41,7 @@ public class BlockUncraftingTable extends Block
 
 	
 	@Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ)
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     {
 //      if (!worldIn.isRemote)
 //      {

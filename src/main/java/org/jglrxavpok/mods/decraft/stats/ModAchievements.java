@@ -12,7 +12,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.stats.Achievement;
 import net.minecraftforge.common.AchievementPage;
-import net.minecraftforge.common.MinecraftForge;
 
 public class ModAchievements {
 
@@ -49,7 +48,6 @@ public class ModAchievements {
     
 	public static void clientInit() {
         FMLCommonHandler.instance().bus().register(achievementEventHandler);
-        MinecraftForge.EVENT_BUS.register(achievementEventHandler);
 	}
     
     
