@@ -48,7 +48,7 @@ public class ModAchievements {
     }
     
 	public static void clientInit() {
-        FMLCommonHandler.instance().bus().register(achievementEventHandler);
+//        FMLCommonHandler.instance().bus().register(achievementEventHandler);
         MinecraftForge.EVENT_BUS.register(achievementEventHandler);
 	}
     

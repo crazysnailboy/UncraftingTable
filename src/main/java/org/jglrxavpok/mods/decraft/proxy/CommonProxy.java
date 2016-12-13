@@ -23,7 +23,9 @@ public class CommonProxy {
 	    ModConfiguration.preInit();
 	    
         // register the block
-        GameRegistry.registerBlock(ModUncrafting.uncraftingTable, ItemBlock.class, "uncrafting_table");
+	    GameRegistry.register(ModUncrafting.uncraftingTable);
+	    GameRegistry.register(new ItemBlock(ModUncrafting.uncraftingTable).setRegistryName(ModUncrafting.uncraftingTable.getRegistryName()));
+//        GameRegistry.registerBlock(ModUncrafting.uncraftingTable, ItemBlock.class, "uncrafting_table");
 	    
 	}
 	
