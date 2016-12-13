@@ -181,10 +181,10 @@ public class ContainerUncraftingTable extends Container
                 if (!MinecraftForge.EVENT_BUS.post(event))
                 {
                     int nbrStacks = event.getRequiredNumber();
-                    if (nbrStacks > calculInput.getStackInSlot(0).getMaxStackSize())
+                    if (nbrStacks > calculInput.getStackInSlot(0).func_190916_E())
                     {
                         uncraftingStatus = UncraftingStatus.ERROR;
-                        uncraftingStatusText = I18n.format("uncrafting.result.needMoreStacks", (nbrStacks - calculInput.getStackInSlot(0).getMaxStackSize()));
+                        uncraftingStatusText = I18n.format("uncrafting.result.needMoreStacks", (nbrStacks - calculInput.getStackInSlot(0).func_190916_E()));
                         uncraftingCost = 0 - ModConfiguration.standardLevel;
                         return;
                     }
@@ -262,24 +262,31 @@ public class ContainerUncraftingTable extends Container
             if (!MinecraftForge.EVENT_BUS.post(event))
             {
                 int nbrStacks = event.getRequiredNumber();
-                if (nbrStacks > uncraftIn.getStackInSlot(0).getMaxStackSize())
+                if (nbrStacks > uncraftIn.getStackInSlot(0).func_190916_E())
                 {
                     uncraftingStatus = UncraftingStatus.ERROR;
-                    uncraftingStatusText = I18n.format("uncrafting.result.needMoreStacks", (nbrStacks - uncraftIn.getStackInSlot(0).getMaxStackSize()));
+                    uncraftingStatusText = I18n.format("uncrafting.result.needMoreStacks", (nbrStacks - uncraftIn.getStackInSlot(0).func_190916_E()));
                     return;
                 }
                 
-                while (!uncraftIn.getStackInSlot(0).func_190926_b() && nbrStacks <= uncraftIn.getStackInSlot(0).getMaxStackSize())
+                while (!uncraftIn.getStackInSlot(0).func_190926_b() && nbrStacks <= uncraftIn.getStackInSlot(0).func_190916_E())
                 {
                     EntityPlayer player = playerInventory.player;
                     int lvl = player.experienceLevel;
                     uncraftingCost = 0;
                     
-                    if (!EnchantmentHelper.getEnchantments(uncraftIn.getStackInSlot(0)).isEmpty() && calculInput.getStackInSlot(0) != null && calculInput.getStackInSlot(0).getItem() == Items.BOOK)
+                    if (!EnchantmentHelper.getEnchantments(uncraftIn.getStackInSlot(0)).isEmpty() && calculInput.getStackInSlot(0) != ItemStack.field_190927_a && calculInput.getStackInSlot(0).getItem() == Items.BOOK)
                     {
-                        int stackSize = calculInput.getStackInSlot(0).getMaxStackSize();
+                        int stackSize = calculInput.getStackInSlot(0).func_190916_E();
                         
                         Map itemEnchantments = EnchantmentHelper.getEnchantments(uncraftIn.getStackInSlot(0));
+  
+                        
+                        
+                        
+                        
+//                        NonNullList<ItemStack> enchantedBooks = NonNullList.<ItemStack>func_191197_a(width * height, ItemStack.field_190927_a);
+                        
                         ArrayList<ItemStack> enchantedBooks = new ArrayList<ItemStack>();
                         if (stackSize == 1)
                         {
@@ -420,9 +427,9 @@ public class ContainerUncraftingTable extends Container
                                 metadata = 0;
                             }
                             ItemStack newStack = ItemStack.field_190927_a;
-                            if (!currentStack.func_190926_b() && 1 + currentStack.getMaxStackSize() <= s.getMaxStackSize())
+                            if (!currentStack.func_190926_b() && 1 + currentStack.func_190916_E() <= s.func_190916_E())
                             {
-                                newStack = new ItemStack(s.getItem(), 1 + currentStack.getMaxStackSize(), metadata);
+                                newStack = new ItemStack(s.getItem(), 1 + currentStack.func_190916_E(), metadata);
                             }
                             else
                             {
@@ -464,7 +471,7 @@ public class ContainerUncraftingTable extends Container
                         event.getPlayer().addStat(ModUncrafting.instance.uncraftedItemsStat, event.getRequiredNumber());
                         //event.getPlayer().triggerAchievement(ModUncrafting.instance.uncraftAny);
                     }
-                    int i = uncraftIn.getStackInSlot(0).getMaxStackSize() - event.getRequiredNumber();
+                    int i = uncraftIn.getStackInSlot(0).func_190916_E() - event.getRequiredNumber();
                     ItemStack newStack = ItemStack.field_190927_a;
                     if (i > 0)
                     {
