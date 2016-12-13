@@ -1,6 +1,7 @@
 package org.jglrxavpok.mods.decraft.stats;
 
 import org.jglrxavpok.mods.decraft.ModUncrafting;
+import org.jglrxavpok.mods.decraft.common.config.ModConfiguration.ConfigEventHandler;
 import org.jglrxavpok.mods.decraft.event.ItemUncraftedEvent;
 import org.jglrxavpok.mods.decraft.event.UncraftingEvent;
 
@@ -12,6 +13,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.stats.Achievement;
 import net.minecraftforge.common.AchievementPage;
+import net.minecraftforge.common.MinecraftForge;
 
 public class ModAchievements {
 
@@ -47,7 +49,8 @@ public class ModAchievements {
     }
     
 	public static void clientInit() {
-        FMLCommonHandler.instance().bus().register(achievementEventHandler);
+		MinecraftForge.EVENT_BUS.register(achievementEventHandler);
+//        FMLCommonHandler.instance().bus().register(achievementEventHandler);
 	}
     
     

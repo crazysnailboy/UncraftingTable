@@ -27,7 +27,15 @@ public class ModGuiFactory implements IModGuiFactory
         return null;
     }
  
-    @Override
+    /**
+     * Responsible for painting the mod specific section of runtime options GUI for a particular category
+     *
+     * @author cpw
+     *
+     * TODO remove in 1.11 - this was never fully implemented and will be removed
+     */
+    @SuppressWarnings("deprecation")
+	@Override
     public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element) 
     {
         return null;
