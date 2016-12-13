@@ -16,7 +16,6 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.common.registry.GameRegistry.UniqueIdentifier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -37,7 +36,8 @@ public class UncraftingManager
 
 	private static Boolean canUncraftItem(ItemStack itemStack)
 	{
-		String uniqueIdentifier = GameRegistry.findUniqueIdentifierFor(itemStack.getItem()).toString();
+		String uniqueIdentifier = Item.itemRegistry.getNameForObject(itemStack.getItem()).toString();
+//		String uniqueIdentifier = GameRegistry.findUniqueIdentifierFor(itemStack.getItem()).toString();
 		if (itemStack.getItemDamage() > 0) uniqueIdentifier += "," + Integer.toString(itemStack.getItemDamage()); 
 		
 		return ArrayUtils.indexOf(ModConfiguration.excludedItems, uniqueIdentifier) < 0;
