@@ -43,8 +43,8 @@ public class ModConfiguration {
     
 	public static void clientPreInit() {
 		
-		//MinecraftForge.EVENT_BUS.register(new ConfigEventHandler());
-		FMLCommonHandler.instance().bus().register(configEventHandler);
+		MinecraftForge.EVENT_BUS.register(new ConfigEventHandler());
+//		FMLCommonHandler.instance().bus().register(configEventHandler);
 		
 	}
 	
