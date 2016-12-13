@@ -2,6 +2,7 @@ package org.jglrxavpok.mods.decraft.event;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 /**
@@ -25,7 +26,7 @@ public class UncraftingEvent extends Event
 	/**
 	 * The output of the recipe
 	 */
-	private ItemStack[]	out;
+	private NonNullList<ItemStack>	out;
 	
 	/**
 	 * Number of required items in order to uncraft the item.
@@ -44,7 +45,7 @@ public class UncraftingEvent extends Event
 	 * @param required : The number of items required in order to do this uncrafting.
 	 * @param player : The player uncrafting the item.
 	 */
-	public UncraftingEvent(ItemStack uncrafted, ItemStack[] output, int required, EntityPlayer player)
+	public UncraftingEvent(ItemStack uncrafted, NonNullList<ItemStack> output, int required, EntityPlayer player)
 	{
 		item = uncrafted;
 		when = System.currentTimeMillis();
@@ -56,7 +57,7 @@ public class UncraftingEvent extends Event
 	/**
 	 * Returns the output of the recipe. May be null if the item can't be uncrafted
 	 */
-	public ItemStack[] getOutput()
+	public NonNullList<ItemStack> getOutput()
 	{
 		return out;
 	}
@@ -73,7 +74,7 @@ public class UncraftingEvent extends Event
 	 * Change the output of the uncrafting.
 	 * @param out : May be null in order to cancel the event. <code>setCanceled(true);</code> is better in this case.
 	 */
-	public void setOutput(ItemStack[] out)
+	public void setOutput(NonNullList<ItemStack> out)
 	{
 		this.out = out;
 	}

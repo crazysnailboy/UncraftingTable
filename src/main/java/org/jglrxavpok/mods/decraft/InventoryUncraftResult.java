@@ -71,8 +71,7 @@ public class InventoryUncraftResult implements IInventory
         this.stackList.set(index, stack);
     }
     
-	@Override
-    public boolean func_191420_l() // public boolan isEmpty()
+    public boolean isEmpty()
     {
         for (ItemStack itemstack : this.stackList)
         {
@@ -83,6 +82,12 @@ public class InventoryUncraftResult implements IInventory
         }
         return true;
     }
+	
+	@Override
+    public boolean func_191420_l()
+	{
+		return this.isEmpty();
+	}
     
     
 	/**

@@ -23,6 +23,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.RecipesMapExtending;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
@@ -83,14 +84,15 @@ public class UncraftingManager
 		return list;
 	}
 	
-	public static List<ItemStack[]> getUncraftResults(ItemStack item)
+	public static List<NonNullList<ItemStack>> getUncraftResults(ItemStack item)
 	{
 //		System.out.println("getUncraftResults");
 //		System.out.println(item.getItem().getUnlocalizedName());
 //		System.out.println(item.getDisplayName());
 //		System.out.println("isDamageable: " + item.getItem().isDamageable());
 
-		List<ItemStack[]> list = new ArrayList<ItemStack[]>();
+		
+		List<NonNullList<ItemStack>> list = new ArrayList<NonNullList<ItemStack>>();
 		
 		if (!canUncraftItem(item)) return list;
 		
