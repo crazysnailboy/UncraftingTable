@@ -3,7 +3,7 @@
 	  "modid": "uncraftingtable",
 	  "name": "Uncrafting Table",
 	  "description": "\u00A72Trade XP to recycle your old useless items into raw materials!",
-	  "version": "1.7-pre2",
+	  "version": "1.7-pre3",
 	  "mcversion": "${mcversion}",
 	  "url": "https://github.com/crazysnailboy/uncraftingTable/",
 	  "authorList": ["\u00A7ejglrxavpok","\u00A7aJordy141","\u00A7acrazysnailboy"],

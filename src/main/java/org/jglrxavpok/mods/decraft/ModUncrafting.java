@@ -40,14 +40,14 @@ public class ModUncrafting
 	// constants
     public static final String MODID = "uncraftingtable";
     public static final String MODNAME = "jglrxavpok's UncraftingTable";
-    public static final String VERSION = "1.7-pre2";
+    public static final String VERSION = "1.7-pre3";
     public static final String GUIFACTORY = "org.jglrxavpok.mods.decraft.client.config.ModGuiFactory";
     
 	private static final String CLIENT_PROXY_CLASS = "org.jglrxavpok.mods.decraft.proxy.ClientProxy";
 	private static final String SERVER_PROXY_CLASS = "org.jglrxavpok.mods.decraft.proxy.CommonProxy";
 
 	// mod instance
-    @Instance("uncraftingTable")
+    @Instance(ModUncrafting.MODID)
     public static ModUncrafting instance;
     
     // proxy

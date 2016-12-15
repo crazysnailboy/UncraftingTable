@@ -26,7 +26,6 @@ public class GuiUncraftingTable extends GuiContainer
     public GuiUncraftingTable(InventoryPlayer playerInventory, World world, String blockName, boolean inverted)
     {
     	super(new ContainerUncraftingTable(playerInventory, world, inverted));
-        //super(new ContainerUncraftingTable(playerInventory, world, inverted, x, y, z));
     	
         container = (ContainerUncraftingTable)inventorySlots;
         this.blockName = blockName;
@@ -135,9 +134,9 @@ public class GuiUncraftingTable extends GuiContainer
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
         if (this.inverted) {
-            this.mc.renderEngine.bindTexture(new ResourceLocation("uncraftingTable:textures/gui/container/uncrafting_gui_redstoned.png"));
+            this.mc.renderEngine.bindTexture(new ResourceLocation(ModUncrafting.MODID + ":textures/gui/container/uncrafting_gui_redstoned.png"));
         } else {
-            this.mc.renderEngine.bindTexture(new ResourceLocation("uncraftingTable:textures/gui/container/uncrafting_gui.png"));
+            this.mc.renderEngine.bindTexture(new ResourceLocation(ModUncrafting.MODID + ":textures/gui/container/uncrafting_gui.png"));
         }
         int k = this.width / 2 - this.xSize / 2;
         int l = this.height / 2 - this.ySize / 2;
