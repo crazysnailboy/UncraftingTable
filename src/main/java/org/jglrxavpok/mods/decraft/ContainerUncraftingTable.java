@@ -427,7 +427,7 @@ public class ContainerUncraftingTable extends Container
                                 metadata = 0;
                             }
                             ItemStack newStack = ItemStack.field_190927_a;
-                            if (!currentStack.func_190926_b() && 1 + currentStack.func_190916_E() <= s.func_190916_E())
+                            if (!currentStack.func_190926_b() && 1 + currentStack.func_190916_E() <= s.getMaxStackSize())
                             {
                                 newStack = new ItemStack(s.getItem(), 1 + currentStack.func_190916_E(), metadata);
                             }
