@@ -73,34 +73,38 @@ public class ModConfiguration {
 		
 		Property propStandardLevel = config.get(Configuration.CATEGORY_GENERAL, "standardLevel", 5, "Minimum required level to uncraft an item", 0, 50);
 		propStandardLevel.setLanguageKey("uncrafting.options.standardLevel");
-		propStandardLevel.setConfigEntryClass(NumberSliderEntry.class);
 		propStandardLevel.setRequiresMcRestart(false);
 		
 		Property propMaxLevel = config.get(Configuration.CATEGORY_GENERAL, "maxUsedLevel", 30, "Maximum required level to uncraft an item", 0, 50);
 		propMaxLevel.setLanguageKey("uncrafting.options.maxUsedLevel");
-		propMaxLevel.setConfigEntryClass(NumberSliderEntry.class);
 		propMaxLevel.setRequiresMcRestart(false);
 
 		Property propUncraftMethod = config.get(Configuration.CATEGORY_GENERAL, "uncraftMethod", 0, "ID of the used uncrafting equation.");
 		propUncraftMethod.setLanguageKey("uncrafting.options.method");
 		propUncraftMethod.setValidValues(new String[] { "jglrxavpok", "Xell75 & zenen" });
-		propUncraftMethod.setConfigEntryClass(ModGuiConfigEntries.UncraftingMethodCycleEntry.class);
 		propUncraftMethod.setRequiresMcRestart(false);
 
 		Property propExcludedItems = config.get(Configuration.CATEGORY_GENERAL, "excludedItems", new String[] { }, "List of items which cannot be uncrafted");
 		propExcludedItems.setLanguageKey("uncrafting.options.excludedItems");
-		propExcludedItems.setConfigEntryClass(ModGuiConfigEntries.ExcludedItemsArrayEntry.class);
 		propExcludedItems.setRequiresMcRestart(false);
 		
-		
-		List<String> propOrderGeneral = new ArrayList<String>();
-		propOrderGeneral.add(propStandardLevel.getName());
-		propOrderGeneral.add(propMaxLevel.getName());
-		propOrderGeneral.add(propUncraftMethod.getName());
-		propOrderGeneral.add(propExcludedItems.getName());
-		config.setCategoryPropertyOrder(Configuration.CATEGORY_GENERAL, propOrderGeneral);
-		
-		
+		try
+		{
+			propStandardLevel.setConfigEntryClass(NumberSliderEntry.class);
+			propMaxLevel.setConfigEntryClass(NumberSliderEntry.class);
+			propUncraftMethod.setConfigEntryClass(ModGuiConfigEntries.UncraftingMethodCycleEntry.class);
+			propExcludedItems.setConfigEntryClass(ModGuiConfigEntries.ExcludedItemsArrayEntry.class);
+			
+			List<String> propOrderGeneral = new ArrayList<String>();
+			propOrderGeneral.add(propStandardLevel.getName());
+			propOrderGeneral.add(propMaxLevel.getName());
+			propOrderGeneral.add(propUncraftMethod.getName());
+			propOrderGeneral.add(propExcludedItems.getName());
+			config.setCategoryPropertyOrder(Configuration.CATEGORY_GENERAL, propOrderGeneral);
+			
+		}
+		catch(NoClassDefFoundError e) { }
+
 		
 		if (readFieldsFromConfig) {
 			
