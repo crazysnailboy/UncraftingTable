@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cpw.mods.fml.client.config.GuiConfigEntries.ArrayEntry;
+import cpw.mods.fml.client.config.GuiConfigEntries.BooleanEntry;
 import cpw.mods.fml.client.config.GuiConfigEntries.NumberSliderEntry;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -24,10 +25,17 @@ public class ModConfiguration {
 	private static Configuration config = null;
 	private static ConfigEventHandler configEventHandler = new ConfigEventHandler();
 
+	public static final String CATEGORY_UPDATES = "updates";
+	
     public static int uncraftMethod;
     public static int maxUsedLevel;
     public static int standardLevel;
     public static String[] excludedItems;
+    
+    public static boolean checkForUpdates;
+    public static boolean promptForLatest;
+    public static boolean promptForRecommended;
+    
 
     
     public static void preInit(){
@@ -101,6 +109,29 @@ public class ModConfiguration {
 		config.setCategoryPropertyOrder(Configuration.CATEGORY_GENERAL, propOrderGeneral);
 		
 		
+		Property propCheckForUpdates = config.get(ModConfiguration.CATEGORY_UPDATES, "checkForUpdates", true, "Should the mod check for updates on startup");
+		propCheckForUpdates.setLanguageKey("uncrafting.options.updates.checkForUpdates");
+		propCheckForUpdates.setConfigEntryClass(ModGuiConfigEntries.BooleanEntry.class);
+		propCheckForUpdates.setRequiresMcRestart(true);
+		
+		Property propPromptForLatest = config.get(ModConfiguration.CATEGORY_UPDATES, "promptForLatest", false, "Alert the user when there is a new version");
+		propPromptForLatest.setLanguageKey("uncrafting.options.updates.promptForLatest");
+		propPromptForLatest.setConfigEntryClass(ModGuiConfigEntries.BooleanEntry.class);
+		propPromptForLatest.setRequiresMcRestart(true);
+		
+		Property propPromptForRecommended = config.get(ModConfiguration.CATEGORY_UPDATES, "promptForRecommended", true, "Alert the user when there is a new recommended version");
+		propPromptForRecommended.setLanguageKey("uncrafting.options.updates.promptForRecommended");
+		propPromptForRecommended.setConfigEntryClass(ModGuiConfigEntries.BooleanEntry.class);
+		propPromptForRecommended.setRequiresMcRestart(true);
+
+		
+		List<String> propOrderUpdates = new ArrayList<String>();
+		propOrderUpdates.add(propCheckForUpdates.getName());
+		propOrderUpdates.add(propPromptForLatest.getName());
+		propOrderUpdates.add(propPromptForRecommended.getName());
+		config.setCategoryPropertyOrder(ModConfiguration.CATEGORY_UPDATES, propOrderUpdates);
+		
+		
 		
 		if (readFieldsFromConfig) {
 			
@@ -108,6 +139,10 @@ public class ModConfiguration {
 			maxUsedLevel = propMaxLevel.getInt();
 			uncraftMethod = propUncraftMethod.getInt();
 			excludedItems = propExcludedItems.getStringList();
+			
+			checkForUpdates = propCheckForUpdates.getBoolean();
+			promptForLatest = propPromptForLatest.getBoolean();
+			promptForRecommended = propPromptForRecommended.getBoolean();
 					
 		}
 		
@@ -116,6 +151,10 @@ public class ModConfiguration {
 		propMaxLevel.set(maxUsedLevel);
 		propUncraftMethod.set(uncraftMethod);
 		propExcludedItems.set(excludedItems);
+		
+		propCheckForUpdates.set(checkForUpdates);
+		propPromptForLatest.set(promptForLatest);
+		propPromptForRecommended.set(promptForRecommended);
 		
 		
 		if (config.hasChanged()) {

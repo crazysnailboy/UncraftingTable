@@ -1,5 +1,7 @@
 #en_US
+
 tile.uncrafting_table.name=Uncrafting Table
+
 achievement.createDecraftTable=Like the ol'days
 achievement.createDecraftTable.desc=Create an Uncrafting Table !
 achievement.uncraftAnything=Uncraft an item!
@@ -12,11 +14,15 @@ achievement.uncraftDiamondShovel=Time for a cheaper approach.
 achievement.uncraftDiamondShovel.desc=Iron shovels are better.
 achievement.porteManteauAchievement=All in one!
 achievement.porteManteauAchievement.desc=§k <3 All Players
+
 uncrafting.result.ready=Ready
 uncrafting.result.impossible=Impossible with this
 uncrafting.result.needMoreStacks=Need %1$s more item(s).
 uncrafting.result.needMoreXP=You need more xp!
+
 stat.uncrafteditems=Uncrafted items
+
+uncrafting.compute=Compute
 uncrafting.options.method=Uncrafting Method
 uncrafting.options.method.tooltip=ID of the used uncrafting equation
 uncrafting.options.standardLevel=Minimum Level
@@ -25,4 +31,11 @@ uncrafting.options.maxUsedLevel=Maximum Level
 uncrafting.options.maxUsedLevel.tooltip=Maximum required level to uncraft an item
 uncrafting.options.excludedItems=Excluded Items
 uncrafting.options.excludedItems.tooltip=Item IDs for items which cannot be uncrafted
-uncrafting.compute=Compute
+uncrafting.options.updates=Update Notifications
+uncrafting.options.updates.tooltip=Click to configure options for update notifications
+uncrafting.options.updates.checkForUpdates=Check for Updates
+uncrafting.options.updates.promptForLatest=Prompt for Latest
+uncrafting.options.updates.promptForRecommended=Prompt for Recommended
+
+chat.update.newlatest=A new version of %1$s is available. Click here to update.
+chat.update.newrecommended=A new recommended version of %1$s is available. Click here to update.
