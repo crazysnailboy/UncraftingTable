@@ -13,8 +13,7 @@ import cpw.mods.fml.common.network.IGuiHandler;
  */
 public class ModGuiHandler implements IGuiHandler
 {
-    //private ContainerUncraftingTable lastServerContainer;
-	
+
 	public static final int GUI_TABLE = 0;
 
     /**
@@ -27,7 +26,7 @@ public class ModGuiHandler implements IGuiHandler
         {
             if (id == GUI_TABLE)
             {
-            	return new ContainerUncraftingTable(player.inventory, world, true);
+            	return new ContainerUncraftingTable(player.inventory, world);
             }
         }
         return null;
@@ -45,7 +44,7 @@ public class ModGuiHandler implements IGuiHandler
         {
             if (id == GUI_TABLE)
             {
-                return new GuiUncraftingTable(player.inventory, world, I18n.format("tile.uncrafting_table.name"), false);
+                return new GuiUncraftingTable(player.inventory, world, I18n.format("tile.uncrafting_table.name"));
             }
         }
         return null;

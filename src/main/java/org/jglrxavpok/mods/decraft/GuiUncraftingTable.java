@@ -16,6 +16,7 @@ import net.minecraft.world.World;
 
 public class GuiUncraftingTable extends GuiContainer
 {
+    private static final ResourceLocation UNCRAFTING_TABLE_GUI_TEXTURES = new ResourceLocation(ModUncrafting.MODID + ":textures/gui/container/uncrafting_gui.png");
 
     public ContainerUncraftingTable container;
     private String blockName;
@@ -23,14 +24,11 @@ public class GuiUncraftingTable extends GuiContainer
     private World worldObj;
     private EntityPlayer player;
 
-    public GuiUncraftingTable(InventoryPlayer playerInventory, World world, String blockName, boolean inverted)
+    public GuiUncraftingTable(InventoryPlayer playerInventory, World world, String blockName)
     {
-    	super(new ContainerUncraftingTable(playerInventory, world, inverted));
-        //super(new ContainerUncraftingTable(playerInventory, world, inverted, x, y, z));
-    	
-        container = (ContainerUncraftingTable)inventorySlots;
+    	super(new ContainerUncraftingTable(playerInventory, world));
+        this.container = (ContainerUncraftingTable)inventorySlots;
         this.blockName = blockName;
-        this.inverted = inverted;
         this.worldObj = world;
         this.player = playerInventory.player;
     }
@@ -49,82 +47,42 @@ public class GuiUncraftingTable extends GuiContainer
         int xSize = this.xSize;
         int ySize = this.ySize;
         
-        if (!inverted)
+    	// fontRendererObj.drawString:
+    	// Args: string, x, y, color, dropShadow
+    	
+    	
+    	// render the block name at the top of the gui
+        fontRendererObj.drawString(blockName, xSize / 2 - fontRendererObj.getStringWidth(blockName) / 2 + 1, 5, 4210752);
+        
+        // write "inventory" above the player inventory
+        fontRendererObj.drawString(I18n.format("container.inventory"), 6, ySize - 96 + 2, 4210752);
+
+        // write "compute:" above the input slots
+        String compute = I18n.format("uncrafting.compute") + ":";
+        fontRendererObj.drawString(EnumChatFormatting.DARK_GRAY + compute + EnumChatFormatting.RESET, 24 - fontRendererObj.getStringWidth(compute) / 2 + 1, 22, 0);
+        fontRendererObj.drawString(EnumChatFormatting.GRAY + compute + EnumChatFormatting.RESET, 24 - fontRendererObj.getStringWidth(compute) / 2, 21, 0);
+        
+        // write the xp cost above the arrow
+        Color darkGreen = new Color(75, 245, 75);
+        fontRendererObj.drawString(EnumChatFormatting.DARK_GRAY + "" + EnumChatFormatting.UNDERLINE + "" + (ModConfiguration.standardLevel + container.uncraftingCost) + " levels" + EnumChatFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth((ModConfiguration.standardLevel + container.uncraftingCost) + " levels") / 2 + 1, ySize - 126 - 10, 0);
+        fontRendererObj.drawString(EnumChatFormatting.UNDERLINE + "" + (ModConfiguration.standardLevel + container.uncraftingCost) + " levels" + EnumChatFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth((ModConfiguration.standardLevel + container.uncraftingCost) + " levels") / 2, ySize - 127 - 10, darkGreen.getRGB());
+
+
+        String string = container.uncraftingStatusText;
+        if (string != null)
         {
-        	// fontRendererObj.drawString:
-        	// Args: string, x, y, color, dropShadow
-        	
-        	
-        	// render the block name at the top of the gui
-            fontRendererObj.drawString(blockName, xSize / 2 - fontRendererObj.getStringWidth(blockName) / 2 + 1, 5, 4210752);
-            
-            // write "inventory" above the player inventory
-            fontRendererObj.drawString(I18n.format("container.inventory"), 6, ySize - 96 + 2, 4210752);
-
-            // write "compute:" above the input slots
-            String compute = I18n.format("uncrafting.compute") + ":";
-            fontRendererObj.drawString(EnumChatFormatting.DARK_GRAY + compute + EnumChatFormatting.RESET, 24 - fontRendererObj.getStringWidth(compute) / 2 + 1, 22, 0);
-            fontRendererObj.drawString(EnumChatFormatting.GRAY + compute + EnumChatFormatting.RESET, 24 - fontRendererObj.getStringWidth(compute) / 2, 21, 0);
-            
-            // write the xp cost above the arrow
-            Color darkGreen = new Color(75, 245, 75);
-            fontRendererObj.drawString(EnumChatFormatting.DARK_GRAY + "" + EnumChatFormatting.UNDERLINE + "" + (ModConfiguration.standardLevel + container.uncraftingCost) + " levels" + EnumChatFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth((ModConfiguration.standardLevel + container.uncraftingCost) + " levels") / 2 + 1, ySize - 126 - 10, 0);
-            fontRendererObj.drawString(EnumChatFormatting.UNDERLINE + "" + (ModConfiguration.standardLevel + container.uncraftingCost) + " levels" + EnumChatFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth((ModConfiguration.standardLevel + container.uncraftingCost) + " levels") / 2, ySize - 127 - 10, darkGreen.getRGB());
-
-
-//            // draw the arrow with the cross through it
-//            GL11.glPushMatrix();
-//            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-//            this.mc.renderEngine.bindTexture(new ResourceLocation("uncraftingTable:textures/gui/container/uncrafting_gui.png"));
-//            this.drawTexturedModalRect(75, 32, 176, 0, 28, 21);
-//            GL11.glPopMatrix();
-            
-            
-            String string = container.uncraftingStatusText;
-            if (string != null)
+            UncraftingStatus msgType = container.uncraftingStatus;
+            EnumChatFormatting format = EnumChatFormatting.GREEN;
+            EnumChatFormatting shadowFormat = EnumChatFormatting.DARK_GRAY;
+            if (msgType == ContainerUncraftingTable.UncraftingStatus.ERROR)
             {
-                UncraftingStatus msgType = container.uncraftingStatus;
-                EnumChatFormatting format = EnumChatFormatting.GREEN;
-                EnumChatFormatting shadowFormat = EnumChatFormatting.DARK_GRAY;
-                if (msgType == ContainerUncraftingTable.UncraftingStatus.ERROR)
-                {
-                    format = EnumChatFormatting.WHITE;
-                    shadowFormat = EnumChatFormatting.DARK_RED;
-                }
-                fontRendererObj.drawString(shadowFormat + string + EnumChatFormatting.RESET, 6 + 1, ySize - 95 + 2 - fontRendererObj.FONT_HEIGHT, 0);
-                fontRendererObj.drawString(format + string + EnumChatFormatting.RESET, 6, ySize - 96 + 2 - fontRendererObj.FONT_HEIGHT, 0);
+                format = EnumChatFormatting.WHITE;
+                shadowFormat = EnumChatFormatting.DARK_RED;
             }
+            fontRendererObj.drawString(shadowFormat + string + EnumChatFormatting.RESET, 6 + 1, ySize - 95 + 2 - fontRendererObj.FONT_HEIGHT, 0);
+            fontRendererObj.drawString(format + string + EnumChatFormatting.RESET, 6, ySize - 96 + 2 - fontRendererObj.FONT_HEIGHT, 0);
         }
-        else
-        {
-            int height = 166 - 8;
             
-            fontRendererObj.drawString(blockName, xSize / 2 - fontRendererObj.getStringWidth(blockName) / 2 + 1, height - 5, 4210752);
-            fontRendererObj.drawString(I18n.format("container.inventory"), 6, height - ySize - 96 + 2, 4210752);
-
-            Color darkGreen = new Color(75, 245, 75);
-            String string1 = "Calculs:";
-            
-            fontRendererObj.drawString(EnumChatFormatting.DARK_GRAY + string1 + EnumChatFormatting.RESET, 24 - fontRendererObj.getStringWidth(string1) / 2 + 1, height - 22, 0);
-            fontRendererObj.drawString(EnumChatFormatting.GRAY + string1 + EnumChatFormatting.RESET, 24 - fontRendererObj.getStringWidth(string1) / 2, height - 21, 0);
-            fontRendererObj.drawString(EnumChatFormatting.DARK_GRAY + "" + EnumChatFormatting.UNDERLINE + "" + (ModConfiguration.standardLevel + container.uncraftingCost) + " levels" + EnumChatFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth((ModConfiguration.standardLevel + container.uncraftingCost) + " levels") / 2 + 1, height - (ySize - 126 - 10), 0);
-            fontRendererObj.drawString(EnumChatFormatting.UNDERLINE + "" + (ModConfiguration.standardLevel + container.uncraftingCost) + " levels" + EnumChatFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth((ModConfiguration.standardLevel + container.uncraftingCost) + " levels") / 2, height - (ySize - 127 - 10), darkGreen.getRGB());
-
-            String string = container.uncraftingStatusText;
-            if (string != null)
-            {
-                UncraftingStatus msgType = container.uncraftingStatus;
-                EnumChatFormatting format = EnumChatFormatting.GREEN;
-                EnumChatFormatting shadowFormat = EnumChatFormatting.DARK_GRAY;
-                if (msgType == ContainerUncraftingTable.UncraftingStatus.ERROR)
-                {
-                    format = EnumChatFormatting.WHITE;
-                    shadowFormat = EnumChatFormatting.DARK_RED;
-                }
-                fontRendererObj.drawString(shadowFormat + string + EnumChatFormatting.RESET, 6 + 1, height - (ySize - 95 + 2 - fontRendererObj.FONT_HEIGHT), 0);
-                fontRendererObj.drawString(format + string + EnumChatFormatting.RESET, 6, height - (ySize - 96 + 2 - fontRendererObj.FONT_HEIGHT), 0);
-            }
-        }
         GL11.glEnable(GL11.GL_LIGHTING);
     }
 
@@ -134,14 +92,22 @@ public class GuiUncraftingTable extends GuiContainer
         GL11.glPushMatrix();
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
-        if (this.inverted) {
-            this.mc.renderEngine.bindTexture(new ResourceLocation("uncraftingTable:textures/gui/container/uncrafting_gui_redstoned.png"));
-        } else {
-            this.mc.renderEngine.bindTexture(new ResourceLocation("uncraftingTable:textures/gui/container/uncrafting_gui.png"));
-        }
+        // bind the background gui texture
+        this.mc.renderEngine.bindTexture(UNCRAFTING_TABLE_GUI_TEXTURES);
+
+        // render the gui background
         int k = this.width / 2 - this.xSize / 2;
         int l = this.height / 2 - this.ySize / 2;
         this.drawTexturedModalRect(k, l, 0, 0, this.xSize, this.ySize);
+        
+//      // draw the arrow with the cross through it
+//      GL11.glPushMatrix();
+//      GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+//      this.mc.renderEngine.bindTexture(new ResourceLocation("uncraftingTable:textures/gui/container/uncrafting_gui.png"));
+//      this.drawTexturedModalRect(75, 32, 176, 0, 28, 21);
+//      GL11.glPopMatrix();
+        
+        
         GL11.glPopMatrix();
     }
 

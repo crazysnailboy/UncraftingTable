@@ -35,12 +35,6 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 public class UncraftingManager 
 {
 
-	private static List<ItemStack> excludedItems;
-	
-	
-//	private List<IRecipe> recipeList = Lists.newArrayList(Iterables.filter(CraftingManager.getInstance().getRecipeList(), IRecipe.class));
-
-	
 	private static Boolean canUncraftItem(ItemStack itemStack)
 	{
 		String uniqueIdentifier = GameRegistry.findUniqueIdentifierFor(itemStack.getItem()).toString();
@@ -74,7 +68,6 @@ public class UncraftingManager
 					if (recipeOutput.getItem() == item.getItem() && recipeOutput.getItemDamage() == item.getItemDamage())
 					{
 						RecipeHandler handler = getRecipeHandler(recipe);
-//						RecipeHandler handler = uncraftingHandlers.get(r.getClass());
 						if (handler != null)
 						{
 							list.add(recipeOutput.stackSize);
@@ -121,7 +114,6 @@ public class UncraftingManager
 					)
 					{
 						RecipeHandler handler = getRecipeHandler(recipe);
-//						RecipeHandler handler = uncraftingHandlers.get(recipe.getClass());
 						if (handler != null)
 						{
 							list.add(handler.getCraftingGrid(recipe));
