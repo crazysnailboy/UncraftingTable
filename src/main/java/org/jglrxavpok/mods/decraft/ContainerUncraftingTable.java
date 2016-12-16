@@ -269,6 +269,29 @@ public class ContainerUncraftingTable extends Container
                     int lvl = player.experienceLevel;
                     uncraftingCost = 0;
                     
+                    // determine the xp cost for the uncrafting operation
+                    if (!player.capabilities.isCreativeMode)
+                    {
+                    	// if we're using Xell75's & Zenen's uncrafting method, and the item is enchantable (i.e. damageable)
+                    	// otherwise use the standard cost
+                    	if (uncraftIn.getStackInSlot(0).getItem().getItemEnchantability() > 0 && ModConfiguration.uncraftMethod == 1)
+                    	{
+                            // calculate a cost based on the damage percentage of the item 
+                        	ItemStack s1 = uncraftIn.getStackInSlot(0);
+                        	int percent = (int)(((double)s1.getItemDamage() / (double)s1.getMaxDamage()) * 100);
+                        	uncraftingCost = (ModConfiguration.maxUsedLevel * percent) / 100;
+                    	}
+                    	
+                        // if the player's xp level is unsufficient to perform the operation
+                        if (lvl < ModConfiguration.standardLevel + uncraftingCost && !player.capabilities.isCreativeMode)
+                        {
+                        	// set the status to "error" with the needs more xp message
+                        	uncraftingStatus = UncraftingStatus.ERROR;
+                        	uncraftingStatusText = I18n.format("uncrafting.result.needMoreXP");
+                        	return;
+                        }
+                    }
+
                     if (!EnchantmentHelper.getEnchantments(uncraftIn.getStackInSlot(0)).isEmpty() && calculInput.getStackInSlot(0) != null && calculInput.getStackInSlot(0).getItem() == Items.book)
                     {
                         int stackSize = calculInput.getStackInSlot(0).stackSize;
