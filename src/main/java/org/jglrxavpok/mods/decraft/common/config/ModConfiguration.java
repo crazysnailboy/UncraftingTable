@@ -81,55 +81,61 @@ public class ModConfiguration {
 		
 		Property propStandardLevel = config.get(Configuration.CATEGORY_GENERAL, "standardLevel", 5, "Minimum required level to uncraft an item", 0, 50);
 		propStandardLevel.setLanguageKey("uncrafting.options.standardLevel");
-		propStandardLevel.setConfigEntryClass(NumberSliderEntry.class);
 		propStandardLevel.setRequiresMcRestart(false);
 		
 		Property propMaxLevel = config.get(Configuration.CATEGORY_GENERAL, "maxUsedLevel", 30, "Maximum required level to uncraft an item", 0, 50);
 		propMaxLevel.setLanguageKey("uncrafting.options.maxUsedLevel");
-		propMaxLevel.setConfigEntryClass(NumberSliderEntry.class);
 		propMaxLevel.setRequiresMcRestart(false);
 
 		Property propUncraftMethod = config.get(Configuration.CATEGORY_GENERAL, "uncraftMethod", 0, "ID of the used uncrafting equation.");
 		propUncraftMethod.setLanguageKey("uncrafting.options.method");
 		propUncraftMethod.setValidValues(new String[] { "jglrxavpok", "Xell75 & zenen" });
-		propUncraftMethod.setConfigEntryClass(ModGuiConfigEntries.UncraftingMethodCycleEntry.class);
 		propUncraftMethod.setRequiresMcRestart(false);
 
 		Property propExcludedItems = config.get(Configuration.CATEGORY_GENERAL, "excludedItems", new String[] { }, "List of items which cannot be uncrafted");
 		propExcludedItems.setLanguageKey("uncrafting.options.excludedItems");
-		propExcludedItems.setConfigEntryClass(ModGuiConfigEntries.ExcludedItemsArrayEntry.class);
 		propExcludedItems.setRequiresMcRestart(false);
-		
-		
-		List<String> propOrderGeneral = new ArrayList<String>();
-		propOrderGeneral.add(propStandardLevel.getName());
-		propOrderGeneral.add(propMaxLevel.getName());
-		propOrderGeneral.add(propUncraftMethod.getName());
-		propOrderGeneral.add(propExcludedItems.getName());
-		config.setCategoryPropertyOrder(Configuration.CATEGORY_GENERAL, propOrderGeneral);
 		
 		
 		Property propCheckForUpdates = config.get(ModConfiguration.CATEGORY_UPDATES, "checkForUpdates", true, "Should the mod check for updates on startup");
 		propCheckForUpdates.setLanguageKey("uncrafting.options.updates.checkForUpdates");
-		propCheckForUpdates.setConfigEntryClass(ModGuiConfigEntries.BooleanEntry.class);
 		propCheckForUpdates.setRequiresMcRestart(true);
 		
 		Property propPromptForLatest = config.get(ModConfiguration.CATEGORY_UPDATES, "promptForLatest", false, "Alert the user when there is a new version");
 		propPromptForLatest.setLanguageKey("uncrafting.options.updates.promptForLatest");
-		propPromptForLatest.setConfigEntryClass(ModGuiConfigEntries.BooleanEntry.class);
 		propPromptForLatest.setRequiresMcRestart(true);
 		
 		Property propPromptForRecommended = config.get(ModConfiguration.CATEGORY_UPDATES, "promptForRecommended", true, "Alert the user when there is a new recommended version");
 		propPromptForRecommended.setLanguageKey("uncrafting.options.updates.promptForRecommended");
-		propPromptForRecommended.setConfigEntryClass(ModGuiConfigEntries.BooleanEntry.class);
 		propPromptForRecommended.setRequiresMcRestart(true);
 
 		
-		List<String> propOrderUpdates = new ArrayList<String>();
-		propOrderUpdates.add(propCheckForUpdates.getName());
-		propOrderUpdates.add(propPromptForLatest.getName());
-		propOrderUpdates.add(propPromptForRecommended.getName());
-		config.setCategoryPropertyOrder(ModConfiguration.CATEGORY_UPDATES, propOrderUpdates);
+		try
+		{
+			propStandardLevel.setConfigEntryClass(NumberSliderEntry.class);
+			propMaxLevel.setConfigEntryClass(NumberSliderEntry.class);
+			propUncraftMethod.setConfigEntryClass(ModGuiConfigEntries.UncraftingMethodCycleEntry.class);
+			propExcludedItems.setConfigEntryClass(ModGuiConfigEntries.ExcludedItemsArrayEntry.class);
+			
+			propCheckForUpdates.setConfigEntryClass(ModGuiConfigEntries.BooleanEntry.class);
+			propPromptForLatest.setConfigEntryClass(ModGuiConfigEntries.BooleanEntry.class);
+			propPromptForRecommended.setConfigEntryClass(ModGuiConfigEntries.BooleanEntry.class);
+			
+			List<String> propOrderGeneral = new ArrayList<String>();
+			propOrderGeneral.add(propStandardLevel.getName());
+			propOrderGeneral.add(propMaxLevel.getName());
+			propOrderGeneral.add(propUncraftMethod.getName());
+			propOrderGeneral.add(propExcludedItems.getName());
+			config.setCategoryPropertyOrder(Configuration.CATEGORY_GENERAL, propOrderGeneral);
+			
+			List<String> propOrderUpdates = new ArrayList<String>();
+			propOrderUpdates.add(propCheckForUpdates.getName());
+			propOrderUpdates.add(propPromptForLatest.getName());
+			propOrderUpdates.add(propPromptForRecommended.getName());
+			config.setCategoryPropertyOrder(ModConfiguration.CATEGORY_UPDATES, propOrderUpdates);
+			
+		}
+		catch(NoClassDefFoundError e) { }
 		
 		
 		
