@@ -1,6 +1,7 @@
 package org.jglrxavpok.mods.decraft;
 
 import org.apache.logging.log4j.Logger;
+import org.jglrxavpok.mods.decraft.client.update.VersionChecker;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
 import org.jglrxavpok.mods.decraft.event.ItemUncraftedEvent;
 import org.jglrxavpok.mods.decraft.event.UncraftingEvent;
@@ -39,9 +40,11 @@ public class ModUncrafting
 
 	// constants
     public static final String MODID = "uncraftingTable";
-    public static final String MODNAME = "jglrxavpok's UncraftingTable";
-    public static final String VERSION = "1.4.2";
+    public static final String MODNAME = "jglrxavpok's Uncrafting Table";
+    public static final String VERSION = "1.4.3-pre1";
     public static final String GUIFACTORY = "org.jglrxavpok.mods.decraft.client.config.ModGuiFactory";
+    public static final String UPDATEJSON = "https://raw.githubusercontent.com/crazysnailboy/uncraftingTable/1.7.10/update.json";
+    
     
 	private static final String CLIENT_PROXY_CLASS = "org.jglrxavpok.mods.decraft.proxy.ClientProxy";
 	private static final String SERVER_PROXY_CLASS = "org.jglrxavpok.mods.decraft.proxy.CommonProxy";
