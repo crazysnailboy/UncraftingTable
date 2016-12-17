@@ -43,11 +43,11 @@ public class BlockUncraftingTable extends Block
 	@Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     {
-//      if (!worldIn.isRemote)
-//      {
-//      }
-		playerIn.openGui(ModUncrafting.instance, ModGuiHandler.GUI_TABLE, worldIn, pos.getX(), pos.getY(), pos.getZ());
-		checkForPorteManteau(playerIn, worldIn, pos);
+		if (!worldIn.isRemote)
+		{
+			playerIn.openGui(ModUncrafting.instance, ModGuiHandler.GUI_TABLE, worldIn, pos.getX(), pos.getY(), pos.getZ());
+			checkForPorteManteau(playerIn, worldIn, pos);
+		}
 		return true;
     }
 

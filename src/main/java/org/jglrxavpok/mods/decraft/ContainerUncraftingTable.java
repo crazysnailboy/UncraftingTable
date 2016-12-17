@@ -11,7 +11,6 @@ import org.jglrxavpok.mods.decraft.event.ItemUncraftedEvent;
 import org.jglrxavpok.mods.decraft.event.UncraftingEvent;
 import org.jglrxavpok.mods.decraft.stats.ModAchievements;
 
-import net.minecraft.client.resources.I18n;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.item.EntityItem;
@@ -25,6 +24,7 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -33,6 +33,7 @@ import net.minecraftforge.common.MinecraftForge;
  * @author jglrxavpok
  *
  */
+@SuppressWarnings("deprecation")
 public class ContainerUncraftingTable extends Container
 {
 
@@ -50,7 +51,7 @@ public class ContainerUncraftingTable extends Container
     private World worldObj;
     
     public UncraftingStatus uncraftingStatus = UncraftingStatus.READY;
-    public String uncraftingStatusText = I18n.format("uncrafting.result.ready");
+    public String uncraftingStatusText = I18n.translateToLocal("uncrafting.result.ready");
     
     public int uncraftingCost = 0 - ModConfiguration.standardLevel;
     
@@ -155,7 +156,7 @@ public class ContainerUncraftingTable extends Container
                 {
                 	// set the status to ready
                     uncraftingStatus = UncraftingStatus.READY;
-                    uncraftingStatusText = I18n.format("uncrafting.result.ready");
+                    uncraftingStatusText = I18n.translateToLocal("uncrafting.result.ready");
                     
                     // set the uncrafting cost to the default
                 	uncraftingCost = 0 - ModConfiguration.standardLevel; // TODO is this necessary?
@@ -184,21 +185,21 @@ public class ContainerUncraftingTable extends Container
                     if (nbrStacks > calculInput.getStackInSlot(0).func_190916_E())
                     {
                         uncraftingStatus = UncraftingStatus.ERROR;
-                        uncraftingStatusText = I18n.format("uncrafting.result.needMoreStacks", (nbrStacks - calculInput.getStackInSlot(0).func_190916_E()));
+                        uncraftingStatusText = I18n.translateToLocalFormatted("uncrafting.result.needMoreStacks", (nbrStacks - calculInput.getStackInSlot(0).func_190916_E()));
                         uncraftingCost = 0 - ModConfiguration.standardLevel;
                         return;
                     }
                     else if (event.getOutput() == null)
                     {
                         uncraftingStatus = UncraftingStatus.ERROR;
-                        uncraftingStatusText = I18n.format("uncrafting.result.impossible");
+                        uncraftingStatusText = I18n.translateToLocal("uncrafting.result.impossible");
                         uncraftingCost = 0 - ModConfiguration.standardLevel;
                         return;
                     }
                     else
                     {
                         uncraftingStatus = UncraftingStatus.READY;
-                        uncraftingStatusText = I18n.format("uncrafting.result.ready");
+                        uncraftingStatusText = I18n.translateToLocal("uncrafting.result.ready");
                     }
                     
                     if (ModConfiguration.uncraftMethod == 0)
@@ -225,7 +226,7 @@ public class ContainerUncraftingTable extends Container
             else
             {
                 uncraftingStatus = UncraftingStatus.ERROR;
-                uncraftingStatusText = I18n.format("uncrafting.result.impossible");
+                uncraftingStatusText = I18n.translateToLocal("uncrafting.result.impossible");
                 uncraftingCost = 0 - ModConfiguration.standardLevel;
                 return;
             }
@@ -240,7 +241,7 @@ public class ContainerUncraftingTable extends Container
             if (uncraftIn.getStackInSlot(0).func_190926_b())
             {
                 uncraftingStatus = UncraftingStatus.READY;
-                uncraftingStatusText = I18n.format("uncrafting.result.ready");
+                uncraftingStatusText = I18n.translateToLocal("uncrafting.result.ready");
                 return;
             }
             
@@ -265,7 +266,7 @@ public class ContainerUncraftingTable extends Container
                 if (nbrStacks > uncraftIn.getStackInSlot(0).func_190916_E())
                 {
                     uncraftingStatus = UncraftingStatus.ERROR;
-                    uncraftingStatusText = I18n.format("uncrafting.result.needMoreStacks", (nbrStacks - uncraftIn.getStackInSlot(0).func_190916_E()));
+                    uncraftingStatusText = I18n.translateToLocalFormatted("uncrafting.result.needMoreStacks", (nbrStacks - uncraftIn.getStackInSlot(0).func_190916_E()));
                     return;
                 }
                 
@@ -275,16 +276,36 @@ public class ContainerUncraftingTable extends Container
                     int lvl = player.experienceLevel;
                     uncraftingCost = 0;
                     
+                    // determine the xp cost for the uncrafting operation
+                    if (!player.capabilities.isCreativeMode)
+                    {
+                    	// if we're using Xell75's & Zenen's uncrafting method, and the item is enchantable (i.e. damageable)
+                    	// otherwise use the standard cost
+                    	if (uncraftIn.getStackInSlot(0).getItem().getItemEnchantability() > 0 && ModConfiguration.uncraftMethod == 1)
+                    	{
+                            // calculate a cost based on the damage percentage of the item 
+                        	ItemStack s1 = uncraftIn.getStackInSlot(0);
+                        	int percent = (int)(((double)s1.getItemDamage() / (double)s1.getMaxDamage()) * 100);
+                        	uncraftingCost = (ModConfiguration.maxUsedLevel * percent) / 100;
+                    	}
+                    	
+                        // if the player's xp level is unsufficient to perform the operation
+                        if (lvl < ModConfiguration.standardLevel + uncraftingCost && !player.capabilities.isCreativeMode)
+                        {
+                        	// set the status to "error" with the needs more xp message
+                        	uncraftingStatus = UncraftingStatus.ERROR;
+                        	uncraftingStatusText = I18n.translateToLocal("uncrafting.result.needMoreXP");
+                        	return;
+                        }
+                    }
+                    
+                    
+                    
                     if (!EnchantmentHelper.getEnchantments(uncraftIn.getStackInSlot(0)).isEmpty() && calculInput.getStackInSlot(0) != ItemStack.field_190927_a && calculInput.getStackInSlot(0).getItem() == Items.BOOK)
                     {
                         int stackSize = calculInput.getStackInSlot(0).func_190916_E();
                         
                         Map itemEnchantments = EnchantmentHelper.getEnchantments(uncraftIn.getStackInSlot(0));
-  
-                        
-                        
-                        
-                        
 //                        NonNullList<ItemStack> enchantedBooks = NonNullList.<ItemStack>func_191197_a(width * height, ItemStack.field_190927_a);
                         
                         ArrayList<ItemStack> enchantedBooks = new ArrayList<ItemStack>();
@@ -332,7 +353,7 @@ public class ContainerUncraftingTable extends Container
                     NonNullList<ItemStack> items = event.getOutput();
                     if (items == null)
                     {
-                        String r = I18n.format("uncrafting.result.impossible");
+                        String r = I18n.translateToLocal("uncrafting.result.impossible");
                         uncraftingStatusText = r;
                         uncraftingStatus = UncraftingStatus.ERROR;
                         return;
@@ -377,7 +398,7 @@ public class ContainerUncraftingTable extends Container
                     }
                     if (lvl < ModConfiguration.standardLevel + uncraftingCost && !player.capabilities.isCreativeMode)
                     {
-                        String r = I18n.format("uncrafting.result.needMoreXP");
+                        String r = I18n.translateToLocal("uncrafting.result.needMoreXP");
                         uncraftingStatusText = r;
                         uncraftingStatus = UncraftingStatus.ERROR;
                         return;
@@ -488,14 +509,14 @@ public class ContainerUncraftingTable extends Container
             }
             else
             {
-                String r = I18n.format("uncrafting.result.impossible");
+                String r = I18n.translateToLocal("uncrafting.result.impossible");
                 uncraftingStatusText = r;
                 uncraftingStatus = UncraftingStatus.ERROR;
             }
         }
         else
         {
-            String r = I18n.format("uncrafting.result.impossible");
+            String r = I18n.translateToLocal("uncrafting.result.impossible");
             uncraftingStatusText = r;
             uncraftingStatus = UncraftingStatus.ERROR;
         }
