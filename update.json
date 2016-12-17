@@ -1,0 +1,15 @@
+{
+	"homepage": "https://minecraft.curseforge.com/projects/jglrxavpoks-uncrafting-table/files/",
+	"promos": {
+		"1.10.2-latest": "1.6-pre2",
+		"1.10.2-recommended": "1.6-pre2",
+		"1.9.4-latest": "1.6-pre2",
+		"1.9.4-recommended": "1.6-pre2"
+	},
+	"1.10.2": {
+		"1.6-pre2": "Fixed bug allowing free enchanted books when not enough XP. Implemented version checker. Fixed bugs causing server crashes."
+	},
+	"1.9.4": {
+		"1.6-pre2": "Fixed bug allowing free enchanted books when not enough XP. Implemented version checker. Fixed bugs causing server crashes."
+	}
+}
