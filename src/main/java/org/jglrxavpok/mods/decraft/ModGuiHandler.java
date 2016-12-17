@@ -23,11 +23,11 @@ public class ModGuiHandler implements IGuiHandler
 	@Override
     public Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z)
     {
-        if (world.getBlockState(new BlockPos(x, y, z)).getBlock() == ModUncrafting.instance.uncraftingTable)
+        if (world.getBlockState(new BlockPos(x, y, z)).getBlock() instanceof BlockUncraftingTable)
         {
             if (id == GUI_TABLE)
             {
-            	return new ContainerUncraftingTable(player.inventory, world, true);
+            	return new ContainerUncraftingTable(player.inventory, world);
             }
         }
         return null;
@@ -41,12 +41,11 @@ public class ModGuiHandler implements IGuiHandler
     @Override
     public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z)
     {
-        if (world.getBlockState(new BlockPos(x, y, z)).getBlock() == ModUncrafting.instance.uncraftingTable)
+        if (world.getBlockState(new BlockPos(x, y, z)).getBlock() instanceof BlockUncraftingTable)
         {
             if (id == GUI_TABLE)
             {
-                String name = I18n.format("tile.uncrafting_table.name");
-                return new GuiUncraftingTable(player.inventory, world, name, false);
+                return new GuiUncraftingTable(player.inventory, world, I18n.format("tile.uncrafting_table.name"));
             }
         }
         return null;

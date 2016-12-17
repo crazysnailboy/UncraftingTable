@@ -90,7 +90,7 @@ public class ModUncrafting
     	proxy.init();
     	
     	// register the gui handler
-        NetworkRegistry.INSTANCE.registerGuiHandler(this, guiHandler);
+        NetworkRegistry.INSTANCE.registerGuiHandler(ModUncrafting.instance, guiHandler);
         
         logger.info("Uncrafting Table has been correctly initialized!");
     }

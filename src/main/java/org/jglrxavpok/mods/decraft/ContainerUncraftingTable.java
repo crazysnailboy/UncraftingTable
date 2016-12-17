@@ -14,6 +14,7 @@ import net.minecraft.entity.player.*;
 import net.minecraft.init.*;
 import net.minecraft.inventory.*;
 import net.minecraft.item.*;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.*;
 import net.minecraftforge.common.*;
 
@@ -39,86 +40,48 @@ public class ContainerUncraftingTable extends Container
     private World worldObj;
     
     public UncraftingStatus uncraftingStatus = UncraftingStatus.READY;
-    public String uncraftingStatusText = I18n.format("uncrafting.result.ready");
+    public String uncraftingStatusText = StatCollector.translateToLocal("uncrafting.result.ready");
     
     public int uncraftingCost = 0 - ModConfiguration.standardLevel;
     
-    private ItemStack toReturn;
-    
     
     
 
-    public ContainerUncraftingTable(InventoryPlayer playerInventoryIn, World worldIn, boolean inverted)
+    public ContainerUncraftingTable(InventoryPlayer playerInventoryIn, World worldIn)
     {
         this.worldObj = worldIn;
         
-        if (!inverted)
+    	// uncrafting output inventory
+        for (int row = 0; row < 3; ++row)
         {
-        	// uncrafting output inventory
-            for (int row = 0; row < 3; ++row)
+            for (int col = 0; col < 3; ++col)
             {
-                for (int col = 0; col < 3; ++col)
-                {
-                	// arguments: inventory, slotIndex, xDisplayPosition, yDisplayPosition    
-                    this.addSlotToContainer(new Slot(this.uncraftOut, col + row * 3, 112 + col * 18, 17 + row * 18));
-                }
-            }
-            
-            // uncrafting book inventory for capturing enchantments (left standalone slot)
-            this.addSlotToContainer(new Slot(this.calculInput, 0, 15, 35));
-
-            // incrafting input inventory (right standalone slot)
-            this.addSlotToContainer(new Slot(this.uncraftIn, 0, 30 + 15, 35));
-            
-            // player inventory
-            for (int row = 0; row < 3; ++row)
-            {
-                for (int col = 0; col < 9; ++col)
-                {
-                    this.addSlotToContainer(new Slot(playerInventoryIn, col + row * 9 + 9, 8 + col * 18, 84 + row * 18));
-                }
-            }
-            
-            // player hotbar inventory
-            for (int col = 0; col < 9; ++col)
-            {
-                this.addSlotToContainer(new Slot(playerInventoryIn, col, 8 + col * 18, 142));
+            	// arguments: inventory, slotIndex, xDisplayPosition, yDisplayPosition    
+                this.addSlotToContainer(new Slot(this.uncraftOut, col + row * 3, 112 + col * 18, 17 + row * 18));
             }
         }
-        else
+        
+        // uncrafting book inventory for capturing enchantments (left standalone slot)
+        this.addSlotToContainer(new Slot(this.calculInput, 0, 15, 35));
+
+        // incrafting input inventory (right standalone slot)
+        this.addSlotToContainer(new Slot(this.uncraftIn, 0, 30 + 15, 35));
+        
+        // player inventory
+        for (int row = 0; row < 3; ++row)
         {
-            int height = 166 - 16;
-            
-        	// uncrafting output inventory
-            for (int row = 0; row < 3; ++row)
-            {
-                for (int col = 0; col < 3; ++col)
-                {
-                    this.addSlotToContainer(new Slot(this.uncraftOut, col + row * 3, 112 + col * 18, height - (17 + row * 18)));
-                }
-            }
-
-            // uncrafting book inventory for capturing enchantments (left standalone slot)
-            this.addSlotToContainer(new Slot(this.calculInput, 0, 15, height - 35));
-
-            // incrafting input inventory (right standalone slot)
-            this.addSlotToContainer(new Slot(this.uncraftIn, 0, 30 + 15, height - 35));
-
-            // player inventory
-            for (int row = 0; row < 3; ++row)
-            {
-                for (int col = 0; col < 9; ++col)
-                {
-                    this.addSlotToContainer(new Slot(playerInventoryIn, col + row * 9 + 9, 8 + col * 18, height - (84 + row * 18)));
-                }
-            }
-
-            // player hotbar inventory
             for (int col = 0; col < 9; ++col)
             {
-                this.addSlotToContainer(new Slot(playerInventoryIn, col, 8 + col * 18, height - 142));
+                this.addSlotToContainer(new Slot(playerInventoryIn, col + row * 9 + 9, 8 + col * 18, 84 + row * 18));
             }
         }
+        
+        // player hotbar inventory
+        for (int col = 0; col < 9; ++col)
+        {
+            this.addSlotToContainer(new Slot(playerInventoryIn, col, 8 + col * 18, 142));
+        }
+
         playerInventory = playerInventoryIn;
     }
 
@@ -132,7 +95,6 @@ public class ContainerUncraftingTable extends Container
     {
 //    	System.out.println("onCraftMatrixChanged");
 
-        toReturn = null;
         
         // if the left input slot changes
         if (inventory == calculInput)
@@ -149,7 +111,7 @@ public class ContainerUncraftingTable extends Container
                 {
                 	// set the status to ready
                     uncraftingStatus = UncraftingStatus.READY;
-                    uncraftingStatusText = I18n.format("uncrafting.result.ready");
+                    uncraftingStatusText = StatCollector.translateToLocal("uncrafting.result.ready");
                     
                     // set the uncrafting cost to the default
                 	uncraftingCost = 0 - ModConfiguration.standardLevel; // TODO is this necessary?
@@ -178,21 +140,21 @@ public class ContainerUncraftingTable extends Container
                     if (nbrStacks > calculInput.getStackInSlot(0).stackSize)
                     {
                         uncraftingStatus = UncraftingStatus.ERROR;
-                        uncraftingStatusText = I18n.format("uncrafting.result.needMoreStacks", (nbrStacks - calculInput.getStackInSlot(0).stackSize));
+                        uncraftingStatusText = StatCollector.translateToLocalFormatted("uncrafting.result.needMoreStacks", (nbrStacks - calculInput.getStackInSlot(0).stackSize));
                         uncraftingCost = 0 - ModConfiguration.standardLevel;
                         return;
                     }
                     else if (event.getOutput() == null)
                     {
                         uncraftingStatus = UncraftingStatus.ERROR;
-                        uncraftingStatusText = I18n.format("uncrafting.result.impossible");
+                        uncraftingStatusText = StatCollector.translateToLocal("uncrafting.result.impossible");
                         uncraftingCost = 0 - ModConfiguration.standardLevel;
                         return;
                     }
                     else
                     {
                         uncraftingStatus = UncraftingStatus.READY;
-                        uncraftingStatusText = I18n.format("uncrafting.result.ready");
+                        uncraftingStatusText = StatCollector.translateToLocal("uncrafting.result.ready");
                     }
                     
                     if (ModConfiguration.uncraftMethod == 0)
@@ -219,7 +181,7 @@ public class ContainerUncraftingTable extends Container
             else
             {
                 uncraftingStatus = UncraftingStatus.ERROR;
-                uncraftingStatusText = I18n.format("uncrafting.result.impossible");
+                uncraftingStatusText = StatCollector.translateToLocal("uncrafting.result.impossible");
                 uncraftingCost = 0 - ModConfiguration.standardLevel;
                 return;
             }
@@ -234,7 +196,7 @@ public class ContainerUncraftingTable extends Container
             if (uncraftIn.getStackInSlot(0) == null)
             {
                 uncraftingStatus = UncraftingStatus.READY;
-                uncraftingStatusText = I18n.format("uncrafting.result.ready");
+                uncraftingStatusText = StatCollector.translateToLocal("uncrafting.result.ready");
                 return;
             }
             
@@ -259,7 +221,7 @@ public class ContainerUncraftingTable extends Container
                 if (nbrStacks > uncraftIn.getStackInSlot(0).stackSize)
                 {
                     uncraftingStatus = UncraftingStatus.ERROR;
-                    uncraftingStatusText = I18n.format("uncrafting.result.needMoreStacks", (nbrStacks - uncraftIn.getStackInSlot(0).stackSize));
+                    uncraftingStatusText = StatCollector.translateToLocalFormatted("uncrafting.result.needMoreStacks", (nbrStacks - uncraftIn.getStackInSlot(0).stackSize));
                     return;
                 }
                 
@@ -287,7 +249,7 @@ public class ContainerUncraftingTable extends Container
                         {
                         	// set the status to "error" with the needs more xp message
                         	uncraftingStatus = UncraftingStatus.ERROR;
-                        	uncraftingStatusText = I18n.format("uncrafting.result.needMoreXP");
+                        	uncraftingStatusText = StatCollector.translateToLocal("uncrafting.result.needMoreXP");
                         	return;
                         }
                     }
@@ -343,7 +305,7 @@ public class ContainerUncraftingTable extends Container
                     ItemStack[] items = event.getOutput();
                     if (items == null)
                     {
-                        String r = I18n.format("uncrafting.result.impossible");
+                        String r = StatCollector.translateToLocal("uncrafting.result.impossible");
                         uncraftingStatusText = r;
                         uncraftingStatus = UncraftingStatus.ERROR;
                         return;
@@ -386,7 +348,7 @@ public class ContainerUncraftingTable extends Container
                     }
                     if (lvl < ModConfiguration.standardLevel + uncraftingCost && !player.capabilities.isCreativeMode)
                     {
-                        String r = I18n.format("uncrafting.result.needMoreXP");
+                        String r = StatCollector.translateToLocal("uncrafting.result.needMoreXP");
                         uncraftingStatusText = r;
                         uncraftingStatus = UncraftingStatus.ERROR;
                         return;
@@ -494,14 +456,14 @@ public class ContainerUncraftingTable extends Container
             }
             else
             {
-                String r = I18n.format("uncrafting.result.impossible");
+                String r = StatCollector.translateToLocal("uncrafting.result.impossible");
                 uncraftingStatusText = r;
                 uncraftingStatus = UncraftingStatus.ERROR;
             }
         }
         else
         {
-            String r = I18n.format("uncrafting.result.impossible");
+            String r = StatCollector.translateToLocal("uncrafting.result.impossible");
             uncraftingStatusText = r;
             uncraftingStatus = UncraftingStatus.ERROR;
         }

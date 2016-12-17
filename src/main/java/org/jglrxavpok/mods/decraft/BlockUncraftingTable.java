@@ -14,6 +14,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -35,11 +36,11 @@ public class BlockUncraftingTable extends Block
 	@Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ)
     {	
-//        if (!worldIn.isRemote)
-//        {
-//        }
-        playerIn.openGui(ModUncrafting.instance, ModGuiHandler.GUI_TABLE, worldIn, pos.getX(), pos.getY(), pos.getZ());
-		checkForPorteManteau(playerIn, worldIn, pos);
+        if (!worldIn.isRemote)
+        {
+            playerIn.openGui(ModUncrafting.instance, ModGuiHandler.GUI_TABLE, worldIn, pos.getX(), pos.getY(), pos.getZ());
+    		checkForPorteManteau(playerIn, worldIn, pos);
+        }
         return true;
     }
 	
@@ -72,10 +73,10 @@ public class BlockUncraftingTable extends Block
 			
 			// check if one of the adjacent blocks is a chest
 			if (
-				blockNorth == Blocks.chest || 
-				blockSouth == Blocks.chest || 
-				blockEast == Blocks.chest || 
-				blockWest == Blocks.chest
+				blockNorth == Blocks.chest || //blockNorth == Blocks.trapped_chest || blockNorth == Blocks.ender_chest ||
+				blockSouth == Blocks.chest || //blockSouth == Blocks.trapped_chest || blockSouth == Blocks.ender_chest || 
+				blockEast == Blocks.chest || //blockEast == Blocks.trapped_chest || blockEast == Blocks.ender_chest ||
+				blockWest == Blocks.chest //|| blockWest == Blocks.trapped_chest || blockWest == Blocks.ender_chest
 			)
 			{
 				chest = true;
