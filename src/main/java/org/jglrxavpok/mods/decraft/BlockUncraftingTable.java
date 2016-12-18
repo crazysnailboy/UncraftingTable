@@ -53,6 +53,7 @@ public class BlockUncraftingTable extends Block
 		boolean chest = false;
 		boolean workbench = false;
 		
+		// if the block beneath is a fence...
 		if (worldIn.getBlockState(pos.down()).getBlock() instanceof net.minecraft.block.BlockFence)
 		{
 			Block blockEast = worldIn.getBlockState(pos.east()).getBlock();
@@ -73,10 +74,10 @@ public class BlockUncraftingTable extends Block
 			
 			// check if one of the adjacent blocks is a chest
 			if (
-				blockNorth == Blocks.chest || //blockNorth == Blocks.trapped_chest || blockNorth == Blocks.ender_chest ||
-				blockSouth == Blocks.chest || //blockSouth == Blocks.trapped_chest || blockSouth == Blocks.ender_chest || 
-				blockEast == Blocks.chest || //blockEast == Blocks.trapped_chest || blockEast == Blocks.ender_chest ||
-				blockWest == Blocks.chest //|| blockWest == Blocks.trapped_chest || blockWest == Blocks.ender_chest
+				(blockNorth == Blocks.chest || blockNorth == Blocks.trapped_chest || blockNorth == Blocks.ender_chest) ||
+				(blockSouth == Blocks.chest || blockSouth == Blocks.trapped_chest || blockSouth == Blocks.ender_chest) || 
+				(blockEast == Blocks.chest || blockEast == Blocks.trapped_chest || blockEast == Blocks.ender_chest) ||
+				(blockWest == Blocks.chest || blockWest == Blocks.trapped_chest || blockWest == Blocks.ender_chest)
 			)
 			{
 				chest = true;
@@ -84,17 +85,17 @@ public class BlockUncraftingTable extends Block
 			
 			// check if one of the adjacent blocks is a crafting table
 			if (
-				blockNorth == Blocks.crafting_table || 
-				blockSouth == Blocks.crafting_table || 
-				blockEast == Blocks.crafting_table || 
-				blockWest == Blocks.crafting_table
+				(blockNorth == Blocks.crafting_table) || 
+				(blockSouth == Blocks.crafting_table) || 
+				(blockEast == Blocks.crafting_table) || 
+				(blockWest == Blocks.crafting_table)
 			)
 			{
 				workbench = true;
 			}
 			
 			// if the block is adjacent to all three, trigger the achievement
-			if ((furnace) && (chest) && (workbench)) 
+			if (furnace && chest && workbench) 
 			{
 				playerIn.triggerAchievement(ModAchievements.porteManteauAchievement);
 			}
