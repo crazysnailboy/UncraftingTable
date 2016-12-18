@@ -147,12 +147,12 @@ public class ContainerUncraftingTable extends Container
 //        	System.out.println("inventory == calculInput: " + (inventory == calculInput));
         	
         	// if the left slot is empty
-            if (calculInput.getStackInSlot(0).func_190926_b())
+            if (calculInput.getStackInSlot(0).isEmpty())
             {
                 uncraftingCost = 0;
                 
                 // if the right hand slot is empty
-                if (uncraftIn.getStackInSlot(0).func_190926_b())
+                if (uncraftIn.getStackInSlot(0).isEmpty())
                 {
                 	// set the status to ready
                     uncraftingStatus = UncraftingStatus.READY;
@@ -165,7 +165,7 @@ public class ContainerUncraftingTable extends Container
             }
             
             // if the left hand slot is not empty and the right hand slot is empty
-            else if (uncraftIn.getStackInSlot(0).func_190926_b())
+            else if (uncraftIn.getStackInSlot(0).isEmpty())
             {
             	// get the uncrafting result for the item in the left hand slot
                 List<NonNullList<ItemStack>> list1 = UncraftingManager.getUncraftResults(calculInput.getStackInSlot(0));
@@ -182,10 +182,10 @@ public class ContainerUncraftingTable extends Container
                 if (!MinecraftForge.EVENT_BUS.post(event))
                 {
                     int nbrStacks = event.getRequiredNumber();
-                    if (nbrStacks > calculInput.getStackInSlot(0).func_190916_E())
+                    if (nbrStacks > calculInput.getStackInSlot(0).getCount())
                     {
                         uncraftingStatus = UncraftingStatus.ERROR;
-                        uncraftingStatusText = I18n.translateToLocalFormatted("uncrafting.result.needMoreStacks", (nbrStacks - calculInput.getStackInSlot(0).func_190916_E()));
+                        uncraftingStatusText = I18n.translateToLocalFormatted("uncrafting.result.needMoreStacks", (nbrStacks - calculInput.getStackInSlot(0).getCount()));
                         uncraftingCost = 0 - ModConfiguration.standardLevel;
                         return;
                     }
@@ -238,7 +238,7 @@ public class ContainerUncraftingTable extends Container
         	System.out.println("inventory == uncraftIn: " + (inventory == uncraftIn));
         	
             uncraftingCost = 0;
-            if (uncraftIn.getStackInSlot(0).func_190926_b())
+            if (uncraftIn.getStackInSlot(0).isEmpty())
             {
                 uncraftingStatus = UncraftingStatus.READY;
                 uncraftingStatusText = I18n.translateToLocal("uncrafting.result.ready");
@@ -263,14 +263,14 @@ public class ContainerUncraftingTable extends Container
             if (!MinecraftForge.EVENT_BUS.post(event))
             {
                 int nbrStacks = event.getRequiredNumber();
-                if (nbrStacks > uncraftIn.getStackInSlot(0).func_190916_E())
+                if (nbrStacks > uncraftIn.getStackInSlot(0).getCount())
                 {
                     uncraftingStatus = UncraftingStatus.ERROR;
-                    uncraftingStatusText = I18n.translateToLocalFormatted("uncrafting.result.needMoreStacks", (nbrStacks - uncraftIn.getStackInSlot(0).func_190916_E()));
+                    uncraftingStatusText = I18n.translateToLocalFormatted("uncrafting.result.needMoreStacks", (nbrStacks - uncraftIn.getStackInSlot(0).getCount()));
                     return;
                 }
                 
-                while (!uncraftIn.getStackInSlot(0).func_190926_b() && nbrStacks <= uncraftIn.getStackInSlot(0).func_190916_E())
+                while (!uncraftIn.getStackInSlot(0).isEmpty() && nbrStacks <= uncraftIn.getStackInSlot(0).getCount())
                 {
                     EntityPlayer player = playerInventory.player;
                     int lvl = player.experienceLevel;
@@ -301,12 +301,12 @@ public class ContainerUncraftingTable extends Container
                     
                     
                     
-                    if (!EnchantmentHelper.getEnchantments(uncraftIn.getStackInSlot(0)).isEmpty() && calculInput.getStackInSlot(0) != ItemStack.field_190927_a && calculInput.getStackInSlot(0).getItem() == Items.BOOK)
+                    if (!EnchantmentHelper.getEnchantments(uncraftIn.getStackInSlot(0)).isEmpty() && calculInput.getStackInSlot(0) != ItemStack.EMPTY && calculInput.getStackInSlot(0).getItem() == Items.BOOK)
                     {
-                        int stackSize = calculInput.getStackInSlot(0).func_190916_E();
+                        int stackSize = calculInput.getStackInSlot(0).getCount();
                         
                         Map itemEnchantments = EnchantmentHelper.getEnchantments(uncraftIn.getStackInSlot(0));
-//                        NonNullList<ItemStack> enchantedBooks = NonNullList.<ItemStack>func_191197_a(width * height, ItemStack.field_190927_a);
+//                        NonNullList<ItemStack> enchantedBooks = NonNullList.<ItemStack>func_191197_a(width * height, ItemStack.EMPTY);
                         
                         ArrayList<ItemStack> enchantedBooks = new ArrayList<ItemStack>();
                         if (stackSize == 1)
@@ -342,7 +342,7 @@ public class ContainerUncraftingTable extends Container
                             }
                             if (stackSize <= 0)
                             {
-                                calculInput.setInventorySlotContents(0, ItemStack.field_190927_a);
+                                calculInput.setInventorySlotContents(0, ItemStack.EMPTY);
                                 break;
                             }
                             
@@ -377,10 +377,10 @@ public class ContainerUncraftingTable extends Container
                             {
                                 for (int i = 0; i < items.size(); i++ )
                                 {
-                                    if (items.get(i) != ItemStack.field_190927_a)
+                                    if (items.get(i) != ItemStack.EMPTY)
                                     {
                                         toRemove-- ;
-                                        items.set(i, ItemStack.field_190927_a);
+                                        items.set(i, ItemStack.EMPTY);
                                         if (toRemove <= 0)
                                         {
                                             break;
@@ -412,7 +412,7 @@ public class ContainerUncraftingTable extends Container
                         for (int i = 0; i < uncraftOut.getSizeInventory(); i++ )
                         {
                             ItemStack item = uncraftOut.getStackInSlot(i);
-                            if ((item != ItemStack.field_190927_a && items.get(i) != ItemStack.field_190927_a && item.getItem() != items.get(i).getItem()))
+                            if ((item != ItemStack.EMPTY && items.get(i) != ItemStack.EMPTY && item.getItem() != items.get(i).getItem()))
                             {
                                 if (!playerInventory.addItemStackToInventory(item))
                                 {
@@ -424,7 +424,7 @@ public class ContainerUncraftingTable extends Container
 	                                    e.posZ = playerInventory.player.posZ;
                                 	}
                                 }
-                                uncraftOut.setInventorySlotContents(i, ItemStack.field_190927_a);
+                                uncraftOut.setInventorySlotContents(i, ItemStack.EMPTY);
                             }
                         }
                     }
@@ -436,7 +436,7 @@ public class ContainerUncraftingTable extends Container
                     {
                         ItemStack s = items.get(i);
                         ItemStack currentStack = uncraftOut.getStackInSlot(i);
-                        if (s != ItemStack.field_190927_a)
+                        if (s != ItemStack.EMPTY)
                         {
                         	
 //                        	System.out.println("displayName: " + s.getDisplayName());
@@ -447,14 +447,14 @@ public class ContainerUncraftingTable extends Container
                             {
                                 metadata = 0;
                             }
-                            ItemStack newStack = ItemStack.field_190927_a;
-                            if (!currentStack.func_190926_b() && 1 + currentStack.func_190916_E() <= s.getMaxStackSize())
+                            ItemStack newStack = ItemStack.EMPTY;
+                            if (!currentStack.isEmpty() && 1 + currentStack.getCount() <= s.getMaxStackSize())
                             {
-                                newStack = new ItemStack(s.getItem(), 1 + currentStack.func_190916_E(), metadata);
+                                newStack = new ItemStack(s.getItem(), 1 + currentStack.getCount(), metadata);
                             }
                             else
                             {
-                                if (!currentStack.func_190926_b() && !playerInventory.addItemStackToInventory(currentStack))
+                                if (!currentStack.isEmpty() && !playerInventory.addItemStackToInventory(currentStack))
                                 {
                                 	if (!worldObj.isRemote)
                                 	{
@@ -470,7 +470,7 @@ public class ContainerUncraftingTable extends Container
                         }
                         else
                         {
-                            uncraftOut.setInventorySlotContents(i, ItemStack.field_190927_a);
+                            uncraftOut.setInventorySlotContents(i, ItemStack.EMPTY);
                         }
                     }
                     ItemStack stack = uncraftIn.getStackInSlot(0);
@@ -492,8 +492,8 @@ public class ContainerUncraftingTable extends Container
                         event.getPlayer().addStat(ModUncrafting.instance.uncraftedItemsStat, event.getRequiredNumber());
                         //event.getPlayer().triggerAchievement(ModUncrafting.instance.uncraftAny);
                     }
-                    int i = uncraftIn.getStackInSlot(0).func_190916_E() - event.getRequiredNumber();
-                    ItemStack newStack = ItemStack.field_190927_a;
+                    int i = uncraftIn.getStackInSlot(0).getCount() - event.getRequiredNumber();
+                    ItemStack newStack = ItemStack.EMPTY;
                     if (i > 0)
                     {
                         newStack = new ItemStack(uncraftIn.getStackInSlot(0).getItem(), i, uncraftIn.getStackInSlot(0).getItemDamage());
@@ -501,7 +501,7 @@ public class ContainerUncraftingTable extends Container
                     }
                     else
                     {
-                    	newStack = ItemStack.field_190927_a;
+                    	newStack = ItemStack.EMPTY;
                     }
                     uncraftIn.setInventorySlotContents(0, newStack);
                     this.onCraftMatrixChanged(calculInput);
@@ -549,20 +549,20 @@ public class ContainerUncraftingTable extends Container
     @Override
     public void onContainerClosed(EntityPlayer player)
     {
-        if (playerInventory.getItemStack() != ItemStack.field_190927_a)
+        if (playerInventory.getItemStack() != ItemStack.EMPTY)
         {
             player.entityDropItem(playerInventory.getItemStack(), 0.5f);
         }
         if (!this.worldObj.isRemote)
         {
             ItemStack itemstack = this.uncraftIn.removeStackFromSlot(0);
-            if (itemstack != ItemStack.field_190927_a)
+            if (itemstack != ItemStack.EMPTY)
             {
                 player.entityDropItem(itemstack, 0.5f);
             }
 
             itemstack = this.calculInput.getStackInSlot(0);
-            if (itemstack != ItemStack.field_190927_a)
+            if (itemstack != ItemStack.EMPTY)
             {
                 player.entityDropItem(itemstack, 0.5f);
             }
@@ -570,7 +570,7 @@ public class ContainerUncraftingTable extends Container
             {
                 itemstack = this.uncraftOut.removeStackFromSlot(i);
 
-                if (itemstack != ItemStack.field_190927_a)
+                if (itemstack != ItemStack.EMPTY)
                 {
                     player.entityDropItem(itemstack, 0.5f);
                 }
@@ -590,7 +590,7 @@ public class ContainerUncraftingTable extends Container
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int index)
     {
-        ItemStack itemstack = ItemStack.field_190927_a;
+        ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = (Slot)this.inventorySlots.get(index);
         if (slot != null && slot.getHasStack())
             if (slot.inventory.equals(calculInput))
@@ -602,9 +602,9 @@ public class ContainerUncraftingTable extends Container
                 
                 if (!playerInventory.addItemStackToInventory(itemstack1))
                 {
-                    return ItemStack.field_190927_a;
+                    return ItemStack.EMPTY;
                 }
-                slot.putStack(ItemStack.field_190927_a);
+                slot.putStack(ItemStack.EMPTY);
             }
             else if (slot.inventory.equals(uncraftIn))
             {
@@ -612,9 +612,9 @@ public class ContainerUncraftingTable extends Container
                 {
                     if (!playerInventory.addItemStackToInventory(slot.getStack()))
                     {
-                        return ItemStack.field_190927_a;
+                        return ItemStack.EMPTY;
                     }
-                    slot.putStack(ItemStack.field_190927_a);
+                    slot.putStack(ItemStack.EMPTY);
                     slot.onSlotChanged();
                 }
             }
@@ -636,15 +636,15 @@ public class ContainerUncraftingTable extends Container
                 }
                 if (calcInput != null)
                 {
-                    if (!calcInput.getStack().func_190926_b())
+                    if (!calcInput.getStack().isEmpty())
                     {
                         calcInput.putStack(slot.getStack());
                         calcInput.onSlotChanged();
-                        slot.putStack(ItemStack.field_190927_a);
+                        slot.putStack(ItemStack.EMPTY);
                     }
                     else
                     {
-                        if (slot.getStack().func_190926_b())
+                        if (slot.getStack().isEmpty())
                         {
                             ItemStack i = slot.getStack();
 //                            slot.onPickupFromSlot(player, slot.getStack());
@@ -656,7 +656,7 @@ public class ContainerUncraftingTable extends Container
                         }
                         else
                         {
-                            return ItemStack.field_190927_a;
+                            return ItemStack.EMPTY;
                         }
                     }
                 }
@@ -667,13 +667,13 @@ public class ContainerUncraftingTable extends Container
                 {
                     if (!playerInventory.addItemStackToInventory(slot.getStack()))
                     {
-                        return ItemStack.field_190927_a;
+                        return ItemStack.EMPTY;
                     }
-                    slot.putStack(ItemStack.field_190927_a);
+                    slot.putStack(ItemStack.EMPTY);
                     slot.onSlotChanged();
                 }
             }
-        return ItemStack.field_190927_a;
+        return ItemStack.EMPTY;
     }
 
     @Override

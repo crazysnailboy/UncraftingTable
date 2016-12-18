@@ -22,7 +22,7 @@ public class InventoryUncraftResult implements IInventory
     {
     	int width = 3;
     	int height = 3;
-        this.stackList = NonNullList.<ItemStack>func_191197_a(width * height, ItemStack.field_190927_a);
+        this.stackList = NonNullList.<ItemStack>withSize(width * height, ItemStack.EMPTY);
     }
     
     
@@ -39,7 +39,7 @@ public class InventoryUncraftResult implements IInventory
      */
     @Override
     public ItemStack getStackInSlot(int index) {
-        return index >= this.getSizeInventory() ? ItemStack.field_190927_a : (ItemStack)this.stackList.get(index);
+        return index >= this.getSizeInventory() ? ItemStack.EMPTY : (ItemStack)this.stackList.get(index);
     }
 
     /**
@@ -71,22 +71,17 @@ public class InventoryUncraftResult implements IInventory
         this.stackList.set(index, stack);
     }
     
+	@Override
     public boolean isEmpty()
-    {
+	{
         for (ItemStack itemstack : this.stackList)
         {
-            if (!itemstack.func_190926_b())
+            if (!itemstack.isEmpty())
             {
                 return false;
             }
         }
         return true;
-    }
-	
-	@Override
-    public boolean func_191420_l()
-	{
-		return this.isEmpty();
 	}
     
     
@@ -109,10 +104,10 @@ public class InventoryUncraftResult implements IInventory
     /**
      * Do not make give this method the name canInteractWith because it clashes with Container
      */
-    @Override
-    public boolean isUseableByPlayer(EntityPlayer player) {
+	@Override
+	public boolean isUsableByPlayer(EntityPlayer player) {
         return true;
-    }
+	}
     
 	@Override
 	public void openInventory(EntityPlayer player) {
@@ -171,6 +166,5 @@ public class InventoryUncraftResult implements IInventory
 		// TODO Auto-generated method stub
 		
 	}
-
 
 }
