@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
@@ -33,7 +34,7 @@ public final class RecipeHandlers
 		/**
 		 * Returns the "crafting grid" depending on the given Recipe
 		 */
-		public abstract ItemStack[] getCraftingGrid(IRecipe s);
+		public abstract NonNullList<ItemStack> getCraftingGrid(IRecipe s);
 	}
 	
 	
@@ -46,13 +47,13 @@ public final class RecipeHandlers
 		}
 
 		@Override
-		public ItemStack[] getCraftingGrid(IRecipe r)
+		public NonNullList<ItemStack> getCraftingGrid(IRecipe r)
 		{
-			ItemStack[] stacks = new ItemStack[9];
+			NonNullList<ItemStack> stacks = NonNullList.<ItemStack>func_191197_a(9, ItemStack.field_190927_a);
 			ShapedRecipes shaped = (ShapedRecipes)r;
 			for (int j = 0;j<shaped.recipeItems.length;j++)
 			{
-				stacks[j] = shaped.recipeItems[j];
+				stacks.set(j, shaped.recipeItems[j]);
 			}
 			return stacks;
 		}
@@ -66,22 +67,22 @@ public final class RecipeHandlers
 		}
 
 		@Override
-		public ItemStack[] getCraftingGrid(IRecipe r)
+		public NonNullList<ItemStack> getCraftingGrid(IRecipe r)
 		{
-			ItemStack[] stacks = new ItemStack[9];
+			NonNullList<ItemStack> stacks = NonNullList.<ItemStack>func_191197_a(9, ItemStack.field_190927_a);
 			ShapelessOreRecipe shaped = (ShapelessOreRecipe)r;
 			for (int j = 0;j<shaped.getInput().size();j++)
 			{
 				if (shaped.getInput().get(j) instanceof ItemStack)
 				{
-					stacks[j] = (ItemStack) shaped.getInput().get(j);
+					stacks.set(j, (ItemStack)shaped.getInput().get(j));
 				}
 				else if (shaped.getInput().get(j) instanceof java.util.List)
 				{
 					Object o = ((java.util.List)shaped.getInput().get(j)).get(0);
 					if (o instanceof ItemStack)
 					{
-						stacks[j] = (ItemStack)o;
+						stacks.set(j, (ItemStack)o);
 					}
 				}
 			}
@@ -97,22 +98,22 @@ public final class RecipeHandlers
 		}
 
 		@Override
-		public ItemStack[] getCraftingGrid(IRecipe r)
+		public NonNullList<ItemStack> getCraftingGrid(IRecipe r)
 		{
-			ItemStack[] stacks = new ItemStack[9];
+			NonNullList<ItemStack> stacks = NonNullList.<ItemStack>func_191197_a(9, ItemStack.field_190927_a);
 			ShapedOreRecipe shaped = (ShapedOreRecipe)r;
 			for (int j = 0;j<shaped.getInput().length;j++)
 			{
 				if (shaped.getInput()[j] instanceof ItemStack)
 				{
-					stacks[j] = (ItemStack) shaped.getInput()[j];
+					stacks.set(j, (ItemStack)shaped.getInput()[j]);
 				}
 				else if (shaped.getInput()[j] instanceof java.util.List)
 				{
 					Object o = ((java.util.List)shaped.getInput()[j]).get(0);
 					if (o instanceof ItemStack)
 					{
-						stacks[j] = (ItemStack)o;
+						stacks.set(j, (ItemStack)o);
 					}
 				}
 			}
@@ -128,13 +129,13 @@ public final class RecipeHandlers
 		}
 
 		@Override
-		public ItemStack[] getCraftingGrid(IRecipe r)
+		public NonNullList<ItemStack> getCraftingGrid(IRecipe r)
 		{
-			ItemStack[] stacks = new ItemStack[9];
+			NonNullList<ItemStack> stacks = NonNullList.<ItemStack>func_191197_a(9, ItemStack.field_190927_a);
 			ShapelessRecipes shaped = (ShapelessRecipes)r;
 			for (int j = 0;j<shaped.recipeItems.size();j++)
 			{
-				stacks[j] = (ItemStack) shaped.recipeItems.get(j);
+				stacks.set(j, (ItemStack)shaped.recipeItems.get(j));
 			}
 			return stacks;
 		}

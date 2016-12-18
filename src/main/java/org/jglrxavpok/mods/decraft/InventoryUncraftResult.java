@@ -2,7 +2,9 @@ package org.jglrxavpok.mods.decraft;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 
 /**
@@ -12,8 +14,18 @@ import net.minecraft.util.text.ITextComponent;
  */
 public class InventoryUncraftResult implements IInventory
 {
-    private ItemStack[] stackResult = new ItemStack[9];
 
+    private final NonNullList<ItemStack> stackList;
+    
+    
+    public InventoryUncraftResult()
+    {
+    	int width = 3;
+    	int height = 3;
+        this.stackList = NonNullList.<ItemStack>func_191197_a(width * height, ItemStack.field_190927_a);
+    }
+    
+    
     /**
      * Returns the number of slots in the inventory.
      */
@@ -23,27 +35,21 @@ public class InventoryUncraftResult implements IInventory
     }
 
     /**
-     * Returns the stack in slot i
+     * Returns the stack in the given slot.
      */
     @Override
-    public ItemStack getStackInSlot(int slotIn) {
-        return this.stackResult[slotIn];
+    public ItemStack getStackInSlot(int index) {
+        return index >= this.getSizeInventory() ? ItemStack.field_190927_a : (ItemStack)this.stackList.get(index);
     }
 
     /**
-     * Removes from an inventory slot (first arg) up to a specified number (second arg) of items and returns them in a
-     * new stack.
+     * Removes up to a specified number of items from an inventory slot and returns them in a new stack.
      */
     @Override
-    public ItemStack decrStackSize(int index, int count) {
-    	
-        if (this.stackResult[index] != null)
-        {
-            ItemStack itemstack = this.stackResult[index];
-            this.stackResult[index] = null;
-            return itemstack;
-        }
-        else return null;
+    public ItemStack decrStackSize(int index, int count)
+    {
+        ItemStack itemstack = ItemStackHelper.getAndSplit(this.stackList, index, count);
+        return itemstack;
     }
 
     /**
@@ -51,42 +57,39 @@ public class InventoryUncraftResult implements IInventory
      * like when you close a workbench GUI.
      */
     @Override
-    public ItemStack removeStackFromSlot(int index) {
-    	
-        if (this.stackResult[index] != null)
-        {
-            ItemStack itemstack = this.stackResult[index];
-            this.stackResult[index] = null;
-            return itemstack;
-        }
-        else return null;
+    public ItemStack removeStackFromSlot(int index)
+    {
+        return ItemStackHelper.getAndRemove(this.stackList, index);
     }
 
     /**
      * Sets the given item stack to the specified slot in the inventory (can be crafting or armor sections).
      */
     @Override
-    public void setInventorySlotContents(int index, ItemStack stack) {
-        this.stackResult[index] = stack;
+    public void setInventorySlotContents(int index, ItemStack stack)
+    {
+        this.stackList.set(index, stack);
     }
     
-    /**
-     * Returns the name of the inventory
-     */
-//	@Override
-//	public String getInventoryName() {
-////      return "UncraftResult";
-//		return null;
-//	}
+    public boolean isEmpty()
+    {
+        for (ItemStack itemstack : this.stackList)
+        {
+            if (!itemstack.func_190926_b())
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+	
+	@Override
+    public boolean func_191420_l()
+	{
+		return this.isEmpty();
+	}
     
-    /**
-     * Returns if the inventory is named
-     */
-//	@Override
-//	public boolean hasCustomInventoryName() {
-//		return false;
-//	}
-
+    
 	/**
      * Returns the maximum stack size for a inventory slot.
      */
@@ -124,17 +127,6 @@ public class InventoryUncraftResult implements IInventory
      */
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
-        return true;
-    }
-    
-
-    public boolean isEmpty()
-    {
-        for (int i = 0; i < this.stackResult.length; i++ )
-        {
-            if (stackResult[i] != null)
-                return false;
-        }
         return true;
     }
 
@@ -179,5 +171,6 @@ public class InventoryUncraftResult implements IInventory
 		// TODO Auto-generated method stub
 		
 	}
+
 
 }

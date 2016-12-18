@@ -23,6 +23,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.RecipesMapExtending;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
@@ -68,7 +69,7 @@ public class UncraftingManager
 						RecipeHandler handler = getRecipeHandler(recipe);
 						if (handler != null)
 						{
-							list.add(recipeOutput.stackSize);
+							list.add(recipeOutput.func_190916_E());
 						}
 						else 
 						{
@@ -83,14 +84,15 @@ public class UncraftingManager
 		return list;
 	}
 	
-	public static List<ItemStack[]> getUncraftResults(ItemStack item)
+	public static List<NonNullList<ItemStack>> getUncraftResults(ItemStack item)
 	{
 //		System.out.println("getUncraftResults");
 //		System.out.println(item.getItem().getUnlocalizedName());
 //		System.out.println(item.getDisplayName());
 //		System.out.println("isDamageable: " + item.getItem().isDamageable());
 
-		List<ItemStack[]> list = new ArrayList<ItemStack[]>();
+		
+		List<NonNullList<ItemStack>> list = new ArrayList<NonNullList<ItemStack>>();
 		
 		if (!canUncraftItem(item)) return list;
 		
@@ -105,9 +107,9 @@ public class UncraftingManager
 				if (recipeOutput != null)
 				{
 					if (
-						(recipeOutput.getItem() == item.getItem() && recipeOutput.stackSize <= item.stackSize && item.getItem().isDamageable() == false && recipeOutput.getItemDamage() == item.getItemDamage())
+						(recipeOutput.getItem() == item.getItem() && recipeOutput.func_190916_E() <= item.func_190916_E() && item.getItem().isDamageable() == false && recipeOutput.getItemDamage() == item.getItemDamage())
 						||
-						(recipeOutput.getItem() == item.getItem() && recipeOutput.stackSize <= item.stackSize && item.getItem().isDamageable() == true)
+						(recipeOutput.getItem() == item.getItem() && recipeOutput.func_190916_E() <= item.func_190916_E() && item.getItem().isDamageable() == true)
 					)
 					{
 						RecipeHandler handler = getRecipeHandler(recipe);

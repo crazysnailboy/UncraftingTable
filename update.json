@@ -1,0 +1,10 @@
+{
+	"homepage": "https://minecraft.curseforge.com/projects/jglrxavpoks-uncrafting-table/files/",
+	"promos": {
+		"1.11-latest": "1.7",
+		"1.11-recommended": "1.7"
+	},
+	"1.11": {
+		"1.7": ""
+	}
+}

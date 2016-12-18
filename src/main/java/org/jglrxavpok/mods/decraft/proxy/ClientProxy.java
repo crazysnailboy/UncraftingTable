@@ -21,10 +21,10 @@ public class ClientProxy extends CommonProxy {
 		super.init();
 		ModAchievements.clientInit();
 		
-		Item item = Item.getItemFromBlock(ModUncrafting.uncraftingTable);
-		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, 0, new ModelResourceLocation(ModUncrafting.MODID + ":" + item.getUnlocalizedName().substring(5), "inventory"));
-		
-		
+		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(
+			Item.getItemFromBlock(ModUncrafting.uncraftingTable), 0, 
+			new ModelResourceLocation(ModUncrafting.uncraftingTable.getRegistryName().toString(), "inventory")
+		);
 	}
 	
 	@Override

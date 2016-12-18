@@ -23,7 +23,7 @@ public class ModGuiHandler implements IGuiHandler
 	@Override
     public Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z)
     {
-        if (world.getBlockState(new BlockPos(x, y, z)).getBlock() == ModUncrafting.instance.uncraftingTable)
+        if (world.getBlockState(new BlockPos(x, y, z)).getBlock() instanceof BlockUncraftingTable)
         {
             if (id == GUI_TABLE)
             {
@@ -41,7 +41,7 @@ public class ModGuiHandler implements IGuiHandler
     @Override
     public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z)
     {
-        if (world.getBlockState(new BlockPos(x, y, z)).getBlock() == ModUncrafting.instance.uncraftingTable)
+        if (world.getBlockState(new BlockPos(x, y, z)).getBlock() instanceof BlockUncraftingTable)
         {
             if (id == GUI_TABLE)
             {
