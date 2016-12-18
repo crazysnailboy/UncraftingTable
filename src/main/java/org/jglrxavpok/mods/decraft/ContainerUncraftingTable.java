@@ -108,7 +108,7 @@ public class ContainerUncraftingTable extends Container
         // if the left input slot changes
         if (inventory == calculInput)
         {
-        	System.out.println("inventory == calculInput: " + (inventory == calculInput));
+//        	System.out.println("inventory == calculInput: " + (inventory == calculInput));
         	
         	// if the left slot is empty
             if (calculInput.getStackInSlot(0) == null)
@@ -199,7 +199,7 @@ public class ContainerUncraftingTable extends Container
         
         else if (inventory == uncraftIn)
         {
-        	System.out.println("inventory == uncraftIn: " + (inventory == uncraftIn));
+//        	System.out.println("inventory == uncraftIn: " + (inventory == uncraftIn));
         	
             uncraftingCost = 0;
             if (uncraftIn.getStackInSlot(0) == null)
@@ -398,8 +398,8 @@ public class ContainerUncraftingTable extends Container
                         if (s != null)
                         {
                         	
-                        	System.out.println("displayName: " + s.getDisplayName());
-                        	System.out.println("metaData: " + s.getMetadata());
+//                        	System.out.println("displayName: " + s.getDisplayName());
+//                        	System.out.println("metaData: " + s.getMetadata());
                         	
                             int metadata = s.getItemDamage();
                             if (metadata == 32767)
