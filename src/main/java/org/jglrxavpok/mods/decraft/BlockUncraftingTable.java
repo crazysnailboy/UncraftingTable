@@ -44,9 +44,9 @@ public class BlockUncraftingTable extends Block
     {
         if (!worldIn.isRemote)
         {
+        	player.openGui(ModUncrafting.instance, ModGuiHandler.GUI_TABLE, worldIn, x, y, z);
+    		checkForPorteManteau(player, worldIn, x, y, z);
         }
-    	player.openGui(ModUncrafting.instance, ModGuiHandler.GUI_TABLE, worldIn, x, y, z);
-		checkForPorteManteau(player, worldIn, x, y, z);
         return true;
     }
 
@@ -60,12 +60,18 @@ public class BlockUncraftingTable extends Block
 		// if the block beneath is a fence...
 		if (worldIn.getBlock(x, y - 1, z) == Blocks.fence)
 		{
+			
+			Block blockEast = worldIn.getBlock(x + 1, y, z);
+			Block blockWest = worldIn.getBlock(x - 1, y, z);
+			Block blockNorth = worldIn.getBlock(x, y, z - 1);
+			Block blockSouth = worldIn.getBlock(x, y, z + 1);
+			
 			// check if one of the adjacent blocks is a furnace
 			if (
-				(worldIn.getBlock(x + 1, y, z) == Blocks.furnace) || (worldIn.getBlock(x + 1, y, z) == Blocks.lit_furnace) || 
-				(worldIn.getBlock(x - 1, y, z) == Blocks.furnace) || (worldIn.getBlock(x - 1, y, z) == Blocks.lit_furnace) || 
-				(worldIn.getBlock(x, y, z + 1) == Blocks.furnace) || (worldIn.getBlock(x, y, z + 1) == Blocks.lit_furnace) || 
-				(worldIn.getBlock(x, y, z - 1) == Blocks.furnace) || (worldIn.getBlock(x, y, z - 1) == Blocks.lit_furnace)
+				(blockNorth == Blocks.furnace || blockNorth == Blocks.lit_furnace) ||
+				(blockSouth == Blocks.furnace || blockSouth == Blocks.lit_furnace) ||
+				(blockEast == Blocks.furnace || blockEast == Blocks.lit_furnace) ||
+				(blockWest == Blocks.furnace || blockWest == Blocks.lit_furnace)
 			) 
 			{
 				furnace = true;
@@ -73,10 +79,10 @@ public class BlockUncraftingTable extends Block
 			
 			// check if one of the adjacent blocks is a chest
 			if (
-				(worldIn.getBlock(x + 1, y, z) == Blocks.chest) || 
-				(worldIn.getBlock(x - 1, y, z) == Blocks.chest) || 
-				(worldIn.getBlock(x, y, z + 1) == Blocks.chest) || 
-				(worldIn.getBlock(x, y, z - 1) == Blocks.chest)
+				(blockNorth == Blocks.chest || blockNorth == Blocks.trapped_chest || blockNorth == Blocks.ender_chest) ||
+				(blockSouth == Blocks.chest || blockSouth == Blocks.trapped_chest || blockSouth == Blocks.ender_chest) || 
+				(blockEast == Blocks.chest || blockEast == Blocks.trapped_chest || blockEast == Blocks.ender_chest) ||
+				(blockWest == Blocks.chest || blockWest == Blocks.trapped_chest || blockWest == Blocks.ender_chest)
 			) 
 			{
 				chest = true;
@@ -84,17 +90,17 @@ public class BlockUncraftingTable extends Block
 			
 			// check if one of the adjacent blocks is a crafting table
 			if (
-				(worldIn.getBlock(x + 1, y, z) == Blocks.crafting_table) || 
-				(worldIn.getBlock(x - 1, y, z) == Blocks.crafting_table) || 
-				(worldIn.getBlock(x, y, z + 1) == Blocks.crafting_table) || 
-				(worldIn.getBlock(x, y, z - 1) == Blocks.crafting_table)
+				(blockNorth == Blocks.crafting_table) || 
+				(blockSouth == Blocks.crafting_table) || 
+				(blockEast == Blocks.crafting_table) || 
+				(blockWest == Blocks.crafting_table)
 			) 
 			{
 				workbench = true;
 			}
 			
 			// if the block is adjacent to all three, trigger the achievement
-			if ((furnace) && (chest) && (workbench)) 
+			if (furnace && chest && workbench) 
 			{
 				player.triggerAchievement(ModAchievements.porteManteauAchievement);
 			}

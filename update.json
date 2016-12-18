@@ -1,10 +1,10 @@
 {
 	"homepage": "https://minecraft.curseforge.com/projects/jglrxavpoks-uncrafting-table/files/",
 	"promos": {
-		"1.7.10-latest": "1.4.3-pre2",
-		"1.7.10-recommended": "1.4.2"
+		"1.7.10-latest": "1.4.3",
+		"1.7.10-recommended": "1.4.3"
 	},
 	"1.7.10": {
-		"1.4.3-pre2": "Fixed bugs causing crashes when used on a server"
+		"1.4.3": ""
 	}
 }
