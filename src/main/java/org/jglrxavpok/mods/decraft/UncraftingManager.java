@@ -11,6 +11,8 @@ import org.jglrxavpok.mods.decraft.RecipeHandlers.ShapedRecipeHandler;
 import org.jglrxavpok.mods.decraft.RecipeHandlers.ShapelessOreRecipeHandler;
 import org.jglrxavpok.mods.decraft.RecipeHandlers.ShapelessRecipeHandler;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
+import org.jglrxavpok.mods.decraft.item.uncrafting.mekanism.MekanismRecipeHandlers.ShapedMekanismRecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.mekanism.MekanismRecipeHandlers.ShapelessMekanismRecipeHandler;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -32,6 +34,48 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
  */
 public class UncraftingManager 
 {
+	
+//	private static List<IRecipe> vanillaRecipeList;
+//	
+//	private static List<IRecipe> reflectedRecipeList;
+	
+	
+//	private static List<IRecipe> getVanillaRecipeList()
+//	{
+//		List<IRecipe> recipeList = CraftingManager.getInstance().getRecipeList();
+//		
+//		List<IRecipe> vanillaRecipeList = new ArrayList<IRecipe>();
+//		vanillaRecipeList.addAll(Lists.newArrayList(Iterables.filter(recipeList, ShapedRecipes.class)));
+//		vanillaRecipeList.addAll(Lists.newArrayList(Iterables.filter(recipeList, ShapedOreRecipe.class)));
+//		vanillaRecipeList.addAll(Lists.newArrayList(Iterables.filter(recipeList, ShapelessRecipes.class)));
+//		vanillaRecipeList.addAll(Lists.newArrayList(Iterables.filter(recipeList, ShapelessOreRecipe.class)));
+//		
+//		return vanillaRecipeList;
+//	}
+//	
+//	private static List<IRecipe> getReflectedRecipeList()
+//	{
+//		List<IRecipe> recipeList = CraftingManager.getInstance().getRecipeList();
+//		List<IRecipe> reflectedRecipeList = new ArrayList<IRecipe>();
+//		
+//		String[] classNames = new String[] { 
+//			"mekanism.common.recipe.ShapedMekanismRecipe"
+//		};
+//		
+//		for ( String className : classNames )
+//		{
+//			try
+//			{
+//				Class c = Class.forName(className);
+//				reflectedRecipeList.addAll(Lists.newArrayList(Iterables.filter(recipeList, c)));
+//			}
+//			catch(Exception ex) { }
+//		}
+//		
+//		return reflectedRecipeList;
+//	}
+	
+	
 
 	private static Boolean canUncraftItem(ItemStack itemStack)
 	{
@@ -49,39 +93,34 @@ public class UncraftingManager
 //		System.out.println("\t" + item.getDisplayName());
 		
 		List<Integer> list = new ArrayList<Integer>();
-		
 		if (!canUncraftItem(item)) return list;
 		
-		List<?> recipeList = CraftingManager.getInstance().getRecipeList();
-
-		
-		for (int i = 0 ; i < recipeList.size() ; i++)
+		for ( IRecipe recipe : CraftingManager.getInstance().getRecipeList())
 		{
-			IRecipe recipe = (IRecipe)recipeList.get(i);
-			if (recipe != null)
+			ItemStack recipeOutput = recipe.getRecipeOutput();
+			if (recipeOutput != null)
 			{
-				ItemStack recipeOutput = recipe.getRecipeOutput();
-				if (recipeOutput != null)
+				if (ItemStack.areItemsEqualIgnoreDurability(item, recipeOutput))
 				{
-					if (recipeOutput.getItem() == item.getItem() && recipeOutput.getItemDamage() == item.getItemDamage())
+					RecipeHandler handler = getRecipeHandler(recipe);
+					if (handler != null)
 					{
-						RecipeHandler handler = getRecipeHandler(recipe);
-						if (handler != null)
-						{
-							list.add(recipeOutput.stackSize);
-						}
-						else 
-						{
-							ModUncrafting.instance.getLogger().error("[Uncrafting Table] Unknown recipe type: "+recipe.getClass().getCanonicalName());
-						}
+						list.add(recipeOutput.stackSize);
+						break;
+					}
+					else 
+					{
+						ModUncrafting.instance.getLogger().error("[Uncrafting Table] Unknown recipe type: " + recipe.getClass().getCanonicalName());
 					}
 				}
 			}
 		}
-//		System.out.println("\t" + "-----");
 
 		return list;
 	}
+	
+	
+	
 	
 	public static List<ItemStack[]> getUncraftResults(ItemStack item)
 	{
@@ -91,44 +130,30 @@ public class UncraftingManager
 //		System.out.println("isDamageable: " + item.getItem().isDamageable());
 
 		List<ItemStack[]> list = new ArrayList<ItemStack[]>();
-		
 		if (!canUncraftItem(item)) return list;
 		
-		List<?> recipeList = CraftingManager.getInstance().getRecipeList();
-		
-		for (int i = 0 ; i < recipeList.size() ; i++)
+		for ( IRecipe recipe : CraftingManager.getInstance().getRecipeList() )
 		{
-			IRecipe recipe = (IRecipe)recipeList.get(i);
-			if (recipe != null)
+			ItemStack recipeOutput = recipe.getRecipeOutput();
+			if (ItemStack.areItemsEqualIgnoreDurability(item, recipeOutput) && recipeOutput.stackSize <= item.stackSize)
 			{
-				ItemStack recipeOutput = recipe.getRecipeOutput();
-				if (recipeOutput != null)
+				RecipeHandler handler = getRecipeHandler(recipe);
+				if (handler != null)
 				{
-					if (
-						(recipeOutput.getItem() == item.getItem() && recipeOutput.stackSize <= item.stackSize && item.getItem().isDamageable() == false && recipeOutput.getItemDamage() == item.getItemDamage())
-						||
-						(recipeOutput.getItem() == item.getItem() && recipeOutput.stackSize <= item.stackSize && item.getItem().isDamageable() == true)
-					)
-					{
-						RecipeHandler handler = getRecipeHandler(recipe);
-//						RecipeHandler handler = uncraftingHandlers.get(recipe.getClass());
-						if (handler != null)
-						{
-							list.add(handler.getCraftingGrid(recipe));
-						}
-						else
-						{
-							ModUncrafting.instance.getLogger().error("[Uncrafting Table] Unknown recipe type: "+recipe.getClass().getCanonicalName());
-						}
-					}
+					list.add(handler.getCraftingGrid(recipe));
+					break;
+				}
+				else 
+				{
+					ModUncrafting.instance.getLogger().error("[Uncrafting Table] Unknown recipe type: " + recipe.getClass().getCanonicalName());
 				}
 			}
 		}
 		
-//		System.out.println("-----");
-		
 		return list;
 	}
+	
+	
 	
 	private static RecipeHandler getRecipeHandler(IRecipe recipe)
 	{
@@ -138,12 +163,52 @@ public class UncraftingManager
 		if (recipe instanceof ShapelessOreRecipe) return new ShapelessOreRecipeHandler(ShapelessOreRecipe.class);
 		if (recipe instanceof ShapedOreRecipe) return new ShapedOreRecipeHandler(ShapedOreRecipe.class);
 		
+		try
+		{
+//			Class c = Class.forName("mekanism.common.recipe.ShapedMekanismRecipe");
+//			if (c.isInstance(recipe)) return new ShapedMekanismRecipeHandler(c);
+
+			Class c;
+			
+			c = Class.forName("mekanism.common.recipe.ShapedMekanismRecipe");
+			if (c.isInstance(recipe)) return new ShapedMekanismRecipeHandler(c);
+
+			c = Class.forName("mekanism.common.recipe.ShapelessMekanismRecipe");
+			if (c.isInstance(recipe)) return new ShapelessMekanismRecipeHandler(c);
+			
+			
+			
+//			HashMap<String, Class> reflectedHandlers = new HashMap<String, Class>();
+//			reflectedHandlers.put("mekanism.common.recipe.ShapedMekanismRecipe", ShapedMekanismRecipeHandler.class);
+//			reflectedHandlers.put("mekanism.common.recipe.ShapelessMekanismRecipe", ShapelessMekanismRecipeHandler.class);
+//			
+//			for ( String className : reflectedHandlers.keySet())
+//			{
+//				try
+//				{
+//					Class recipeClass = Class.forName(className);
+//					Class handlerClass = reflectedHandlers.get(className);
+//					
+//					if (recipeClass.isInstance(recipe))
+//					{
+//						return (RecipeHandler)(handlerClass.getConstructor(IRecipe.class).newInstance(recipeClass));
+//					}
+//				}
+//				catch(Exception ex) { }
+//			}
+			
+		}
+		catch(Exception ex) { 
+		}
+		
 		return null;
 	}
 	
 	
 	public static void postInit()
 	{
+//		vanillaRecipeList = getVanillaRecipeList();
+//		reflectedRecipeList = getReflectedRecipeList();
 	}
 	
 }

@@ -48,15 +48,71 @@ public final class RecipeHandlers
 		@Override
 		public ItemStack[] getCraftingGrid(IRecipe r)
 		{
+			return ((ShapedRecipes)r).recipeItems;
+			
+//			ItemStack[] stacks = new ItemStack[9];
+//			ShapedRecipes shaped = (ShapedRecipes)r;
+//			for (int j = 0;j<shaped.recipeItems.length;j++)
+//			{
+//				stacks[j] = shaped.recipeItems[j];
+//			}
+//			return stacks;
+		}
+	}
+	
+	
+	public static class ShapelessRecipeHandler extends RecipeHandler
+	{
+		public ShapelessRecipeHandler(Class<? extends IRecipe> recipe)
+		{
+			super(recipe);
+		}
+
+		@Override
+		public ItemStack[] getCraftingGrid(IRecipe r)
+		{
 			ItemStack[] stacks = new ItemStack[9];
-			ShapedRecipes shaped = (ShapedRecipes)r;
-			for (int j = 0;j<shaped.recipeItems.length;j++)
+			ShapelessRecipes shaped = (ShapelessRecipes)r;
+			for (int j = 0;j<shaped.recipeItems.size();j++)
 			{
-				stacks[j] = shaped.recipeItems[j];
+				stacks[j] = (ItemStack) shaped.recipeItems.get(j);
 			}
 			return stacks;
 		}
 	}
+	
+	
+	public static class ShapedOreRecipeHandler extends RecipeHandler
+	{
+		public ShapedOreRecipeHandler(Class<? extends IRecipe> recipe)
+		{
+			super(recipe);
+		}
+
+		@Override
+		public ItemStack[] getCraftingGrid(IRecipe r)
+		{
+			ItemStack[] stacks = new ItemStack[9];
+			ShapedOreRecipe shaped = (ShapedOreRecipe)r;
+			for (int j = 0;j<shaped.getInput().length;j++)
+			{
+				if (shaped.getInput()[j] instanceof ItemStack)
+				{
+					stacks[j] = (ItemStack) shaped.getInput()[j];
+				}
+				else if (shaped.getInput()[j] instanceof java.util.List)
+				{
+					Object o = ((java.util.List)shaped.getInput()[j]).get(0);
+					if (o instanceof ItemStack)
+					{
+						stacks[j] = (ItemStack)o;
+					}
+				}
+			}
+			return stacks;
+		}
+	}
+
 	
 	public static class ShapelessOreRecipeHandler extends RecipeHandler
 	{
@@ -89,56 +145,7 @@ public final class RecipeHandlers
 		}
 	}
 	
-	public static class ShapedOreRecipeHandler extends RecipeHandler
-	{
-		public ShapedOreRecipeHandler(Class<? extends IRecipe> recipe)
-		{
-			super(recipe);
-		}
-
-		@Override
-		public ItemStack[] getCraftingGrid(IRecipe r)
-		{
-			ItemStack[] stacks = new ItemStack[9];
-			ShapedOreRecipe shaped = (ShapedOreRecipe)r;
-			for (int j = 0;j<shaped.getInput().length;j++)
-			{
-				if (shaped.getInput()[j] instanceof ItemStack)
-				{
-					stacks[j] = (ItemStack) shaped.getInput()[j];
-				}
-				else if (shaped.getInput()[j] instanceof java.util.List)
-				{
-					Object o = ((java.util.List)shaped.getInput()[j]).get(0);
-					if (o instanceof ItemStack)
-					{
-						stacks[j] = (ItemStack)o;
-					}
-				}
-			}
-			return stacks;
-		}
-	}
 	
-	public static class ShapelessRecipeHandler extends RecipeHandler
-	{
-		public ShapelessRecipeHandler(Class<? extends IRecipe> recipe)
-		{
-			super(recipe);
-		}
-
-		@Override
-		public ItemStack[] getCraftingGrid(IRecipe r)
-		{
-			ItemStack[] stacks = new ItemStack[9];
-			ShapelessRecipes shaped = (ShapelessRecipes)r;
-			for (int j = 0;j<shaped.recipeItems.size();j++)
-			{
-				stacks[j] = (ItemStack) shaped.recipeItems.get(j);
-			}
-			return stacks;
-		}
-	}
 
 //	/**
 //	 * Default Recipe Handlers
