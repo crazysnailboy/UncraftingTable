@@ -1,5 +1,6 @@
 package org.jglrxavpok.mods.decraft;
 
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import org.apache.logging.log4j.Logger;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
 import org.jglrxavpok.mods.decraft.event.ItemUncraftedEvent;
@@ -67,12 +68,17 @@ public class ModUncrafting
     // logger
     private Logger logger;
 
+    private SimpleNetworkWrapper network = new SimpleNetworkWrapper("uncraftingtable");
+
     public Logger getLogger()
     {
         return logger;
     }
-    
-    
+
+    public SimpleNetworkWrapper getNetwork()
+    {
+        return network;
+    }
     
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)

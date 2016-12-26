@@ -6,6 +6,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.inventory.*;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
 import org.jglrxavpok.mods.decraft.event.ItemUncraftedEvent;
 import org.jglrxavpok.mods.decraft.event.UncraftingEvent;
@@ -17,11 +20,6 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.translation.I18n;
@@ -40,27 +38,27 @@ public class ContainerUncraftingTable extends Container
     public static enum UncraftingStatus
     {
         ERROR, 
-        READY
+        READY;
     }
-
     public InventoryCrafting calculInput = new InventoryCrafting(this, 1, 1);
+
     public InventoryCrafting uncraftIn = new InventoryCrafting(this, 1, 1);
     public InventoryUncraftResult uncraftOut = new InventoryUncraftResult();
     public InventoryPlayer playerInventory;
-    
     private World worldObj;
-    
+
     public UncraftingStatus uncraftingStatus = UncraftingStatus.READY;
+
     public String uncraftingStatusText = I18n.translateToLocal("uncrafting.result.ready");
-    
     public int uncraftingCost = 0 - ModConfiguration.standardLevel;
-    
-    
+
+    private final Slot uncraftSlot;
+    private final Slot bookSlot;
 
     public ContainerUncraftingTable(InventoryPlayer playerInventoryIn, World worldIn)
     {
         this.worldObj = worldIn;
-        
+
         // uncrafting output inventory
         for (int row = 0; row < 3; ++row)
         {
@@ -72,10 +70,12 @@ public class ContainerUncraftingTable extends Container
         }
 
         // uncrafting book inventory for capturing enchantments (left standalone slot)
-        this.addSlotToContainer(new Slot(this.calculInput, 0, 15, 35));
+        bookSlot = new Slot(this.calculInput, 0, 15, 35);
+        this.addSlotToContainer(bookSlot);
 
         // incrafting input inventory (right standalone slot)
-        this.addSlotToContainer(new Slot(this.uncraftIn, 0, 30 + 15, 35));
+        uncraftSlot = new Slot(this.uncraftIn, 0, 30 + 15, 35);
+        this.addSlotToContainer(uncraftSlot);
 
         // player inventory
         for (int row = 0; row < 3; ++row)
@@ -85,13 +85,14 @@ public class ContainerUncraftingTable extends Container
                 this.addSlotToContainer(new Slot(playerInventoryIn, col + row * 9 + 9, 8 + col * 18, 84 + row * 18));
             }
         }
-
+//11+9+3*9
         // player hotbar inventory
         for (int col = 0; col < 9; ++col)
         {
             this.addSlotToContainer(new Slot(playerInventoryIn, col, 8 + col * 18, 142));
         }
         playerInventory = playerInventoryIn;
+
     }
 
     /**
@@ -102,6 +103,9 @@ public class ContainerUncraftingTable extends Container
     @Override
     public void onCraftMatrixChanged(IInventory inventory)
     {
+        // TODO: remove
+        if(true)
+            return;
 //    	System.out.println("onCraftMatrixChanged");
         
         // if the left input slot changes
@@ -655,4 +659,11 @@ public class ContainerUncraftingTable extends Container
         return super.getSlot(slotId);
     }
 
+    public Slot getUncraftSlot() {
+        return uncraftSlot;
+    }
+
+    public Slot getBookSlot() {
+        return bookSlot;
+    }
 }
