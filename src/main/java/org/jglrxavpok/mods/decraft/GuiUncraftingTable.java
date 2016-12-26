@@ -89,7 +89,7 @@ public class GuiUncraftingTable extends GuiContainer {
         // Args: string, x, y, color, dropShadow
 
         // render the block name at the top of the gui
-        fontRendererObj.drawString(blockName, xSize / 2 - fontRendererObj.getStringWidth(blockName) / 2 + 1, 5, 4210752);
+        fontRendererObj.drawString(blockName, (xSize - fontRendererObj.getStringWidth(blockName)) / 2 + 1, 5, 4210752);
 
         // write "inventory" above the player inventory
         fontRendererObj.drawString(I18n.format("container.inventory"), 6, ySize - 96 + 2, 4210752);
@@ -99,7 +99,7 @@ public class GuiUncraftingTable extends GuiContainer {
         fontRendererObj.drawString(TextFormatting.GRAY + compute + TextFormatting.RESET, 24 - fontRendererObj.getStringWidth(compute) / 2, 21, 0, true);
 
         // write the xp cost above the arrow
-        fontRendererObj.drawString(TextFormatting.UNDERLINE + "" + (ModConfiguration.standardLevel + container.uncraftingCost) + " levels" + TextFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth((ModConfiguration.standardLevel + container.uncraftingCost) + " levels") / 2, ySize - 127 - 20, darkGreen.getRGB(), true);
+        fontRendererObj.drawString(TextFormatting.UNDERLINE + "" + (ModConfiguration.standardLevel + container.uncraftingCost) + " levels" + TextFormatting.RESET, (xSize - fontRendererObj.getStringWidth((ModConfiguration.standardLevel + container.uncraftingCost) + " levels")) / 2, ySize - 127 - 20, darkGreen.getRGB(), true);
         GL11.glEnable(GL11.GL_LIGHTING);
     }
 
