@@ -1,2 +1,8 @@
-build
-.gradle
+## IDEA ##
+.idea/
+build/
+.gradle/
+out/
+
+## Runtime files ##
+runtime/
