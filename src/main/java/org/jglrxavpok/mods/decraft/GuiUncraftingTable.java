@@ -3,14 +3,17 @@ package org.jglrxavpok.mods.decraft;
 import java.awt.Color;
 import java.io.IOException;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import org.jglrxavpok.mods.decraft.ContainerUncraftingTable.UncraftingStatus;
 import org.jglrxavpok.mods.decraft.client.GuiUncraftButton;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
 import org.jglrxavpok.mods.decraft.network.UncraftingRequest;
+import org.jglrxavpok.mods.decraft.network.UncraftingResult;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -25,16 +28,19 @@ public class GuiUncraftingTable extends GuiContainer {
 
     private final static Color darkGreen = new Color(75, 245, 75);
     private final GuiUncraftButton uncraftButton;
+    private Item lastItem;
     public ContainerUncraftingTable container;
     private String blockName;
     private World worldObj;
     private EntityPlayer player;
+    private boolean wasReady;
 
     public GuiUncraftingTable(InventoryPlayer playerInventory, World world, String blockName)
     {
     	super(new ContainerUncraftingTable(playerInventory, world));
     	
         container = (ContainerUncraftingTable)inventorySlots;
+        lastItem = container.getUncraftSlot().getStack().getItem();
         this.blockName = blockName;
         this.worldObj = world;
         this.player = playerInventory.player;
@@ -66,8 +72,10 @@ public class GuiUncraftingTable extends GuiContainer {
             // send uncrafting packet
             ItemStack toUncraft = container.getUncraftSlot().getStack();
             ItemStack book = container.getBookSlot().getStack();
-            UncraftingRequest request = new UncraftingRequest(toUncraft, book);
-            ModUncrafting.instance.getNetwork().sendToServer(request);
+            if(container.isReadyToUncraft()) {
+                UncraftingRequest request = new UncraftingRequest(toUncraft, book);
+                ModUncrafting.instance.getNetwork().sendToServer(request);
+            }
         }
     }
 
@@ -75,7 +83,16 @@ public class GuiUncraftingTable extends GuiContainer {
     public void updateScreen() {
         super.updateScreen();
         ItemStack toUncraft = container.getUncraftSlot().getStack();
-        uncraftButton.enabled = !toUncraft.func_190926_b();
+        if (container.isReadyToUncraft()) {
+            if (lastItem != toUncraft.getItem() || !wasReady) { // if item was just put in the slot
+                UncraftingResult result = UncraftingManager.uncraft(toUncraft, container.getBookSlot().getStack(), Minecraft.getMinecraft().thePlayer);
+                uncraftButton.enabled = result.getResultType() == UncraftingResult.ResultType.VALID;
+            }
+            lastItem = toUncraft.getItem();
+        } else {
+            uncraftButton.enabled = false;
+        }
+        wasReady = container.isReadyToUncraft();
     }
 
     @Override

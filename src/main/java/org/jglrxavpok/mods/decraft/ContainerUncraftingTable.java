@@ -37,9 +37,11 @@ public class ContainerUncraftingTable extends Container
 
     public static enum UncraftingStatus
     {
-        ERROR, 
+        ERROR,
         READY;
+
     }
+
     public InventoryCrafting calculInput = new InventoryCrafting(this, 1, 1);
 
     public InventoryCrafting uncraftIn = new InventoryCrafting(this, 1, 1);
@@ -647,6 +649,26 @@ public class ContainerUncraftingTable extends Container
     public boolean canMergeSlot(ItemStack stack, Slot slotIn) //public boolean canMergeSlot(ItemStack stack, Slot slotIn)
     {
         return !slotIn.inventory.equals(uncraftOut);
+    }
+
+    public void setOutput(NonNullList<ItemStack> output) {
+        uncraftOut.clear();
+        for (int i = 0; i < output.size(); i++) {
+            uncraftOut.setInventorySlotContents(i, output.get(i));
+        }
+    }
+
+    /**
+     * Checks that the output is clear (no items remaining from previous operations)
+     */
+    public boolean isReadyToUncraft() {
+        for (int i = 0; i < uncraftOut.getSizeInventory(); i++) {
+            ItemStack s = uncraftOut.getStackInSlot(i);
+            if(!s.func_190926_b()) { // if not empty
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override

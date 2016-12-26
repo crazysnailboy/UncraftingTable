@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemBlock;
+import net.minecraftforge.common.MinecraftForge;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jglrxavpok.mods.decraft.RecipeHandlers.RecipeHandler;
 import org.jglrxavpok.mods.decraft.RecipeHandlers.ShapedOreRecipeHandler;
@@ -26,6 +30,9 @@ import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
+import org.jglrxavpok.mods.decraft.event.ItemUncraftedEvent;
+import org.jglrxavpok.mods.decraft.event.UncraftingEvent;
+import org.jglrxavpok.mods.decraft.network.UncraftingResult;
 
 /**
  * Main part of the Uncrafting Table. The manager is used to parse the existing recipes and find the correct one depending on the given stack.
@@ -34,7 +41,10 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 public class UncraftingManager 
 {
 
-	private static Boolean canUncraftItem(ItemStack itemStack)
+    private static final UncraftingResult INVALID_ITEM = new UncraftingResult(UncraftingResult.ResultType.INVALID);
+    private static final UncraftingResult INVALID_COUNT = new UncraftingResult(UncraftingResult.ResultType.NOT_ENOUGH_ITEMS);
+
+    private static Boolean canUncraftItem(ItemStack itemStack)
 	{
 		String uniqueIdentifier = Item.REGISTRY.getNameForObject(itemStack.getItem()).toString();
 		if (itemStack.getItemDamage() > 0) uniqueIdentifier += "," + Integer.toString(itemStack.getItemDamage()); 
@@ -147,5 +157,52 @@ public class UncraftingManager
 	public static void postInit()
 	{
 	}
-	
+
+	public static UncraftingResult uncraft(ItemStack toUncraft, ItemStack book, EntityPlayer player)
+    {
+        toUncraft = toUncraft.copy();
+        book = book.copy();
+		List<Integer> needs = UncraftingManager.getStackSizeNeeded(toUncraft);
+        List<NonNullList<ItemStack>> recipe = UncraftingManager.getUncraftResults(toUncraft);
+		if (needs.isEmpty() || recipe.isEmpty()) { // no recipe
+            return INVALID_ITEM;
+        }
+        final int selectedRecipe = 0; // TODO: Make it possible to choose the item to uncraft into ?
+        int required = needs.get(selectedRecipe);
+        NonNullList<ItemStack> output = NonNullList.func_191196_a();
+        for (ItemStack stack : recipe.get(selectedRecipe)) {
+            ItemStack s = stack.copy();
+            int metadata = s.getItemDamage();
+            if (metadata == 32767)
+            {
+                metadata = 0;
+            }
+            s.setItemDamage(metadata);
+            output.add(s);
+        }
+        UncraftingEvent event = new UncraftingEvent(toUncraft, output, required, player);
+        if (MinecraftForge.EVENT_BUS.post(event)) {
+            return INVALID_ITEM; // canceled
+        }
+
+        // check if there are enough items (checking AFTER posting the event as event handlers can choose this count
+        if(event.getRequiredNumber() > toUncraft.func_190916_E()) {
+            return INVALID_COUNT;
+        }
+
+        // TODO: XP
+        // TODO: Enchantments
+        // TODO: Handle durability
+        // TODO: Handle metadata
+
+        /* TODO: Move somewhere else
+        // check one last time if everyone agrees to uncraft this item
+        ItemUncraftedEvent uncraftEvent = new ItemUncraftedEvent(player, toUncraft, output, event.getRequiredNumber());
+        if (MinecraftForge.EVENT_BUS.post(uncraftEvent)) {
+            return INVALID_ITEM;
+        }
+        event.getPlayer().addStat(ModUncrafting.instance.uncraftedItemsStat, event.getRequiredNumber());*/
+
+        return new UncraftingResult(UncraftingResult.ResultType.VALID, event.getRequiredNumber(), output);
+	}
 }
