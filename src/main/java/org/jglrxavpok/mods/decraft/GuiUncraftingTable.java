@@ -23,6 +23,7 @@ import net.minecraft.world.World;
 
 public class GuiUncraftingTable extends GuiContainer {
 
+    private final static Color darkGreen = new Color(75, 245, 75);
     private final GuiUncraftButton uncraftButton;
     public ContainerUncraftingTable container;
     private String blockName;
@@ -78,12 +79,6 @@ public class GuiUncraftingTable extends GuiContainer {
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks)
-    {
-        super.drawScreen(mouseX, mouseY, partialTicks);
-    }
-
-    @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
         GL11.glDisable(GL11.GL_LIGHTING);
@@ -93,7 +88,6 @@ public class GuiUncraftingTable extends GuiContainer {
         // fontRendererObj.drawString:
         // Args: string, x, y, color, dropShadow
 
-
         // render the block name at the top of the gui
         fontRendererObj.drawString(blockName, xSize / 2 - fontRendererObj.getStringWidth(blockName) / 2 + 1, 5, 4210752);
 
@@ -102,51 +96,22 @@ public class GuiUncraftingTable extends GuiContainer {
 
         // write "compute:" above the input slots
         String compute = I18n.format("uncrafting.compute") + ":";
-        fontRendererObj.drawString(TextFormatting.DARK_GRAY + compute + TextFormatting.RESET, 24 - fontRendererObj.getStringWidth(compute) / 2 + 1, 22, 0);
-        fontRendererObj.drawString(TextFormatting.GRAY + compute + TextFormatting.RESET, 24 - fontRendererObj.getStringWidth(compute) / 2, 21, 0);
+        fontRendererObj.drawString(TextFormatting.GRAY + compute + TextFormatting.RESET, 24 - fontRendererObj.getStringWidth(compute) / 2, 21, 0, true);
 
         // write the xp cost above the arrow
-        Color darkGreen = new Color(75, 245, 75);
-        fontRendererObj.drawString(TextFormatting.DARK_GRAY + "" + TextFormatting.UNDERLINE + "" + (ModConfiguration.standardLevel + container.uncraftingCost) + " levels" + TextFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth((ModConfiguration.standardLevel + container.uncraftingCost) + " levels") / 2 + 1, ySize - 126 - 20, 0);
-        fontRendererObj.drawString(TextFormatting.UNDERLINE + "" + (ModConfiguration.standardLevel + container.uncraftingCost) + " levels" + TextFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth((ModConfiguration.standardLevel + container.uncraftingCost) + " levels") / 2, ySize - 127 - 20, darkGreen.getRGB());
-
-
-//            // draw the arrow with the cross through it
-//            GL11.glPushMatrix();
-//            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-//            this.mc.renderEngine.bindTexture(new ResourceLocation("uncraftingTable:textures/gui/container/uncrafting_gui.png"));
-//            this.drawTexturedModalRect(75, 32, 176, 0, 28, 21);
-//            GL11.glPopMatrix();
-
-
-        String string = container.uncraftingStatusText;
-        if (string != null)
-        {
-            UncraftingStatus msgType = container.uncraftingStatus;
-            TextFormatting format = TextFormatting.GREEN;
-            TextFormatting shadowFormat = TextFormatting.DARK_GRAY;
-            if (msgType == ContainerUncraftingTable.UncraftingStatus.ERROR)
-            {
-                format = TextFormatting.WHITE;
-                shadowFormat = TextFormatting.DARK_RED;
-            }
-            fontRendererObj.drawString(shadowFormat + string + TextFormatting.RESET, 6 + 1, ySize - 95 + 2 - fontRendererObj.FONT_HEIGHT, 0);
-            fontRendererObj.drawString(format + string + TextFormatting.RESET, 6, ySize - 96 + 2 - fontRendererObj.FONT_HEIGHT, 0);
-        }
+        fontRendererObj.drawString(TextFormatting.UNDERLINE + "" + (ModConfiguration.standardLevel + container.uncraftingCost) + " levels" + TextFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth((ModConfiguration.standardLevel + container.uncraftingCost) + " levels") / 2, ySize - 127 - 20, darkGreen.getRGB(), true);
         GL11.glEnable(GL11.GL_LIGHTING);
     }
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
     {
-        GL11.glPushMatrix();
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
         this.mc.renderEngine.bindTexture(new ResourceLocation(ModUncrafting.MODID + ":textures/gui/container/uncrafting_gui.png"));
-        int k = this.width / 2 - this.xSize / 2;
-        int l = this.height / 2 - this.ySize / 2;
-        this.drawTexturedModalRect(k, l, 0, 0, this.xSize, this.ySize);
-        GL11.glPopMatrix();
+        int x = this.width / 2 - this.xSize / 2;
+        int y = this.height / 2 - this.ySize / 2;
+        this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
     }
 
 }
