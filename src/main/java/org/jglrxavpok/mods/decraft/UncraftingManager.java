@@ -41,8 +41,9 @@ import org.jglrxavpok.mods.decraft.network.UncraftingResult;
 public class UncraftingManager 
 {
 
-    private static final UncraftingResult INVALID_ITEM = new UncraftingResult(UncraftingResult.ResultType.INVALID);
-    private static final UncraftingResult INVALID_COUNT = new UncraftingResult(UncraftingResult.ResultType.NOT_ENOUGH_ITEMS);
+    public static final UncraftingResult INVALID_ITEM = new UncraftingResult(UncraftingResult.ResultType.INVALID);
+    public static final UncraftingResult INVALID_COUNT = new UncraftingResult(UncraftingResult.ResultType.NOT_ENOUGH_ITEMS);
+    public static final UncraftingResult INVALID_LEVEL = new UncraftingResult(UncraftingResult.ResultType.NOT_ENOUGH_EXPERIENCE);
 
     private static Boolean canUncraftItem(ItemStack itemStack)
 	{
@@ -167,7 +168,7 @@ public class UncraftingManager
 		if (needs.isEmpty() || recipe.isEmpty()) { // no recipe
             return INVALID_ITEM;
         }
-        final int selectedRecipe = 0; // TODO: Make it possible to choose the item to uncraft into ?
+        final int selectedRecipe = 0; // TODO: Make it possible to choose the items to uncraft into ?
         int required = needs.get(selectedRecipe);
         NonNullList<ItemStack> output = NonNullList.func_191196_a();
         for (ItemStack stack : recipe.get(selectedRecipe)) {
@@ -190,19 +191,19 @@ public class UncraftingManager
             return INVALID_COUNT;
         }
 
-        // TODO: XP
-        // TODO: Enchantments
-        // TODO: Handle durability
-        // TODO: Handle metadata
-
-        /* TODO: Move somewhere else
-        // check one last time if everyone agrees to uncraft this item
-        ItemUncraftedEvent uncraftEvent = new ItemUncraftedEvent(player, toUncraft, output, event.getRequiredNumber());
-        if (MinecraftForge.EVENT_BUS.post(uncraftEvent)) {
-            return INVALID_ITEM;
+        int requiredExp = computeXP(toUncraft);
+        if(!player.capabilities.isCreativeMode && requiredExp > player.experienceLevel) {
+            return INVALID_LEVEL;
         }
-        event.getPlayer().addStat(ModUncrafting.instance.uncraftedItemsStat, event.getRequiredNumber());*/
 
-        return new UncraftingResult(UncraftingResult.ResultType.VALID, event.getRequiredNumber(), output);
+        // TODO: Enchantments
+        return new UncraftingResult(UncraftingResult.ResultType.VALID, event.getRequiredNumber(), requiredExp, output);
 	}
+
+    private static int computeXP(ItemStack toUncraft) {
+        // Xell75 & zenen method
+        // TODO: Drop other methods?
+        int percent = (int)(((double) toUncraft.getItemDamage() / (double) toUncraft.getMaxDamage()) * 100);
+        return (ModConfiguration.maxUsedLevel * percent) / 100 + ModConfiguration.standardLevel;
+    }
 }

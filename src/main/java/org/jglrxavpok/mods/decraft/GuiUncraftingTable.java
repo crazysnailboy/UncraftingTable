@@ -5,13 +5,9 @@ import java.io.IOException;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import org.jglrxavpok.mods.decraft.ContainerUncraftingTable.UncraftingStatus;
 import org.jglrxavpok.mods.decraft.client.GuiUncraftButton;
-import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
 import org.jglrxavpok.mods.decraft.network.UncraftingRequest;
 import org.jglrxavpok.mods.decraft.network.UncraftingResult;
 import org.lwjgl.opengl.GL11;
@@ -34,6 +30,7 @@ public class GuiUncraftingTable extends GuiContainer {
     private World worldObj;
     private EntityPlayer player;
     private boolean wasReady;
+    private int xpCost;
 
     public GuiUncraftingTable(InventoryPlayer playerInventory, World world, String blockName)
     {
@@ -86,10 +83,12 @@ public class GuiUncraftingTable extends GuiContainer {
         if (container.isReadyToUncraft()) {
             if (lastItem != toUncraft.getItem() || !wasReady) { // if item was just put in the slot
                 UncraftingResult result = UncraftingManager.uncraft(toUncraft, container.getBookSlot().getStack(), Minecraft.getMinecraft().thePlayer);
+                xpCost = result.getRequiredExpLevels();
                 uncraftButton.enabled = result.getResultType() == UncraftingResult.ResultType.VALID;
             }
             lastItem = toUncraft.getItem();
         } else {
+            xpCost = 0;
             uncraftButton.enabled = false;
         }
         wasReady = container.isReadyToUncraft();
@@ -116,7 +115,8 @@ public class GuiUncraftingTable extends GuiContainer {
         fontRendererObj.drawString(TextFormatting.GRAY + compute + TextFormatting.RESET, 24 - fontRendererObj.getStringWidth(compute) / 2, 21, 0, true);
 
         // write the xp cost above the arrow
-        fontRendererObj.drawString(TextFormatting.UNDERLINE + "" + (ModConfiguration.standardLevel + container.uncraftingCost) + " levels" + TextFormatting.RESET, (xSize - fontRendererObj.getStringWidth((ModConfiguration.standardLevel + container.uncraftingCost) + " levels")) / 2, ySize - 127 - 20, darkGreen.getRGB(), true);
+        if(xpCost > 0)
+            fontRendererObj.drawString(TextFormatting.UNDERLINE + "" + (xpCost) + " levels" + TextFormatting.RESET, (xSize - fontRendererObj.getStringWidth((xpCost) + " levels")) / 2, ySize - 127 - 20, darkGreen.getRGB(), true);
         GL11.glEnable(GL11.GL_LIGHTING);
     }
 

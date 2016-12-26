@@ -11,6 +11,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 public class UncraftingResult implements IMessage {
 
     private ResultType resultType;
+    private int requiredExpLevels;
     private int required;
     private NonNullList<ItemStack> output;
 
@@ -23,13 +24,22 @@ public class UncraftingResult implements IMessage {
     }
 
     public UncraftingResult(ResultType resultType, int required) {
-        this(resultType, required, NonNullList.<ItemStack>func_191196_a());
+        this(resultType, required, 0, NonNullList.<ItemStack>func_191196_a());
     }
 
-    public UncraftingResult(ResultType resultType, int required, NonNullList<ItemStack> output) {
+    public UncraftingResult(ResultType resultType, int required, int requiredExpLevels) {
+        this(resultType, required, requiredExpLevels, NonNullList.<ItemStack>func_191196_a());
+    }
+
+    public UncraftingResult(ResultType resultType, int required, int requiredExpLevels, NonNullList<ItemStack> output) {
         this.resultType = resultType;
         this.required = required;
+        this.requiredExpLevels = requiredExpLevels;
         this.output = output;
+    }
+
+    public int getRequiredExpLevels() {
+        return requiredExpLevels;
     }
 
     public ResultType getResultType() {
@@ -54,6 +64,7 @@ public class UncraftingResult implements IMessage {
             output.add(stack);
         }
         required = buf.readInt();
+        requiredExpLevels = buf.readInt();
     }
 
     @Override
@@ -64,10 +75,11 @@ public class UncraftingResult implements IMessage {
             ByteBufUtils.writeItemStack(buf, stack);
         }
         buf.writeInt(required);
+        buf.writeInt(requiredExpLevels);
     }
 
     public enum ResultType {
-        INVALID, NOT_ENOUGH_ITEMS, VALID
+        INVALID, NOT_ENOUGH_ITEMS, NOT_ENOUGH_EXPERIENCE, VALID
     }
 
     public static class Handler implements IMessageHandler<UncraftingResult, IMessage> {
