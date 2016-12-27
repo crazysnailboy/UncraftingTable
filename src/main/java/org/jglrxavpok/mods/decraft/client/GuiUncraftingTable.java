@@ -1,4 +1,4 @@
-package org.jglrxavpok.mods.decraft;
+package org.jglrxavpok.mods.decraft.client;
 
 import java.awt.Color;
 import java.io.IOException;
@@ -7,6 +7,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import org.jglrxavpok.mods.decraft.ContainerUncraftingTable;
+import org.jglrxavpok.mods.decraft.ModUncrafting;
+import org.jglrxavpok.mods.decraft.UncraftingManager;
 import org.jglrxavpok.mods.decraft.client.GuiUncraftButton;
 import org.jglrxavpok.mods.decraft.network.UncraftingRequest;
 import org.jglrxavpok.mods.decraft.network.UncraftingResult;

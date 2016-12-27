@@ -5,7 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
+import org.jglrxavpok.mods.decraft.client.GuiUncraftingTable;
 
 import net.minecraftforge.fml.common.network.IGuiHandler;
 
