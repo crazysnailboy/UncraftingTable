@@ -3,9 +3,13 @@ package org.jglrxavpok.mods.decraft;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemBlock;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.commons.lang3.ArrayUtils;
@@ -196,8 +200,11 @@ public class UncraftingManager
             return INVALID_LEVEL;
         }
 
-        // TODO: Enchantments
-        return new UncraftingResult(UncraftingResult.ResultType.VALID, event.getRequiredNumber(), requiredExp, output);
+        int consumedBooks = 0;
+        if(book.getItem() == Items.BOOK) {
+            consumedBooks = Math.min(book.func_190916_E(), required);
+        }
+        return new UncraftingResult(UncraftingResult.ResultType.VALID, event.getRequiredNumber(), requiredExp, consumedBooks, output);
 	}
 
     private static int computeXP(ItemStack toUncraft) {

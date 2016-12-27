@@ -13,6 +13,7 @@ public class UncraftingResult implements IMessage {
     private ResultType resultType;
     private int requiredExpLevels;
     private int required;
+    private int consumedBooks;
     private NonNullList<ItemStack> output;
 
     public UncraftingResult() {
@@ -24,18 +25,23 @@ public class UncraftingResult implements IMessage {
     }
 
     public UncraftingResult(ResultType resultType, int required) {
-        this(resultType, required, 0, NonNullList.<ItemStack>func_191196_a());
+        this(resultType, required, 0, 0, NonNullList.<ItemStack>func_191196_a());
     }
 
     public UncraftingResult(ResultType resultType, int required, int requiredExpLevels) {
-        this(resultType, required, requiredExpLevels, NonNullList.<ItemStack>func_191196_a());
+        this(resultType, required, requiredExpLevels, 0, NonNullList.<ItemStack>func_191196_a());
     }
 
-    public UncraftingResult(ResultType resultType, int required, int requiredExpLevels, NonNullList<ItemStack> output) {
+    public UncraftingResult(ResultType resultType, int required, int requiredExpLevels, int consumedBooks, NonNullList<ItemStack> output) {
         this.resultType = resultType;
         this.required = required;
         this.requiredExpLevels = requiredExpLevels;
+        this.consumedBooks = consumedBooks;
         this.output = output;
+    }
+
+    public int getConsumedBooks() {
+        return consumedBooks;
     }
 
     public int getRequiredExpLevels() {

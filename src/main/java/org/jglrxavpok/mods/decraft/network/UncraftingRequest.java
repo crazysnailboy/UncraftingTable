@@ -1,8 +1,12 @@
 package org.jglrxavpok.mods.decraft.network;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
@@ -14,6 +18,9 @@ import org.jglrxavpok.mods.decraft.ContainerUncraftingTable;
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.UncraftingManager;
 import org.jglrxavpok.mods.decraft.event.ItemUncraftedEvent;
+
+import java.util.Iterator;
+import java.util.Map;
 
 public class UncraftingRequest implements IMessage {
 
@@ -63,6 +70,7 @@ public class UncraftingRequest implements IMessage {
 
         private UncraftingResult handleResult(ContainerUncraftingTable table, EntityPlayer player, UncraftingResult result) {
             ItemStack stack = table.getUncraftSlot().getStack();
+            Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(stack);
 
             // check one last time if everyone agrees to uncraft this item
             ItemUncraftedEvent uncraftEvent = new ItemUncraftedEvent(player, stack, result.getOutput(), result.getRequired());
@@ -82,6 +90,26 @@ public class UncraftingRequest implements IMessage {
 
             if(!player.capabilities.isCreativeMode)
                 player.removeExperienceLevel(result.getRequiredExpLevels());
+
+            int enchantmentCount = result.getConsumedBooks();
+            if(enchantmentCount > 0) {
+                ItemStack bookStack = table.getBookSlot().getStack();
+                int remainingBooks = bookStack.func_190916_E() - result.getRequired();
+                if(remainingBooks > 0) {
+                    bookStack.func_190920_e(remainingBooks);
+                    if (!player.inventory.addItemStackToInventory(bookStack))
+                    {
+                        EntityItem e = player.entityDropItem(bookStack, 0.5f);
+                        e.posX = player.posX;
+                        e.posY = player.posY;
+                        e.posZ = player.posZ;
+                    }
+                }
+
+                ItemStack enchantedBook = new ItemStack(Items.ENCHANTED_BOOK, enchantmentCount);
+                EnchantmentHelper.setEnchantments(enchantments, enchantedBook);
+                table.getBookSlot().putStack(enchantedBook);
+            }
             return result;
         }
     }
