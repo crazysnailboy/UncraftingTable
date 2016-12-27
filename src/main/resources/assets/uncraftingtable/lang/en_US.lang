@@ -25,4 +25,4 @@ uncrafting.options.maxUsedLevel=Maximum Level
 uncrafting.options.maxUsedLevel.tooltip=Maximum required level to uncraft an item
 uncrafting.options.uncraftableItems=Uncraftable Items
 uncrafting.options.uncraftableItems.tooltip=Item IDs for items which cannot be uncrafted
-uncrafting.compute=Compute
+uncrafting.book=Books

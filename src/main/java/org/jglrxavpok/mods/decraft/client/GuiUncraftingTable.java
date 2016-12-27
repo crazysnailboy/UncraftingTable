@@ -112,7 +112,7 @@ public class GuiUncraftingTable extends GuiContainer {
         fontRendererObj.drawString(I18n.format("container.inventory"), 6, ySize - 96 + 2, 4210752);
 
         // write "compute:" above the input slots
-        String compute = I18n.format("uncrafting.compute") + ":";
+        String compute = I18n.format("uncrafting.book") + ":";
         fontRendererObj.drawString(TextFormatting.GRAY + compute + TextFormatting.RESET, 24 - fontRendererObj.getStringWidth(compute) / 2, 21, 0, true);
 
         // write the xp cost above the arrow
