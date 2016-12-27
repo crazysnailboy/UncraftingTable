@@ -60,6 +60,11 @@ public class UncraftingManager
 	
 	public static List<Integer> getStackSizeNeeded(ItemStack item)
 	{
+        if(item.getItem().isDamageable())
+        {
+            item = item.copy();
+            item.setItemDamage(0);
+        }
 //		System.out.println("\t" + "getStackSizeNeeded");
 //		System.out.println("\t" + item.getItem().getUnlocalizedName());
 //		System.out.println("\t" + item.getDisplayName());
@@ -101,6 +106,12 @@ public class UncraftingManager
 	
 	public static List<NonNullList<ItemStack>> getUncraftResults(ItemStack item)
 	{
+	    // allow uncrafting of damaged items
+		if(item.getItem().isDamageable())
+		{
+		    item = item.copy();
+		    item.setItemDamage(0);
+        }
 //		System.out.println("getUncraftResults");
 //		System.out.println(item.getItem().getUnlocalizedName());
 //		System.out.println(item.getDisplayName());

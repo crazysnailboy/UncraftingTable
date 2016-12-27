@@ -25,12 +25,11 @@ public class GuiUncraftingTable extends GuiContainer {
     private final static Color darkGreen = new Color(75, 245, 75);
     private final GuiUncraftButton uncraftButton;
     private Item lastItem;
-    public ContainerUncraftingTable container;
+    private ContainerUncraftingTable container;
     private String blockName;
-    private World worldObj;
-    private EntityPlayer player;
     private boolean wasReady;
     private int xpCost;
+    private int lastItemCount;
 
     public GuiUncraftingTable(InventoryPlayer playerInventory, World world, String blockName)
     {
@@ -39,8 +38,6 @@ public class GuiUncraftingTable extends GuiContainer {
         container = (ContainerUncraftingTable)inventorySlots;
         lastItem = container.getUncraftSlot().getStack().getItem();
         this.blockName = blockName;
-        this.worldObj = world;
-        this.player = playerInventory.player;
 
         // avoid recreating the same object over and over when resizing
         uncraftButton = new GuiUncraftButton(0, 0, 0);
@@ -81,12 +78,13 @@ public class GuiUncraftingTable extends GuiContainer {
         super.updateScreen();
         ItemStack toUncraft = container.getUncraftSlot().getStack();
         if (container.isReadyToUncraft()) {
-            if (lastItem != toUncraft.getItem() || !wasReady) { // if item was just put in the slot
+            if (lastItemCount != toUncraft.func_190916_E() || lastItem != toUncraft.getItem() || !wasReady) { // if item was just put in the slot
                 UncraftingResult result = UncraftingManager.uncraft(toUncraft, container.getBookSlot().getStack(), Minecraft.getMinecraft().thePlayer);
                 xpCost = result.getRequiredExpLevels();
                 uncraftButton.enabled = result.getResultType() == UncraftingResult.ResultType.VALID;
             }
             lastItem = toUncraft.getItem();
+            lastItemCount = toUncraft.func_190916_E();
         } else {
             xpCost = 0;
             uncraftButton.enabled = false;
