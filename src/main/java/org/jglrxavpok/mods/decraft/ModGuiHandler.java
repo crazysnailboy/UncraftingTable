@@ -5,7 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
+import org.jglrxavpok.mods.decraft.client.GuiUncraftingTable;
 
 import net.minecraftforge.fml.common.network.IGuiHandler;
 
@@ -27,7 +27,7 @@ public class ModGuiHandler implements IGuiHandler
         {
             if (id == GUI_TABLE)
             {
-            	return new ContainerUncraftingTable(player.inventory, world, true);
+            	return new ContainerUncraftingTable(player.inventory, world);
             }
         }
         return null;
@@ -46,7 +46,7 @@ public class ModGuiHandler implements IGuiHandler
             if (id == GUI_TABLE)
             {
                 String name = I18n.format("tile.uncrafting_table.name");
-                return new GuiUncraftingTable(player.inventory, world, name, false);
+                return new GuiUncraftingTable(player.inventory, world, name);
             }
         }
         return null;

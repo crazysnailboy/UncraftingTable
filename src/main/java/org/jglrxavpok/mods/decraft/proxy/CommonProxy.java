@@ -1,8 +1,12 @@
 package org.jglrxavpok.mods.decraft.proxy;
 
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.relauncher.Side;
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.UncraftingManager;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
+import org.jglrxavpok.mods.decraft.network.UncraftingRequest;
+import org.jglrxavpok.mods.decraft.network.UncraftingResult;
 import org.jglrxavpok.mods.decraft.stats.ModAchievements;
 
 import net.minecraft.init.Blocks;
@@ -29,7 +33,10 @@ public class CommonProxy {
 	    itemBlock.setRegistryName(ModUncrafting.uncraftingTable.getRegistryName());
 	    
 		GameRegistry.register(itemBlock);
-	    
+
+		SimpleNetworkWrapper network = ModUncrafting.instance.getNetwork();
+		network.registerMessage(UncraftingRequest.Handler.class, UncraftingRequest.class, 0, Side.SERVER);
+		network.registerMessage(UncraftingResult.Handler.class, UncraftingResult.class, 1, Side.CLIENT);
 	}
 	
 	/**
