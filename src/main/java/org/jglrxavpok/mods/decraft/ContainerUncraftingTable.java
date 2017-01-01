@@ -57,76 +57,39 @@ public class ContainerUncraftingTable extends Container
     
     
 
-    public ContainerUncraftingTable(InventoryPlayer playerInventoryIn, World worldIn, boolean inverted)
+    public ContainerUncraftingTable(InventoryPlayer playerInventoryIn, World worldIn)
     {
         this.worldObj = worldIn;
         
-        if (!inverted)
+    	// uncrafting output inventory
+        for (int row = 0; row < 3; ++row)
         {
-        	// uncrafting output inventory
-            for (int row = 0; row < 3; ++row)
+            for (int col = 0; col < 3; ++col)
             {
-                for (int col = 0; col < 3; ++col)
-                {
-                	// arguments: inventory, slotIndex, xDisplayPosition, yDisplayPosition    
-                    this.addSlotToContainer(new Slot(this.uncraftOut, col + row * 3, 112 + col * 18, 17 + row * 18));
-                }
-            }
-            
-            // uncrafting book inventory for capturing enchantments (left standalone slot)
-            this.addSlotToContainer(new Slot(this.calculInput, 0, 15, 35));
-
-            // incrafting input inventory (right standalone slot)
-            this.addSlotToContainer(new Slot(this.uncraftIn, 0, 30 + 15, 35));
-            
-            // player inventory
-            for (int row = 0; row < 3; ++row)
-            {
-                for (int col = 0; col < 9; ++col)
-                {
-                    this.addSlotToContainer(new Slot(playerInventoryIn, col + row * 9 + 9, 8 + col * 18, 84 + row * 18));
-                }
-            }
-            
-            // player hotbar inventory
-            for (int col = 0; col < 9; ++col)
-            {
-                this.addSlotToContainer(new Slot(playerInventoryIn, col, 8 + col * 18, 142));
+            	// arguments: inventory, slotIndex, xDisplayPosition, yDisplayPosition    
+                this.addSlotToContainer(new Slot(this.uncraftOut, col + row * 3, 112 + col * 18, 17 + row * 18));
             }
         }
-        else
+        
+        // uncrafting book inventory for capturing enchantments (left standalone slot)
+        this.addSlotToContainer(new Slot(this.calculInput, 0, 15, 35));
+
+        // incrafting input inventory (right standalone slot)
+        this.addSlotToContainer(new Slot(this.uncraftIn, 0, 30 + 15, 35));
+        
+        // player inventory
+        for (int row = 0; row < 3; ++row)
         {
-            int height = 166 - 16;
-            
-        	// uncrafting output inventory
-            for (int row = 0; row < 3; ++row)
-            {
-                for (int col = 0; col < 3; ++col)
-                {
-                    this.addSlotToContainer(new Slot(this.uncraftOut, col + row * 3, 112 + col * 18, height - (17 + row * 18)));
-                }
-            }
-
-            // uncrafting book inventory for capturing enchantments (left standalone slot)
-            this.addSlotToContainer(new Slot(this.calculInput, 0, 15, height - 35));
-
-            // incrafting input inventory (right standalone slot)
-            this.addSlotToContainer(new Slot(this.uncraftIn, 0, 30 + 15, height - 35));
-
-            // player inventory
-            for (int row = 0; row < 3; ++row)
-            {
-                for (int col = 0; col < 9; ++col)
-                {
-                    this.addSlotToContainer(new Slot(playerInventoryIn, col + row * 9 + 9, 8 + col * 18, height - (84 + row * 18)));
-                }
-            }
-
-            // player hotbar inventory
             for (int col = 0; col < 9; ++col)
             {
-                this.addSlotToContainer(new Slot(playerInventoryIn, col, 8 + col * 18, height - 142));
+                this.addSlotToContainer(new Slot(playerInventoryIn, col + row * 9 + 9, 8 + col * 18, 84 + row * 18));
             }
+        }
+        
+        // player hotbar inventory
+        for (int col = 0; col < 9; ++col)
+        {
+            this.addSlotToContainer(new Slot(playerInventoryIn, col, 8 + col * 18, 142));
         }
         playerInventory = playerInventoryIn;
     }

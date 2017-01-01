@@ -27,7 +27,7 @@ public class ModGuiHandler implements IGuiHandler
         {
             if (id == GUI_TABLE)
             {
-            	return new ContainerUncraftingTable(player.inventory, world, true);
+            	return new ContainerUncraftingTable(player.inventory, world);
             }
         }
         return null;
@@ -45,8 +45,7 @@ public class ModGuiHandler implements IGuiHandler
         {
             if (id == GUI_TABLE)
             {
-                String name = I18n.format("tile.uncrafting_table.name");
-                return new GuiUncraftingTable(player.inventory, world, name, false);
+                return new GuiUncraftingTable(player.inventory, world);
             }
         }
         return null;
