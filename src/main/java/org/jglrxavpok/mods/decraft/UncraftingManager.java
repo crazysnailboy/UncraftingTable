@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.jglrxavpok.mods.decraft.RecipeHandlers.RecipeHandler;
 import org.jglrxavpok.mods.decraft.RecipeHandlers.ShapedOreRecipeHandler;
@@ -28,8 +30,8 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 
 /**
- * Main part of the Uncrafting Table. The manager is used to parse the existing recipes and find the correct one depending on the given stack.
  * @author jglrxavpok
+ *
  */
 public class UncraftingManager 
 {
@@ -37,7 +39,6 @@ public class UncraftingManager
 	private static Boolean canUncraftItem(ItemStack itemStack)
 	{
 		String uniqueIdentifier = Item.itemRegistry.getNameForObject(itemStack.getItem()).toString();
-//		String uniqueIdentifier = GameRegistry.findUniqueIdentifierFor(itemStack.getItem()).toString();
 		if (itemStack.getItemDamage() > 0) uniqueIdentifier += "," + Integer.toString(itemStack.getItemDamage()); 
 		
 		return ArrayUtils.indexOf(ModConfiguration.excludedItems, uniqueIdentifier) < 0;
@@ -46,90 +47,57 @@ public class UncraftingManager
 	
 	public static List<Integer> getStackSizeNeeded(ItemStack item)
 	{
-//		System.out.println("\t" + "getStackSizeNeeded");
-//		System.out.println("\t" + item.getItem().getUnlocalizedName());
-//		System.out.println("\t" + item.getDisplayName());
-		
 		List<Integer> list = new ArrayList<Integer>();
-		
 		if (!canUncraftItem(item)) return list;
 		
-		List<?> recipeList = CraftingManager.getInstance().getRecipeList();
-
-		
-		for (int i = 0 ; i < recipeList.size() ; i++)
+		List<IRecipe> recipeList = CraftingManager.getInstance().getRecipeList();
+		for ( IRecipe recipe : recipeList )
 		{
-			IRecipe recipe = (IRecipe)recipeList.get(i);
-			if (recipe != null)
+			ItemStack recipeOutput = recipe.getRecipeOutput();
+			if (recipeOutput != null)
 			{
-				ItemStack recipeOutput = recipe.getRecipeOutput();
-				if (recipeOutput != null)
+				if (ItemStackHelper.areItemsEqualIgnoreDurability(item, recipeOutput))
 				{
-					if (recipeOutput.getItem() == item.getItem() && recipeOutput.getItemDamage() == item.getItemDamage())
+					RecipeHandler handler = getRecipeHandler(recipe);
+					if (handler != null)
 					{
-						RecipeHandler handler = getRecipeHandler(recipe);
-//						RecipeHandler handler = uncraftingHandlers.get(r.getClass());
-						if (handler != null)
-						{
-							list.add(recipeOutput.stackSize);
-						}
-						else 
-						{
-							ModUncrafting.instance.getLogger().error("[Uncrafting Table] Unknown recipe type: "+recipe.getClass().getCanonicalName());
-						}
+						list.add(recipeOutput.stackSize);
+						break;
+					}
+					else 
+					{
+						ModUncrafting.instance.getLogger().error("[Uncrafting Table] Unknown recipe type: " + recipe.getClass().getCanonicalName());
 					}
 				}
 			}
 		}
-//		System.out.println("\t" + "-----");
 
 		return list;
 	}
 	
 	public static List<ItemStack[]> getUncraftResults(ItemStack item)
 	{
-//		System.out.println("getUncraftResults");
-//		System.out.println(item.getItem().getUnlocalizedName());
-//		System.out.println(item.getDisplayName());
-//		System.out.println("isDamageable: " + item.getItem().isDamageable());
-
 		List<ItemStack[]> list = new ArrayList<ItemStack[]>();
-		
 		if (!canUncraftItem(item)) return list;
 		
-		
-		List<?> recipeList = CraftingManager.getInstance().getRecipeList();
-		
-		for (int i = 0 ; i < recipeList.size() ; i++)
+		List<IRecipe> recipeList = CraftingManager.getInstance().getRecipeList();
+		for ( IRecipe recipe : recipeList )
 		{
-			IRecipe recipe = (IRecipe)recipeList.get(i);
-			if (recipe != null)
+			ItemStack recipeOutput = recipe.getRecipeOutput();
+			if (ItemStackHelper.areItemsEqualIgnoreDurability(item, recipeOutput) && recipeOutput.stackSize <= item.stackSize)
 			{
-				ItemStack recipeOutput = recipe.getRecipeOutput();
-				if (recipeOutput != null)
+				RecipeHandler handler = getRecipeHandler(recipe);
+				if (handler != null)
 				{
-					if (
-						(recipeOutput.getItem() == item.getItem() && recipeOutput.stackSize <= item.stackSize && item.getItem().isDamageable() == false && recipeOutput.getItemDamage() == item.getItemDamage())
-						||
-						(recipeOutput.getItem() == item.getItem() && recipeOutput.stackSize <= item.stackSize && item.getItem().isDamageable() == true)
-					)
-					{
-						RecipeHandler handler = getRecipeHandler(recipe);
-//						RecipeHandler handler = uncraftingHandlers.get(recipe.getClass());
-						if (handler != null)
-						{
-							list.add(handler.getCraftingGrid(recipe));
-						}
-						else
-						{
-							ModUncrafting.instance.getLogger().error("[Uncrafting Table] Unknown recipe type: "+recipe.getClass().getCanonicalName());
-						}
-					}
+					list.add(handler.getCraftingGrid(recipe));
+					break;
+				}
+				else 
+				{
+					ModUncrafting.instance.getLogger().error("[Uncrafting Table] Unknown recipe type: " + recipe.getClass().getCanonicalName());
 				}
 			}
 		}
-		
-//		System.out.println("-----");
 		
 		return list;
 	}
@@ -149,6 +117,22 @@ public class UncraftingManager
 	
 	public static void postInit()
 	{
+	}
+
+	
+	private static class ItemStackHelper 
+	{
+
+	    public static boolean areItemsEqualIgnoreDurability(@Nullable ItemStack stackA, @Nullable ItemStack stackB)
+	    {
+	        return stackA == stackB ? true : (stackA != null && stackB != null ? isItemEqualIgnoreDurability(stackA, stackB) : false);
+	    }
+	    
+	    public static boolean isItemEqualIgnoreDurability(@Nullable ItemStack stackA, @Nullable ItemStack stackB)
+	    {
+	        return !stackA.isItemStackDamageable() ? stackA.isItemEqual(stackB) : stackB != null && stackA.getItem() == stackB.getItem();
+	    }
+	    
 	}
 	
 	
