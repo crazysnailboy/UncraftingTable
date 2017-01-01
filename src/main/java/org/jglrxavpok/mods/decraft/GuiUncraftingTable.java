@@ -17,19 +17,17 @@ import org.lwjgl.opengl.*;
 public class GuiUncraftingTable extends GuiContainer
 {
 
-    private static final ResourceLocation UNCRAFTING_TABLE_GUI_TEXTURES = new ResourceLocation(ModUncrafting.MODID + ":textures/gui/container/uncrafting_gui.png");
+    private static final ResourceLocation uncraftingTableGuiTextures = new ResourceLocation(ModUncrafting.MODID + ":textures/gui/container/uncrafting_gui.png");
 
     public ContainerUncraftingTable container;
-    private String blockName;
     private World worldObj;
     private EntityPlayer player;
 
-    public GuiUncraftingTable(InventoryPlayer playerInventory, World world, String blockName)
+    public GuiUncraftingTable(InventoryPlayer playerInventory, World world)
     {
     	super(new ContainerUncraftingTable(playerInventory, world));
     	
         container = (ContainerUncraftingTable)inventorySlots;
-        this.blockName = blockName;
         this.worldObj = world;
         this.player = playerInventory.player;
     }
@@ -53,6 +51,7 @@ public class GuiUncraftingTable extends GuiContainer
     	
     	
     	// render the block name at the top of the gui
+        String blockName = I18n.format("tile.uncrafting_table.name");
         fontRendererObj.drawString(blockName, xSize / 2 - fontRendererObj.getStringWidth(blockName) / 2 + 1, 5, 4210752);
         
         // write "inventory" above the player inventory
@@ -91,7 +90,7 @@ public class GuiUncraftingTable extends GuiContainer
         GL11.glPushMatrix();
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
-        this.mc.renderEngine.bindTexture(UNCRAFTING_TABLE_GUI_TEXTURES);
+        this.mc.getTextureManager().bindTexture(uncraftingTableGuiTextures);
 
         int k = this.width / 2 - this.xSize / 2;
         int l = this.height / 2 - this.ySize / 2;

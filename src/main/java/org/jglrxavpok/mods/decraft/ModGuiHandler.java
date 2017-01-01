@@ -45,7 +45,7 @@ public class ModGuiHandler implements IGuiHandler
         {
             if (id == GUI_TABLE)
             {
-                return new GuiUncraftingTable(player.inventory, world, I18n.format("tile.uncrafting_table.name"));
+                return new GuiUncraftingTable(player.inventory, world);
             }
         }
         return null;
