@@ -66,20 +66,21 @@ public class ContainerUncraftingTable extends Container
         this.worldObj = worldIn;
         
     	// uncrafting output inventory
+        int offsetX = 106; int offsetY = 17;
         for (int row = 0; row < 3; ++row)
         {
             for (int col = 0; col < 3; ++col)
             {
             	// arguments: inventory, slotIndex, xDisplayPosition, yDisplayPosition    
-                this.addSlotToContainer(new Slot(this.uncraftOut, col + row * 3, 112 + col * 18, 17 + row * 18));
+                this.addSlotToContainer(new Slot(this.uncraftOut, col + row * 3, offsetX + col * 18, offsetY + row * 18));
             }
         }
         
         // uncrafting book inventory for capturing enchantments (left standalone slot)
-        this.addSlotToContainer(new Slot(this.calculInput, 0, 15, 35));
+        this.addSlotToContainer(new Slot(this.calculInput, 0, 20, 35));
 
         // incrafting input inventory (right standalone slot)
-        this.addSlotToContainer(new Slot(this.uncraftIn, 0, 30 + 15, 35));
+        this.addSlotToContainer(new Slot(this.uncraftIn, 0, 45, 35));
         
         // player inventory
         for (int row = 0; row < 3; ++row)
@@ -144,6 +145,8 @@ public class ContainerUncraftingTable extends Container
                 {
                 	// read the minimum stack size back out of the event :|
                     int eventMinStackSize = event.getRequiredNumber();
+                    
+                    // if the minimum stack size is greater than the number of items in the slot
                     if (eventMinStackSize > calculInput.getStackInSlot(0).stackSize)
                     {
                     	// set the uncrafting status as "error", with the need more items message
@@ -180,9 +183,6 @@ public class ContainerUncraftingTable extends Container
 	                        uncraftingStatus = UncraftingStatus.READY;
                 		}
                     }
-                    
-            		
-            		
                 }
             }
             // if the left hand slot is not empty and the right hand slot is not empty
