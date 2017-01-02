@@ -62,19 +62,12 @@ public class GuiUncraftingTable extends GuiContainer
         fontRendererObj.drawString(TextFormatting.GRAY + compute + TextFormatting.RESET, 24 - fontRendererObj.getStringWidth(compute) / 2, 21, 0);
         
         // write the xp cost above the arrow
+        String xpCost = container.uncraftingCost + " levels";
         Color darkGreen = new Color(75, 245, 75);
-        fontRendererObj.drawString(TextFormatting.DARK_GRAY + "" + TextFormatting.UNDERLINE + "" + (ModConfiguration.standardLevel + container.uncraftingCost) + " levels" + TextFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth((ModConfiguration.standardLevel + container.uncraftingCost) + " levels") / 2 + 1, ySize - 126 - 10, 0);
-        fontRendererObj.drawString(TextFormatting.UNDERLINE + "" + (ModConfiguration.standardLevel + container.uncraftingCost) + " levels" + TextFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth((ModConfiguration.standardLevel + container.uncraftingCost) + " levels") / 2, ySize - 127 - 10, darkGreen.getRGB());
+        fontRendererObj.drawString(TextFormatting.DARK_GRAY + "" + TextFormatting.UNDERLINE + "" + xpCost + TextFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth(xpCost) / 2 + 1, ySize - 126 - 10, 0);
+        fontRendererObj.drawString(TextFormatting.UNDERLINE + "" + xpCost + TextFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth(xpCost) / 2, ySize - 127 - 10, darkGreen.getRGB());
 
 
-//            // draw the arrow with the cross through it
-//            GL11.glPushMatrix();
-//            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-//            this.mc.renderEngine.bindTexture(new ResourceLocation("uncraftingTable:textures/gui/container/uncrafting_gui.png"));
-//            this.drawTexturedModalRect(75, 32, 176, 0, 28, 21);
-//            GL11.glPopMatrix();
-        
-        
         String string = container.uncraftingStatusText;
         if (string != null)
         {

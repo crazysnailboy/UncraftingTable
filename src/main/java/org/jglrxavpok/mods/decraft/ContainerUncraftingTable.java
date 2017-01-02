@@ -48,9 +48,7 @@ public class ContainerUncraftingTable extends Container
     public UncraftingStatus uncraftingStatus = UncraftingStatus.READY;
     public String uncraftingStatusText = I18n.translateToLocal("uncrafting.result.ready");
     
-    public int uncraftingCost = 0 - ModConfiguration.standardLevel;
-    
-    private ItemStack toReturn;
+    public int uncraftingCost = ModConfiguration.standardLevel;
     
     
     
@@ -103,197 +101,204 @@ public class ContainerUncraftingTable extends Container
     {
 //    	System.out.println("onCraftMatrixChanged");
 
-        toReturn = null;
-        
         // if the left input slot changes
         if (inventory == calculInput)
         {
-//        	System.out.println("inventory == calculInput: " + (inventory == calculInput));
+            // set the uncrafting cost to the default
+        	uncraftingCost = ModConfiguration.standardLevel;
         	
         	// if the left slot is empty
             if (calculInput.getStackInSlot(0) == null)
             {
-                uncraftingCost = 0;
-                
                 // if the right hand slot is empty
                 if (uncraftIn.getStackInSlot(0) == null)
                 {
                 	// set the status to ready
                     uncraftingStatus = UncraftingStatus.READY;
                     uncraftingStatusText = I18n.translateToLocal("uncrafting.result.ready");
-                    
-                    // set the uncrafting cost to the default
-                	uncraftingCost = 0 - ModConfiguration.standardLevel; // TODO is this necessary?
                 }
                 return;
             }
             
             // if the left hand slot is not empty and the right hand slot is empty
+            // i.e. calculation mode
             else if (uncraftIn.getStackInSlot(0) == null)
             {
             	// get the uncrafting result for the item in the left hand slot
-                List<ItemStack[]> list1 = UncraftingManager.getUncraftResults(calculInput.getStackInSlot(0));
-                ItemStack[] output = null;
-                if (list1.size() > 0) output = list1.get(0);
+                List<ItemStack[]> craftingGrids = UncraftingManager.getUncraftResults(calculInput.getStackInSlot(0));
+                ItemStack[] craftingGrid = (craftingGrids.size() > 0 ? craftingGrids.get(0) : null);
 
                 // get the required number of items to uncraft the item in the left hand slot
-                List<Integer> needs = UncraftingManager.getStackSizeNeeded(calculInput.getStackInSlot(0));
-                int required = 1;
-                if (needs.size() > 0) required = needs.get(0);
+                List<Integer> minStackSizes = UncraftingManager.getStackSizeNeeded(calculInput.getStackInSlot(0));
+                int minStackSize = (minStackSizes.size() > 0 ? minStackSizes.get(0) : 1);
                 
-                
-                UncraftingEvent event = new UncraftingEvent(calculInput.getStackInSlot(0), output, required, playerInventory.player);
+                // fire an uncrafting event
+                // TODO (i can't see why this is needed. it's never handled anywhere)
+                UncraftingEvent event = new UncraftingEvent(calculInput.getStackInSlot(0), craftingGrid, minStackSize, playerInventory.player);
                 if (!MinecraftForge.EVENT_BUS.post(event))
                 {
-                    int nbrStacks = event.getRequiredNumber();
-                    if (nbrStacks > calculInput.getStackInSlot(0).stackSize)
+                	// read the minimum stack size back out of the event :|
+                    int eventMinStackSize = event.getRequiredNumber();
+                    if (eventMinStackSize > calculInput.getStackInSlot(0).stackSize)
                     {
                         uncraftingStatus = UncraftingStatus.ERROR;
-                        uncraftingStatusText = I18n.translateToLocalFormatted("uncrafting.result.needMoreStacks", (nbrStacks - calculInput.getStackInSlot(0).stackSize));
-                        uncraftingCost = 0 - ModConfiguration.standardLevel;
+                        uncraftingStatusText = I18n.translateToLocalFormatted("uncrafting.result.needMoreStacks", (eventMinStackSize - calculInput.getStackInSlot(0).stackSize));
                         return;
                     }
+                    // if the item lookup didn't result in a crafting recipe being returned
                     else if (event.getOutput() == null)
                     {
+                    	// set the uncrafting status as "error", with the not possible message
                         uncraftingStatus = UncraftingStatus.ERROR;
                         uncraftingStatusText = I18n.translateToLocal("uncrafting.result.impossible");
-                        uncraftingCost = 0 - ModConfiguration.standardLevel;
                         return;
                     }
+                    // if the item is uncraftable, and there are enough items in the stack
                     else
                     {
+                    	// set the uncrafting status to "ready"
                         uncraftingStatus = UncraftingStatus.READY;
                         uncraftingStatusText = I18n.translateToLocal("uncrafting.result.ready");
                     }
                     
-                    if (ModConfiguration.uncraftMethod == 0)
-                    {
-                        uncraftingCost = 0;
-                    }
-                    else if (ModConfiguration.uncraftMethod == 1)
-                    {
-                        ItemStack s1 = calculInput.getStackInSlot(0);
-                        
-                        if (s1.getItem().isDamageable())
-                        {
-                        	int damagePercentage = (int)(((double)s1.getItemDamage() / (double)s1.getMaxDamage()) * 100);
-                        	uncraftingCost = (ModConfiguration.maxUsedLevel * damagePercentage) / 100;
-                        }
-                        else
-                        {
-                        	uncraftingCost = 0;
-                        }
-                        
-                    }
+                    // determine the xp cost for the uncrafting operation
+            		uncraftingCost = UncraftingManager.getUncraftingXpCost(calculInput.getStackInSlot(0));
+            		
+            		// if we don't have enough xp
+            		if (!playerInventory.player.capabilities.isCreativeMode && playerInventory.player.experienceLevel < uncraftingCost)
+            		{
+            			// set the status to error, not enough xp and return
+            			uncraftingStatus = UncraftingStatus.ERROR;
+                    	uncraftingStatusText = I18n.translateToLocal("uncrafting.result.needMoreXP");
+                    	return;
+            		}
+            		
                 }
             }
+            // if the left hand slot is not empty and the right hand slot is not empty
             else
             {
+            	// set the uncrafting status as "error", with the not possible message
+            	// TODO this probably shouldn't be happening but the call to onCraftMatrixChanged for the right hand slot will override it
                 uncraftingStatus = UncraftingStatus.ERROR;
                 uncraftingStatusText = I18n.translateToLocal("uncrafting.result.impossible");
-                uncraftingCost = 0 - ModConfiguration.standardLevel;
                 return;
             }
         }
         
         
+        // if the right input slot changes
         else if (inventory == uncraftIn)
         {
-//        	System.out.println("inventory == uncraftIn: " + (inventory == uncraftIn));
-        	
-            uncraftingCost = 0;
+            // set the uncrafting cost to the default
+            uncraftingCost = ModConfiguration.standardLevel;
+
+            // if the right input slot is empty
             if (uncraftIn.getStackInSlot(0) == null)
             {
+            	// set the uncrafting status to "ready"
                 uncraftingStatus = UncraftingStatus.READY;
                 uncraftingStatusText = I18n.translateToLocal("uncrafting.result.ready");
                 return;
             }
             
-//        	System.out.println("onCraftMatrixChanged");
-//    		System.out.println("isRemote: " + worldObj.isRemote);
-//    		System.out.println("displayName: " + uncraftIn.getStackInSlot(0).getDisplayName());
-//    		System.out.println("stackSize: " + uncraftIn.getStackInSlot(0).stackSize);
+            // get the crafting grid which would result in the input item
+            List<ItemStack[]> craftingGrids = UncraftingManager.getUncraftResults(uncraftIn.getStackInSlot(0));
+            ItemStack[] craftingGrid = (craftingGrids.size() > 0 ? craftingGrids.get(0) : null);
             
-            
-            List<ItemStack[]> list1 = UncraftingManager.getUncraftResults(uncraftIn.getStackInSlot(0));
-            ItemStack[] output = null;
-            if (list1.size() > 0) output = list1.get(0);
-            
-            List<Integer> needs = UncraftingManager.getStackSizeNeeded(uncraftIn.getStackInSlot(0));
-            int required = 1;
-            if (needs.size() > 0) required = needs.get(0);
+            // get the minimum stack size needed to uncraft the input item
+            List<Integer> minStackSizes = UncraftingManager.getStackSizeNeeded(uncraftIn.getStackInSlot(0));
+            int minStackSize = (minStackSizes.size() > 0 ? minStackSizes.get(0) : 1);
 
-            UncraftingEvent event = new UncraftingEvent(uncraftIn.getStackInSlot(0), output, required, playerInventory.player);
+            // fire an uncrafting event
+            // TODO (i can't see why this is needed. it's never handled anywhere)
+            UncraftingEvent event = new UncraftingEvent(uncraftIn.getStackInSlot(0), craftingGrid, minStackSize, playerInventory.player);
             if (!MinecraftForge.EVENT_BUS.post(event))
             {
-                int nbrStacks = event.getRequiredNumber();
-                if (nbrStacks > uncraftIn.getStackInSlot(0).stackSize)
+            	// read the minimum stack size back out of the event :|
+                int eventMinStackSize = event.getRequiredNumber();
+                
+                // if the minimum stack size is greater than the number of items in the slot
+                if (eventMinStackSize > uncraftIn.getStackInSlot(0).stackSize)
                 {
+                	// set the uncrafting status as "error", with the need more items message
                     uncraftingStatus = UncraftingStatus.ERROR;
-                    uncraftingStatusText = I18n.translateToLocalFormatted("uncrafting.result.needMoreStacks", (nbrStacks - uncraftIn.getStackInSlot(0).stackSize));
+                    uncraftingStatusText = I18n.translateToLocalFormatted("uncrafting.result.needMoreStacks", (eventMinStackSize - uncraftIn.getStackInSlot(0).stackSize));
                     return;
                 }
                 
-                while (uncraftIn.getStackInSlot(0) != null && nbrStacks <= uncraftIn.getStackInSlot(0).stackSize)
+                while (uncraftIn.getStackInSlot(0) != null && eventMinStackSize <= uncraftIn.getStackInSlot(0).stackSize)
                 {
-                    EntityPlayer player = playerInventory.player;
-                    int lvl = player.experienceLevel;
-                    uncraftingCost = 0;
-                    
+                	
                     // determine the xp cost for the uncrafting operation
-                    if (!player.capabilities.isCreativeMode)
+            		uncraftingCost = UncraftingManager.getUncraftingXpCost(calculInput.getStackInSlot(0));
+            		
+            		// if we don't have enough xp
+            		if (!playerInventory.player.capabilities.isCreativeMode && playerInventory.player.experienceLevel < uncraftingCost)
+            		{
+            			// set the status to error, not enough xp and return
+            			uncraftingStatus = UncraftingStatus.ERROR;
+                    	uncraftingStatusText = I18n.translateToLocal("uncrafting.result.needMoreXP");
+                    	return;
+            		}
+            		// if we do have enough xp
+                    if (!playerInventory.player.capabilities.isCreativeMode && playerInventory.player.experienceLevel >= uncraftingCost)
                     {
-                    	// if we're using Xell75's & Zenen's uncrafting method, and the item is enchantable (i.e. damageable)
-                    	// otherwise use the standard cost
-                    	if (uncraftIn.getStackInSlot(0).getItem().getItemEnchantability() > 0 && ModConfiguration.uncraftMethod == 1)
-                    	{
-                            // calculate a cost based on the damage percentage of the item 
-                        	ItemStack s1 = uncraftIn.getStackInSlot(0);
-                        	int percent = (int)(((double)s1.getItemDamage() / (double)s1.getMaxDamage()) * 100);
-                        	uncraftingCost = (ModConfiguration.maxUsedLevel * percent) / 100;
-                    	}
-                    	
-                        // if the player's xp level is unsufficient to perform the operation
-                        if (lvl < ModConfiguration.standardLevel + uncraftingCost && !player.capabilities.isCreativeMode)
-                        {
-                        	// set the status to "error" with the needs more xp message
-                        	uncraftingStatus = UncraftingStatus.ERROR;
-                        	uncraftingStatusText = I18n.translateToLocal("uncrafting.result.needMoreXP");
-                        	return;
-                        }
+                    	// deduct the appropriate number of levels from the player
+                    	playerInventory.player.experienceLevel -= uncraftingCost;
                     }
+            		
                     
-                    
+                    // if the item being uncrafted has enchantments, and there are books in the left hand slot
                     if (!EnchantmentHelper.getEnchantments(uncraftIn.getStackInSlot(0)).isEmpty() && calculInput.getStackInSlot(0) != null && calculInput.getStackInSlot(0).getItem() == Items.BOOK)
                     {
+                    	// determine how many books are present in the left hand slot
                         int stackSize = calculInput.getStackInSlot(0).stackSize;
                         
+                        // build a map of the enchantments on the item in the right hand slot
                         Map itemEnchantments = EnchantmentHelper.getEnchantments(uncraftIn.getStackInSlot(0));
+                        // initialise a list of itemstacks to hold enchanted books  
                         ArrayList<ItemStack> enchantedBooks = new ArrayList<ItemStack>();
+                        
+                        // if there's a single book in the left hand slot
                         if (stackSize == 1)
                         {
+                        	// create an itemstack containing an enchanted book
                             ItemStack enchantedBook = new ItemStack(Items.ENCHANTED_BOOK, 1);
+                            // copy all of the enchantments from the map onto the book
                             EnchantmentHelper.setEnchantments(itemEnchantments, enchantedBook);
+                            // add the book to the enchanted books collection
                             enchantedBooks.add(enchantedBook);
                         }
+                        // if the left hand slot contains more than one book
                         else
                         {
+                        	// iterate through the enchantments in the map
                         	Iterator<?> enchantmentIds = itemEnchantments.keySet().iterator();
                             while (enchantmentIds.hasNext())
                             {
                             	Enchantment bookEnchantment = (Enchantment)enchantmentIds.next();
+                            	// create a new map of enchantments which will be applied to this book
                                 Map<Enchantment, Integer> bookEnchantments = new LinkedHashMap<Enchantment, Integer>();
+                                // copy the current enchantment into the map
                                 bookEnchantments.put(bookEnchantment, (Integer)itemEnchantments.get(bookEnchantment));
+                            	// create an itemstack containing an enchanted book
                                 ItemStack enchantedBook = new ItemStack(Items.ENCHANTED_BOOK, 1);
+                                // place the enchantment onto the book
                                 EnchantmentHelper.setEnchantments(bookEnchantments, enchantedBook);
+                                // add the book to the enchanted books collection
                                 enchantedBooks.add(enchantedBook);
+                                // clear the book enchantments map
                                 bookEnchantments.clear();
                             }
                         }
                         
+                        // for each enchanted book itemstack in the itemstacks array
                         for (ItemStack enchantedBook : enchantedBooks)
                         {
                             stackSize-- ;
+                            
+                            // add the itemstack to the player inventory, or spawn in the world if the inventory is full
                             if (!playerInventory.addItemStackToInventory(enchantedBook))
                             {
                                 EntityItem e = playerInventory.player.entityDropItem(enchantedBook, 0.5f);
@@ -301,71 +306,27 @@ public class ContainerUncraftingTable extends Container
                                 e.posY = playerInventory.player.posY;
                                 e.posZ = playerInventory.player.posZ;
                             }
+                            
+                            // if we're at the end of the itemstacks array
                             if (stackSize <= 0)
                             {
                                 calculInput.setInventorySlotContents(0, null);
                                 break;
                             }
-                            
+                            // otherwise decrement the stack size for the books in the left hand slot
                             calculInput.decrStackSize(0, 1);
                         }
-                    }
+                        
+                    } // end of enchantment processing
                     
                     ItemStack[] items = event.getOutput();
                     if (items == null)
                     {
-                        String r = I18n.translateToLocal("uncrafting.result.impossible");
-                        uncraftingStatusText = r;
                         uncraftingStatus = UncraftingStatus.ERROR;
+                        uncraftingStatusText = I18n.translateToLocal("uncrafting.result.impossible");
                         return;
                     }
                     
-                    if (!playerInventory.player.capabilities.isCreativeMode && uncraftIn.getStackInSlot(0).getItem().getItemEnchantability() > 0)
-                    {
-                        if (ModConfiguration.uncraftMethod == 0)
-                        {
-                            int count = 0;
-                            ItemStack s1 = uncraftIn.getStackInSlot(0);
-
-                            int percent = (int) (((double) s1.getItemDamage() / (double) s1.getMaxDamage()) * 100);
-                            for (int i = 0; i < items.length; i++ )
-                            {
-                                if (items[i] != null)
-                                    count++ ;
-                            }
-                            int toRemove = Math.round((float) (percent * count) / 100f);
-                            if (toRemove > 0)
-                                for (int i = 0; i < items.length; i++ )
-                                {
-                                    if (items[i] != null)
-                                    {
-                                        toRemove-- ;
-                                        items[i] = null;
-                                        if (toRemove <= 0)
-                                        {
-                                            break;
-                                        }
-                                    }
-                                }
-                        }
-                        else if (ModConfiguration.uncraftMethod == 1)
-                        {
-                            ItemStack s1 = uncraftIn.getStackInSlot(0);
-                            int percent = (int)(((double)s1.getItemDamage() / (double)s1.getMaxDamage()) * 100);
-                            uncraftingCost = (ModConfiguration.maxUsedLevel * percent) / 100;
-                        }
-                    }
-                    if (lvl < ModConfiguration.standardLevel + uncraftingCost && !player.capabilities.isCreativeMode)
-                    {
-                        String r = I18n.translateToLocal("uncrafting.result.needMoreXP");
-                        uncraftingStatusText = r;
-                        uncraftingStatus = UncraftingStatus.ERROR;
-                        return;
-                    }
-                    else if (lvl >= ModConfiguration.standardLevel + uncraftingCost && !player.capabilities.isCreativeMode)
-                    {
-                        player.experienceLevel -= ModConfiguration.standardLevel + uncraftingCost;
-                    }
                     if (!uncraftOut.isEmpty())
                     {
                         for (int i = 0; i < uncraftOut.getSizeInventory(); i++ )
@@ -388,24 +349,15 @@ public class ContainerUncraftingTable extends Container
                         }
                     }
                     
-//                    System.out.println("items.length: " + items.length);
-                    
-
                     for (int i = 0; i < items.length; i++ )
                     {
                         ItemStack s = items[i];
                         ItemStack currentStack = uncraftOut.getStackInSlot(i);
                         if (s != null)
                         {
-                        	
-//                        	System.out.println("displayName: " + s.getDisplayName());
-//                        	System.out.println("metaData: " + s.getMetadata());
-                        	
                             int metadata = s.getItemDamage();
-                            if (metadata == 32767)
-                            {
-                                metadata = 0;
-                            }
+                            if (metadata == Short.MAX_VALUE) metadata = 0;
+
                             ItemStack newStack = null;
                             if (currentStack != null && 1 + currentStack.stackSize <= s.getMaxStackSize())
                             {
@@ -465,16 +417,14 @@ public class ContainerUncraftingTable extends Container
             }
             else
             {
-                String r = I18n.translateToLocal("uncrafting.result.impossible");
-                uncraftingStatusText = r;
                 uncraftingStatus = UncraftingStatus.ERROR;
+                uncraftingStatusText = I18n.translateToLocal("uncrafting.result.impossible");
             }
         }
         else
         {
-            String r = I18n.translateToLocal("uncrafting.result.impossible");
-            uncraftingStatusText = r;
             uncraftingStatus = UncraftingStatus.ERROR;
+            uncraftingStatusText = I18n.translateToLocal("uncrafting.result.impossible");
         }
     }
 
