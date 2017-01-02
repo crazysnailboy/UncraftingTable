@@ -1,11 +1,9 @@
 package org.jglrxavpok.mods.decraft;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -18,7 +16,6 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 /**
  * Recipe Handlers return the "crafting grid" depending on a crafting recipe.
  * @author jglrxavpok
- *
  */
 public final class RecipeHandlers
 {
