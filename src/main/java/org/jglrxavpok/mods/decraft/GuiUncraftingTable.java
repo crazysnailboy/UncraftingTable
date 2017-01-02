@@ -7,6 +7,7 @@ import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -16,7 +17,7 @@ import net.minecraft.world.World;
 
 public class GuiUncraftingTable extends GuiContainer
 {
-    private static final ResourceLocation UNCRAFTING_TABLE_GUI_TEXTURES = new ResourceLocation(ModUncrafting.MODID + ":textures/gui/container/uncrafting_gui.png");
+    private static final ResourceLocation UNCRAFTING_TABLE_GUI_TEXTURES = new ResourceLocation(ModUncrafting.MODID + ":textures/gui/container/uncrafting_table.png");
 
     public ContainerUncraftingTable container;
     private World worldObj;
@@ -101,7 +102,7 @@ public class GuiUncraftingTable extends GuiContainer
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
-        GL11.glDisable(GL11.GL_LIGHTING);
+    	GlStateManager.disableLighting();
         
     	// fontRendererObj.drawString:
     	// Args: string, x, y, color, dropShadow
@@ -118,21 +119,31 @@ public class GuiUncraftingTable extends GuiContainer
     	drawUncraftingStatusMessage();
 
     	
-        GL11.glEnable(GL11.GL_LIGHTING);
+    	GlStateManager.enableLighting();
     }
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
     {
-        GL11.glPushMatrix();
-        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    	GlStateManager.pushMatrix();
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
+        // bind the background gui texture
         this.mc.getTextureManager().bindTexture(UNCRAFTING_TABLE_GUI_TEXTURES);
+        
+		int guiX = (this.width - this.xSize) / 2;
+		int guiY = (this.height - this.ySize) / 2;
+        
+        // render the gui background
+        this.drawTexturedModalRect(guiX, guiY, 0, 0, this.xSize, this.ySize);
 
-        int k = this.width / 2 - this.xSize / 2;
-        int l = this.height / 2 - this.ySize / 2;
-        this.drawTexturedModalRect(k, l, 0, 0, this.xSize, this.ySize);
-        GL11.glPopMatrix();
+		// if the uncrafting status of the container is "error", render the arrow with the cross over it
+		if (container.uncraftingStatus == UncraftingStatus.ERROR)
+		{
+			this.drawTexturedModalRect(guiX + 71, guiY + 33, 176, 0, 28, 21);
+		}
+
+    	GlStateManager.popMatrix();
     }
 
 }
