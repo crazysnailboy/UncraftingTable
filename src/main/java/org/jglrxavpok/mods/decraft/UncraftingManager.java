@@ -60,10 +60,10 @@ public class UncraftingManager
 	 * @param itemStack The ItemStack containing the target item
 	 * @return A collection of the mininum required stack sizes - one element per recipe found
 	 */
-	public static List<Integer> getStackSizeNeeded(ItemStack item)
+	public static List<Integer> getStackSizeNeeded(ItemStack itemStack)
 	{
 		List<Integer> list = new ArrayList<Integer>();
-		if (isUncraftingDisabledForItem(item)) return list;
+		if (isUncraftingDisabledForItem(itemStack)) return list;
 		
 		List<IRecipe> recipeList = CraftingManager.getInstance().getRecipeList();
 		for ( IRecipe recipe : recipeList )
@@ -71,7 +71,7 @@ public class UncraftingManager
 			ItemStack recipeOutput = recipe.getRecipeOutput();
 			if (recipeOutput != null)
 			{
-				if (ItemStack.areItemsEqualIgnoreDurability(item, recipeOutput))
+				if (ItemStack.areItemsEqualIgnoreDurability(itemStack, recipeOutput))
 				{
 					RecipeHandler handler = getRecipeHandler(recipe);
 					if (handler != null)
@@ -96,16 +96,16 @@ public class UncraftingManager
 	 * @param itemStack The ItemStack containing the target item
 	 * @return A collection of the ItemStack arrays representing the crafting recipe - one element per recipe found
 	 */
-	public static List<ItemStack[]> getUncraftResults(ItemStack item)
+	public static List<ItemStack[]> getUncraftResults(ItemStack itemStack)
 	{
 		List<ItemStack[]> list = new ArrayList<ItemStack[]>();
-		if (isUncraftingDisabledForItem(item)) return list;
+		if (isUncraftingDisabledForItem(itemStack)) return list;
 		
 		List<IRecipe> recipeList = CraftingManager.getInstance().getRecipeList();
 		for ( IRecipe recipe : recipeList )
 		{
 			ItemStack recipeOutput = recipe.getRecipeOutput();
-			if (ItemStack.areItemsEqualIgnoreDurability(item, recipeOutput) && recipeOutput.stackSize <= item.stackSize)
+			if (ItemStack.areItemsEqualIgnoreDurability(itemStack, recipeOutput) && recipeOutput.stackSize <= itemStack.stackSize)
 			{
 				RecipeHandler handler = getRecipeHandler(recipe);
 				if (handler != null)

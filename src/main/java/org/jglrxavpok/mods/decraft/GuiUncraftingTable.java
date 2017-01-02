@@ -25,7 +25,6 @@ public class GuiUncraftingTable extends GuiContainer
     public GuiUncraftingTable(InventoryPlayer playerInventory, World world)
     {
     	super(new ContainerUncraftingTable(playerInventory, world));
-    	
         container = (ContainerUncraftingTable)inventorySlots;
         this.worldObj = world;
         this.player = playerInventory.player;
@@ -38,51 +37,87 @@ public class GuiUncraftingTable extends GuiContainer
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
+    
+    private void drawUncraftingStatusMessage()
+    {
+        // get a message to display based on the status of the container
+        String statusMessage = "";
+        switch (container.uncraftingStatus)
+        {
+        	// if the uncrafting status in "inactive", display no message
+	        case INACTIVE: 
+	        	break;
+	        
+        	// if the uncrafting status is "ready", display the xp cost for the operation
+	        case READY: 
+	        	statusMessage = I18n.format("container.uncrafting.cost", container.uncraftingCost);
+	        	break;
+	        
+        	// if the uncrafting status is "error"...
+	        case ERROR: 
+	        	
+	        	switch (container.uncraftingStatusReason)
+	        	{
+	        		// if the item cannot be uncrafted, display a message to that effect
+		        	case NOT_UNCRAFTABLE:
+		        		statusMessage = I18n.format("uncrafting.result.impossible");
+		        		break;
+		        		
+		        	// if there are not enough items in the item stack, display a message to that effect
+		        	case NOT_ENOUGH_ITEMS: 
+		        		statusMessage = I18n.format("uncrafting.result.needMoreStacks", container.minStackSize);
+		        		break;
+		        		
+	            	// if the player does not have enough xp, display the xp cost for the operation
+		        	case NOT_ENOUGH_XP: 
+			        	statusMessage = I18n.format("container.uncrafting.cost", container.uncraftingCost);
+		        		break;
+	        	}
+	        	break;
+        }
+        
+        // if there is a message to display, render it
+        if (!statusMessage.equals(""))
+        {        
+        	int textX = 8;
+        	int textY = ySize - 96 + 2 - fontRendererObj.FONT_HEIGHT - 4; // 60
+        	
+        	// *** copied from GuiRepair ***
+        	// determine the text and shadow colours based on the uncrafting status
+            int textColor = (container.uncraftingStatus != UncraftingStatus.ERROR ? 8453920 : 16736352);  
+            int shadowColor = -16777216 | (textColor & 16579836) >> 2 | textColor & -16777216;
+
+            // render the string 4 times at different positions in different colours to achieve the desired effect
+            this.fontRendererObj.drawString(statusMessage, textX, textY + 1, shadowColor);
+            this.fontRendererObj.drawString(statusMessage, textX + 1, textY, shadowColor);
+            this.fontRendererObj.drawString(statusMessage, textX + 1, textY + 1, shadowColor);
+            this.fontRendererObj.drawString(statusMessage, textX, textY, textColor);
+            // *** copied from GuiRepair ***
+        }
+    }
+    
+    
+
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
         GL11.glDisable(GL11.GL_LIGHTING);
-        int xSize = this.xSize;
-        int ySize = this.ySize;
         
     	// fontRendererObj.drawString:
     	// Args: string, x, y, color, dropShadow
     	
     	
     	// render the block name at the top of the gui
-        String blockName = I18n.format("tile.uncrafting_table.name");
-        fontRendererObj.drawString(blockName, xSize / 2 - fontRendererObj.getStringWidth(blockName) / 2 + 1, 5, 4210752);
+        String title = I18n.format("container.uncrafting");
+        fontRendererObj.drawString(title, xSize / 2 - fontRendererObj.getStringWidth(title) / 2, 6, 4210752);
         
         // write "inventory" above the player inventory
-        fontRendererObj.drawString(I18n.format("container.inventory"), 6, ySize - 96 + 2, 4210752);
+        fontRendererObj.drawString(I18n.format("container.inventory"), 8, ySize - 96 + 2, 4210752); // y = 72
 
-        // write "compute:" above the input slots
-        String compute = I18n.format("uncrafting.compute") + ":";
-        fontRendererObj.drawString(TextFormatting.DARK_GRAY + compute + TextFormatting.RESET, 24 - fontRendererObj.getStringWidth(compute) / 2 + 1, 22, 0);
-        fontRendererObj.drawString(TextFormatting.GRAY + compute + TextFormatting.RESET, 24 - fontRendererObj.getStringWidth(compute) / 2, 21, 0);
-        
-        // write the xp cost above the arrow
-        String xpCost = container.uncraftingCost + " levels";
-        Color darkGreen = new Color(75, 245, 75);
-        fontRendererObj.drawString(TextFormatting.DARK_GRAY + "" + TextFormatting.UNDERLINE + "" + xpCost + TextFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth(xpCost) / 2 + 1, ySize - 126 - 10, 0);
-        fontRendererObj.drawString(TextFormatting.UNDERLINE + "" + xpCost + TextFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth(xpCost) / 2, ySize - 127 - 10, darkGreen.getRGB());
+        // draw a status message in red or green if appropriate for the status of the uncrafting operation
+    	drawUncraftingStatusMessage();
 
-
-        String string = container.uncraftingStatusText;
-        if (string != null)
-        {
-            UncraftingStatus msgType = container.uncraftingStatus;
-            TextFormatting format = TextFormatting.GREEN;
-            TextFormatting shadowFormat = TextFormatting.DARK_GRAY;
-            if (msgType == ContainerUncraftingTable.UncraftingStatus.ERROR)
-            {
-                format = TextFormatting.WHITE;
-                shadowFormat = TextFormatting.DARK_RED;
-            }
-            fontRendererObj.drawString(shadowFormat + string + TextFormatting.RESET, 6 + 1, ySize - 95 + 2 - fontRendererObj.FONT_HEIGHT, 0);
-            fontRendererObj.drawString(format + string + TextFormatting.RESET, 6, ySize - 96 + 2 - fontRendererObj.FONT_HEIGHT, 0);
-        }
-
+    	
         GL11.glEnable(GL11.GL_LIGHTING);
     }
 
