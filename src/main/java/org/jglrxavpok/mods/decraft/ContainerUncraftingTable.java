@@ -24,7 +24,6 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -33,14 +32,21 @@ import net.minecraftforge.common.MinecraftForge;
  * @author jglrxavpok
  *
  */
-@SuppressWarnings("deprecation")
 public class ContainerUncraftingTable extends Container
 {
 
     public static enum UncraftingStatus
     {
+    	INACTIVE,
         ERROR, 
         READY
+    }
+    
+    public static enum UncraftingStatusReason
+    {
+        NOT_UNCRAFTABLE,
+        NOT_ENOUGH_ITEMS,
+        NOT_ENOUGH_XP
     }
 
     public InventoryCrafting calculInput = new InventoryCrafting(this, 1, 1);
@@ -50,10 +56,11 @@ public class ContainerUncraftingTable extends Container
     
     private World worldObj;
     
-    public UncraftingStatus uncraftingStatus = UncraftingStatus.READY;
-    public String uncraftingStatusText = I18n.translateToLocal("uncrafting.result.ready");
+    public UncraftingStatus uncraftingStatus = UncraftingStatus.INACTIVE;
+    public UncraftingStatusReason uncraftingStatusReason = null;
     
     public int uncraftingCost = ModConfiguration.standardLevel;
+    public int minStackSize = -1;
     
     
 
@@ -102,8 +109,6 @@ public class ContainerUncraftingTable extends Container
     @Override
     public void onCraftMatrixChanged(IInventory inventory)
     {
-//    	System.out.println("onCraftMatrixChanged");
-        
         // if the left input slot changes
         if (inventory == calculInput)
         {
@@ -116,9 +121,8 @@ public class ContainerUncraftingTable extends Container
                 // if the right hand slot is empty
                 if (uncraftIn.getStackInSlot(0).isEmpty())
                 {
-                	// set the status to ready
-                    uncraftingStatus = UncraftingStatus.READY;
-                    uncraftingStatusText = I18n.translateToLocal("uncrafting.result.ready");
+                	// set the status to inactive
+                    uncraftingStatus = UncraftingStatus.INACTIVE;
                 }
                 return;
             }
@@ -147,7 +151,8 @@ public class ContainerUncraftingTable extends Container
                     {
                     	// set the uncrafting status as "error", with the not enough items message
                         uncraftingStatus = UncraftingStatus.ERROR;
-                        uncraftingStatusText = I18n.translateToLocalFormatted("uncrafting.result.needMoreStacks", (eventMinStackSize - calculInput.getStackInSlot(0).getCount()));
+                        uncraftingStatusReason = UncraftingStatusReason.NOT_ENOUGH_ITEMS;
+                        this.minStackSize = eventMinStackSize;
                         return;
                     }
                     // if the item lookup didn't result in a crafting recipe being returned
@@ -155,29 +160,29 @@ public class ContainerUncraftingTable extends Container
                     {
                     	// set the uncrafting status as "error", with the not possible message
                         uncraftingStatus = UncraftingStatus.ERROR;
-                        uncraftingStatusText = I18n.translateToLocal("uncrafting.result.impossible");
+            			uncraftingStatusReason = UncraftingStatusReason.NOT_UNCRAFTABLE;
                         return;
                     }
                     // if the item is uncraftable, and there are enough items in the stack
                     else
                     {
-                    	// set the uncrafting status to "ready"
-                        uncraftingStatus = UncraftingStatus.READY;
-                        uncraftingStatusText = I18n.translateToLocal("uncrafting.result.ready");
-                    }
-                    
-                    // determine the xp cost for the uncrafting operation
-            		uncraftingCost = UncraftingManager.getUncraftingXpCost(calculInput.getStackInSlot(0));
+                        // determine the xp cost for the uncrafting operation
+                		uncraftingCost = UncraftingManager.getUncraftingXpCost(calculInput.getStackInSlot(0));
 
-            		// if we don't have enough xp
-            		if (!playerInventory.player.capabilities.isCreativeMode && playerInventory.player.experienceLevel < uncraftingCost)
-            		{
-            			// set the status to error, not enough xp and return
-            			uncraftingStatus = UncraftingStatus.ERROR;
-                    	uncraftingStatusText = I18n.translateToLocal("uncrafting.result.needMoreXP");
-                    	return;
-            		}
-                
+                		// if we don't have enough xp
+                		if (!playerInventory.player.capabilities.isCreativeMode && playerInventory.player.experienceLevel < uncraftingCost)
+                		{
+                			// set the status to error, not enough xp and return
+                			uncraftingStatus = UncraftingStatus.ERROR;
+                			uncraftingStatusReason = UncraftingStatusReason.NOT_ENOUGH_XP;
+                        	return;
+                		}
+                		else
+                		{
+	                    	// set the uncrafting status to "ready"
+	                        uncraftingStatus = UncraftingStatus.READY;
+                		}
+                    }
                 }
             }
             // if the left hand slot is not empty and the right hand slot is not empty
@@ -186,7 +191,7 @@ public class ContainerUncraftingTable extends Container
             	// set the uncrafting status as "error", with the not possible message
             	// TODO this probably shouldn't be happening but the call to onCraftMatrixChanged for the right hand slot will override it
                 uncraftingStatus = UncraftingStatus.ERROR;
-                uncraftingStatusText = I18n.translateToLocal("uncrafting.result.impossible");
+                uncraftingStatusReason = UncraftingStatusReason.NOT_UNCRAFTABLE;
                 return;
             }
         }
@@ -201,12 +206,10 @@ public class ContainerUncraftingTable extends Container
             // if the right input slot is empty
             if (uncraftIn.getStackInSlot(0).isEmpty())
             {
-            	// set the uncrafting status to "ready"
-                uncraftingStatus = UncraftingStatus.READY;
-                uncraftingStatusText = I18n.translateToLocal("uncrafting.result.ready");
+            	// set the uncrafting status to "inactive"
+                uncraftingStatus = UncraftingStatus.INACTIVE;
                 return;
             }
-            
             
             // get the crafting grid which would result in the input item
             List<NonNullList<ItemStack>> craftingGrids = UncraftingManager.getUncraftResults(uncraftIn.getStackInSlot(0));
@@ -229,12 +232,21 @@ public class ContainerUncraftingTable extends Container
                 {
                 	// set the uncrafting status as "error", with the need more items message
                     uncraftingStatus = UncraftingStatus.ERROR;
-                    uncraftingStatusText = I18n.translateToLocalFormatted("uncrafting.result.needMoreStacks", (eventMinStackSize - uncraftIn.getStackInSlot(0).getCount()));
+                    uncraftingStatusReason = UncraftingStatusReason.NOT_ENOUGH_ITEMS;
+                    this.minStackSize = eventMinStackSize;
                     return;
                 }
                 
                 while (!uncraftIn.getStackInSlot(0).isEmpty() && eventMinStackSize <= uncraftIn.getStackInSlot(0).getCount())
                 {
+                	
+                    NonNullList<ItemStack> items = event.getOutput();
+                    if (items == null)
+                    {
+                        uncraftingStatus = UncraftingStatus.ERROR;
+                        uncraftingStatusReason = UncraftingStatusReason.NOT_UNCRAFTABLE;
+                        return;
+                    }
                 	
                     // determine the xp cost for the uncrafting operation
             		uncraftingCost = UncraftingManager.getUncraftingXpCost(calculInput.getStackInSlot(0));
@@ -244,7 +256,7 @@ public class ContainerUncraftingTable extends Container
             		{
             			// set the status to error, not enough xp and return
             			uncraftingStatus = UncraftingStatus.ERROR;
-                    	uncraftingStatusText = I18n.translateToLocal("uncrafting.result.needMoreXP");
+                        uncraftingStatusReason = UncraftingStatusReason.NOT_ENOUGH_XP;
                     	return;
             		}
             		// if we do have enough xp
@@ -325,13 +337,6 @@ public class ContainerUncraftingTable extends Container
                         
                     } // end of enchantment processing
                     
-                    NonNullList<ItemStack> items = event.getOutput();
-                    if (items == null)
-                    {
-                        uncraftingStatus = UncraftingStatus.ERROR;
-                        uncraftingStatusText = I18n.translateToLocal("uncrafting.result.impossible");
-                        return;
-                    }
                     
                     if (!uncraftOut.isEmpty())
                     {
@@ -427,13 +432,13 @@ public class ContainerUncraftingTable extends Container
             else
             {
                 uncraftingStatus = UncraftingStatus.ERROR;
-                uncraftingStatusText = I18n.translateToLocal("uncrafting.result.impossible");
+                uncraftingStatusReason = UncraftingStatusReason.NOT_UNCRAFTABLE;
             }
         }
         else
         {
             uncraftingStatus = UncraftingStatus.ERROR;
-            uncraftingStatusText = I18n.translateToLocal("uncrafting.result.impossible");
+            uncraftingStatusReason = UncraftingStatusReason.NOT_UNCRAFTABLE;
         }
     }
 
