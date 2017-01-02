@@ -172,7 +172,6 @@ public class UncraftingManager
 	}
 	
 	
-	
 	/**
 	 * Creates an uncrafting recipe handler capable of uncrafting the given IRecipe instance
 	 * @param recipe The IRecipe instance of the crafting recipe 

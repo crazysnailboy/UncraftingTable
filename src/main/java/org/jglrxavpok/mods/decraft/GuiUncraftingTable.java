@@ -3,7 +3,6 @@ package org.jglrxavpok.mods.decraft;
 import java.awt.Color;
 
 import org.jglrxavpok.mods.decraft.ContainerUncraftingTable.UncraftingStatus;
-import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -36,50 +35,101 @@ public class GuiUncraftingTable extends GuiContainer
     {
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
-
+    
+    
+    private void drawStringWithShadow(String text, int x, int y)
+    {
+    	// *** copied from GuiRepair ***
+    	// determine the text and shadow colours based on the uncrafting status
+        int textColor = (container.uncraftingStatus != UncraftingStatus.ERROR ? 8453920 : 16736352);
+        int shadowColor = -16777216 | (textColor & 16579836) >> 2 | textColor & -16777216;
+        
+        this.fontRendererObj.drawString(text, x, y + 1, shadowColor);
+        this.fontRendererObj.drawString(text, x + 1, y, shadowColor);
+        this.fontRendererObj.drawString(text, x + 1, y + 1, shadowColor);
+        this.fontRendererObj.drawString(text, x, y, textColor);
+        // *** copied from GuiRepair ***
+    }
+    
+    
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
         GL11.glDisable(GL11.GL_LIGHTING);
-        int xSize = this.xSize;
-        int ySize = this.ySize;
         
     	// fontRendererObj.drawString:
     	// Args: string, x, y, color, dropShadow
     	
     	
     	// render the block name at the top of the gui
-        String blockName = I18n.format("tile.uncrafting_table.name");
-        fontRendererObj.drawString(blockName, xSize / 2 - fontRendererObj.getStringWidth(blockName) / 2 + 1, 5, 4210752);
+        String title = I18n.format("container.uncrafting");
+        fontRendererObj.drawString(title, xSize / 2 - fontRendererObj.getStringWidth(title) / 2, 6, 4210752);
         
         // write "inventory" above the player inventory
-        fontRendererObj.drawString(I18n.format("container.inventory"), 6, ySize - 96 + 2, 4210752);
+        fontRendererObj.drawString(I18n.format("container.inventory"), 8, ySize - 96 + 2, 4210752); // y = 72
 
-        // write "compute:" above the input slots
-        String compute = I18n.format("uncrafting.compute") + ":";
-        fontRendererObj.drawString(EnumChatFormatting.DARK_GRAY + compute + EnumChatFormatting.RESET, 24 - fontRendererObj.getStringWidth(compute) / 2 + 1, 22, 0);
-        fontRendererObj.drawString(EnumChatFormatting.GRAY + compute + EnumChatFormatting.RESET, 24 - fontRendererObj.getStringWidth(compute) / 2, 21, 0);
         
-        // write the xp cost above the arrow
-        String xpCost = container.uncraftingCost + " levels";
-        Color darkGreen = new Color(75, 245, 75);
-        fontRendererObj.drawString(EnumChatFormatting.DARK_GRAY + "" + EnumChatFormatting.UNDERLINE + "" + xpCost + EnumChatFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth(xpCost) / 2 + 1, ySize - 126 - 10, 0);
-        fontRendererObj.drawString(EnumChatFormatting.UNDERLINE + "" + xpCost + EnumChatFormatting.RESET, xSize / 2 - fontRendererObj.getStringWidth(xpCost) / 2, ySize - 127 - 10, darkGreen.getRGB());
+//        // write the xp cost above the arrow
+//        String xpCost = container.uncraftingCost + " levels";
+//        drawStringWithShadow(xpCost, xSize / 2 - fontRendererObj.getStringWidth(xpCost) / 2 + 1, ySize - 126 - 10);
+        
 
-
-        String string = container.uncraftingStatusText;
-        if (string != null)
+        // get a message to display based on the status of the container
+        String statusMessage = "";
+        switch (container.uncraftingStatus)
         {
-            UncraftingStatus msgType = container.uncraftingStatus;
-            EnumChatFormatting format = EnumChatFormatting.GREEN;
-            EnumChatFormatting shadowFormat = EnumChatFormatting.DARK_GRAY;
-            if (msgType == ContainerUncraftingTable.UncraftingStatus.ERROR)
-            {
-                format = EnumChatFormatting.WHITE;
-                shadowFormat = EnumChatFormatting.DARK_RED;
-            }
-            fontRendererObj.drawString(shadowFormat + string + EnumChatFormatting.RESET, 6 + 1, ySize - 95 + 2 - fontRendererObj.FONT_HEIGHT, 0);
-            fontRendererObj.drawString(format + string + EnumChatFormatting.RESET, 6, ySize - 96 + 2 - fontRendererObj.FONT_HEIGHT, 0);
+        	// if the uncrafting status in "inactive", display no message
+	        case INACTIVE: 
+	        	break;
+	        
+        	// if the uncrafting status is "ready", display the xp cost for the operation
+	        case READY: 
+	        	statusMessage = I18n.format("container.uncrafting.cost", container.uncraftingCost);
+	        	break;
+	        
+        	// if the uncrafting status is "error"...
+	        case ERROR: 
+	        	
+	        	switch (container.uncraftingStatusReason)
+	        	{
+	        		// if the item cannot be uncrafted, display a message to that effect
+		        	case NOT_UNCRAFTABLE:
+		        		statusMessage = I18n.format("uncrafting.result.impossible");
+		        		break;
+		        		
+		        	// if there are not enough items in the item stack, display a message to that effect
+		        	case NOT_ENOUGH_ITEMS: 
+		        		statusMessage = I18n.format("uncrafting.result.needMoreStacks", container.minStackSize);
+		        		break;
+		        		
+	            	// if the player does not have enough xp, display the xp cost for the operation
+		        	case NOT_ENOUGH_XP: 
+			        	statusMessage = I18n.format("container.uncrafting.cost", container.uncraftingCost);
+		        		break;
+	        	}
+	        	break;
+        }
+        
+        // if there is a message to display, render it
+        if (!statusMessage.equals(""))
+        {        
+        	int textX = 8;
+        	int textY = ySize - 96 + 2 - fontRendererObj.FONT_HEIGHT - 4; // 60
+        	
+        	drawStringWithShadow(statusMessage, textX, textY);
+        	
+        	
+//        	// *** copied from GuiRepair ***
+//        	// determine the text and shadow colours based on the uncrafting status
+//            int textColor = (container.uncraftingStatus != UncraftingStatus.ERROR ? 8453920 : 16736352);  
+//            int shadowColor = -16777216 | (textColor & 16579836) >> 2 | textColor & -16777216;
+//
+//            // render the string 4 times at different positions in different colours to achieve the desired effect
+//            this.fontRendererObj.drawString(statusMessage, textX, textY + 1, shadowColor);
+//            this.fontRendererObj.drawString(statusMessage, textX + 1, textY, shadowColor);
+//            this.fontRendererObj.drawString(statusMessage, textX + 1, textY + 1, shadowColor);
+//            this.fontRendererObj.drawString(statusMessage, textX, textY, textColor);
+//            // *** copied from GuiRepair ***
         }
             
         GL11.glEnable(GL11.GL_LIGHTING);
