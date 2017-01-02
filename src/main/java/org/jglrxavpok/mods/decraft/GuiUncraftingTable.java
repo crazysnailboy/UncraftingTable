@@ -16,7 +16,7 @@ import net.minecraft.world.World;
 
 public class GuiUncraftingTable extends GuiContainer
 {
-    private static final ResourceLocation uncraftingTableGuiTextures = new ResourceLocation(ModUncrafting.MODID + ":textures/gui/container/uncrafting_gui.png");
+    private static final ResourceLocation uncraftingTableGuiTextures = new ResourceLocation(ModUncrafting.MODID + ":textures/gui/container/uncrafting_table.png");
 
     public ContainerUncraftingTable container;
     private World worldObj;
@@ -126,11 +126,21 @@ public class GuiUncraftingTable extends GuiContainer
         GL11.glPushMatrix();
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
+        // bind the background gui texture
         this.mc.getTextureManager().bindTexture(uncraftingTableGuiTextures);
+        
+		int guiX = (this.width - this.xSize) / 2;
+		int guiY = (this.height - this.ySize) / 2;
+        
+        // render the gui background
+        this.drawTexturedModalRect(guiX, guiY, 0, 0, this.xSize, this.ySize);
 
-        int k = this.width / 2 - this.xSize / 2;
-        int l = this.height / 2 - this.ySize / 2;
-        this.drawTexturedModalRect(k, l, 0, 0, this.xSize, this.ySize);
+		// if the uncrafting status of the container is "error", render the arrow with the cross over it
+		if (container.uncraftingStatus == UncraftingStatus.ERROR)
+		{
+			this.drawTexturedModalRect(guiX + 71, guiY + 33, 176, 0, 28, 21);
+		}
+        
         GL11.glPopMatrix();
     }
 
