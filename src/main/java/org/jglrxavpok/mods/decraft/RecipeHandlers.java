@@ -9,10 +9,10 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
+
 /**
  * Recipe Handlers return the "crafting grid" depending on a crafting recipe.
  * @author jglrxavpok
- *
  */
 public final class RecipeHandlers
 {

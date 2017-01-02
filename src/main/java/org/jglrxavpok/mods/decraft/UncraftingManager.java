@@ -28,20 +28,40 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
  */
 public class UncraftingManager 
 {
+	
+    /**
+     * Constants to identify the different uncrafting algorithms
+     */
+	private static class UncraftingMethod
+	{
+		public static final int JGLRXAVPOK = 0;
+		public static final int XELL75_ZENEN = 1;
+	}
+	
 
-	private static Boolean canUncraftItem(ItemStack itemStack)
+	/**
+	 * Checks whether uncrafting of the target item is disabled via config
+	 * @param itemStack The ItemStack containing the target item
+	 * @return True if the item is in the excluded items list, otherwise false
+	 */
+	private static Boolean isUncraftingDisabledForItem(ItemStack itemStack)
 	{
 		String uniqueIdentifier = Item.REGISTRY.getNameForObject(itemStack.getItem()).toString();
 		if (itemStack.getItemDamage() > 0) uniqueIdentifier += "," + Integer.toString(itemStack.getItemDamage()); 
 		
-		return ArrayUtils.indexOf(ModConfiguration.excludedItems, uniqueIdentifier) < 0;
+		return ArrayUtils.indexOf(ModConfiguration.excludedItems, uniqueIdentifier) >= 0;
 	}
 	
 	
-	public static List<Integer> getStackSizeNeeded(ItemStack item)
+	/**
+	 * Determines the minimum number of items required for an uncrafting operation to be performed
+	 * @param itemStack The ItemStack containing the target item
+	 * @return A collection of the mininum required stack sizes - one element per recipe found
+	 */
+	public static List<Integer> getStackSizeNeeded(ItemStack itemStack)
 	{
 		List<Integer> list = new ArrayList<Integer>();
-		if (!canUncraftItem(item)) return list;
+		if (isUncraftingDisabledForItem(itemStack)) return list;
 		
 		List<IRecipe> recipeList = CraftingManager.getInstance().getRecipeList();
 		for ( IRecipe recipe : recipeList )
@@ -49,7 +69,7 @@ public class UncraftingManager
 			ItemStack recipeOutput = recipe.getRecipeOutput();
 			if (recipeOutput != null)
 			{
-				if (ItemStack.areItemsEqualIgnoreDurability(item, recipeOutput))
+				if (ItemStack.areItemsEqualIgnoreDurability(itemStack, recipeOutput))
 				{
 					RecipeHandler handler = getRecipeHandler(recipe);
 					if (handler != null)
@@ -68,16 +88,22 @@ public class UncraftingManager
 		return list;
 	}
 	
-	public static List<NonNullList<ItemStack>> getUncraftResults(ItemStack item)
+	
+	/**
+	 * Returns the available crafting recipes which can be used to perform an uncrafting operation 
+	 * @param itemStack The ItemStack containing the target item
+	 * @return A collection of the ItemStack arrays representing the crafting recipe - one element per recipe found
+	 */
+	public static List<NonNullList<ItemStack>> getUncraftResults(ItemStack itemStack)
 	{
 		List<NonNullList<ItemStack>> list = new ArrayList<NonNullList<ItemStack>>();
-		if (!canUncraftItem(item)) return list;
+		if (isUncraftingDisabledForItem(itemStack)) return list;
 		
 		List<IRecipe> recipeList = CraftingManager.getInstance().getRecipeList();
 		for ( IRecipe recipe : recipeList )
 		{
 			ItemStack recipeOutput = recipe.getRecipeOutput();
-			if (ItemStack.areItemsEqualIgnoreDurability(item, recipeOutput) && recipeOutput.getCount() <= item.getCount())
+			if (ItemStack.areItemsEqualIgnoreDurability(itemStack, recipeOutput) && recipeOutput.getCount() <= itemStack.getCount())
 			{
 				RecipeHandler handler = getRecipeHandler(recipe);
 				if (handler != null)
@@ -95,11 +121,62 @@ public class UncraftingManager
 		return list;
 	}
 	
+	
+	/**
+	 * Determines the XP cost of the uncrafting operation
+	 * @param itemStack The ItemStack containing the target item
+	 * @return The number of XP levels required to complete the operation
+	 */
+	public static int getUncraftingXpCost(ItemStack itemStack)
+	{
+    	// if we're using jglrxavpok's uncrafting method...
+		if (ModConfiguration.uncraftMethod == UncraftingMethod.JGLRXAVPOK)
+		{
+			// the xp cost is the standard cost
+			return ModConfiguration.standardLevel;
+		}
+		
+        // if we're using Xell75's & Zenen's uncrafting method...
+        if (ModConfiguration.uncraftMethod == UncraftingMethod.XELL75_ZENEN)
+        {
+        	// if the item isn't damageable
+        	if (!itemStack.getItem().isDamageable())
+        	{
+    			// the xp cost is the standard cost
+    			return ModConfiguration.standardLevel;
+        	}
+        	// if the item is damageable, but isn't damaged
+        	else if (itemStack.getItem().isDamageable() && itemStack.getItemDamage() == 0)
+        	{
+    			// the xp cost is the standard cost
+    			return ModConfiguration.standardLevel;
+        	}
+        	// if the item is damageable and is damaged
+        	else
+        	{
+        		// the xp cost is standard level + (damage percentage * the max level)
+            	int damagePercentage = (int)(((double)itemStack.getItemDamage() / (double)itemStack.getMaxDamage()) * 100);
+            	return ((ModConfiguration.maxUsedLevel * damagePercentage) / 100);
+        	}
+        }
+
+        return -1; // return ModConfiguration.standardLevel;
+	}
+	
+	
+	/**
+	 * Creates an uncrafting recipe handler capable of uncrafting the given IRecipe instance
+	 * @param recipe The IRecipe instance of the crafting recipe 
+	 * @return The RecipeHandler instance which can be used to uncraft the IRecipe
+	 */
 	private static RecipeHandler getRecipeHandler(IRecipe recipe)
 	{
+		// RecipesMapExtending extends ShapedRecipes, and causes a crash when attempting to uncraft a map
 		if (recipe instanceof RecipesMapExtending) return null;
+		// vanilla Minecraft recipe handlers
 		if (recipe instanceof ShapelessRecipes) return new ShapelessRecipeHandler(ShapelessRecipes.class);
 		if (recipe instanceof ShapedRecipes) return new ShapedRecipeHandler(ShapedRecipes.class);
+		// Forge Ore Dictionary recipe handlers
 		if (recipe instanceof ShapelessOreRecipe) return new ShapelessOreRecipeHandler(ShapelessOreRecipe.class);
 		if (recipe instanceof ShapedOreRecipe) return new ShapedOreRecipeHandler(ShapedOreRecipe.class);
 		
