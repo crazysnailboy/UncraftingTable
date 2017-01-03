@@ -168,9 +168,9 @@ public final class RecipeHandlers
 			{
 				recipeStacks.add((ItemStack)recipeItem);
 			}
-			else if (recipeItem instanceof ArrayList)
+			else if (recipeItem instanceof List)
 			{
-				recipeStacks.add(((ArrayList<ItemStack>)recipeItem).get(0));
+				recipeStacks.add(((List<ItemStack>)recipeItem).get(0));
 			}
 			else if (recipeItem == null)
 			{
