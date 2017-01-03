@@ -1,11 +1,16 @@
 package org.jglrxavpok.mods.decraft;
 
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
@@ -54,13 +59,16 @@ public final class RecipeHandlers
 		@Override
 		public NonNullList<ItemStack> getCraftingGrid(IRecipe r)
 		{
-			NonNullList<ItemStack> stacks = NonNullList.<ItemStack>withSize(9, ItemStack.EMPTY);
-			ShapedRecipes shaped = (ShapedRecipes)r;
-			for (int j = 0;j<shaped.recipeItems.length;j++)
-			{
-				stacks.set(j, shaped.recipeItems[j]);
-			}
-			return stacks;
+			// cast the IRecipe instance
+			ShapedRecipes shapedRecipe = (ShapedRecipes)r;
+
+			// obtain the recipe items and the recipe dimensions
+			List<ItemStack> recipeItems = Arrays.asList(shapedRecipe.recipeItems);
+			int recipeWidth = shapedRecipe.recipeWidth;
+			int recipeHeight = shapedRecipe.recipeHeight;
+
+			// rearrange the itemstacks according to the recipe width and height
+			return reshapeRecipe(recipeItems, recipeWidth, recipeHeight);
 		}
 	}
 	
@@ -79,12 +87,9 @@ public final class RecipeHandlers
 		@Override
 		public NonNullList<ItemStack> getCraftingGrid(IRecipe r)
 		{
+			// ShapelessRecipes.recipeItems is a List<ItemStack>, so convert it to an NonNullList<ItemStack> and return
 			NonNullList<ItemStack> stacks = NonNullList.<ItemStack>withSize(9, ItemStack.EMPTY);
-			ShapelessRecipes shaped = (ShapelessRecipes)r;
-			for (int j = 0;j<shaped.recipeItems.size();j++)
-			{
-				stacks.set(j, (ItemStack)shaped.recipeItems.get(j));
-			}
+			stacks.addAll(((ShapelessRecipes)r).recipeItems);
 			return stacks;
 		}
 	}
@@ -104,24 +109,16 @@ public final class RecipeHandlers
 		@Override
 		public NonNullList<ItemStack> getCraftingGrid(IRecipe r)
 		{
-			NonNullList<ItemStack> stacks = NonNullList.<ItemStack>withSize(9, ItemStack.EMPTY);
-			ShapedOreRecipe shaped = (ShapedOreRecipe)r;
-			for (int j = 0;j<shaped.getInput().length;j++)
-			{
-				if (shaped.getInput()[j] instanceof ItemStack)
-				{
-					stacks.set(j, (ItemStack)shaped.getInput()[j]);
-				}
-				else if (shaped.getInput()[j] instanceof java.util.List)
-				{
-					Object o = ((java.util.List)shaped.getInput()[j]).get(0);
-					if (o instanceof ItemStack)
-					{
-						stacks.set(j, (ItemStack)o);
-					}
-				}
-			}
-			return stacks;
+			// cast the IRecipe instance
+			ShapedOreRecipe shapedRecipe = (ShapedOreRecipe)r;
+			
+			// obtain the recipe items and the recipe dimensions
+			List<ItemStack> recipeItems = getOreRecipeItems(Arrays.asList(shapedRecipe.getInput()));
+			int recipeWidth = ((Integer)(ObfuscationReflectionHelper.getPrivateValue(ShapedOreRecipe.class, shapedRecipe, "width"))).intValue();
+			int recipeHeight = ((Integer)(ObfuscationReflectionHelper.getPrivateValue(ShapedOreRecipe.class, shapedRecipe, "height"))).intValue();
+
+			// rearrange the itemstacks according to the recipe width and height
+			return reshapeRecipe(recipeItems, recipeWidth, recipeHeight);
 		}
 	}
 	
@@ -140,25 +137,47 @@ public final class RecipeHandlers
 		@Override
 		public NonNullList<ItemStack> getCraftingGrid(IRecipe r)
 		{
-			NonNullList<ItemStack> stacks = NonNullList.<ItemStack>withSize(9, ItemStack.EMPTY);
-			ShapelessOreRecipe shaped = (ShapelessOreRecipe)r;
-			for (int j = 0;j<shaped.getInput().size();j++)
-			{
-				if (shaped.getInput().get(j) instanceof ItemStack)
-				{
-					stacks.set(j, (ItemStack)shaped.getInput().get(j));
-				}
-				else if (shaped.getInput().get(j) instanceof java.util.List)
-				{
-					Object o = ((java.util.List)shaped.getInput().get(j)).get(0);
-					if (o instanceof ItemStack)
-					{
-						stacks.set(j, (ItemStack)o);
-					}
-				}
-			}
-			return stacks;
+			return getOreRecipeItems(((ShapelessOreRecipe)r).getInput());
 		}
+	}
+	
+	
+	/**
+	 * Takes a list of ItemStacks from a shaped recipe and correctly positions them according to the recipe width and height
+	 */
+	private static NonNullList<ItemStack> reshapeRecipe(List<ItemStack> recipeItems, int recipeWidth, int recipeHeight) 
+	{
+		NonNullList<ItemStack> stacks = NonNullList.<ItemStack>withSize(9, ItemStack.EMPTY);
+		for ( int row = 0 ; row < recipeHeight ; row++ )
+		{
+			for (int col = 0 ; col < recipeWidth ; col++ )
+			{
+				stacks.set((row * 3) + col, recipeItems.get(col + row * recipeWidth));
+			}
+		}
+		return stacks;
+	}
+	
+	
+	/**
+	 * Converts a collection of OreDictionary recipe items into a list of ItemStacks
+	 */
+	private static NonNullList<ItemStack> getOreRecipeItems(List<Object> recipeItems)
+	{
+		NonNullList<ItemStack> recipeStacks = NonNullList.<ItemStack>withSize(9, ItemStack.EMPTY);
+		for ( int i = 0 ; i < recipeItems.size() ; i++ )
+		{
+			Object recipeItem = recipeItems.get(i);
+			if (recipeItem instanceof ItemStack)
+			{
+				recipeStacks.set(i, (ItemStack)recipeItem);
+			}
+			else if (recipeItem instanceof List)
+			{
+				recipeStacks.set(i, ((List<ItemStack>)recipeItem).get(0));
+			}
+		}
+		return recipeStacks;
 	}
 	
 }
