@@ -249,7 +249,7 @@ public class ContainerUncraftingTable extends Container
                     }
 
                     // determine the xp cost for the uncrafting operation
-            		uncraftingCost = UncraftingManager.getUncraftingXpCost(calculInput.getStackInSlot(0));
+            		uncraftingCost = UncraftingManager.getUncraftingXpCost(uncraftIn.getStackInSlot(0));
             		
             		// if we don't have enough xp
             		if (!playerInventory.player.capabilities.isCreativeMode && playerInventory.player.experienceLevel < uncraftingCost)
