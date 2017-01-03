@@ -1,10 +1,12 @@
 package org.jglrxavpok.mods.decraft;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.google.common.collect.Iterables;
 
+import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
@@ -40,8 +42,9 @@ public final class RecipeHandlers
 		
 		public abstract ItemStack[] getCraftingGrid(IRecipe s);
 	}
-	
 
+	
+	
 	/**
 	 * Handler for vanilla Minecraft shaped recipes
 	 *
@@ -56,8 +59,16 @@ public final class RecipeHandlers
 		@Override
 		public ItemStack[] getCraftingGrid(IRecipe r)
 		{
-			// ShapedRecipes.recipeItems is already an ItemStack[], so just return that
-			return ((ShapedRecipes)r).recipeItems;
+			// cast the IRecipe instance
+			ShapedRecipes shapedRecipe = (ShapedRecipes)r;
+
+			// obtain the recipe items and the recipe dimensions
+			List<ItemStack> recipeItems = Arrays.asList(shapedRecipe.recipeItems);
+			int recipeWidth = shapedRecipe.recipeWidth;
+			int recipeHeight = shapedRecipe.recipeHeight;
+
+			// rearrange the itemstacks according to the recipe width and height
+			return reshapeRecipe(recipeItems, recipeWidth, recipeHeight);
 		}
 	}
 	
@@ -96,21 +107,16 @@ public final class RecipeHandlers
 		@Override
 		public ItemStack[] getCraftingGrid(IRecipe r)
 		{
-			List<ItemStack> stacks = new ArrayList<ItemStack>();
+			// cast the IRecipe instance
+			ShapedOreRecipe shapedRecipe = (ShapedOreRecipe)r;
 			
-			for ( Object target : ((ShapedOreRecipe)r).getInput())
-			{
-				if (target instanceof ItemStack)
-				{
-					stacks.add((ItemStack)target);
-				}
-				else if (target instanceof ArrayList)
-				{
-					stacks.add(((ArrayList<ItemStack>)target).get(0));
-				}
-			}
-			
-			return stacks.toArray(new ItemStack[9]);
+			// obtain the recipe items and the recipe dimensions
+			List<ItemStack> recipeItems = getOreRecipeItems(Arrays.asList(shapedRecipe.getInput()));
+			int recipeWidth = ((Integer)(ObfuscationReflectionHelper.getPrivateValue(ShapedOreRecipe.class, shapedRecipe, "width"))).intValue();
+			int recipeHeight = ((Integer)(ObfuscationReflectionHelper.getPrivateValue(ShapedOreRecipe.class, shapedRecipe, "height"))).intValue();
+
+			// rearrange the itemstacks according to the recipe width and height
+			return reshapeRecipe(recipeItems, recipeWidth, recipeHeight);
 		}
 	}
 	
@@ -129,21 +135,7 @@ public final class RecipeHandlers
 		@Override
 		public ItemStack[] getCraftingGrid(IRecipe r)
 		{
-			List<ItemStack> stacks = new ArrayList<ItemStack>();
-			
-			for ( Object target : ((ShapelessOreRecipe)r).getInput())
-			{
-				if (target instanceof ItemStack)
-				{
-					stacks.add((ItemStack)target);
-				}
-				else if (target instanceof ArrayList)
-				{
-					stacks.add(((ArrayList<ItemStack>)target).get(0));
-				}
-			}
-			
-			return stacks.toArray(new ItemStack[9]);
+			return getOreRecipeItems(((ShapelessOreRecipe)r).getInput()).toArray(new ItemStack[9]);
 		}
 	}
 	
@@ -232,6 +224,50 @@ public final class RecipeHandlers
 		}
 		
 	}
+	
+	
+	
+	/**
+	 * Takes a list of ItemStacks from a shaped recipe and correctly positions them according to the recipe width and height
+	 */
+	private static ItemStack[] reshapeRecipe(List<ItemStack> recipeItems, int recipeWidth, int recipeHeight) 
+	{
+		ItemStack[] stacks = new ItemStack[9];
+		for ( int row = 0 ; row < recipeHeight ; row++ )
+		{
+			for (int col = 0 ; col < recipeWidth ; col++ )
+			{
+				stacks[(row * 3) + col] = recipeItems.get(col + row * recipeWidth);
+			}
+		}
+		return stacks;
+	}
+	
+	
+	/**
+	 * Converts a collection of OreDictionary recipe items into a list of ItemStacks
+	 */
+	private static List<ItemStack> getOreRecipeItems(List<Object> recipeItems)
+	{
+		List<ItemStack> recipeStacks = new ArrayList<ItemStack>();
+		for ( Object recipeItem : recipeItems)
+		{
+			if (recipeItem instanceof ItemStack)
+			{
+				recipeStacks.add((ItemStack)recipeItem);
+			}
+			else if (recipeItem instanceof ArrayList)
+			{
+				recipeStacks.add(((ArrayList<ItemStack>)recipeItem).get(0));
+			}
+			else if (recipeItem == null)
+			{
+				recipeStacks.add((ItemStack)null);
+			}
+		}
+		return recipeStacks;
+	}
+	
 	
 	
 }
