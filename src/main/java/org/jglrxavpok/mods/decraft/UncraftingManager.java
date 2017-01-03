@@ -89,7 +89,7 @@ public class UncraftingManager
 						RecipeHandler handler = getRecipeHandler(recipe);
 						if (handler != null)
 						{
-							list.add(recipeOutput.func_190916_E());
+							list.add(recipeOutput.getCount());
 						}
 						else 
 						{
@@ -133,9 +133,9 @@ public class UncraftingManager
 				if (recipeOutput != null)
 				{
 					if (
-						(recipeOutput.getItem() == item.getItem() && recipeOutput.func_190916_E() <= item.func_190916_E() && item.getItem().isDamageable() == false && recipeOutput.getItemDamage() == item.getItemDamage())
+						(recipeOutput.getItem() == item.getItem() && recipeOutput.getCount() <= item.getCount() && item.getItem().isDamageable() == false && recipeOutput.getItemDamage() == item.getItemDamage())
 						||
-						(recipeOutput.getItem() == item.getItem() && recipeOutput.func_190916_E() <= item.func_190916_E() && item.getItem().isDamageable() == true)
+						(recipeOutput.getItem() == item.getItem() && recipeOutput.getCount() <= item.getCount() && item.getItem().isDamageable() == true)
 					)
 					{
 						RecipeHandler handler = getRecipeHandler(recipe);
@@ -185,7 +185,7 @@ public class UncraftingManager
         }
         final int selectedRecipe = 0; // TODO: Make it possible to choose the items to uncraft into ?
         int required = needs.get(selectedRecipe);
-        NonNullList<ItemStack> output = NonNullList.func_191196_a();
+        NonNullList<ItemStack> output = NonNullList.create();
         for (ItemStack stack : recipe.get(selectedRecipe)) {
             ItemStack s = stack.copy();
             int metadata = s.getItemDamage();
@@ -202,7 +202,7 @@ public class UncraftingManager
         }
 
         // check if there are enough items (checking AFTER posting the event as event handlers can choose this count
-        if(event.getRequiredNumber() > toUncraft.func_190916_E()) {
+        if(event.getRequiredNumber() > toUncraft.getCount()) {
             return INVALID_COUNT;
         }
 
@@ -213,7 +213,7 @@ public class UncraftingManager
 
         int consumedBooks = 0;
         if(book.getItem() == Items.BOOK) {
-            consumedBooks = Math.min(book.func_190916_E(), required);
+            consumedBooks = Math.min(book.getCount(), required);
         }
         return new UncraftingResult(UncraftingResult.ResultType.VALID, event.getRequiredNumber(), requiredExp, consumedBooks, output);
 	}

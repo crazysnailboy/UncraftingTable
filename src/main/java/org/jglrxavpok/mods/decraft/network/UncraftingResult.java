@@ -17,7 +17,7 @@ public class UncraftingResult implements IMessage {
     private NonNullList<ItemStack> output;
 
     public UncraftingResult() {
-        output = NonNullList.func_191196_a();
+        output = NonNullList.create();
     }
 
     public UncraftingResult(ResultType resultType) {
@@ -25,11 +25,11 @@ public class UncraftingResult implements IMessage {
     }
 
     public UncraftingResult(ResultType resultType, int required) {
-        this(resultType, required, 0, 0, NonNullList.<ItemStack>func_191196_a());
+        this(resultType, required, 0, 0, NonNullList.<ItemStack>create());
     }
 
     public UncraftingResult(ResultType resultType, int required, int requiredExpLevels) {
-        this(resultType, required, requiredExpLevels, 0, NonNullList.<ItemStack>func_191196_a());
+        this(resultType, required, requiredExpLevels, 0, NonNullList.<ItemStack>create());
     }
 
     public UncraftingResult(ResultType resultType, int required, int requiredExpLevels, int consumedBooks, NonNullList<ItemStack> output) {

@@ -49,7 +49,7 @@ public final class RecipeHandlers
 		@Override
 		public NonNullList<ItemStack> getCraftingGrid(IRecipe r)
 		{
-			NonNullList<ItemStack> stacks = NonNullList.<ItemStack>func_191197_a(9, ItemStack.field_190927_a);
+			NonNullList<ItemStack> stacks = NonNullList.<ItemStack>withSize(9, ItemStack.EMPTY);
 			ShapedRecipes shaped = (ShapedRecipes)r;
 			for (int j = 0;j<shaped.recipeItems.length;j++)
 			{
@@ -69,7 +69,7 @@ public final class RecipeHandlers
 		@Override
 		public NonNullList<ItemStack> getCraftingGrid(IRecipe r)
 		{
-			NonNullList<ItemStack> stacks = NonNullList.<ItemStack>func_191197_a(9, ItemStack.field_190927_a);
+			NonNullList<ItemStack> stacks = NonNullList.<ItemStack>withSize(9, ItemStack.EMPTY);
 			ShapelessOreRecipe shaped = (ShapelessOreRecipe)r;
 			for (int j = 0;j<shaped.getInput().size();j++)
 			{
@@ -100,7 +100,7 @@ public final class RecipeHandlers
 		@Override
 		public NonNullList<ItemStack> getCraftingGrid(IRecipe r)
 		{
-			NonNullList<ItemStack> stacks = NonNullList.<ItemStack>func_191197_a(9, ItemStack.field_190927_a);
+			NonNullList<ItemStack> stacks = NonNullList.<ItemStack>withSize(9, ItemStack.EMPTY);
 			ShapedOreRecipe shaped = (ShapedOreRecipe)r;
 			for (int j = 0;j<shaped.getInput().length;j++)
 			{
@@ -131,7 +131,7 @@ public final class RecipeHandlers
 		@Override
 		public NonNullList<ItemStack> getCraftingGrid(IRecipe r)
 		{
-			NonNullList<ItemStack> stacks = NonNullList.<ItemStack>func_191197_a(9, ItemStack.field_190927_a);
+			NonNullList<ItemStack> stacks = NonNullList.<ItemStack>withSize(9, ItemStack.EMPTY);
 			ShapelessRecipes shaped = (ShapelessRecipes)r;
 			for (int j = 0;j<shaped.recipeItems.size();j++)
 			{

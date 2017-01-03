@@ -81,13 +81,13 @@ public class GuiUncraftingTable extends GuiContainer {
         super.updateScreen();
         ItemStack toUncraft = container.getUncraftSlot().getStack();
         if (container.isReadyToUncraft()) {
-            if (lastItemCount != toUncraft.func_190916_E() || lastItem != toUncraft.getItem() || !wasReady) { // if item was just put in the slot
-                UncraftingResult result = UncraftingManager.uncraft(toUncraft, container.getBookSlot().getStack(), Minecraft.getMinecraft().thePlayer);
+            if (lastItemCount != toUncraft.getCount() || lastItem != toUncraft.getItem() || !wasReady) { // if item was just put in the slot
+                UncraftingResult result = UncraftingManager.uncraft(toUncraft, container.getBookSlot().getStack(), Minecraft.getMinecraft().player);
                 xpCost = result.getRequiredExpLevels();
                 uncraftButton.enabled = result.getResultType() == UncraftingResult.ResultType.VALID;
             }
             lastItem = toUncraft.getItem();
-            lastItemCount = toUncraft.func_190916_E();
+            lastItemCount = toUncraft.getCount();
         } else {
             xpCost = 0;
             uncraftButton.enabled = false;

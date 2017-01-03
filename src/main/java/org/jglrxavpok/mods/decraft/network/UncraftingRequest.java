@@ -79,11 +79,11 @@ public class UncraftingRequest implements IMessage {
             }
             player.addStat(ModUncrafting.instance.uncraftedItemsStat, result.getRequired());
 
-            int remaining = stack.func_190916_E() - result.getRequired();
+            int remaining = stack.getCount() - result.getRequired();
             if(remaining > 0) {
-                stack.func_190920_e(remaining);
+                stack.setCount(remaining);
             } else {
-                stack = ItemStack.field_190927_a;
+                stack = ItemStack.EMPTY;
             }
             table.getUncraftSlot().putStack(stack);
             table.setOutput(result.getOutput());
@@ -94,9 +94,9 @@ public class UncraftingRequest implements IMessage {
             int enchantmentCount = result.getConsumedBooks();
             if(enchantmentCount > 0) {
                 ItemStack bookStack = table.getBookSlot().getStack();
-                int remainingBooks = bookStack.func_190916_E() - result.getRequired();
+                int remainingBooks = bookStack.getCount() - result.getRequired();
                 if(remainingBooks > 0) {
-                    bookStack.func_190920_e(remainingBooks);
+                    bookStack.setCount(remainingBooks);
                     if (!player.inventory.addItemStackToInventory(bookStack))
                     {
                         EntityItem e = player.entityDropItem(bookStack, 0.5f);

@@ -107,20 +107,20 @@ public class ContainerUncraftingTable extends Container
     @Override
     public void onContainerClosed(EntityPlayer player)
     {
-        if (playerInventory.getItemStack() != ItemStack.field_190927_a)
+        if (playerInventory.getItemStack() != ItemStack.EMPTY)
         {
             player.entityDropItem(playerInventory.getItemStack(), 0.5f);
         }
         if (!this.worldObj.isRemote)
         {
             ItemStack itemstack = this.uncraftIn.removeStackFromSlot(0);
-            if (itemstack != ItemStack.field_190927_a)
+            if (itemstack != ItemStack.EMPTY)
             {
                 player.entityDropItem(itemstack, 0.5f);
             }
 
             itemstack = this.bookInput.getStackInSlot(0);
-            if (itemstack != ItemStack.field_190927_a)
+            if (itemstack != ItemStack.EMPTY)
             {
                 player.entityDropItem(itemstack, 0.5f);
             }
@@ -128,7 +128,7 @@ public class ContainerUncraftingTable extends Container
             {
                 itemstack = this.uncraftOut.removeStackFromSlot(i);
 
-                if (itemstack != ItemStack.field_190927_a)
+                if (itemstack != ItemStack.EMPTY)
                 {
                     player.entityDropItem(itemstack, 0.5f);
                 }
@@ -148,7 +148,7 @@ public class ContainerUncraftingTable extends Container
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int index)
     {
-        ItemStack itemstack = ItemStack.field_190927_a;
+        ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = (Slot)this.inventorySlots.get(index);
         if (slot != null && slot.getHasStack())
             if (slot.inventory.equals(bookInput))
@@ -160,9 +160,9 @@ public class ContainerUncraftingTable extends Container
                 
                 if (!playerInventory.addItemStackToInventory(itemstack1))
                 {
-                    return ItemStack.field_190927_a;
+                    return ItemStack.EMPTY;
                 }
-                slot.putStack(ItemStack.field_190927_a);
+                slot.putStack(ItemStack.EMPTY);
             }
             else if (slot.inventory.equals(uncraftIn))
             {
@@ -170,9 +170,9 @@ public class ContainerUncraftingTable extends Container
                 {
                     if (!playerInventory.addItemStackToInventory(slot.getStack()))
                     {
-                        return ItemStack.field_190927_a;
+                        return ItemStack.EMPTY;
                     }
-                    slot.putStack(ItemStack.field_190927_a);
+                    slot.putStack(ItemStack.EMPTY);
                     slot.onSlotChanged();
                 }
             }
@@ -194,15 +194,15 @@ public class ContainerUncraftingTable extends Container
                 }
                 if (calcInput != null)
                 {
-                    if (!calcInput.getStack().func_190926_b())
+                    if (!calcInput.getStack().isEmpty())
                     {
                         calcInput.putStack(slot.getStack());
                         calcInput.onSlotChanged();
-                        slot.putStack(ItemStack.field_190927_a);
+                        slot.putStack(ItemStack.EMPTY);
                     }
                     else
                     {
-                        if (slot.getStack().func_190926_b())
+                        if (slot.getStack().isEmpty())
                         {
                             ItemStack i = slot.getStack();
 //                            slot.onPickupFromSlot(player, slot.getStack());
@@ -214,7 +214,7 @@ public class ContainerUncraftingTable extends Container
                         }
                         else
                         {
-                            return ItemStack.field_190927_a;
+                            return ItemStack.EMPTY;
                         }
                     }
                 }
@@ -225,13 +225,13 @@ public class ContainerUncraftingTable extends Container
                 {
                     if (!playerInventory.addItemStackToInventory(slot.getStack()))
                     {
-                        return ItemStack.field_190927_a;
+                        return ItemStack.EMPTY;
                     }
-                    slot.putStack(ItemStack.field_190927_a);
+                    slot.putStack(ItemStack.EMPTY);
                     slot.onSlotChanged();
                 }
             }
-        return ItemStack.field_190927_a;
+        return ItemStack.EMPTY;
     }
 
     @Override
@@ -253,7 +253,7 @@ public class ContainerUncraftingTable extends Container
     public boolean isReadyToUncraft() {
         for (int i = 0; i < uncraftOut.getSizeInventory(); i++) {
             ItemStack s = uncraftOut.getStackInSlot(i);
-            if(!s.func_190926_b()) { // if not empty
+            if(!s.isEmpty()) { // if not empty
                 return false;
             }
         }
