@@ -259,6 +259,19 @@ public class UncraftingManager
 	}
 	
 	
+	public static void checkForContainerItems(ItemStack[] craftingGrid)
+	{
+		for ( ItemStack itemStack : craftingGrid )
+		{
+			if (itemStack != null && itemStack.getItem().hasContainerItem(null)) // the hasContainerItem parameter is ignored, and ItemStack internally calls the deprecated version without the parameter anyway...
+			{
+				// do a thing...
+			}
+		}
+	}
+	
+	
+	
 	public static List<ItemStack> getItemEnchantments(ItemStack itemStack, ItemStack containerItems)
 	{
         // initialise a list of itemstacks to hold enchanted books  
