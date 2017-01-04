@@ -175,7 +175,7 @@ public final class RecipeHandlers
 			catch(Exception ex)
 			{
 				System.out.println("ShapedMekanismRecipeHandler.getCraftingGrid: " + ex.getMessage());
-				System.out.println(ex.getStackTrace());
+				System.out.println(ex.getStackTrace().toString());
 			}
 			return null;
 		}
@@ -218,11 +218,129 @@ public final class RecipeHandlers
 			catch(Exception ex)
 			{
 				System.out.println("ShapelessMekanismRecipeHandler.getCraftingGrid: " + ex.getMessage());
-				System.out.println(ex.getStackTrace());
+				System.out.println(ex.getStackTrace().toString());
 			}
 			return null;
 		}
 		
+	}
+	
+	
+	/**
+	 * Handler for shaped recipes from the IndustrialCraft2 mod
+	 *
+	 */
+	public static class ShapedIC2RecipeHandler extends RecipeHandler
+	{
+		public ShapedIC2RecipeHandler(Class<? extends IRecipe> recipe) 
+		{
+			super(recipe);
+		}
+		
+		@Override
+		public ItemStack[] getCraftingGrid(IRecipe r)
+		{
+			try
+			{
+				Class AdvRecipe = Class.forName("ic2.core.AdvRecipe");
+				Class RecipeInputItemStack = Class.forName("ic2.api.recipe.RecipeInputItemStack");
+				Class RecipeInputOreDict = Class.forName("ic2.api.recipe.RecipeInputOreDict");
+			
+				List<ItemStack> stacks = new ArrayList<ItemStack>();
+				for ( Object target : (Object[])AdvRecipe.getField("input").get(r))
+				{
+					if (RecipeInputItemStack.isInstance(target))
+					{
+						ItemStack itemStack = (ItemStack)RecipeInputItemStack.getField("input").get(target); 
+						stacks.add(itemStack);
+					}
+					else if (RecipeInputOreDict.isInstance(target))
+					{
+						List<ItemStack> itemStacks = (List<ItemStack>)(RecipeInputOreDict.getMethod("getInputs", (Class[])null).invoke(target));
+						stacks.add(itemStacks.get(0));
+					}
+					else if (target instanceof ItemStack)
+					{
+						stacks.add((ItemStack)target);
+					}
+					else if (target instanceof ArrayList)
+					{
+						stacks.add(((ArrayList<ItemStack>)target).get(0));
+					}
+//					else if (target == null)
+//					{
+//						stacks.add((ItemStack)null);
+//					}
+				}
+				
+				return stacks.toArray(new ItemStack[9]);
+			
+//				int recipeWidth = (Integer)(AdvRecipe.getField("inputWidth").get(r));
+//				int recipeHeight = (Integer)(AdvRecipe.getField("inputHeight").get(r));
+//				return reshapeRecipe(recipeItems, recipeWidth, recipeHeight);
+				
+			}
+			catch(Exception ex) 
+			{ 
+				System.out.println("ShapedIC2RecipeHandler.getCraftingGrid: " + ex.getMessage());
+				System.out.println(ex.getStackTrace().toString());
+			}
+			return null;
+		}
+	}
+	
+	/**
+	 * Handler for shapeless recipes from the IndustrialCraft2 mod
+	 *
+	 */
+	public static class ShapelessIC2RecipeHandler extends RecipeHandler
+	{
+		public ShapelessIC2RecipeHandler(Class<? extends IRecipe> recipe) 
+		{
+			super(recipe);
+		}
+		
+		@Override
+		public ItemStack[] getCraftingGrid(IRecipe r)
+		{
+			try
+			{
+				Class AdvShapelessRecipe = Class.forName("ic2.core.AdvShapelessRecipe");
+				Class RecipeInputItemStack = Class.forName("ic2.api.recipe.RecipeInputItemStack");
+				Class RecipeInputOreDict = Class.forName("ic2.api.recipe.RecipeInputOreDict");
+				
+				List<ItemStack> stacks = new ArrayList<ItemStack>();
+				for ( Object target : (Object[])Class.forName("ic2.core.AdvShapelessRecipe").getField("input").get(r))
+				{
+					if (RecipeInputItemStack.isInstance(target))
+					{
+						ItemStack itemStack = (ItemStack)RecipeInputItemStack.getField("input").get(target); 
+						stacks.add(itemStack);
+					}
+					else if (RecipeInputOreDict.isInstance(target))
+					{
+						List<ItemStack> itemStacks = (List<ItemStack>)(RecipeInputOreDict.getMethod("getInputs", (Class[])null).invoke(target));
+						stacks.add(itemStacks.get(0));
+					}
+					else if (target instanceof ItemStack)
+					{
+						stacks.add((ItemStack)target);
+					}
+					else if (target instanceof ArrayList)
+					{
+						stacks.add(((ArrayList<ItemStack>)target).get(0));
+					}
+				}
+				
+				return stacks.toArray(new ItemStack[9]);
+			}
+			catch(Exception ex) 
+			{ 
+				System.out.println("ShapelessIC2RecipeHandler.getCraftingGrid: " + ex.getMessage());
+				System.out.println(ex.getStackTrace().toString());
+			}
+			return null;
+		}
 	}
 	
 	
@@ -267,7 +385,6 @@ public final class RecipeHandlers
 		}
 		return recipeStacks;
 	}
-	
 	
 	
 }

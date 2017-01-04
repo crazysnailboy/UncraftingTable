@@ -11,9 +11,11 @@ import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.jglrxavpok.mods.decraft.RecipeHandlers.RecipeHandler;
+import org.jglrxavpok.mods.decraft.RecipeHandlers.ShapedIC2RecipeHandler;
 import org.jglrxavpok.mods.decraft.RecipeHandlers.ShapedMekanismRecipeHandler;
 import org.jglrxavpok.mods.decraft.RecipeHandlers.ShapedOreRecipeHandler;
 import org.jglrxavpok.mods.decraft.RecipeHandlers.ShapedRecipeHandler;
+import org.jglrxavpok.mods.decraft.RecipeHandlers.ShapelessIC2RecipeHandler;
 import org.jglrxavpok.mods.decraft.RecipeHandlers.ShapelessMekanismRecipeHandler;
 import org.jglrxavpok.mods.decraft.RecipeHandlers.ShapelessOreRecipeHandler;
 import org.jglrxavpok.mods.decraft.RecipeHandlers.ShapelessRecipeHandler;
@@ -93,7 +95,6 @@ public class UncraftingManager
 					if (handler != null)
 					{
 						list.add(recipeOutput.stackSize);
-						break;
 					}
 					else 
 					{
@@ -127,7 +128,6 @@ public class UncraftingManager
 				if (handler != null)
 				{
 					list.add(handler.getCraftingGrid(recipe));
-					break;
 				}
 				else
 				{
@@ -209,6 +209,13 @@ public class UncraftingManager
 
 			c = Class.forName("mekanism.common.recipe.ShapelessMekanismRecipe");
 			if (c.isInstance(recipe)) return new ShapelessMekanismRecipeHandler(c);
+			
+			// ic2 recipes
+			c = Class.forName("ic2.core.AdvRecipe");
+			if (c.isInstance(recipe)) return new ShapedIC2RecipeHandler(c);
+			
+			c = Class.forName("ic2.core.AdvShapelessRecipe");
+			if (c.isInstance(recipe)) return new ShapelessIC2RecipeHandler(c);
 			
 		}
 		catch(ClassNotFoundException ex) { }
