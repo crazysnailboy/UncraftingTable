@@ -8,9 +8,13 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Items;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -135,6 +139,63 @@ public class GuiUncraftingTable extends GuiContainer
 		{
 			this.drawTexturedModalRect(guiX + 71, guiY + 33, 176, 0, 28, 21);
 		}
+		
+		RenderHelper.enableGUIStandardItemLighting();
+        
+        // render a book over the left slot
+        int slotX = 20; int slotY = 35;
+        itemRender.renderItemIntoGUI(new ItemStack(Items.BOOK), guiX + slotX, guiY + slotY);
+        
+        // draw a gray rectangle over the item
+		GL11.glDisable(GL11.GL_LIGHTING);
+		GL11.glDisable(GL11.GL_DEPTH_TEST);
+		this.drawRect(guiX + slotX, guiY + slotY, guiX + slotX + 16, guiY + slotY + 16, 0x9f8b8b8b);
+		GL11.glEnable(GL11.GL_LIGHTING);
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		
+		// if the uncrafting result's crafting grids collection isn't empty
+		if (container.uncraftingResult.craftingGrids.size() > 0)
+		{
+			// get the currently selected crafting grid
+			ItemStack[] craftingGrid = container.uncraftingResult.craftingGrids.get(0);
+			
+			// loop through the slots in the temp inventory
+	        for ( int i = 0 ; i < craftingGrid.length ; i++ )
+	        {
+	        	ItemStack itemStack = craftingGrid[i];
+	        	// if the itemstack isn't empty
+	        	if (itemStack != null)
+	        	{
+	        		// find the screen position of the corresponding slot from the output inventory 
+		        	Slot renderSlot = container.getSlotFromInventory(container.uncraftOut, i);
+	        		slotX = renderSlot.xDisplayPosition;
+	        		slotY = renderSlot.yDisplayPosition;
+	        		
+	        		// render the item in the position of the slot
+	                itemRender.renderItemIntoGUI(itemStack, guiX + slotX, guiY + slotY);
+	                if (itemStack.stackSize > 1)
+	                {
+	                	itemRender.renderItemOverlayIntoGUI(this.fontRendererObj, itemStack, guiX + slotX, guiY + slotY, String.valueOf(itemStack.stackSize));
+	                }
+	                
+	                // draw a coloured overlay over the item
+	                GL11.glDisable(GL11.GL_LIGHTING);
+	                GL11.glDisable(GL11.GL_DEPTH_TEST);
+
+	                // use a gray overlay for normal items, or a red overlay for this with container items
+	                int color = (itemStack.getItem().hasContainerItem(null) ?  0x80FF8B8B : 0x9F8B8B8B);  // the hasContainerItem parameter is ignored, and ItemStack internally calls the deprecated version without the parameter anyway...
+	                this.drawRect(guiX + slotX, guiY + slotY, guiX + slotX + 16, guiY + slotY + 16, color);
+	                
+	                GL11.glEnable(GL11.GL_LIGHTING);
+	                GL11.glEnable(GL11.GL_DEPTH_TEST);
+	        		
+	        	}
+	        }
+			
+		}
+		
+		RenderHelper.disableStandardItemLighting();
+		
 
     	GlStateManager.popMatrix();
     }
