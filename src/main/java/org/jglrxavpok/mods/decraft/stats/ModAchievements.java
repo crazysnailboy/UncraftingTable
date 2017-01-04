@@ -74,13 +74,18 @@ public class ModAchievements {
 	    {
 	    }
     	
+		/**
+		 * Event handler for a successful uncrafting operation
+		 * @param event
+		 */
 		@SubscribeEvent
         public void onItemUncrafted(ItemUncraftedEvent event)
     	{
+			// trigger the "uncrafted anything" achievement
             event.player.addStat(uncraftAny);
 			
+            // if the uncrafted item was one of those with a specific achievement associated with it, trigegr that achievement
 	        Item uncraftedItem = event.getUncrafted().getItem();
-	        
 	        if (uncraftedItem == Items.DIAMOND_HOE)
 	        {
 	            event.player.addStat(uncraftDiamondHoe);
@@ -99,6 +104,10 @@ public class ModAchievements {
 	        {
 	            event.player.addStat(uncraftJunk);
 	        }
+	        
+	        // increment the stat counter for the number of uncrafted items
+	        event.player.addStat(ModUncrafting.instance.uncraftedItemsStat, event.getRequiredNumber());
+//	        event.player.addStat(ModUncrafting.instance.uncraftedItemsStat, event.getUncrafted().stackSize);
     	}
     	
     }
