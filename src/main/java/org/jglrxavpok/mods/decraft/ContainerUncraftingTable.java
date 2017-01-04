@@ -278,7 +278,7 @@ public class ContainerUncraftingTable extends Container
                 }
 
                 // fire an event indicating a successful uncrafting operation
-                ItemUncraftedEvent sevent = new ItemUncraftedEvent(playerInventory.player, uncraftIn.getStackInSlot(0), craftingGrid, minStackSize);
+                MinecraftForge.EVENT_BUS.post(new ItemUncraftedEvent(playerInventory.player, uncraftIn.getStackInSlot(0), craftingGrid, minStackSize));
 
             	// decrement the number of items in the input slot by the minimum stack size
                 uncraftIn.decrStackSize(0, minStackSize);
