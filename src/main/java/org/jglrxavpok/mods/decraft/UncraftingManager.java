@@ -1,7 +1,11 @@
 package org.jglrxavpok.mods.decraft;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.jglrxavpok.mods.decraft.RecipeHandlers.RecipeHandler;
@@ -12,7 +16,13 @@ import org.jglrxavpok.mods.decraft.RecipeHandlers.ShapelessMekanismRecipeHandler
 import org.jglrxavpok.mods.decraft.RecipeHandlers.ShapelessOreRecipeHandler;
 import org.jglrxavpok.mods.decraft.RecipeHandlers.ShapelessRecipeHandler;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
+import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult;
+import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult.ResultType;
 
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -60,10 +70,10 @@ public class UncraftingManager
 	 * @param itemStack The ItemStack containing the target item
 	 * @return A collection of the mininum required stack sizes - one element per recipe found
 	 */
-	public static List<Integer> getStackSizeNeeded(ItemStack item)
+	public static List<Integer> getStackSizeNeeded(ItemStack itemStack)
 	{
 		List<Integer> list = new ArrayList<Integer>();
-		if (isUncraftingDisabledForItem(item)) return list;
+		if (isUncraftingDisabledForItem(itemStack)) return list;
 		
 		List<IRecipe> recipeList = CraftingManager.getInstance().getRecipeList();
 		for ( IRecipe recipe : recipeList )
@@ -71,7 +81,7 @@ public class UncraftingManager
 			ItemStack recipeOutput = recipe.getRecipeOutput();
 			if (recipeOutput != null)
 			{
-				if (ItemStack.areItemsEqualIgnoreDurability(item, recipeOutput))
+				if (ItemStack.areItemsEqualIgnoreDurability(itemStack, recipeOutput))
 				{
 					RecipeHandler handler = getRecipeHandler(recipe);
 					if (handler != null)
@@ -96,16 +106,16 @@ public class UncraftingManager
 	 * @param itemStack The ItemStack containing the target item
 	 * @return A collection of the ItemStack arrays representing the crafting recipe - one element per recipe found
 	 */
-	public static List<ItemStack[]> getUncraftResults(ItemStack item)
+	public static List<ItemStack[]> findMatchingRecipes(ItemStack itemStack)
 	{
 		List<ItemStack[]> list = new ArrayList<ItemStack[]>();
-		if (isUncraftingDisabledForItem(item)) return list;
+		if (isUncraftingDisabledForItem(itemStack)) return list;
 		
 		List<IRecipe> recipeList = CraftingManager.getInstance().getRecipeList();
 		for ( IRecipe recipe : recipeList )
 		{
 			ItemStack recipeOutput = recipe.getRecipeOutput();
-			if (ItemStack.areItemsEqualIgnoreDurability(item, recipeOutput) && recipeOutput.stackSize <= item.stackSize)
+			if (ItemStack.areItemsEqualIgnoreDurability(itemStack, recipeOutput) && recipeOutput.stackSize <= itemStack.stackSize)
 			{
 				RecipeHandler handler = getRecipeHandler(recipe);
 				if (handler != null)
@@ -199,6 +209,101 @@ public class UncraftingManager
 		catch(Exception ex) { }
 
 		return null;
+	}
+	
+	
+	public static UncraftingResult getUncraftingResult(EntityPlayer player, ItemStack itemStack)
+	{
+		
+		UncraftingResult uncraftingResult = new UncraftingResult();
+		
+        // get the minimum stack sizes needed to uncraft the input item
+		uncraftingResult.minStackSizes = getStackSizeNeeded(itemStack);
+        // get the crafting grids which could result in the input item
+		uncraftingResult.craftingGrids = findMatchingRecipes(itemStack);
+        // determine the xp cost for the uncrafting operation
+		uncraftingResult.experienceCost = getUncraftingXpCost(itemStack);
+		
+        // if the minimum stack size is greater than the number of items in the slot
+		if (uncraftingResult.minStackSizes.size() > 0 && itemStack.stackSize < Collections.min(uncraftingResult.minStackSizes))
+		{
+			// set the result type as "not enough items"
+			uncraftingResult.resultType = ResultType.NOT_ENOUGH_ITEMS;
+		}
+		// if no crafting recipe could be found
+		else if (uncraftingResult.craftingGrids.size() == 0)
+		{
+			// set the result type as "not uncraftable"
+			uncraftingResult.resultType = ResultType.NOT_UNCRAFTABLE;
+		}
+		// if the player is not in creative mode, and doesn't have enough XP levels 
+		else if (!player.capabilities.isCreativeMode && player.experienceLevel < uncraftingResult.experienceCost)
+		{
+			// set the result type as "not enough xp"
+			uncraftingResult.resultType = ResultType.NOT_ENOUGH_XP;
+		}
+		// otherwise, the uncrafting operation can be performed
+		else
+		{
+			uncraftingResult.resultType = ResultType.VALID;
+		}
+		
+		return uncraftingResult;
+	}
+	
+	
+
+	public static List<ItemStack> getItemEnchantments(ItemStack itemStack, ItemStack containerItems)
+	{
+        // initialise a list of itemstacks to hold enchanted books  
+        ArrayList<ItemStack> enchantedBooks = new ArrayList<ItemStack>();
+        
+        // if the item being uncrafted has enchantments, and the container itemstack contains books
+        if (itemStack.isItemEnchanted() && containerItems != null && containerItems.getItem() == Items.BOOK)
+        {
+            // build a map of the enchantments on the item in the input stack
+            Map itemEnchantments = EnchantmentHelper.getEnchantments(itemStack);
+            
+            // if the item has more than one enchantment, and we have at least the same number of books as enchantments
+            // create an itemstack of enchanted books with a single enchantment per book
+            if (itemEnchantments.size() > 1 && itemEnchantments.size() <= containerItems.stackSize)
+            {
+            	// iterate through the enchantments in the map
+                Iterator<?> enchantmentIds = itemEnchantments.keySet().iterator();
+                while (enchantmentIds.hasNext())
+                {
+                	Enchantment bookEnchantment = (Enchantment)enchantmentIds.next();
+                	// create a new map of enchantments which will be applied to this book
+                    Map<Enchantment, Integer> bookEnchantments = new LinkedHashMap<Enchantment, Integer>();
+                    // copy the current enchantment into the map
+                    bookEnchantments.put(bookEnchantment, (Integer)itemEnchantments.get(bookEnchantment));
+                	// create an itemstack containing an enchanted book
+                    ItemStack enchantedBook = new ItemStack(Items.ENCHANTED_BOOK, 1);
+                    // place the enchantment onto the book
+                    EnchantmentHelper.setEnchantments(bookEnchantments, enchantedBook);
+                    // add the book to the enchanted books collection
+                    enchantedBooks.add(enchantedBook);
+                    // clear the book enchantments map
+                    bookEnchantments.clear();
+                }
+            }
+            
+            // if there's a single enchantment, or fewer books than enchantments
+            // copy all of the enchantments from the item onto a single book
+            else
+            {
+            	// create an itemstack containing an enchanted book
+                ItemStack enchantedBook = new ItemStack(Items.ENCHANTED_BOOK, 1);
+                // copy all of the enchantments from the map onto the book
+                EnchantmentHelper.setEnchantments(itemEnchantments, enchantedBook);
+                // add the book to the enchanted books collection
+                enchantedBooks.add(enchantedBook);
+            }
+            
+        }
+        
+        // return the list of enchanted books
+        return enchantedBooks;
 	}
 	
 	
