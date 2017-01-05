@@ -3,7 +3,7 @@
 	  "modid": "uncraftingTable",
 	  "name": "Uncrafting Table",
 	  "description": "\u00A72Trade XP to recycle your old useless items into raw materials!",
-	  "version": "1.4.3",
+	  "version": "${version}",
 	  "mcversion": "${mcversion}",
 	  "url": "\u00A72https://minecraft.curseforge.com/projects/jglrxavpoks-uncrafting-table/",
 	  "authorList": ["\u00A7ejglrxavpok","\u00A7aJordy141","\u00A7acrazysnailboy"],
