@@ -12,8 +12,10 @@ import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.jglrxavpok.mods.decraft.RecipeHandlers.RecipeHandler;
+import org.jglrxavpok.mods.decraft.RecipeHandlers.ShapedIC2RecipeHandler;
 import org.jglrxavpok.mods.decraft.RecipeHandlers.ShapedOreRecipeHandler;
 import org.jglrxavpok.mods.decraft.RecipeHandlers.ShapedRecipeHandler;
+import org.jglrxavpok.mods.decraft.RecipeHandlers.ShapelessIC2RecipeHandler;
 import org.jglrxavpok.mods.decraft.RecipeHandlers.ShapelessOreRecipeHandler;
 import org.jglrxavpok.mods.decraft.RecipeHandlers.ShapelessRecipeHandler;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
@@ -196,6 +198,23 @@ public class UncraftingManager
 		// Forge Ore Dictionary recipe handlers
 		if (recipe instanceof ShapelessOreRecipe) return new ShapelessOreRecipeHandler(ShapelessOreRecipe.class);
 		if (recipe instanceof ShapedOreRecipe) return new ShapedOreRecipeHandler(ShapedOreRecipe.class);
+		
+		// recipe handlers for reflected IRecipe types from other mods
+		try
+		{
+			Class c;
+
+			// ic2 recipes
+			c = Class.forName("ic2.core.recipe.AdvRecipe");
+			if (c.isInstance(recipe)) return new ShapedIC2RecipeHandler(c);
+			
+			c = Class.forName("ic2.core.recipe.AdvShapelessRecipe");
+			if (c.isInstance(recipe)) return new ShapelessIC2RecipeHandler(c);
+			
+		}
+		catch(ClassNotFoundException ex) { }
+		catch(Exception ex) { }
+		
 		
 		return null;
 	}
