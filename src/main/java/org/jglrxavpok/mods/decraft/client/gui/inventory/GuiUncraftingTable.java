@@ -1,13 +1,14 @@
-package org.jglrxavpok.mods.decraft;
+package org.jglrxavpok.mods.decraft.client.gui.inventory;
 
 import java.awt.Color;
 
+import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
+import org.jglrxavpok.mods.decraft.inventory.ContainerUncraftingTable;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
