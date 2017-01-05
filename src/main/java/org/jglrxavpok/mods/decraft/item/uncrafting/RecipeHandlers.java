@@ -1,4 +1,4 @@
-package org.jglrxavpok.mods.decraft;
+package org.jglrxavpok.mods.decraft.item.uncrafting;
 
 
 import java.util.ArrayList;
