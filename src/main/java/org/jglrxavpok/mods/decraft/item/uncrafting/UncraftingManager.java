@@ -1,4 +1,4 @@
-package org.jglrxavpok.mods.decraft;
+package org.jglrxavpok.mods.decraft.item.uncrafting;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.jglrxavpok.mods.decraft.RecipeHandlers.RecipeHandler;
-import org.jglrxavpok.mods.decraft.RecipeHandlers.ShapedOreRecipeHandler;
-import org.jglrxavpok.mods.decraft.RecipeHandlers.ShapedRecipeHandler;
-import org.jglrxavpok.mods.decraft.RecipeHandlers.ShapelessOreRecipeHandler;
-import org.jglrxavpok.mods.decraft.RecipeHandlers.ShapelessRecipeHandler;
+import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
-import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult;
+import org.jglrxavpok.mods.decraft.item.uncrafting.RecipeHandlers.RecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.RecipeHandlers.ShapedOreRecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.RecipeHandlers.ShapedRecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.RecipeHandlers.ShapelessOreRecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.RecipeHandlers.ShapelessRecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult.ResultType;
 
 import net.minecraft.enchantment.Enchantment;

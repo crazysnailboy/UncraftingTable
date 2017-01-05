@@ -1,8 +1,10 @@
-package org.jglrxavpok.mods.decraft;
+package org.jglrxavpok.mods.decraft.client.gui.inventory;
 
 import java.awt.Color;
 
+import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
+import org.jglrxavpok.mods.decraft.inventory.ContainerUncraftingTable;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult;
 import org.lwjgl.opengl.GL11;
 
