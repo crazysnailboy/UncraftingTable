@@ -224,7 +224,7 @@ public final class RecipeHandlers
 				Class RecipeInputOreDict = Class.forName("ic2.api.recipe.RecipeInputOreDict");
 				
 				List<ItemStack> stacks = new ArrayList<ItemStack>();
-				for ( Object target : (Object[])Class.forName("ic2.core.AdvShapelessRecipe").getField("input").get(r))
+				for ( Object target : (Object[])AdvShapelessRecipe.getField("input").get(r))
 				{
 					if (RecipeInputItemStack.isInstance(target))
 					{
