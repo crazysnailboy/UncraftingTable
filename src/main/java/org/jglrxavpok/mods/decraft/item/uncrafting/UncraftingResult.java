@@ -14,6 +14,7 @@ public class UncraftingResult
     public List<NonNullList<ItemStack>> craftingGrids;
     public int experienceCost;
     public ItemStack containerItems;
+    public int selectedCraftingGrid;
     
     public UncraftingResult()
     {
@@ -21,6 +22,7 @@ public class UncraftingResult
     	this.minStackSizes = new ArrayList<Integer>();
     	this.craftingGrids = new ArrayList<NonNullList<ItemStack>>();
     	this.experienceCost = 0;
+    	this.selectedCraftingGrid = 0;
     }
     
     
