@@ -6,6 +6,7 @@ import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult;
 import org.lwjgl.opengl.GL11;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -26,6 +27,8 @@ public class GuiUncraftingTable extends GuiContainer
     public ContainerUncraftingTable container;
     private World worldObj;
     private EntityPlayer player;
+    private GuiButton previousRecipeButton;
+    private GuiButton nextRecipeButton;
 
     public GuiUncraftingTable(InventoryPlayer playerInventory, World world)
     {
@@ -36,10 +39,61 @@ public class GuiUncraftingTable extends GuiContainer
     }
 
 
+    /**
+     * Adds the buttons (and other controls) to the screen in question.
+     */
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks)
+    public void initGui()
     {
-        super.drawScreen(mouseX, mouseY, partialTicks);
+        super.initGui();
+        
+		int guiX = (this.width - this.xSize) / 2;
+		int guiY = (this.height - this.ySize) / 2;
+		
+		this.buttonList.add(this.nextRecipeButton = new GuiButton(1, guiX + 162, guiY + 20, ButtonFacing.RIGHT));
+		this.buttonList.add(this.previousRecipeButton = new GuiButton(2, guiX + 95, guiY + 20, ButtonFacing.LEFT));
+		
+		this.previousRecipeButton.visible = false;
+		this.nextRecipeButton.visible = false;
+    }
+    
+    
+    /**
+     * Called from the main game loop to update the screen.
+     */
+    @Override
+    public void updateScreen()
+    {
+    	super.updateScreen();
+    	
+    	this.nextRecipeButton.visible = (container.uncraftingResult.craftingGrids.size() > 1) && (container.uncraftingResult.selectedCraftingGrid < (container.uncraftingResult.craftingGrids.size() - 1));
+    	this.nextRecipeButton.enabled = this.nextRecipeButton.visible;
+    	
+    	this.previousRecipeButton.visible = (container.uncraftingResult.craftingGrids.size() > 1) && (container.uncraftingResult.selectedCraftingGrid > 0);
+    	this.nextRecipeButton.enabled = this.nextRecipeButton.visible;
+    	
+    }
+    
+    
+    @Override
+    protected void actionPerformed(net.minecraft.client.gui.GuiButton button)
+    {
+    	if (button == this.previousRecipeButton)
+    	{
+    		if (container.uncraftingResult.selectedCraftingGrid == 0) return;
+    		container.uncraftingResult.selectedCraftingGrid--;
+    	}
+    	if (button == this.nextRecipeButton)
+    	{
+    		if (container.uncraftingResult.selectedCraftingGrid == (container.uncraftingResult.craftingGrids.size() - 1)) return;
+    		container.uncraftingResult.selectedCraftingGrid++;
+    	}
+    	
+//    	if (container.uncraftingStatus == UncraftingStatus.READY)
+//    	{
+//    		container.populateOutputInventory2();
+//    	}
+    	
     }
 
     
@@ -157,7 +211,7 @@ public class GuiUncraftingTable extends GuiContainer
 		if (container.uncraftingResult.craftingGrids.size() > 0)
 		{
 			// get the currently selected crafting grid
-			ItemStack[] craftingGrid = container.uncraftingResult.craftingGrids.get(0);
+			ItemStack[] craftingGrid = container.uncraftingResult.craftingGrids.get(container.uncraftingResult.selectedCraftingGrid);
 			
 			// loop through the slots in the temp inventory
 	        for ( int i = 0 ; i < craftingGrid.length ; i++ )
@@ -199,5 +253,46 @@ public class GuiUncraftingTable extends GuiContainer
 
     	GlStateManager.popMatrix();
     }
+    
+    
+    private class GuiButton extends net.minecraft.client.gui.GuiButton
+    {
+    	
+		private final ButtonFacing facing;
+
+		public GuiButton(int buttonId, int x, int y, ButtonFacing facing) 
+		{
+			super(buttonId, x, y, 7, 11, "");
+			this.facing = facing;
+		}
+		
+		@Override
+		public void drawButton(Minecraft mc, int mouseX, int mouseY)
+		{
+			if (this.visible)
+			{
+		        GL11.glPushMatrix();
+		        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		        
+				mc.getTextureManager().bindTexture(UNCRAFTING_TABLE_GUI_TEXTURES);
+				
+				boolean mouseOnButton = (mouseX >= this.xPosition) && (mouseY >= this.yPosition) && (mouseX < this.xPosition + this.width) && (mouseY < this.yPosition + this.height);
+				int textureX = (this.facing == ButtonFacing.LEFT ? 177 : 185);
+				int textureY = (mouseOnButton ? 35 : 23);
+				
+				drawTexturedModalRect(this.xPosition, this.yPosition, textureX, textureY, this.width, this.height);
+				
+		        GL11.glPopMatrix();
+			}
+
+		}
+    }
+    
+	private static enum ButtonFacing
+	{
+		LEFT,
+		RIGHT
+	}
+    
 
 }
