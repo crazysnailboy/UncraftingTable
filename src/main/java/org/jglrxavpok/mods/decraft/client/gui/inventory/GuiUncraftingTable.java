@@ -1,7 +1,9 @@
-package org.jglrxavpok.mods.decraft;
+package org.jglrxavpok.mods.decraft.client.gui.inventory;
 
 import java.awt.Color;
 
+import org.jglrxavpok.mods.decraft.ModUncrafting;
+import org.jglrxavpok.mods.decraft.inventory.ContainerUncraftingTable;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult;
 import org.lwjgl.opengl.GL11;
 
@@ -77,7 +79,6 @@ public class GuiUncraftingTable extends GuiContainer
     @Override
     protected void actionPerformed(net.minecraft.client.gui.GuiButton button)
     {
-    	
     	if (button == this.previousRecipeButton)
     	{
     		if (container.uncraftingResult.selectedCraftingGrid == 0) return;
