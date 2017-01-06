@@ -188,33 +188,24 @@ public class UncraftingManager
 		// RecipesMapExtending extends ShapedRecipes, and causes a crash when attempting to uncraft a map
 		if (recipe instanceof RecipesMapExtending) return null;
 		// vanilla Minecraft recipe handlers
-		if (recipe instanceof ShapelessRecipes) return new ShapelessRecipeHandler(ShapelessRecipes.class);
-		if (recipe instanceof ShapedRecipes) return new ShapedRecipeHandler(ShapedRecipes.class);
+		if (recipe instanceof ShapelessRecipes) return new ShapelessRecipeHandler();
+		if (recipe instanceof ShapedRecipes) return new ShapedRecipeHandler();
 		// Forge Ore Dictionary recipe handlers
-		if (recipe instanceof ShapelessOreRecipe) return new ShapelessOreRecipeHandler(ShapelessOreRecipe.class);
-		if (recipe instanceof ShapedOreRecipe) return new ShapedOreRecipeHandler(ShapedOreRecipe.class);
+		if (recipe instanceof ShapelessOreRecipe) return new ShapelessOreRecipeHandler();
+		if (recipe instanceof ShapedOreRecipe) return new ShapedOreRecipeHandler();
 		
 		// recipe handlers for reflected IRecipe types from other mods
 		try
 		{
-			Class c;
+			// ic2 recipes
+			if (ShapedIC2RecipeHandler.recipeClass.isInstance(recipe)) return new ShapedIC2RecipeHandler();
+			if (ShapelessIC2RecipeHandler.recipeClass.isInstance(recipe)) return new ShapelessIC2RecipeHandler();
 			
 			// mekanism recipes
-			c = Class.forName("mekanism.common.recipe.ShapedMekanismRecipe");
-			if (c.isInstance(recipe)) return new ShapedMekanismRecipeHandler(c);
-
-			c = Class.forName("mekanism.common.recipe.ShapelessMekanismRecipe");
-			if (c.isInstance(recipe)) return new ShapelessMekanismRecipeHandler(c);
-			
-			// ic2 recipes
-			c = Class.forName("ic2.core.recipe.AdvRecipe");
-			if (c.isInstance(recipe)) return new ShapedIC2RecipeHandler(c);
-			
-			c = Class.forName("ic2.core.recipe.AdvShapelessRecipe");
-			if (c.isInstance(recipe)) return new ShapelessIC2RecipeHandler(c);
+			if (ShapedMekanismRecipeHandler.recipeClass.isInstance(recipe)) return new ShapedMekanismRecipeHandler();
+			if (ShapelessMekanismRecipeHandler.recipeClass.isInstance(recipe)) return new ShapelessMekanismRecipeHandler();
 			
 		}
-		catch(ClassNotFoundException ex) { }
 		catch(Exception ex) { }
 
 		return null;
