@@ -200,7 +200,7 @@ public class GuiUncraftingTable extends GuiContainer
         // draw a gray rectangle over the item
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
-		this.drawRect(guiX + slotX, guiY + slotY, guiX + slotX + 16, guiY + slotY + 16, 0x9f8b8b8b);
+		this.drawRect(guiX + slotX, guiY + slotY, guiX + slotX + 16, guiY + slotY + 16, 0x9F8B8B8B);
 		GL11.glEnable(GL11.GL_LIGHTING);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		
@@ -224,7 +224,8 @@ public class GuiUncraftingTable extends GuiContainer
 	        		slotY = renderSlot.yDisplayPosition;
 	        		
 	        		// render the item in the position of the slot
-	                itemRender.renderItemIntoGUI(this.fontRendererObj, this.mc.renderEngine, itemStack, guiX + slotX, guiY + slotY);
+	        		itemRender.renderItemAndEffectIntoGUI(this.fontRendererObj, this.mc.renderEngine, itemStack, guiX + slotX, guiY + slotY);
+//	                itemRender.renderItemIntoGUI(this.fontRendererObj, this.mc.renderEngine, itemStack, guiX + slotX, guiY + slotY);
 	                if (itemStack.stackSize > 1)
 	                {
 	                	itemRender.renderItemOverlayIntoGUI(this.fontRendererObj, this.mc.renderEngine, itemStack, guiX + slotX, guiY + slotY, String.valueOf(itemStack.stackSize));
