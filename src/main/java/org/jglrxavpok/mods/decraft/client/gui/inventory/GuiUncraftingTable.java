@@ -228,7 +228,8 @@ public class GuiUncraftingTable extends GuiContainer
 	        		slotY = renderSlot.yDisplayPosition;
 	        		
 	        		// render the item in the position of the slot
-	                itemRender.renderItemIntoGUI(itemStack, guiX + slotX, guiY + slotY);
+	        		itemRender.renderItemAndEffectIntoGUI(itemStack, guiX + slotX, guiY + slotY);
+//	                itemRender.renderItemIntoGUI(itemStack, guiX + slotX, guiY + slotY);
 	                if (itemStack.stackSize > 1)
 	                {
 	                	itemRender.renderItemOverlayIntoGUI(this.fontRendererObj, itemStack, guiX + slotX, guiY + slotY, String.valueOf(itemStack.stackSize));
