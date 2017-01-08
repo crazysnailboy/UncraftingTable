@@ -328,89 +328,132 @@ public class ContainerUncraftingTable extends Container
     public ItemStack transferStackInSlot(EntityPlayer player, int index)
     {
         ItemStack itemstack = null;
+        // get the slot specified by the index
         Slot slot = (Slot) this.inventorySlots.get(index);
+        // if the slot is valid and contains a stack of items
         if (slot != null && slot.getHasStack())
+        {
+        	// if the slot belongs to the calculation inventory
             if (slot.inventory.equals(calculInput))
             {
+            	// get the stack of items in the slot
                 ItemStack itemstack1 = slot.getStack();
+                // let the slot know the player has picked up the stack of items
                 slot.onPickupFromSlot(player, itemstack1);
+                // attempt add the items to the player's inventory
                 if (!playerInventory.addItemStackToInventory(itemstack1))
                 {
+                	// TODO: shouldn't this spawn items in the world if they can't be added to the player's inventory?
                     return null;
                 }
+                // clear the slot
                 slot.putStack(null);
             }
+        	// if the slot belongs to the input inventory
             else if (slot.inventory.equals(uncraftIn))
             {
+            	// if the slot contains items
                 if (slot.getHasStack())
                 {
+                    // attempt add the items to the player's inventory
                     if (!playerInventory.addItemStackToInventory(slot.getStack()))
                     {
+                    	// TODO: shouldn't this spawn items in the world if they can't be added to the player's inventory?
                         return null;
                     }
+                    // clear thr slot
                     slot.putStack(null);
+                    // let the slot know that the contents have changed
                     slot.onSlotChanged();
                 }
             }
+        	// if the slot belongs to the player's inventory
             else if (slot.inventory.equals(playerInventory))
             {
                 Slot calcInput = null;
                 Slot uncraftSlot = null;
+                // iterate through all the slots in this container's inventories
                 for (Object s : inventorySlots)
                 {
                     Slot s1 = (Slot) s;
+                    // if the current slot belongs to the calculation inventory 
                     if (s1.inventory.equals(calculInput))
                     {
+                    	// set the temporary slot variable for the calculation slot to reference this slot
                         calcInput = s1;
                     }
+                    // if the current slot belongs to the input inventory
                     else if (s1.inventory.equals(uncraftIn))
                     {
+                    	// set the temporary slot variable for the input slot to reference this slot
                         uncraftSlot = s1;
                     }
                 }
+                // if we matched to the calculation input slot
                 if (calcInput != null)
                 {
+                	// if the calculation input slot doesn't contain items
                     if (calcInput.getStack() == null)
                     {
+                    	// put the items from the clicked slot into the calculation slot
                         calcInput.putStack(slot.getStack());
+                        // let the calculation slot know it's been changed
                         calcInput.onSlotChanged();
+                        // clear the clicked slot
                         slot.putStack(null);
                     }
+                    // if the calculation slot does contain items
                     else
                     {
+                    	// if the clicked slot does contain items
                         if (slot.getStack() != null)
                         {
+                        	// get the items currently in the clicked slot
                             ItemStack i = slot.getStack();
+                            // tell the clicked slot that the player has picked up the items
                             slot.onPickupFromSlot(player, slot.getStack());
+                            // put the items from the calculation slot into the player's inventory
                             slot.putStack(calcInput.getStack().copy());
+                            // put the items that were in the player's inventory into the calculation slot
                             calcInput.putStack(i.copy());
+                            // trigger the crafting matrix change for the calculation slot
                             this.onCraftMatrixChanged(calculInput);
+                            // tell the calculation slot that it's changed
                             calcInput.onSlotChanged();
                         }
+                        // if the clicked slot doesn't contain items
                         else
                         {
+                        	// do nothing
                             return null;
                         }
                     }
                 }
             }
+        	// if the slot belongs to the uncrafting result grid
             else if (slot.inventory.equals(uncraftOut))
             {
+            	// if the slot contains items
                 if (slot.getHasStack())
                 {
+                	// attempt to add those items to the player's inventory
                     if (!playerInventory.addItemStackToInventory(slot.getStack()))
                     {
+                    	// TODO: shouldn't this spawn items in the world if they can't be added to the player's inventory?
                         return null;
                     }
+                    // clear the slot
                     slot.putStack(null);
+                    // tell the slot that it's changed
                     slot.onSlotChanged();
                 }
             }
+        }
         return null;
     }
 
     @Override
-    public boolean canMergeSlot(ItemStack stack, Slot slotIn) //public boolean canMergeSlot(ItemStack stack, Slot slotIn)
+    public boolean canMergeSlot(ItemStack stack, Slot slotIn)
     {
         return !slotIn.inventory.equals(uncraftOut);
     }
