@@ -138,8 +138,8 @@ public class ContainerUncraftingTable extends Container
 
         	
         	// --- TODO: this is all temporary code to match the uncraftingResult to existing variables
-    		int minStackSize = (uncraftingResult.minStackSizes.size() > 0 ? uncraftingResult.minStackSizes.get(0) : 1);
-            ItemStack[] craftingGrid = (uncraftingResult.craftingGrids.size() > 0 ? uncraftingResult.craftingGrids.get(0) : null);
+    		int minStackSize = (uncraftingResult.minStackSizes.size() > 0 ? uncraftingResult.minStackSizes.get(uncraftingResult.selectedCraftingGrid) : 1);
+            ItemStack[] craftingGrid = (uncraftingResult.craftingGrids.size() > 0 ? uncraftingResult.craftingGrids.get(uncraftingResult.selectedCraftingGrid) : null);
         	// --- end of temporary code
 	        int multiplier = (uncraftIn.getStackInSlot(0).stackSize / minStackSize);
             
@@ -232,7 +232,7 @@ public class ContainerUncraftingTable extends Container
                     // if the stack in the current slot of the output grid is not already at it's maximum stack size
                     if (currentStack != null && 1 + currentStack.stackSize <= s.getMaxStackSize())
                     {
-                    	// create a new stack of the same item type and metadata, with one more item in it than previously  
+                    	// create a new stack of the same item type and metadata, with more items in it than previously  
                         newStack = new ItemStack(s.getItem(), currentStack.stackSize + multiplier, metadata);
                     }
                     else
@@ -260,8 +260,8 @@ public class ContainerUncraftingTable extends Container
                 // fire an event indicating a successful uncrafting operation
                 MinecraftForge.EVENT_BUS.post(new ItemUncraftedEvent(playerInventory.player, uncraftIn.getStackInSlot(0), craftingGrid, minStackSize));
 
-            	// decrement the number of items in the input slot by the minimum stack size
-                uncraftIn.decrStackSize(0, minStackSize);
+            	// decrement the number of items in the input slot
+                uncraftIn.decrStackSize(0, minStackSize * multiplier);
             }
         }
     }
