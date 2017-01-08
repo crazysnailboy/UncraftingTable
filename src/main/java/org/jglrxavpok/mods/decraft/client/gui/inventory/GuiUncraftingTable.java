@@ -17,6 +17,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
@@ -90,12 +91,6 @@ public class GuiUncraftingTable extends GuiContainer
     		if (container.uncraftingResult.selectedCraftingGrid == (container.uncraftingResult.craftingGrids.size() - 1)) return;
     		container.uncraftingResult.selectedCraftingGrid++;
     	}
-    	
-//    	if (container.uncraftingStatus == UncraftingStatus.READY)
-//    	{
-//    		container.populateOutputInventory2();
-//    	}
-    	
     }
 
     
@@ -128,6 +123,12 @@ public class GuiUncraftingTable extends GuiContainer
         	case NOT_ENOUGH_XP: 
 	        	statusMessage = I18n.format("container.uncrafting.cost", container.uncraftingResult.experienceCost);
         		break;
+        		
+        	// if the crafting recipe requires container items to be present, display a message to that effect 
+        	case NEED_CONTAINER_ITEMS:
+        		statusMessage = "Container Items"; // TODO
+        		break;
+        		
         }
         
         // if there is a message to display, render it
@@ -229,7 +230,6 @@ public class GuiUncraftingTable extends GuiContainer
 	        		
 	        		// render the item in the position of the slot
 	        		itemRender.renderItemAndEffectIntoGUI(itemStack, guiX + slotX, guiY + slotY);
-//	                itemRender.renderItemIntoGUI(itemStack, guiX + slotX, guiY + slotY);
 	                if (itemStack.stackSize > 1)
 	                {
 	                	itemRender.renderItemOverlayIntoGUI(this.fontRendererObj, itemStack, guiX + slotX, guiY + slotY, String.valueOf(itemStack.stackSize));
@@ -240,7 +240,18 @@ public class GuiUncraftingTable extends GuiContainer
 	                GL11.glDisable(GL11.GL_DEPTH_TEST);
 
 	                // use a gray overlay for normal items, or a red overlay for this with container items
-	                int color = (itemStack.getItem().hasContainerItem(null) ?  0x80FF8B8B : 0x9F8B8B8B);  // the hasContainerItem parameter is ignored, and ItemStack internally calls the deprecated version without the parameter anyway...
+	                int color = 0x9F8B8B8B;
+	                if (itemStack.getItem().hasContainerItem(null)) // the hasContainerItem parameter is ignored, and ItemStack internally calls the deprecated version without the parameter anyway...
+	                {
+	                	Item containerItem = itemStack.getItem().getContainerItem();
+	                	Item slotItem = (renderSlot.getHasStack() ? renderSlot.getStack().getItem() : null);
+	                	
+	                	if (slotItem == null || (slotItem != null && containerItem != slotItem))
+	                	{
+	                		color = 0x80FF8B8B;
+	                	}
+	                }
+//	                int color = (itemStack.getItem().hasContainerItem(null) ?  0x80FF8B8B : 0x9F8B8B8B);  
 	                this.drawRect(guiX + slotX, guiY + slotY, guiX + slotX + 16, guiY + slotY + 16, color);
 	                
 	                GL11.glEnable(GL11.GL_LIGHTING);
