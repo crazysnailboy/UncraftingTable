@@ -59,11 +59,11 @@ public class UncraftingResult
 
     public enum ResultType 
     {
-    	INACTIVE, NOT_UNCRAFTABLE, NOT_ENOUGH_ITEMS, NOT_ENOUGH_XP, VALID;
+    	INACTIVE, NOT_UNCRAFTABLE, NOT_ENOUGH_ITEMS, NOT_ENOUGH_XP, NEED_CONTAINER_ITEMS, VALID;
     	
     	public static Boolean isError(ResultType value)
     	{
-    		return (value == NOT_UNCRAFTABLE || value == ResultType.NOT_ENOUGH_ITEMS || value == ResultType.NOT_ENOUGH_XP);
+    		return (value == NOT_UNCRAFTABLE || value == ResultType.NOT_ENOUGH_ITEMS || value == ResultType.NOT_ENOUGH_XP || value == NEED_CONTAINER_ITEMS);
     	}
     }
 

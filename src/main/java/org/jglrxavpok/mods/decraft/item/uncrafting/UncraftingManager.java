@@ -247,6 +247,12 @@ public class UncraftingManager
 			// set the result type as "not enough xp"
 			uncraftingResult.resultType = ResultType.NOT_ENOUGH_XP;
 		}
+		// if one of more of the items in the crafting recipe have container items
+		else if (recipeHasContainerItems(uncraftingResult.craftingGrids.get(uncraftingResult.selectedCraftingGrid)))
+		{
+			// set the result type as "need container items"
+			uncraftingResult.resultType = ResultType.NEED_CONTAINER_ITEMS;
+		}
 		// otherwise, the uncrafting operation can be performed
 		else
 		{
@@ -257,15 +263,16 @@ public class UncraftingManager
 	}
 	
 	
-	public static void checkForContainerItems(ItemStack[] craftingGrid)
+	private static Boolean recipeHasContainerItems(ItemStack[] craftingGrid)
 	{
 		for ( ItemStack itemStack : craftingGrid )
 		{
 			if (itemStack != null && itemStack.getItem().hasContainerItem(null)) // the hasContainerItem parameter is ignored, and ItemStack internally calls the deprecated version without the parameter anyway...
 			{
-				// do a thing...
+				return true;
 			}
 		}
+		return false;
 	}
 	
 	
