@@ -5,8 +5,8 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IChatComponent;
 
+
 /**
- * 
  * @author jglrxavpok
  *
  */
@@ -18,7 +18,8 @@ public class InventoryUncraftResult implements IInventory
      * Returns the number of slots in the inventory.
      */
     @Override
-    public int getSizeInventory() {
+    public int getSizeInventory() 
+    {
         return 9;
     }
 
@@ -26,7 +27,8 @@ public class InventoryUncraftResult implements IInventory
      * Returns the stack in slot i
      */
     @Override
-    public ItemStack getStackInSlot(int slotIn) {
+    public ItemStack getStackInSlot(int slotIn) 
+    {
         return this.stackResult[slotIn];
     }
 
@@ -35,8 +37,8 @@ public class InventoryUncraftResult implements IInventory
      * new stack.
      */
     @Override
-    public ItemStack decrStackSize(int index, int count) {
-    	
+    public ItemStack decrStackSize(int index, int count) 
+    {
         if (this.stackResult[index] != null)
         {
             ItemStack itemstack = this.stackResult[index];
@@ -51,8 +53,8 @@ public class InventoryUncraftResult implements IInventory
      * like when you close a workbench GUI.
      */
     @Override
-    public ItemStack getStackInSlotOnClosing(int index) {
-    	
+    public ItemStack getStackInSlotOnClosing(int index) 
+    {
         if (this.stackResult[index] != null)
         {
             ItemStack itemstack = this.stackResult[index];
@@ -66,7 +68,8 @@ public class InventoryUncraftResult implements IInventory
      * Sets the given item stack to the specified slot in the inventory (can be crafting or armor sections).
      */
     @Override
-    public void setInventorySlotContents(int index, ItemStack stack) {
+    public void setInventorySlotContents(int index, ItemStack stack) 
+    {
         this.stackResult[index] = stack;
     }
     
@@ -74,8 +77,8 @@ public class InventoryUncraftResult implements IInventory
      * Returns the name of the inventory
      */
 	@Override
-	public String getInventoryName() {
-//      return "UncraftResult";
+	public String getInventoryName() 
+	{
 		return null;
 	}
     
@@ -83,7 +86,8 @@ public class InventoryUncraftResult implements IInventory
      * Returns if the inventory is named
      */
 	@Override
-	public boolean hasCustomInventoryName() {
+	public boolean hasCustomInventoryName() 
+	{
 		return false;
 	}
 
@@ -91,8 +95,9 @@ public class InventoryUncraftResult implements IInventory
      * Returns the maximum stack size for a inventory slot.
      */
     @Override
-    public int getInventoryStackLimit() {
-        return 1;
+    public int getInventoryStackLimit() 
+    {
+        return 64;
     }
 
     /**
@@ -100,35 +105,37 @@ public class InventoryUncraftResult implements IInventory
      * hasn't changed and skip it.
      */
     @Override
-    public void markDirty() {
+    public void markDirty() 
+    {
     }
 
     /**
      * Do not make give this method the name canInteractWith because it clashes with Container
      */
     @Override
-    public boolean isUseableByPlayer(EntityPlayer player) {
+    public boolean isUseableByPlayer(EntityPlayer player) 
+    {
         return true;
     }
     
 	@Override
-	public void openInventory() {
+	public void openInventory() 
+	{
 	}
 
 	@Override
-	public void closeInventory() {
+	public void closeInventory() 
+	{
 	}
     
     /**
      * Returns true if automation is allowed to insert the given stack (ignoring stack size) into the given slot.
      */
     @Override
-    public boolean isItemValidForSlot(int index, ItemStack stack) {
+    public boolean isItemValidForSlot(int index, ItemStack stack) 
+    {
         return true;
     }
-    
-    
-    
     
 
     public boolean isEmpty()
@@ -140,55 +147,14 @@ public class InventoryUncraftResult implements IInventory
         }
         return true;
     }
-
-
-//    public String getName()
-//    {
-//        return "UncraftResult";
-//    }
-
-//    public boolean hasCustomName()
-//    {
-//        return false;
-//    }
-
-//    public IChatComponent getDisplayName()
-//    {
-//        return null;
-//    }
-
-//    public void openInventory(EntityPlayer playerIn)
-//    {
-//    }
-
-//    public void closeInventory(EntityPlayer playerIn)
-//    {
-//    }
-
-//    public int getField(int id)
-//    {
-//        // TODO Auto-generated method stub
-//        return 0;
-//    }
-
-//    public void setField(int id, int value)
-//    {
-//        // TODO Auto-generated method stub
-//
-//    }
-
-//    public int getFieldCount()
-//    {
-//        // TODO Auto-generated method stub
-//        return 0;
-//    }
-
-//    public void clearInventory()
-//    {
-//        for (int i = 0;i<stackResult.length;i++)
-//            stackResult[i] = null;
-//    }
-
-
+    
+    
+	public void clear() 
+	{
+        for (int i = 0; i < this.stackResult.length; ++i)
+        {
+            this.stackResult[i] = null;
+        }
+	}
 
 }
