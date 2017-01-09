@@ -8,9 +8,9 @@ import net.minecraft.item.ItemStack;
 public class SlotUncraftResult extends Slot 
 {
 
-	public SlotUncraftResult(IInventory inventoryIn, int index, int xDisplayPosition, int yDisplayPosition) 
+	public SlotUncraftResult(IInventory inventoryIn, int index, int xPosition, int yPosition) 
 	{
-		super(inventoryIn, index, xDisplayPosition, yDisplayPosition);
+		super(inventoryIn, index, xPosition, yPosition);
 	}
 
     /**
