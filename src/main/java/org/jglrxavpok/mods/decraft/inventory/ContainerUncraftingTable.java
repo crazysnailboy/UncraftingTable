@@ -59,7 +59,7 @@ public class ContainerUncraftingTable extends Container
             for (int col = 0; col < 3; ++col)
             {
             	// arguments: inventory, slotIndex, xDisplayPosition, yDisplayPosition    
-                this.addSlotToContainer(new Slot(this.uncraftOut, col + row * 3, offsetX + col * 18, offsetY + row * 18));
+                this.addSlotToContainer(new SlotUncraftResult(this.uncraftOut, col + row * 3, offsetX + col * 18, offsetY + row * 18));
             }
         }
         

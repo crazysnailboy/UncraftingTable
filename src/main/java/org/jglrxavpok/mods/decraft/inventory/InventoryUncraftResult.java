@@ -133,7 +133,7 @@ public class InventoryUncraftResult implements IInventory
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) 
     {
-        return true;
+        return false;
     }
     
 	@Override
