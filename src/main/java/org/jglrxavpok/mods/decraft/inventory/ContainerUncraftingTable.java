@@ -55,7 +55,7 @@ public class ContainerUncraftingTable extends Container
             for (int col = 0; col < 3; ++col)
             {
             	// arguments: inventory, slotIndex, xDisplayPosition, yDisplayPosition    
-                this.addSlotToContainer(new Slot(this.uncraftOut, col + row * 3, offsetX + col * 18, offsetY + row * 18));
+                this.addSlotToContainer(new SlotUncraftResult(this.uncraftOut, col + row * 3, offsetX + col * 18, offsetY + row * 18));
             }
         }
         
@@ -340,7 +340,7 @@ public class ContainerUncraftingTable extends Container
     {
         ItemStack itemstack = null;
         // get the slot specified by the index
-        Slot slot = (Slot) this.inventorySlots.get(index);
+        Slot slot = (Slot)this.inventorySlots.get(index);
         // if the slot is valid and contains a stack of items
         if (slot != null && slot.getHasStack())
         {
@@ -364,7 +364,7 @@ public class ContainerUncraftingTable extends Container
             else if (slot.inventory.equals(uncraftIn))
             {
             	// if the slot contains items
-                if (slot.getHasStack())
+                if (slot.getHasStack()) // TODO this is already checked above
                 {
                     // attempt add the items to the player's inventory
                     if (!playerInventory.addItemStackToInventory(slot.getStack()))
@@ -386,7 +386,7 @@ public class ContainerUncraftingTable extends Container
                 // iterate through all the slots in this container's inventories
                 for (Object s : inventorySlots)
                 {
-                    Slot s1 = (Slot) s;
+                    Slot s1 = (Slot)s;
                     // if the current slot belongs to the calculation inventory 
                     if (s1.inventory.equals(calculInput))
                     {
