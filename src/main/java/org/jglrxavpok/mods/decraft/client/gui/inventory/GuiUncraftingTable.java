@@ -228,34 +228,40 @@ public class GuiUncraftingTable extends GuiContainer
 	        		slotX = renderSlot.xPos;
 	        		slotY = renderSlot.yPos;
 	        		
-	        		// render the item in the position of the slot
-	                itemRender.renderItemAndEffectIntoGUI(itemStack, guiX + slotX, guiY + slotY);
-	                if (itemStack.getCount() > 1)
-	                {
-	                	itemRender.renderItemOverlayIntoGUI(this.fontRendererObj, itemStack, guiX + slotX, guiY + slotY, String.valueOf(itemStack.getCount()));
-	                }
-	                
-	                // draw a coloured overlay over the item
-	                GL11.glDisable(GL11.GL_LIGHTING);
-	                GL11.glDisable(GL11.GL_DEPTH_TEST);
-
-	                // use a gray overlay for normal items, or a red overlay for this with container items
-	                int color = 0x9F8B8B8B;
-	                if (itemStack.getItem().hasContainerItem(null)) // the hasContainerItem parameter is ignored, and ItemStack internally calls the deprecated version without the parameter anyway...
-	                {
-	                	Item containerItem = itemStack.getItem().getContainerItem();
-	                	Item slotItem = (renderSlot.getHasStack() ? renderSlot.getStack().getItem() : null);
-	                	
-	                	if (slotItem == null || (slotItem != null && containerItem != slotItem))
-	                	{
-	                		color = 0x80FF8B8B;
-	                	}
-	                }
-//	                int color = (itemStack.getItem().hasContainerItem(null) ?  0x80FF8B8B : 0x9F8B8B8B);  
-	                this.drawRect(guiX + slotX, guiY + slotY, guiX + slotX + 16, guiY + slotY + 16, color);
-	                
-	                GL11.glEnable(GL11.GL_LIGHTING);
-	                GL11.glEnable(GL11.GL_DEPTH_TEST);
+	        		
+	        		// if the inventory slot is empty, render the item from the crafting recipe as the slot background
+	        		if (!renderSlot.getHasStack())
+	        		{
+	        		
+		        		// render the item in the position of the slot
+		                itemRender.renderItemAndEffectIntoGUI(itemStack, guiX + slotX, guiY + slotY);
+		                if (itemStack.getCount() > 1)
+		                {
+		                	itemRender.renderItemOverlayIntoGUI(this.fontRendererObj, itemStack, guiX + slotX, guiY + slotY, String.valueOf(itemStack.getCount()));
+		                }
+		                
+		                // draw a coloured overlay over the item
+		                GL11.glDisable(GL11.GL_LIGHTING);
+		                GL11.glDisable(GL11.GL_DEPTH_TEST);
+	
+		                // use a gray overlay for normal items, or a red overlay for this with container items
+		                int color = 0x9F8B8B8B;
+		                if (itemStack.getItem().hasContainerItem(null)) // the hasContainerItem parameter is ignored, and ItemStack internally calls the deprecated version without the parameter anyway...
+		                {
+		                	Item containerItem = itemStack.getItem().getContainerItem();
+		                	Item slotItem = (renderSlot.getHasStack() ? renderSlot.getStack().getItem() : null);
+		                	
+		                	if (slotItem == null || (slotItem != null && containerItem != slotItem))
+		                	{
+		                		color = 0x80FF8B8B;
+		                	}
+		                }
+//		                int color = (itemStack.getItem().hasContainerItem(null) ?  0x80FF8B8B : 0x9F8B8B8B);  
+		                this.drawRect(guiX + slotX, guiY + slotY, guiX + slotX + 16, guiY + slotY + 16, color);
+		                
+		                GL11.glEnable(GL11.GL_LIGHTING);
+		                GL11.glEnable(GL11.GL_DEPTH_TEST);
+	        		}
 	        		
 	        	}
 	        }
@@ -264,7 +270,6 @@ public class GuiUncraftingTable extends GuiContainer
 		
 		RenderHelper.disableStandardItemLighting();
 		
-
     	GlStateManager.popMatrix();
     }
     
