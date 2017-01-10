@@ -12,7 +12,6 @@ public class UncraftingResult
     public List<Integer> minStackSizes;
     public List<ItemStack[]> craftingGrids;
     public int experienceCost;
-    public ItemStack containerItems;
     public int selectedCraftingGrid;
     
     public UncraftingResult()
@@ -25,7 +24,6 @@ public class UncraftingResult
     }
     
     
-
 //    public ResultType getResultType() 
 //    {
 //        return resultType;
@@ -59,11 +57,12 @@ public class UncraftingResult
 
     public enum ResultType 
     {
-    	INACTIVE, NOT_UNCRAFTABLE, NOT_ENOUGH_ITEMS, NOT_ENOUGH_XP, NEED_CONTAINER_ITEMS, VALID;
+    	INACTIVE, VALID, 
+    	NOT_UNCRAFTABLE, NOT_ENOUGH_ITEMS, NOT_ENOUGH_XP, NEED_CONTAINER_ITEMS;
     	
     	public static Boolean isError(ResultType value)
     	{
-    		return (value == NOT_UNCRAFTABLE || value == ResultType.NOT_ENOUGH_ITEMS || value == ResultType.NOT_ENOUGH_XP || value == NEED_CONTAINER_ITEMS);
+    		return (value == NOT_UNCRAFTABLE || value == ResultType.NOT_ENOUGH_ITEMS || value == ResultType.NOT_ENOUGH_XP);
     	}
     }
 
