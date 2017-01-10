@@ -27,16 +27,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
-/**
- * 
- * @author jglrxavpok
- *
- */
 public class ContainerUncraftingTable extends Container
 {
-
-//  public InventoryCrafting calculInput = new InventoryCrafting(this, 1, 1);
-//  public InventoryCrafting uncraftIn = new InventoryCrafting(this, 1, 1);
 	public InventoryBasic calculInput = new InventoryBasic(null, false, 1);
 	public InventoryBasic uncraftIn = new InventoryBasic(null, false, 1);
     public InventoryUncraftResult uncraftOut = new InventoryUncraftResult();
@@ -86,6 +78,64 @@ public class ContainerUncraftingTable extends Container
         playerInventory = playerInventoryIn;
     }
     
+    
+    
+    private void doUncraft()
+    {
+        // if we're not in creative mode
+    	if (!playerInventory.player.capabilities.isCreativeMode)
+    	{
+    		// if we don't have enough xp
+    		if (playerInventory.player.experienceLevel < uncraftingResult.experienceCost)
+    		{
+    			// set the status to error, not enough xp and return
+    			uncraftingResult.resultType = ResultType.NOT_ENOUGH_XP;
+            	return;
+    		}
+    		
+        	// deduct the appropriate number of levels from the player
+        	playerInventory.player.experienceLevel -= uncraftingResult.experienceCost;
+    	}
+    	
+        // if the item being uncrafted has enchantments, and there are books in the left hand slot
+    	if (uncraftIn.getStackInSlot(0).isItemEnchanted() && calculInput.getStackInSlot(0) != null && calculInput.getStackInSlot(0).getItem() == Items.book)
+        {
+    		// copy the item enchantments onto one or more books
+            List<ItemStack> enchantedBooks = UncraftingManager.getItemEnchantments(uncraftIn.getStackInSlot(0), calculInput.getStackInSlot(0));
+            
+    		// for each enchanted book
+            for (ItemStack enchantedBook : enchantedBooks)
+            {
+                // add the itemstack to the player inventory, or spawn in the world if the inventory is full
+                if (!playerInventory.addItemStackToInventory(enchantedBook))
+                {
+                    EntityItem e = playerInventory.player.entityDropItem(enchantedBook, 0.5f);
+                    e.posX = playerInventory.player.posX;
+                    e.posY = playerInventory.player.posY;
+                    e.posZ = playerInventory.player.posZ;
+                }
+            }
+            // decrement the stack size for the books in the left hand slot
+            calculInput.decrStackSize(0, enchantedBooks.size());
+            
+        } // end of enchantment processing
+
+    	
+    	// get the minimum stack size and the crafting grid from the uncrafting result
+		int minStackSize = (uncraftingResult.minStackSizes.size() > 0 ? uncraftingResult.minStackSizes.get(uncraftingResult.selectedCraftingGrid) : 1);
+        ItemStack[] craftingGrid = (uncraftingResult.craftingGrids.size() > 0 ? uncraftingResult.craftingGrids.get(uncraftingResult.selectedCraftingGrid) : null);
+        
+        // calculate a multipler to determine how many items we've uncrafted
+        int multiplier = (uncraftIn.getStackInSlot(0).stackSize / minStackSize);
+        
+        
+        // fire an event indicating a successful uncrafting operation
+        MinecraftForge.EVENT_BUS.post(new ItemUncraftedEvent(playerInventory.player, uncraftIn.getStackInSlot(0), craftingGrid, minStackSize));
+
+    	// decrement the number of items in the input slot
+        uncraftIn.decrStackSize(0, minStackSize * multiplier);
+    }
+    
 
     /**
      * Callback for when the crafting matrix is changed.
@@ -93,162 +143,99 @@ public class ContainerUncraftingTable extends Container
     @Override
     public void onCraftMatrixChanged(IInventory inventory)
     {
-//        // if the left input slot changes
-//        if (inventory == calculInput)
-//        {
-//        	// if the left slot is empty
-//            if (calculInput.getStackInSlot(0) == null)
-//            {
-//                // if the right hand slot is empty
-//                if (uncraftIn.getStackInSlot(0) == null)
-//                {
-//                	// clear the uncrafting result
-//                	this.uncraftingResult = new UncraftingResult();
-//                }
-//                return;
-//            }
-//            
-//            // if the left hand slot is not empty and the right hand slot is empty
-//            else if (uncraftIn.getStackInSlot(0) == null)
-//            {
-//            	// create an uncrafting result based on the contents of the left hand slot
-//            	this.uncraftingResult = UncraftingManager.getUncraftingResult(playerInventory.player, calculInput.getStackInSlot(0));
-//        		return;
-//            }
-//            
-//            // if the left hand slot is not empty and the right hand slot is not empty
-//            else
-//            {
-//                return;
-//            }
-//        }
-//        else if (inventory == uncraftIn)
-        
-        
         // if the right input slot changes
         if (inventory == uncraftIn)
         {
-            // clear the uncrafting result and the output inventory
-            this.uncraftingResult = new UncraftingResult();
+        	// get the stack in the input inventory slot
+        	ItemStack inputStack = uncraftIn.getStackInSlot(0);
+        	
+        	// clear the output inventory
             uncraftOut.clear();
             
-            // if the right input slot is empty, don't do anything else
-            if (uncraftIn.getStackInSlot(0) == null) return;
-            
-            
-        	// create an uncrafting result based on the contents of the right hand slot
-        	this.uncraftingResult = UncraftingManager.getUncraftingResult(playerInventory.player, uncraftIn.getStackInSlot(0));
-        	if (UncraftingResult.ResultType.isError(uncraftingResult.resultType)) return;
-
-        	
-        	// --- TODO: this is all temporary code to match the uncraftingResult to existing variables
-    		int minStackSize = (uncraftingResult.minStackSizes.size() > 0 ? uncraftingResult.minStackSizes.get(uncraftingResult.selectedCraftingGrid) : 1);
-            ItemStack[] craftingGrid = (uncraftingResult.craftingGrids.size() > 0 ? uncraftingResult.craftingGrids.get(uncraftingResult.selectedCraftingGrid) : null);
-        	// --- end of temporary code
-	        int multiplier = (uncraftIn.getStackInSlot(0).stackSize / minStackSize);
-            
-            
-            // for each slot in the selected uncrafting result grid
-            for ( int iSlot = 0 ; iSlot < craftingGrid.length ; iSlot++ )
-            {
-                // if the slot in the result grid isn't empty
-                if (craftingGrid[iSlot] != null)
-                {
-                    // determine how many items we need to place in the inventory slot 
-                    int amount = craftingGrid[iSlot].stackSize * multiplier;
-                    int meta = craftingGrid[iSlot].getItemDamage(); if (meta == Short.MAX_VALUE) meta = 0;
-                    // populate the slot in the output inventory with the correct number of items
-                    uncraftOut.setInventorySlotContents(iSlot, new ItemStack(craftingGrid[iSlot].getItem(), amount, meta));
-                }
-            }
+        	// if the stack is empty
+        	if (inputStack == null)
+        	{
+                // clear the uncrafting result and don't do any further processing
+                this.uncraftingResult = new UncraftingResult();
+                return;
+        	}
+        	// if the stack is not empty
+        	else
+        	{
+        		
+//              // if the output grid isn't empty
+//              if (!uncraftOut.isEmpty())
+//              {
+//                  // for each slot in the output grid 
+//                  for (int i = 0; i < uncraftOut.getSizeInventory(); i++ )
+//                  {
+//                      // determine the item in the current slot
+//                      ItemStack item = uncraftOut.getStackInSlot(i);
+//                      if (item != null)
+//                      {
+//                          // move the item currently in the output into the player inventory 
+//                          if (!playerInventory.addItemStackToInventory(item))
+//                          {
+//                              // if the item cannot be added to the player inventory, spawn the item in the world instead
+//                              if (!worldObj.isRemote)
+//                              {
+//                                  EntityItem e = playerInventory.player.entityDropItem(item, 0.5f);
+//                                  e.posX = playerInventory.player.posX;
+//                                  e.posY = playerInventory.player.posY;
+//                                  e.posZ = playerInventory.player.posZ;
+//                              }
+//                          }
+//                          // clear the slot in the output grid
+//                          uncraftOut.setInventorySlotContents(i, null);
+//                      }
+//                  }
+//              }
+        		
+        		
+	            // populate the uncrafting result based on the contents of the right hand slot
+            	this.uncraftingResult = UncraftingManager.getUncraftingResult(playerInventory.player, uncraftIn.getStackInSlot(0));
+            	
+            	// create an uncrafting result based on the contents of the right hand slot
+            	if (!UncraftingResult.ResultType.isError(uncraftingResult.resultType))
+            	{
+                	// get the minimum stack size and the crafting grid from the uncrafting result
+            		int minStackSize = (uncraftingResult.minStackSizes.size() > 0 ? uncraftingResult.minStackSizes.get(uncraftingResult.selectedCraftingGrid) : 1);
+                    ItemStack[] craftingGrid = (uncraftingResult.craftingGrids.size() > 0 ? uncraftingResult.craftingGrids.get(uncraftingResult.selectedCraftingGrid) : null);
+                    
+                    // calculate a multipler to determine how many items we've uncrafted
+        	        int multiplier = (uncraftIn.getStackInSlot(0).stackSize / minStackSize);
+        	        
+                    // for each slot in the selected uncrafting result grid
+                    for ( int iSlot = 0 ; iSlot < craftingGrid.length ; iSlot++ )
+                    {
+                        // if the slot in the result grid isn't empty
+                        if (craftingGrid[iSlot] != null)
+                        {
+                            // determine how many items we need to place in the inventory slot 
+                            int amount = craftingGrid[iSlot].stackSize * multiplier;
+                            int meta = craftingGrid[iSlot].getItemDamage(); if (meta == Short.MAX_VALUE) meta = 0;
+                            // populate the slot in the output inventory with the correct number of items
+                            uncraftOut.setInventorySlotContents(iSlot, new ItemStack(craftingGrid[iSlot].getItem(), amount, meta));
+                        }
+                    }
+                    
+            	}
+            	
+            	return;
+        	}            
         }
             
         // if the uncrafting result inventory changes
         else if (inventory == uncraftOut)
         {
-        	
-//          // if the right input slot is empty
-//          if (uncraftIn.getStackInSlot(0) == null)
-//          {
-//              // clear the uncrafting result
-//              this.uncraftingResult = new UncraftingResult();
-//              return;
-//          }
-        	
-        	// --- TODO: this is all temporary code to match the uncraftingResult to existing variables
-    		int minStackSize = (uncraftingResult.minStackSizes.size() > 0 ? uncraftingResult.minStackSizes.get(uncraftingResult.selectedCraftingGrid) : 1);
-            ItemStack[] craftingGrid = (uncraftingResult.craftingGrids.size() > 0 ? uncraftingResult.craftingGrids.get(uncraftingResult.selectedCraftingGrid) : null);
-        	// --- end of temporary code
-	        int multiplier = (uncraftIn.getStackInSlot(0).stackSize / minStackSize);
-	        
-	        
-            // if we're not in creative mode
-        	if (!playerInventory.player.capabilities.isCreativeMode)
+        	// if the uncrafting result is not empty
+        	if (this.uncraftingResult.resultType != ResultType.INACTIVE)
         	{
-        		// if we don't have enough xp
-        		if (playerInventory.player.experienceLevel < uncraftingResult.experienceCost)
-        		{
-        			// set the status to error, not enough xp and return
-        			uncraftingResult.resultType = ResultType.NOT_ENOUGH_XP;
-                	return;
-        		}
-        		
-            	// deduct the appropriate number of levels from the player
-            	playerInventory.player.experienceLevel -= uncraftingResult.experienceCost;
+        		doUncraft();
+
+                // clear the uncrafting result
+                this.uncraftingResult = new UncraftingResult();
         	}
-
-
-            // if the item being uncrafted has enchantments, and there are books in the left hand slot
-        	if (uncraftIn.getStackInSlot(0).isItemEnchanted() && calculInput.getStackInSlot(0) != null && calculInput.getStackInSlot(0).getItem() == Items.book)
-            {
-        		// copy the item enchantments onto one or more books
-                List<ItemStack> enchantedBooks = UncraftingManager.getItemEnchantments(uncraftIn.getStackInSlot(0), calculInput.getStackInSlot(0));
-                
-        		// for each enchanted book
-                for (ItemStack enchantedBook : enchantedBooks)
-                {
-                    // add the itemstack to the player inventory, or spawn in the world if the inventory is full
-                    if (!playerInventory.addItemStackToInventory(enchantedBook))
-                    {
-                        EntityItem e = playerInventory.player.entityDropItem(enchantedBook, 0.5f);
-                        e.posX = playerInventory.player.posX;
-                        e.posY = playerInventory.player.posY;
-                        e.posZ = playerInventory.player.posZ;
-                    }
-                }
-                // decrement the stack size for the books in the left hand slot
-                calculInput.decrStackSize(0, enchantedBooks.size());
-                
-            } // end of enchantment processing
-
-                
-//            // if the output grid isn't empty
-//            if (!uncraftOut.isEmpty())
-//            {
-//            	// for each slot in the output grid 
-//                for (int i = 0; i < uncraftOut.getSizeInventory(); i++ )
-//                {
-//                	// determine the item in the current slot
-//                    ItemStack item = uncraftOut.getStackInSlot(i);
-//                    if (item != null)
-//                    {
-//                    	// move the item currently in the output into the player inventory 
-//                        if (!playerInventory.addItemStackToInventory(item))
-//                        {
-//                        	// if the item cannot be added to the player inventory, spawn the item in the world instead
-//                        	if (!worldObj.isRemote)
-//                        	{
-//                                EntityItem e = playerInventory.player.entityDropItem(item, 0.5f);
-//                                e.posX = playerInventory.player.posX;
-//                                e.posY = playerInventory.player.posY;
-//                                e.posZ = playerInventory.player.posZ;
-//                        	}
-//                        }
-//                        // clear the slot in the output grid
-//                        uncraftOut.setInventorySlotContents(i, null);
-//                    }
-//                }
-//            }
                 
                 
 //            // for each item stack in the uncrafting result
@@ -295,13 +282,6 @@ public class ContainerUncraftingTable extends Container
 //                }
 //            }
                 
-
-            // fire an event indicating a successful uncrafting operation
-            MinecraftForge.EVENT_BUS.post(new ItemUncraftedEvent(playerInventory.player, uncraftIn.getStackInSlot(0), craftingGrid, minStackSize));
-
-        	// decrement the number of items in the input slot
-            uncraftIn.decrStackSize(0, minStackSize * multiplier);
-
         }
     }
 
@@ -315,34 +295,39 @@ public class ContainerUncraftingTable extends Container
             if (inventorySlots.get(slotId) != null)
             {
             	IInventory inventory = ((Slot)inventorySlots.get(slotId)).inventory;
-//              if (inventory == calculInput) this.onCraftMatrixChanged(calculInput);
             	if (inventory == uncraftIn) this.onCraftMatrixChanged(uncraftIn);
             	if (inventory == uncraftOut && itemStack != null) this.onCraftMatrixChanged(uncraftOut);
             }
         }
         return itemStack;
     }
+    
 
     @Override
     public void onContainerClosed(EntityPlayer player)
     {
+    	// TODO what is playerInventory.getItemStack()?
+    	// TODO should this only run inside world.isRemote?
         if (playerInventory.getItemStack() != null)
         {
             player.entityDropItem(playerInventory.getItemStack(), 0.5f);
         }
         if (!this.worldObj.isRemote)
         {
+        	// if there's an itemstack in the input slot, drop the stack into the world
             ItemStack itemstack = this.uncraftIn.removeStackFromSlot(0);
             if (itemstack != null)
             {
                 player.entityDropItem(itemstack, 0.5f);
             }
 
-            itemstack = this.calculInput.getStackInSlot(0);
+            // if there's an itemstack in the calculation slot, drop the stack into the world
+            itemstack = this.calculInput.removeStackFromSlot(0);
             if (itemstack != null)
             {
                 player.entityDropItem(itemstack, 0.5f);
             }
+            
             for (int i = 0; i < uncraftOut.getSizeInventory(); i++ )
             {
                 itemstack = this.uncraftOut.removeStackFromSlot(i);
@@ -367,7 +352,6 @@ public class ContainerUncraftingTable extends Container
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int index)
     {
-        ItemStack itemstack = null;
         // get the slot specified by the index
         Slot slot = (Slot) this.inventorySlots.get(index);
         // if the slot is valid and contains a stack of items
@@ -473,6 +457,14 @@ public class ContainerUncraftingTable extends Container
         	// if the slot belongs to the uncrafting result grid
             else if (slot.inventory.equals(uncraftOut))
             {
+            	if (this.uncraftingResult.resultType != ResultType.INACTIVE)
+            	{
+            		doUncraft();
+
+                    // clear the uncrafting result
+                    this.uncraftingResult = new UncraftingResult();
+            	}
+            	
             	// if the slot contains items
                 if (slot.getHasStack())
                 {
@@ -484,8 +476,6 @@ public class ContainerUncraftingTable extends Container
                     }
                     // clear the slot
                     slot.putStack(null);
-                    // tell the slot that it's changed
-                    slot.onSlotChanged();
                 }
             }
         }
