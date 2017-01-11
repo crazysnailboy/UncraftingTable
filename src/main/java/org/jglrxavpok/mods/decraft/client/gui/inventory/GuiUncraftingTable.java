@@ -139,7 +139,7 @@ public class GuiUncraftingTable extends GuiContainer
         	
         	// *** copied from GuiRepair ***
         	// determine the text and shadow colours based on the uncrafting status
-            int textColor = (!UncraftingResult.ResultType.isError(container.uncraftingResult.resultType) ? 8453920 : 16736352);  
+        	int textColor = (container.uncraftingResult.isError() ? 16736352 : 8453920);  
             int shadowColor = -16777216 | (textColor & 16579836) >> 2 | textColor & -16777216;
 
             // render the string 4 times at different positions in different colours to achieve the desired effect
@@ -192,7 +192,7 @@ public class GuiUncraftingTable extends GuiContainer
         this.drawTexturedModalRect(guiX, guiY, 0, 0, this.xSize, this.ySize);
 
 		// if the uncrafting status of the container is "error", render the arrow with the cross over it
-		if (UncraftingResult.ResultType.isError(container.uncraftingResult.resultType))
+		if (container.uncraftingResult.isError())
 		{
 			this.drawTexturedModalRect(guiX + 71, guiY + 33, 176, 0, 28, 21);
 		}
@@ -214,7 +214,7 @@ public class GuiUncraftingTable extends GuiContainer
 		if (container.uncraftingResult.craftingGrids.size() > 0)
 		{
 			// get the currently selected crafting grid
-			ItemStack[] craftingGrid = container.uncraftingResult.craftingGrids.get(container.uncraftingResult.selectedCraftingGrid);
+			ItemStack[] craftingGrid = container.uncraftingResult.getCraftingGrid();
 			
 			// loop through the slots in the temp inventory
 	        for ( int i = 0 ; i < craftingGrid.length ; i++ )
