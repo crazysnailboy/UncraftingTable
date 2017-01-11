@@ -3,6 +3,9 @@ package org.jglrxavpok.mods.decraft.item.uncrafting;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.apache.commons.lang3.ArrayUtils;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
@@ -24,7 +27,6 @@ public class UncraftingResult
     	this.selectedCraftingGrid = 0;
     }
     
-    
 
 //    public ResultType getResultType() 
 //    {
@@ -38,7 +40,12 @@ public class UncraftingResult
     
     public int getMinStackSize()
     {
-    	return (minStackSizes.size() > 0 ? Collections.min(minStackSizes) : 1);
+    	return (minStackSizes.size() > 0 ? minStackSizes.get(selectedCraftingGrid) : 1);
+    }
+    
+    public NonNullList<ItemStack> getCraftingGrid()
+    {
+    	return (craftingGrids.size() > 0 ? craftingGrids.get(selectedCraftingGrid) : NonNullList.<ItemStack>create());
     }
 
 //    public List<ItemStack[]> getCraftingGrids() 
@@ -51,21 +58,25 @@ public class UncraftingResult
 //        return experienceCost;
 //    }
     
-//    public ItemStack getContainerItems()
-//    {
-//    	return containerItems;
-//    }
+    public boolean canPopulateInventory()
+    {
+		return ArrayUtils.indexOf(ResultType.CAN_POPULATE_INVENTORY, this.resultType) >= 0;
+    }
     
-
+    public boolean isError()
+    {
+		return ArrayUtils.indexOf(ResultType.IS_ERROR, this.resultType) >= 0;
+    }
+    
+    
     public enum ResultType 
     {
-    	INACTIVE, VALID, 
+    	INACTIVE, VALID,
     	NOT_UNCRAFTABLE, NOT_ENOUGH_ITEMS, NOT_ENOUGH_XP, NEED_CONTAINER_ITEMS;
-    	
-    	public static Boolean isError(ResultType value)
-    	{
-    		return (value == NOT_UNCRAFTABLE || value == ResultType.NOT_ENOUGH_ITEMS || value == ResultType.NOT_ENOUGH_XP);
-    	}
+    
+    	private static final ResultType[] CAN_POPULATE_INVENTORY = new ResultType[] { VALID, NEED_CONTAINER_ITEMS };
+    	private static final ResultType[] IS_ERROR = new ResultType[] { NOT_UNCRAFTABLE, NOT_ENOUGH_ITEMS, NOT_ENOUGH_XP, NEED_CONTAINER_ITEMS };
+
     }
 
 }

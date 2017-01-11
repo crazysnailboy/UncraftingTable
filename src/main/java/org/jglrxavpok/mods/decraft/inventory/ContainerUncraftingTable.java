@@ -82,6 +82,42 @@ public class ContainerUncraftingTable extends Container
     }
     
 
+    private void populateOutputInventory()
+    {
+        // get the minimum stack size and the crafting grid from the uncrafting result
+        int minStackSize = uncraftingResult.getMinStackSize();
+        NonNullList<ItemStack> craftingGrid = uncraftingResult.getCraftingGrid();
+
+        // calculate a multipler to use when adding new items to the uncrafting inventory
+        int multiplier = (uncraftIn.getStackInSlot(0).getCount() / minStackSize);
+        
+        // for each slot in the selected uncrafting result grid
+        for ( int iSlot = 0 ; iSlot < craftingGrid.size() ; iSlot++ )
+        {
+            // if the slot in the result grid isn't empty
+            if (craftingGrid.get(iSlot) != ItemStack.EMPTY)
+            {
+                // determine how many items we need to place in the inventory slot
+                int amount = craftingGrid.get(iSlot).getCount() * multiplier;
+                if (amount > craftingGrid.get(iSlot).getMaxStackSize()) amount = craftingGrid.get(iSlot).getMaxStackSize(); 
+                
+                // if the crafting recipe doesn't specify a metadata value, use the default
+                int meta = craftingGrid.get(iSlot).getItemDamage(); if (meta == Short.MAX_VALUE) meta = 0;
+
+                // populate the slot in the output inventory with the correct number of items
+                if (
+            		uncraftingResult.resultType == ResultType.VALID
+            		||
+            		(uncraftingResult.resultType == ResultType.NEED_CONTAINER_ITEMS && craftingGrid.get(iSlot).getItem().hasContainerItem(null))
+        		)
+                {
+                    uncraftOut.setInventorySlotContents(iSlot, new ItemStack(craftingGrid.get(iSlot).getItem(), amount, meta));
+                }
+                
+            }
+        }
+    }
+
     
     private void doUncraft()
     {
@@ -195,38 +231,14 @@ public class ContainerUncraftingTable extends Container
 //              }
         		
             
-	            // populate the uncrafting result based on the contents of the right hand slot
-	        	this.uncraftingResult = UncraftingManager.getUncraftingResult(playerInventory.player, uncraftIn.getStackInSlot(0));
-	        	
-	            // if the item in the input stack can be uncrafted...
-	        	if (!UncraftingResult.ResultType.isError(uncraftingResult.resultType))
-	        	{
-	            	// get the minimum stack size and the crafting grid from the uncrafting result
-	        		int minStackSize = (uncraftingResult.minStackSizes.size() > 0 ? uncraftingResult.minStackSizes.get(uncraftingResult.selectedCraftingGrid) : 1);
-	                NonNullList<ItemStack> craftingGrid = (uncraftingResult.craftingGrids.size() > 0 ? uncraftingResult.craftingGrids.get(uncraftingResult.selectedCraftingGrid) : null);
-	                
-	                // calculate a multipler to use when adding new items to the uncrafting inventory
-	    	        int multiplier = (uncraftIn.getStackInSlot(0).getCount() / minStackSize);
-	    	        
-	                // for each slot in the selected uncrafting result grid
-	                for ( int iSlot = 0 ; iSlot < craftingGrid.size() ; iSlot++ )
-	                {
-	                    // if the slot in the result grid isn't empty
-	                    if (craftingGrid.get(iSlot) != ItemStack.EMPTY)
-	                    {
-	                        // determine how many items we need to place in the inventory slot 
-	                        int amount = craftingGrid.get(iSlot).getCount() * multiplier;
-                            if (amount > craftingGrid.get(iSlot).getMaxStackSize()) amount = craftingGrid.get(iSlot).getMaxStackSize(); 
-                            
-                            // if the crafting recipe doesn't specify a metadata value, use the default
-	                        int meta = craftingGrid.get(iSlot).getItemDamage(); if (meta == Short.MAX_VALUE) meta = 0;
-	                        
-	                        // populate the slot in the output inventory with the correct number of items
-	                        uncraftOut.setInventorySlotContents(iSlot, new ItemStack(craftingGrid.get(iSlot).getItem(), amount, meta));
-	                    }
-	                }
-	    	        
-	        	}
+                // populate the uncrafting result based on the contents of the right hand slot
+                this.uncraftingResult = UncraftingManager.getUncraftingResult(playerInventory.player, inputStack);
+                
+                // if the item in the input stack can be uncrafted...
+                if (this.uncraftingResult.canPopulateInventory())
+                {
+                    populateOutputInventory();
+                }
 
 	            return;
         	}
@@ -235,9 +247,34 @@ public class ContainerUncraftingTable extends Container
         // if the uncrafting result inventory changes
         else if (inventory == uncraftOut)
         {
-        	// if the uncrafting result is not empty
-        	if (this.uncraftingResult.resultType != ResultType.INACTIVE)
+            if (this.uncraftingResult.resultType == ResultType.NEED_CONTAINER_ITEMS)
+            {
+            	// check for container items and change status
+            	
+            	int missingContainerItems = 0;
+            	
+            	NonNullList<ItemStack> craftingGrid = this.uncraftingResult.getCraftingGrid();
+            	for (int i = 0 ; i < craftingGrid.size() ; i++ )
+            	{
+            		ItemStack recipeStack = craftingGrid.get(i);
+            		if (recipeStack != ItemStack.EMPTY && recipeStack.getItem().hasContainerItem(null))
+            		{
+            			ItemStack inventoryStack = uncraftOut.getStackInSlot(i);
+            			if (inventoryStack == ItemStack.EMPTY) missingContainerItems++;
+            		}
+            	}
+            	
+            	if (missingContainerItems == 0) 
+            	{
+            		this.uncraftingResult.resultType = ResultType.VALID;
+            		populateOutputInventory();
+            	}
+            	
+            }
+            
+            else if (this.uncraftingResult.resultType == ResultType.VALID)
         	{
+            	// do the uncrafting and change status
         		doUncraft();
 
                 // clear the uncrafting result
@@ -495,16 +532,6 @@ public class ContainerUncraftingTable extends Container
     public boolean canMergeSlot(ItemStack stack, Slot slotIn)
     {
         return !slotIn.inventory.equals(uncraftOut);
-    }
-
-    @Override
-    public Slot getSlot(int slotId)
-    {
-        if (slotId >= this.inventorySlots.size())
-        {
-            slotId = this.inventorySlots.size() - 1;
-        }
-        return super.getSlot(slotId);
     }
 
 }
