@@ -104,9 +104,6 @@ public class ContainerUncraftingTable extends Container
             // copy the item enchantments onto one or more books
             List<ItemStack> enchantedBooks = UncraftingManager.getItemEnchantments(uncraftIn.getStackInSlot(0), calculInput.getStackInSlot(0));
             
-            // determine how many books are present in the left hand slot
-            int stackSize = calculInput.getStackInSlot(0).stackSize;
-            
             // for each enchanted book
             for (ItemStack enchantedBook : enchantedBooks)
             {
@@ -121,7 +118,6 @@ public class ContainerUncraftingTable extends Container
             }
             // decrement the stack size for the books in the left hand slot
             calculInput.decrStackSize(0, enchantedBooks.size());
-            
             
         } // end of enchantment processing
         
@@ -219,7 +215,11 @@ public class ContainerUncraftingTable extends Container
 		                {
 		                    // determine how many items we need to place in the inventory slot 
 		                    int amount = craftingGrid[iSlot].stackSize * multiplier;
+                            if (amount > craftingGrid[iSlot].getMaxStackSize()) amount = craftingGrid[iSlot].getMaxStackSize(); 
+                            
+                            // if the crafting recipe doesn't specify a metadata value, use the default
 		                    int meta = craftingGrid[iSlot].getItemDamage(); if (meta == Short.MAX_VALUE) meta = 0;
+		                    
 		                    // populate the slot in the output inventory with the correct number of items
 		                    uncraftOut.setInventorySlotContents(iSlot, new ItemStack(craftingGrid[iSlot].getItem(), amount, meta));
 		                }

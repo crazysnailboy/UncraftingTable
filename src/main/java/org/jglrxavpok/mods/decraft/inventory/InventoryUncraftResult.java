@@ -2,6 +2,7 @@ package org.jglrxavpok.mods.decraft.inventory;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
@@ -119,18 +120,23 @@ public class InventoryUncraftResult implements IInventory
     @Override
     public void setInventorySlotContents(int index, ItemStack stack) 
     {
-    	// if the slot isn't empty, and the item in the slot requires a container item
-    	if (stack != null && this.stackResult[index].recipeItem != null && stackResult[index].recipeItem.getItem().hasContainerItem(null))
-    	{
-    		// if the stack being passed in is the correct container item for the recipe item 
-    		if (stackResult[index].recipeItem.getItem().getContainerItem() == stack.getItem())
-    		{
-    			// store the container item
-    	        this.stackResult[index].containerItem = stack;
-    			return;
-    		}
-    	}
-    	// if the slot is empty, or the slot item doesn't require a container item, set the recipe item
+        // if the slot isn't empty, and the item in the slot requires a container item
+        if (stack != null && this.stackResult[index].recipeItem != null && stackResult[index].recipeItem.getItem().hasContainerItem(null))
+        {
+            // get the container item for the recipe item
+            Item recipeItem = stackResult[index].recipeItem.getItem();
+            Item containerItem = recipeItem.getContainerItem(); if (containerItem == null) containerItem = recipeItem;  // some mods (e.g. IC2) use a null container item for some recipes
+            
+            // if the stack being passed in is the correct container item for the recipe item 
+            if (stack.getItem() == containerItem)
+            {
+                // store the container item
+                this.stackResult[index].containerItem = stack;
+                return;
+            }
+            
+        }
+        // if the slot is empty, or the slot item doesn't require a container item, set the recipe item
         this.stackResult[index].recipeItem = stack;
     }
     
@@ -213,11 +219,17 @@ public class InventoryUncraftResult implements IInventory
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) 
     {
-    	if (stackResult[index].recipeItem != null && stackResult[index].recipeItem.getItem().hasContainerItem(null))
-    	{
-    		return stackResult[index].recipeItem.getItem().getContainerItem() == stack.getItem();
-    	}
-    	else return false;
+        // if the recipe item has a container item
+        if (stackResult[index].recipeItem != null && stackResult[index].recipeItem.getItem().hasContainerItem(null))
+        {
+            // get the container item for the recipe item
+            Item recipeItem = stackResult[index].recipeItem.getItem();
+            Item containerItem = recipeItem.getContainerItem(); if (containerItem == null) containerItem = recipeItem;  // some mods (e.g. IC2) use a null container item for some recipes
+
+            // the input item is valid if it matches the container item            
+            return (stack.getItem() == containerItem);
+        }
+        else return false;
     }
     
     
