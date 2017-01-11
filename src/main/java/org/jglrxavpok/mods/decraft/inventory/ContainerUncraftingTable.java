@@ -216,7 +216,11 @@ public class ContainerUncraftingTable extends Container
 	                    {
 	                        // determine how many items we need to place in the inventory slot 
 	                        int amount = craftingGrid.get(iSlot).getCount() * multiplier;
+                            if (amount > craftingGrid.get(iSlot).getMaxStackSize()) amount = craftingGrid.get(iSlot).getMaxStackSize(); 
+                            
+                            // if the crafting recipe doesn't specify a metadata value, use the default
 	                        int meta = craftingGrid.get(iSlot).getItemDamage(); if (meta == Short.MAX_VALUE) meta = 0;
+	                        
 	                        // populate the slot in the output inventory with the correct number of items
 	                        uncraftOut.setInventorySlotContents(iSlot, new ItemStack(craftingGrid.get(iSlot).getItem(), amount, meta));
 	                    }
