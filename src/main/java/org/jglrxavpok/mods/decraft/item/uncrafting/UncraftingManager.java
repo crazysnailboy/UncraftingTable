@@ -225,7 +225,7 @@ public class UncraftingManager
 		uncraftingResult.experienceCost = getUncraftingXpCost(itemStack);
 		
         // if the minimum stack size is greater than the number of items in the slot
-		if (uncraftingResult.minStackSizes.size() > 0 && itemStack.stackSize < Collections.min(uncraftingResult.minStackSizes))
+		if (uncraftingResult.minStackSizes.size() > 0 && itemStack.stackSize < uncraftingResult.getMinStackSize())
 		{
 			// set the result type as "not enough items"
 			uncraftingResult.resultType = ResultType.NOT_ENOUGH_ITEMS;
