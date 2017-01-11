@@ -2,30 +2,31 @@ package org.jglrxavpok.mods.decraft.inventory;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IChatComponent;
 
 public class InventoryUncraftResult implements IInventory
 {
-	
-	private class ItemStackPair
-	{
-		private ItemStack recipeItem;
-		private ItemStack containerItem;
-	}
-	
-	private ItemStackPair[] stackResult = new ItemStackPair[9];
-	private boolean isDirty = false;
+    
+    private class ItemStackPair
+    {
+        private ItemStack recipeItem;
+        private ItemStack containerItem;
+    }
+    
+    private ItemStackPair[] stackResult = new ItemStackPair[9];
+    private boolean isDirty = false;
 
-	
-	public InventoryUncraftResult()
-	{
-		for ( int i = 0 ; i < stackResult.length ; i++ )
-		{
-			stackResult[i] = new ItemStackPair();
-		}
-	}
-	
+    
+    public InventoryUncraftResult()
+    {
+        for ( int i = 0 ; i < stackResult.length ; i++ )
+        {
+            stackResult[i] = new ItemStackPair();
+        }
+    }
+    
 
     /**
      * Returns the number of slots in the inventory.
@@ -43,20 +44,20 @@ public class InventoryUncraftResult implements IInventory
     @Override
     public ItemStack getStackInSlot(int index) 
     {
-    	// if the slot isn't empty, and the item in the slot requires a container item
-    	if (this.stackResult[index].recipeItem != null && stackResult[index].recipeItem.getItem().hasContainerItem(null))
-    	{
-    		// if the slot also contains the container item
-    		if (this.stackResult[index].containerItem != null)
-    		{
-    			// return the recipe item
-    			return this.stackResult[index].recipeItem;
-    		}
-    		// otherwise return null
-    		else return null;
-    	}
-    	// if the slot is empty, or the slot item doesn't require a container item, return the recipe item
-    	else return this.stackResult[index].recipeItem; 
+        // if the slot isn't empty, and the item in the slot requires a container item
+        if (this.stackResult[index].recipeItem != null && stackResult[index].recipeItem.getItem().hasContainerItem(null))
+        {
+            // if the slot also contains the container item
+            if (this.stackResult[index].containerItem != null)
+            {
+                // return the recipe item
+                return this.stackResult[index].recipeItem;
+            }
+            // otherwise return null
+            else return null;
+        }
+        // if the slot is empty, or the slot item doesn't require a container item, return the recipe item
+        else return this.stackResult[index].recipeItem; 
     }
     
 
@@ -84,32 +85,32 @@ public class InventoryUncraftResult implements IInventory
     @Override
     public ItemStack getStackInSlotOnClosing(int index) 
     {
-    	// if the inventory has been modified by the user
-    	if (this.isDirty)
-    	{
-    		// if there's a recipe item present in this slot
+        // if the inventory has been modified by the user
+        if (this.isDirty)
+        {
+            // if there's a recipe item present in this slot
             if (this.stackResult[index].recipeItem != null)
             {
-            	// remove the recipe item from the slot, and return it
+                // remove the recipe item from the slot, and return it
                 ItemStack itemstack = this.stackResult[index].recipeItem;
                 this.stackResult[index].recipeItem = null;
                 return itemstack;
             }
             else return null;
-    	}
-    	// if the inventory hasn't been modified by the user
-    	else
-    	{
-    		// if there's a container item present in this slot
+        }
+        // if the inventory hasn't been modified by the user
+        else
+        {
+            // if there's a container item present in this slot
             if (this.stackResult[index].containerItem != null)
             {
-            	// remove the container item from the slot, and return it
+                // remove the container item from the slot, and return it
                 ItemStack itemstack = this.stackResult[index].containerItem;
                 this.stackResult[index].containerItem = null;
                 return itemstack;
             }
             else return null;
-    	}
+        }
     }
     
 
@@ -119,18 +120,23 @@ public class InventoryUncraftResult implements IInventory
     @Override
     public void setInventorySlotContents(int index, ItemStack stack)
     {
-    	// if the slot isn't empty, and the item in the slot requires a container item
-    	if (stack != null && this.stackResult[index].recipeItem != null && stackResult[index].recipeItem.getItem().hasContainerItem(null))
-    	{
-    		// if the stack being passed in is the correct container item for the recipe item 
-    		if (stackResult[index].recipeItem.getItem().getContainerItem() == stack.getItem())
-    		{
-    			// store the container item
-    	        this.stackResult[index].containerItem = stack;
-    			return;
-    		}
-    	}
-    	// if the slot is empty, or the slot item doesn't require a container item, set the recipe item
+        // if the slot isn't empty, and the item in the slot requires a container item
+        if (stack != null && this.stackResult[index].recipeItem != null && stackResult[index].recipeItem.getItem().hasContainerItem(null))
+        {
+            // get the container item for the recipe item
+            Item recipeItem = stackResult[index].recipeItem.getItem();
+            Item containerItem = recipeItem.getContainerItem(); if (containerItem == null) containerItem = recipeItem;  // some mods (e.g. IC2) use a null container item for some recipes
+            
+            // if the stack being passed in is the correct container item for the recipe item 
+            if (stack.getItem() == containerItem)
+            {
+                // store the container item
+                this.stackResult[index].containerItem = stack;
+                return;
+            }
+            
+        }
+        // if the slot is empty, or the slot item doesn't require a container item, set the recipe item
         this.stackResult[index].recipeItem = stack;
     }
     
@@ -138,24 +144,24 @@ public class InventoryUncraftResult implements IInventory
     /**
      * Returns the name of the inventory
      */
-	@Override
-	public String getInventoryName() 
-	{
-		return null;
-	}
-	
+    @Override
+    public String getInventoryName() 
+    {
+        return null;
+    }
+    
     
     /**
      * Returns if the inventory is named
      */
-	@Override
-	public boolean hasCustomInventoryName() 
-	{
-		return false;
-	}
-	
+    @Override
+    public boolean hasCustomInventoryName() 
+    {
+        return false;
+    }
+    
 
-	/**
+    /**
      * Returns the maximum stack size for a inventory slot.
      */
     @Override
@@ -185,17 +191,17 @@ public class InventoryUncraftResult implements IInventory
     }
     
     
-	@Override
-	public void openInventory() 
-	{
-	}
-	
+    @Override
+    public void openInventory() 
+    {
+    }
+    
 
-	@Override
-	public void closeInventory() 
-	{
-	}
-	
+    @Override
+    public void closeInventory() 
+    {
+    }
+    
     
     /**
      * Returns true if automation is allowed to insert the given stack (ignoring stack size) into the given slot.
@@ -203,11 +209,17 @@ public class InventoryUncraftResult implements IInventory
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) 
     {
-    	if (stackResult[index].recipeItem != null && stackResult[index].recipeItem.getItem().hasContainerItem(null))
-    	{
-    		return stackResult[index].recipeItem.getItem().getContainerItem() == stack.getItem();
-    	}
-    	else return false;
+        // if the recipe item has a container item
+        if (stackResult[index].recipeItem != null && stackResult[index].recipeItem.getItem().hasContainerItem(null))
+        {
+            // get the container item for the recipe item
+            Item recipeItem = stackResult[index].recipeItem.getItem();
+            Item containerItem = recipeItem.getContainerItem(); if (containerItem == null) containerItem = recipeItem;  // some mods (e.g. IC2) use a null container item for some recipes
+
+            // the input item is valid if it matches the container item            
+            return (stack.getItem() == containerItem);
+        }
+        else return false;
     }
     
 
@@ -221,27 +233,27 @@ public class InventoryUncraftResult implements IInventory
     }
     
     
-	public void clear() 
-	{
+    public void clear() 
+    {
         for (int i = 0; i < this.stackResult.length; ++i)
         {
             this.stackResult[i].recipeItem = null;
             this.stackResult[i].containerItem = null;
         }
         this.isDirty = false;
-	}
+    }
 
-	
-	public void setIsDirty()
-	{
-		// the interface method "markDirty" is called in too many places for no reason, it's not useful
-    	isDirty = true;
-	}
-	
-	
-	public boolean getIsDirty()
-	{
-		return this.isDirty;
-	}
+    
+    public void setIsDirty()
+    {
+        // the interface method "markDirty" is called in too many places for no reason, it's not useful
+        isDirty = true;
+    }
+    
+    
+    public boolean getIsDirty()
+    {
+        return this.isDirty;
+    }
 
 }
