@@ -59,24 +59,35 @@ public class UncraftingResult
 //    }
     
 
+    public boolean isError()
+    {
+		return ArrayUtils.indexOf(ResultType.IS_ERROR, this.resultType) >= 0;
+    }
+
     public boolean canPopulateInventory()
     {
 		return ArrayUtils.indexOf(ResultType.CAN_POPULATE_INVENTORY, this.resultType) >= 0;
     }
     
-    public boolean isError()
+    public boolean renderBackgroundItems()
     {
-		return ArrayUtils.indexOf(ResultType.IS_ERROR, this.resultType) >= 0;
+		return ArrayUtils.indexOf(ResultType.RENDER_BACKGROUND_ITEMS, this.resultType) >= 0;
     }
     
     
     public enum ResultType 
     {
-    	INACTIVE, VALID,
-    	NOT_UNCRAFTABLE, NOT_ENOUGH_ITEMS, NOT_ENOUGH_XP, NEED_CONTAINER_ITEMS;
-    	
-    	private static final ResultType[] CAN_POPULATE_INVENTORY = new ResultType[] { VALID, NEED_CONTAINER_ITEMS };
+    	INACTIVE, 
+    	NOT_UNCRAFTABLE, 
+    	NOT_ENOUGH_ITEMS, 
+    	NOT_ENOUGH_XP, 
+    	NEED_CONTAINER_ITEMS,
+    	VALID, 
+    	UNCRAFTED;
+    
     	private static final ResultType[] IS_ERROR = new ResultType[] { NOT_UNCRAFTABLE, NOT_ENOUGH_ITEMS, NOT_ENOUGH_XP, NEED_CONTAINER_ITEMS };
+    	private static final ResultType[] CAN_POPULATE_INVENTORY = new ResultType[] { VALID, NEED_CONTAINER_ITEMS };
+    	private static final ResultType[] RENDER_BACKGROUND_ITEMS = new ResultType[] { NOT_ENOUGH_ITEMS, NOT_ENOUGH_XP, NEED_CONTAINER_ITEMS };
 
     }
 

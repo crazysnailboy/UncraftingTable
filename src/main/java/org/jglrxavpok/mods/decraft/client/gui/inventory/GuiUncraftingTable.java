@@ -4,8 +4,10 @@ import java.awt.Color;
 
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
+import org.jglrxavpok.mods.decraft.common.network.message.RecipeNavigationMessage;
 import org.jglrxavpok.mods.decraft.inventory.ContainerUncraftingTable;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult;
+import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult.ResultType;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
@@ -32,6 +34,7 @@ public class GuiUncraftingTable extends GuiContainer
     private GuiButton previousRecipeButton;
     private GuiButton nextRecipeButton;
 
+    
     public GuiUncraftingTable(InventoryPlayer playerInventory, World world)
     {
     	super(new ContainerUncraftingTable(playerInventory, world));
@@ -68,10 +71,15 @@ public class GuiUncraftingTable extends GuiContainer
     {
     	super.updateScreen();
     	
-    	this.nextRecipeButton.visible = (container.uncraftingResult.craftingGrids.size() > 1) && (container.uncraftingResult.selectedCraftingGrid < (container.uncraftingResult.craftingGrids.size() - 1));
+    	boolean haveMultipleRecipes = (container.uncraftingResult.craftingGrids.size() > 1);
+    	boolean hasNextRecipe = (container.uncraftingResult.selectedCraftingGrid < (container.uncraftingResult.craftingGrids.size() - 1));
+    	boolean hasPreviousRecipe = (container.uncraftingResult.selectedCraftingGrid > 0);
+    	boolean canChangeRecipe = (container.uncraftingResult.resultType != ResultType.UNCRAFTED);
+
+    	this.nextRecipeButton.visible = (haveMultipleRecipes && canChangeRecipe && hasNextRecipe);
     	this.nextRecipeButton.enabled = this.nextRecipeButton.visible;
     	
-    	this.previousRecipeButton.visible = (container.uncraftingResult.craftingGrids.size() > 1) && (container.uncraftingResult.selectedCraftingGrid > 0);
+    	this.previousRecipeButton.visible = (haveMultipleRecipes && canChangeRecipe && hasPreviousRecipe);
     	this.nextRecipeButton.enabled = this.nextRecipeButton.visible;
     	
     }
@@ -80,15 +88,22 @@ public class GuiUncraftingTable extends GuiContainer
     @Override
     protected void actionPerformed(net.minecraft.client.gui.GuiButton button)
     {
-    	if (button == this.previousRecipeButton)
+    	if (button == this.previousRecipeButton || button == this.nextRecipeButton)
     	{
-    		if (container.uncraftingResult.selectedCraftingGrid == 0) return;
-    		container.uncraftingResult.selectedCraftingGrid--;
-    	}
-    	if (button == this.nextRecipeButton)
-    	{
-    		if (container.uncraftingResult.selectedCraftingGrid == (container.uncraftingResult.craftingGrids.size() - 1)) return;
-    		container.uncraftingResult.selectedCraftingGrid++;
+	    	if (button == this.previousRecipeButton)
+	    	{
+	    		if (container.uncraftingResult.selectedCraftingGrid == 0) return;
+	    		container.uncraftingResult.selectedCraftingGrid--;
+	    	}
+	    	if (button == this.nextRecipeButton)
+	    	{
+	    		if (container.uncraftingResult.selectedCraftingGrid == (container.uncraftingResult.craftingGrids.size() - 1)) return;
+	    		container.uncraftingResult.selectedCraftingGrid++;
+	    	}
+    		container.switchRecipe();
+	    	
+	    	int recipeIndex = container.uncraftingResult.selectedCraftingGrid;
+	        ModUncrafting.instance.getNetwork().sendToServer(new RecipeNavigationMessage(recipeIndex));
     	}
     }
     
@@ -99,10 +114,6 @@ public class GuiUncraftingTable extends GuiContainer
         String statusMessage = "";
         switch (container.uncraftingResult.resultType)
         {
-        	// if the uncrafting status in "inactive", display no message
-	        case INACTIVE: 
-	        	break;
-	        
         	// if the uncrafting status is "ready", display the xp cost for the operation
 	        case VALID: 
 	        	statusMessage = I18n.format("container.uncrafting.cost", container.uncraftingResult.experienceCost);
@@ -127,7 +138,9 @@ public class GuiUncraftingTable extends GuiContainer
         	case NEED_CONTAINER_ITEMS:
         		statusMessage = "Container Items"; // TODO
         		break;
+
         		
+        	default: break;
         }
         
         // if there is a message to display, render it
@@ -156,10 +169,6 @@ public class GuiUncraftingTable extends GuiContainer
     {
         GL11.glDisable(GL11.GL_LIGHTING);
         
-    	// fontRendererObj.drawString:
-    	// Args: string, x, y, color, dropShadow
-    	
-    	
     	// render the block name at the top of the gui
         String title = I18n.format("container.uncrafting");
         fontRendererObj.drawString(title, xSize / 2 - fontRendererObj.getStringWidth(title) / 2, 6, 4210752);
@@ -208,9 +217,10 @@ public class GuiUncraftingTable extends GuiContainer
 		this.drawRect(guiX + slotX, guiY + slotY, guiX + slotX + 16, guiY + slotY + 16, 0x9f8b8b8b);
 		GL11.glEnable(GL11.GL_LIGHTING);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
+
 		
 		// if the uncrafting result's crafting grids collection isn't empty
-		if (container.uncraftingResult.craftingGrids.size() > 0)
+		if (container.uncraftingResult.renderBackgroundItems())
 		{
 			// get the currently selected crafting grid
 			ItemStack[] craftingGrid = container.uncraftingResult.getCraftingGrid();

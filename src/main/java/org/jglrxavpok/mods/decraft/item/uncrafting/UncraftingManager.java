@@ -122,7 +122,7 @@ public class UncraftingManager
 		for ( IRecipe recipe : recipeList )
 		{
 			ItemStack recipeOutput = recipe.getRecipeOutput();
-			if (ItemStackHelper.areItemsEqualIgnoreDurability(item, recipeOutput) && recipeOutput.stackSize <= item.stackSize)
+			if (ItemStackHelper.areItemsEqualIgnoreDurability(item, recipeOutput)) // && recipeOutput.stackSize <= item.stackSize)
 			{
 				RecipeHandler handler = getRecipeHandler(recipe);
 				if (handler != null)
