@@ -20,6 +20,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.common.registry.GameData;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
@@ -69,13 +70,21 @@ public class ModUncrafting
     public StatBasic uncraftedItemsStat;
     
     // logger
-    private Logger logger;
-
+    private static Logger logger;
+    
     public Logger getLogger()
     {
         return logger;
     }
+
+    // network
+    private static SimpleNetworkWrapper network = NetworkRegistry.INSTANCE.newSimpleChannel(ModUncrafting.MODID);
     
+    public SimpleNetworkWrapper getNetwork()
+    {
+        return network;
+    }
+
     
     
     @EventHandler
@@ -95,8 +104,6 @@ public class ModUncrafting
     	
     	// register the gui handler
         NetworkRegistry.INSTANCE.registerGuiHandler(this, guiHandler);
-        
-        logger.info("Uncrafting Table has been correctly initialized!");
     }
     
     
