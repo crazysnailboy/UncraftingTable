@@ -13,36 +13,14 @@ public class SlotUncraftResult extends Slot
 		super(inventoryIn, index, xPosition, yPosition);
 	}
 
-    /**
-     * Fired when the player removes the item from the slot.
-     */
+	/**
+	 * Check if the stack is a valid item for this slot.
+	 */
 	@Override
-    public ItemStack onTake(EntityPlayer playerIn, ItemStack stack)
-    {
-    	// i don't want to use inventory.markDirty as it's called in too many other places
-    	((InventoryUncraftResult)this.inventory).setIsDirty();
-    	return stack; // return super.onTake(playerIn, stack);
-    }
-	
-    /**
-     * Check if the stack is a valid item for this slot.
-     */
-	@Override
-    public boolean isItemValid(ItemStack stack)
-    {
+	public boolean isItemValid(ItemStack stack)
+	{
 		// an item will only be valid if it's a container item for an item already in the inventory
 		return this.inventory.isItemValidForSlot(this.getSlotIndex(), stack);
-    }
-	
-    /**
-     * Helper method to put a stack in the slot.
-     */
-	@Override
-    public void putStack(ItemStack stack)
-    {
-		// don't trigger onSlotChanged unless the slot actually changes
-		if (this.getStack() != stack) super.putStack(stack);
-    }
-	
+	}
 	
 }

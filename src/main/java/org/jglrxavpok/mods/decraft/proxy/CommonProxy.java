@@ -2,15 +2,15 @@ package org.jglrxavpok.mods.decraft.proxy;
 
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
+import org.jglrxavpok.mods.decraft.common.network.message.RecipeNavigationMessage;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingManager;
 import org.jglrxavpok.mods.decraft.stats.ModAchievements;
 
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.stats.Achievement;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
 
 public class CommonProxy {
 	
@@ -23,13 +23,13 @@ public class CommonProxy {
 	    ModConfiguration.preInit();
 	    
         // register the block
-	    GameRegistry.register(ModUncrafting.uncraftingTable); //, ModUncrafting.uncraftingTable.getRegistryName());
-
+	    GameRegistry.register(ModUncrafting.uncraftingTable);
 	    ItemBlock itemBlock = new ItemBlock(ModUncrafting.uncraftingTable);
 	    itemBlock.setRegistryName(ModUncrafting.uncraftingTable.getRegistryName());
-	    
 		GameRegistry.register(itemBlock);
 	    
+        // register the network messages
+        ModUncrafting.instance.getNetwork().registerMessage(RecipeNavigationMessage.MessageHandler.class, RecipeNavigationMessage.class, 0, Side.SERVER);
 	}
 	
 	/**
