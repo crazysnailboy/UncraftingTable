@@ -1,5 +1,7 @@
 package org.jglrxavpok.mods.decraft.inventory;
 
+import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult.ResultType;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -16,15 +18,16 @@ public class InventoryUncraftResult implements IInventory
 	}
 	
 	private ItemStackPair[] stackResult = new ItemStackPair[9];
-	private boolean isDirty = false;
+	private ContainerUncraftingTable eventHandler;
 
 	
-	public InventoryUncraftResult()
+	public InventoryUncraftResult(ContainerUncraftingTable p_i1807_1_)
 	{
 		for ( int i = 0 ; i < stackResult.length ; i++ )
 		{
 			stackResult[i] = new ItemStackPair();
 		}
+		this.eventHandler = p_i1807_1_;
 	}
 	
 
@@ -44,20 +47,25 @@ public class InventoryUncraftResult implements IInventory
     @Override
     public ItemStack getStackInSlot(int index) 
     {
-    	// if the slot isn't empty, and the item in the slot requires a container item
-    	if (this.stackResult[index].recipeItem != null && stackResult[index].recipeItem.getItem().hasContainerItem(null))
-    	{
-    		// if the slot also contains the container item
-    		if (this.stackResult[index].containerItem != null)
-    		{
-    			// return the recipe item
-    			return this.stackResult[index].recipeItem;
-    		}
-    		// otherwise return null
-    		else return null;
-    	}
-    	// if the slot is empty, or the slot item doesn't require a container item, return the recipe item
-    	else return this.stackResult[index].recipeItem; 
+		if (this.eventHandler.uncraftingResult.resultType == ResultType.INACTIVE)
+		{
+			return this.stackResult[index].containerItem;
+		}
+		else if (this.eventHandler.uncraftingResult.resultType == ResultType.NEED_CONTAINER_ITEMS)
+		{		
+			if (this.stackResult[index].recipeItem != null && stackResult[index].recipeItem.getItem().hasContainerItem(null) && this.stackResult[index].containerItem != null)
+			{
+				return this.stackResult[index].recipeItem;
+			}
+			else
+			{
+				return null;
+			}
+		}
+		else
+		{
+			return this.stackResult[index].recipeItem; 
+		}
     }
     
 
@@ -68,13 +76,38 @@ public class InventoryUncraftResult implements IInventory
     @Override
     public ItemStack decrStackSize(int index, int count) 
     {
-        if (this.stackResult[index].recipeItem != null)
-        {
-            ItemStack itemstack = this.stackResult[index].recipeItem;
-            this.stackResult[index].recipeItem = null;
-            return itemstack;
-        }
-        else return null;
+		// if the inventory has been modified by the user
+		if ((this.eventHandler.uncraftingResult.resultType == ResultType.VALID) || (this.eventHandler.uncraftingResult.resultType == ResultType.UNCRAFTED))
+		{
+			// if there's a recipe item present in this slot
+			if (this.stackResult[index].recipeItem != null)
+			{
+				// remove the recipe item from the slot, and return it
+				ItemStack itemstack = this.stackResult[index].recipeItem;
+				
+				this.stackResult[index].recipeItem = null;
+				this.stackResult[index].containerItem = null;
+				
+				this.eventHandler.onCraftMatrixChanged(this);
+				return itemstack;
+			}
+		}
+		// if the inventory hasn't been modified by the user
+		else //if (this.eventHandler.uncraftingResult.resultType == ResultType.VALID)
+		{
+			// if there's a container item present in this slot
+			if (this.stackResult[index].containerItem != null)
+			{
+				// remove the container item from the slot, and return it
+				ItemStack itemstack = this.stackResult[index].containerItem;
+				
+				this.stackResult[index].containerItem = null;
+				
+				this.eventHandler.onCraftMatrixChanged(this);
+				return itemstack;
+			}
+		}
+		return null;
     }
     
 
@@ -85,32 +118,31 @@ public class InventoryUncraftResult implements IInventory
     @Override
     public ItemStack removeStackFromSlot(int index) 
     {
-    	// if the inventory has been modified by the user
-    	if (this.isDirty)
-    	{
-    		// if there's a recipe item present in this slot
-            if (this.stackResult[index].recipeItem != null)
-            {
-            	// remove the recipe item from the slot, and return it
-                ItemStack itemstack = this.stackResult[index].recipeItem;
-                this.stackResult[index].recipeItem = null;
-                return itemstack;
-            }
-            else return null;
-    	}
-    	// if the inventory hasn't been modified by the user
-    	else
-    	{
-    		// if there's a container item present in this slot
-            if (this.stackResult[index].containerItem != null)
-            {
-            	// remove the container item from the slot, and return it
-                ItemStack itemstack = this.stackResult[index].containerItem;
-                this.stackResult[index].containerItem = null;
-                return itemstack;
-            }
-            else return null;
-    	}
+		// if the inventory has been modified by the user
+		if (this.eventHandler.uncraftingResult.resultType == ResultType.UNCRAFTED)
+		{
+			// if there's a recipe item present in this slot
+			if (this.stackResult[index].recipeItem != null)
+			{
+				// remove the recipe item from the slot, and return it
+				ItemStack itemstack = this.stackResult[index].recipeItem;
+				this.stackResult[index].recipeItem = null;
+				return itemstack;
+			}
+		}
+		// if the inventory hasn't been modified by the user
+		else // if (this.eventHandler.uncraftingResult.resultType == ResultType.VALID) 
+		{
+			// if there's a container item present in this slot
+			if (this.stackResult[index].containerItem != null)
+			{
+				// remove the container item from the slot, and return it
+				ItemStack itemstack = this.stackResult[index].containerItem;
+				this.stackResult[index].containerItem = null;
+				return itemstack;
+			}
+		}
+		return null;
     }
     
 
@@ -120,25 +152,52 @@ public class InventoryUncraftResult implements IInventory
     @Override
     public void setInventorySlotContents(int index, ItemStack stack) 
     {
-        // if the slot isn't empty, and the item in the slot requires a container item
-        if (stack != null && this.stackResult[index].recipeItem != null && stackResult[index].recipeItem.getItem().hasContainerItem(null))
-        {
-            // get the container item for the recipe item
-            Item recipeItem = stackResult[index].recipeItem.getItem();
-            Item containerItem = recipeItem.getContainerItem(); if (containerItem == null) containerItem = recipeItem;  // some mods (e.g. IC2) use a null container item for some recipes
-            
-            // if the stack being passed in is the correct container item for the recipe item 
-            if (stack.getItem() == containerItem)
-            {
-                // store the container item
-                this.stackResult[index].containerItem = stack;
-                return;
-            }
-            
-        }
-        // if the slot is empty, or the slot item doesn't require a container item, set the recipe item
-        this.stackResult[index].recipeItem = stack;
+		// if the slot isn't empty, and the item in the slot requires a container item
+		if (stack != null && this.stackResult[index].recipeItem != null && stackResult[index].recipeItem.getItem().hasContainerItem(null))
+		{
+			// get the container item for the recipe item
+			Item recipeItem = stackResult[index].recipeItem.getItem();
+			Item containerItem = recipeItem.getContainerItem(); if (containerItem == null) containerItem = recipeItem;  // some mods (e.g. IC2) use a null container item for some recipes
+			
+			// if the stack being passed in is the correct container item for the recipe item 
+			if (stack.getItem() == containerItem)
+			{
+				// store the container item
+				this.stackResult[index].containerItem = stack;
+
+				// if the recipe item and the container items are equal
+				if (recipeItem == containerItem)
+				{
+					ItemStack newStack = stack.copy();
+					
+					this.stackResult[index].recipeItem = newStack;
+					
+					this.eventHandler.uncraftingResult.craftingGrids.get(this.eventHandler.uncraftingResult.selectedCraftingGrid)[index] = newStack;
+								
+				}
+				
+				this.eventHandler.onCraftMatrixChanged(this);
+			}
+		}
+		// if the slot is empty, or the slot item doesn't require a container item, set the recipe item
+		else
+		{
+			this.stackResult[index].recipeItem = stack;
+			
+			if (this.eventHandler.uncraftingResult.resultType == ResultType.INACTIVE && stack == null)
+			{
+				this.stackResult[index].containerItem = stack;
+			}
+			
+			this.eventHandler.onCraftMatrixChanged(this);
+		}
     }
+    
+	public void setInventorySlotRecipeStack(int index, ItemStack stack)
+	{
+		this.stackResult[index].recipeItem = stack;
+	}
+    
     
     
     /**
@@ -219,17 +278,17 @@ public class InventoryUncraftResult implements IInventory
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) 
     {
-        // if the recipe item has a container item
-        if (stackResult[index].recipeItem != null && stackResult[index].recipeItem.getItem().hasContainerItem(null))
-        {
-            // get the container item for the recipe item
-            Item recipeItem = stackResult[index].recipeItem.getItem();
-            Item containerItem = recipeItem.getContainerItem(); if (containerItem == null) containerItem = recipeItem;  // some mods (e.g. IC2) use a null container item for some recipes
+		// if the recipe item has a container item
+		if (stackResult[index].recipeItem != null && stackResult[index].recipeItem.getItem().hasContainerItem(null))
+		{
+			// get the container item for the recipe item
+			Item recipeItem = stackResult[index].recipeItem.getItem();
+			Item containerItem = recipeItem.getContainerItem(); if (containerItem == null) containerItem = recipeItem;  // some mods (e.g. IC2) use a null container item for some recipes
 
-            // the input item is valid if it matches the container item            
-            return (stack.getItem() == containerItem);
-        }
-        else return false;
+			// the input item is valid if it matches the container item			
+			return (stack.getItem() == containerItem);
+		}
+		else return false;
     }
     
     
@@ -255,36 +314,51 @@ public class InventoryUncraftResult implements IInventory
     
     public boolean isEmpty()
     {
-        for (int i = 0; i < this.stackResult.length; i++ )
-        {
-            if (stackResult[i].recipeItem != null) return false;
-        }
-        return true;
+		for (int i = 0; i < this.stackResult.length; i++ )
+		{
+			if (stackResult[i].recipeItem != null || stackResult[i].containerItem != null) return false;
+		}
+		return true;
     }
     
 
 	@Override
 	public void clear() 
 	{
-        for (int i = 0; i < this.stackResult.length; ++i)
-        {
-            this.stackResult[i].recipeItem = null;
-            this.stackResult[i].containerItem = null;
-        }
-        this.isDirty = false;
+		for (int i = 0; i < this.stackResult.length; ++i)
+		{
+			this.stackResult[i].recipeItem = null;
+			this.stackResult[i].containerItem = null;
+		}
 	}
 	
 	
-	public void setIsDirty()
+	public void clearRecipeItems()
 	{
-		// the interface method "markDirty" is called in too many places for no reason, it's not useful
-    	isDirty = true;
+		for (int i = 0; i < this.stackResult.length; ++i)
+		{
+			this.stackResult[i].recipeItem = null;
+		}
 	}
 	
-	
-	public boolean getIsDirty()
+	public void clearContainerItems()
 	{
-		return this.isDirty;
+		for (int i = 0; i < this.stackResult.length; ++i)
+		{
+			this.stackResult[i].containerItem = null;
+		}
+	}
+	
+	public boolean missingContainerItems()
+	{
+		for (int index = 0; index < this.stackResult.length; ++index)
+		{
+			if (stackResult[index].recipeItem != null && stackResult[index].recipeItem.getItem().hasContainerItem(null) && this.stackResult[index].containerItem == null)
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

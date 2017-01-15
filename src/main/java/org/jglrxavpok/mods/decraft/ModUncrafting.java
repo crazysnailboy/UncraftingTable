@@ -2,13 +2,11 @@ package org.jglrxavpok.mods.decraft;
 
 import org.apache.logging.log4j.Logger;
 import org.jglrxavpok.mods.decraft.block.BlockUncraftingTable;
-import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
 import org.jglrxavpok.mods.decraft.common.network.ModGuiHandler;
-import org.jglrxavpok.mods.decraft.event.ItemUncraftedEvent;
-import org.jglrxavpok.mods.decraft.event.UncraftingEvent;
 import org.jglrxavpok.mods.decraft.proxy.CommonProxy;
 
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraft.stats.StatBasic;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -16,23 +14,8 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.registry.GameData;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
-import net.minecraft.stats.Achievement;
-import net.minecraft.stats.StatBasic;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraftforge.common.AchievementPage;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
 
 @Mod(modid = ModUncrafting.MODID, name = ModUncrafting.MODNAME, version = ModUncrafting.VERSION, guiFactory = ModUncrafting.GUIFACTORY, updateJSON = ModUncrafting.UPDATEJSON)
@@ -74,6 +57,13 @@ public class ModUncrafting
         return logger;
     }
     
+    // network
+    private static SimpleNetworkWrapper network = NetworkRegistry.INSTANCE.newSimpleChannel(ModUncrafting.MODID);
+    
+    public SimpleNetworkWrapper getNetwork()
+    {
+        return network;
+    }
     
     
     @EventHandler
@@ -102,14 +92,6 @@ public class ModUncrafting
     public void postInit(FMLPostInitializationEvent event)
     {
     	proxy.postInit();
-//    	for ( String uncraftableItem : ModConfiguration.uncraftableItems )
-//    	{
-//    		System.out.println(uncraftableItem);
-//        	Item item = GameData.getItemRegistry().getObject(uncraftableItem);
-//        	System.out.println(item.getItemStackDisplayName(new ItemStack(item, 1, 0)));
-//    	}
     }
     
-    
-
 }
