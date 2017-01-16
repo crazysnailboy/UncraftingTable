@@ -2,6 +2,7 @@ package org.jglrxavpok.mods.decraft.proxy;
 
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
+import org.jglrxavpok.mods.decraft.item.ModItems;
 import org.jglrxavpok.mods.decraft.stats.ModAchievements;
 
 import net.minecraft.client.Minecraft;
@@ -14,6 +15,7 @@ public class ClientProxy extends CommonProxy {
 	public void preInit(){
 		super.preInit();
 		ModConfiguration.clientPreInit();
+		ModItems.clientPreInit();
 	}
 	
 	@Override
@@ -23,8 +25,6 @@ public class ClientProxy extends CommonProxy {
 		
 		Item item = Item.getItemFromBlock(ModUncrafting.uncraftingTable);
 		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, 0, new ModelResourceLocation(ModUncrafting.MODID + ":" + item.getUnlocalizedName().substring(5), "inventory"));
-		
-		
 	}
 	
 	@Override
