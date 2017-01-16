@@ -394,6 +394,12 @@ public class ContainerUncraftingTable extends Container
 						doUncraft();
 					}
 					
+					if (uncraftOut.isEmpty())
+					{
+						this.uncraftingResult = new UncraftingResult();
+						if (uncraftIn.getStackInSlot(0) != null) this.onCraftMatrixChanged(uncraftIn);
+					}
+					
 					// attempt to add those items to the player's inventory
 					if (!playerInventory.addItemStackToInventory(slot.getStack()))
 					{

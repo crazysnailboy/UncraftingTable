@@ -3,6 +3,7 @@ package org.jglrxavpok.mods.decraft.proxy;
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
 import org.jglrxavpok.mods.decraft.common.network.message.RecipeNavigationMessage;
+import org.jglrxavpok.mods.decraft.item.ModItems;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingManager;
 import org.jglrxavpok.mods.decraft.stats.ModAchievements;
 
@@ -26,6 +27,9 @@ public class CommonProxy {
 	    GameRegistry.register(ModUncrafting.uncraftingTable);
 	    GameRegistry.register(new ItemBlock(ModUncrafting.uncraftingTable).setRegistryName(ModUncrafting.uncraftingTable.getRegistryName()));
 
+        // register the items
+        ModItems.preInit();
+	    
         // register the network messages
         ModUncrafting.instance.getNetwork().registerMessage(RecipeNavigationMessage.MessageHandler.class, RecipeNavigationMessage.class, 0, Side.SERVER);
 	    
@@ -42,6 +46,9 @@ public class CommonProxy {
         {
             "SSS", "SXS", "SSS", 'X', Blocks.CRAFTING_TABLE, 'S', Blocks.COBBLESTONE
         });
+        
+        // create the item crafting recipes
+        ModItems.init();
         
         // initialize the achievements
 		ModAchievements.init();
