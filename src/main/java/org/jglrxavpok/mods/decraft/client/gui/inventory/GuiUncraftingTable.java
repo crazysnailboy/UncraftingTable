@@ -80,7 +80,6 @@ public class GuiUncraftingTable extends GuiContainer
     	
     	this.previousRecipeButton.visible = (haveMultipleRecipes && canChangeRecipe && hasPreviousRecipe);
     	this.nextRecipeButton.enabled = this.nextRecipeButton.visible;
-    	
     }
     
     

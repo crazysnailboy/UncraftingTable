@@ -1,7 +1,8 @@
 package org.jglrxavpok.mods.decraft.item.uncrafting;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -26,9 +27,9 @@ import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult.ResultType;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
+import cpw.mods.fml.common.registry.GameData;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -37,6 +38,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.RecipesMapExtending;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
@@ -127,7 +129,14 @@ public class UncraftingManager
 				RecipeHandler handler = getRecipeHandler(recipe);
 				if (handler != null)
 				{
-					list.add(handler.getCraftingGrid(recipe));
+					if (ModConfiguration.uncraftMethod == UncraftingMethod.JGLRXAVPOK && itemStack.isItemStackDamageable() && itemStack.isItemDamaged())
+					{
+						list.add(removeItemsFromOutputByDamage(itemStack, handler.getCraftingGrid(recipe)));
+					}
+					else
+					{
+						list.add(handler.getCraftingGrid(recipe));
+					}
 				}
 				else
 				{
@@ -135,6 +144,8 @@ public class UncraftingManager
 				}
 			}
 		}
+		
+		
 		
 		return list;
 	}
@@ -330,13 +341,172 @@ public class UncraftingManager
         return enchantedBooks;
 	}
 	
+
+	
+	private static ItemStack getNuggetForOre(ItemStack oreStack)
+	{
+
+//		// *** copied from com.jaquadro.minecraft.storagedrawers.config.OreDictRegistry ***
+//		String[] oreTypes = { "ore", "block", "ingot", "nugget" };
+//		String[] oreMaterials = { "Iron", "Gold", "Diamond", "Emerald", "Aluminum", "Aluminium", "Tin", "Copper", "Lead", "Silver", "Platinum", "Nickel", "Osmium", "Invar", "Bronze", "Electrum", "Enderium" };
+//		// *** copied from com.jaquadro.minecraft.storagedrawers.config.OreDictRegistry ***
+		
+		
+        String[] oreTypes = { "gem", "ingot" };
+        String[] oreMaterials = { "Diamond", "Emerald", "Gold", "Iron" };
+        
+		
+		int[] oreIds = OreDictionary.getOreIDs(oreStack);
+		for ( int oreId : oreIds )
+		{
+			String oreName = OreDictionary.getOreName(oreId); // e.g. "gemDiamond"
+			String[] oreNameParts = oreName.split("(?=\\p{Upper})"); // e.g. { "gem", "Diamond" }
+			
+			if (oreNameParts.length == 2 && ArrayUtils.indexOf(oreTypes, oreNameParts[0]) >= 0)
+			{
+				String nuggetName = "nugget" + oreNameParts[1]; // e.g. "nuggetDiamond"
+
+				List<ItemStack> nuggetOres = OreDictionary.getOres(nuggetName);
+				if (!nuggetOres.isEmpty())
+				{
+					ItemStack nuggetOre = nuggetOres.get(0);
+					return nuggetOre;
+				}
+				
+			}
+			
+		}
+		return null;
+	}
+	
+	
+	
+	public static ItemStack[] removeItemsFromOutputByDamage(ItemStack stack, ItemStack[] craftingGrid)
+	{
+		// calculate the percentage durability remaining on the item
+		double damagePercentage = (100 * ((double)stack.getItemDamage() / (double)stack.getMaxDamage()));
+		double durabilityPercentage = 100 - (100 * ((double)stack.getItemDamage() / (double)stack.getMaxDamage()));
+		
+
+		// iterate through the itemstacks in the crafting recipe to determine the unique materials used, and the total number of each item
+		HashMap<String, Integer> materials = new HashMap<String, Integer>();
+		for ( ItemStack recipeStack : craftingGrid )
+		{
+			if (recipeStack != null)
+			{
+				String key = GameRegistry.findUniqueIdentifierFor(recipeStack.getItem()).toString();
+				materials.put(key, (materials.containsKey(key) ? materials.get(key) : 0) + recipeStack.stackSize);
+			}
+		}
+		
+		// for each unique material in the crafting recipe...
+		for ( String key : materials.keySet())
+		{
+			System.out.println("key: " + key);
+			
+			// get an itemstack of the material from it's registry name (TODO: probably don't need to condense this to a string in the first place...)
+			ItemStack materialStack = new ItemStack(GameData.getItemRegistry().getObject(key));
+
+			// check the ore dictionary to see if this material has a matching nugget
+			ItemStack nuggetStack = getNuggetForOre(materialStack);
+
+			
+			int amount = materials.get(key);
+			
+			int itemCount = 0;
+			int nuggetCount = 0;
+			
+			// if we found a nugget item in the ore dictionary
+			if (nuggetStack != null)
+			{
+				// calculate the number of full items and nuggets which most closely represent the percentage durability remaining on the item
+				// rounding down to the nearest nugget
+				itemCount = (int)Math.floor(amount * (durabilityPercentage / (double)100));
+				nuggetCount = ((int)Math.floor((amount * 9) * (durabilityPercentage / (double)100))) - (itemCount * 9);
+			}
+			// if the stack contains sticks
+			else if (ArrayUtils.contains(OreDictionary.getOreIDs(materialStack), OreDictionary.getOreID("stickWood")))
+			{
+				// calculate the total number of full items which most closely represent the percentage durability remaining on the item
+				// rounding up to the nearest item
+				itemCount = (int)Math.ceil(amount * (durabilityPercentage / (double)100));
+			}
+			
+			// if there's no nugget for this item in the ore dictionary
+			else
+			{
+				// calculate the total number of full items which most closely represent the percentage durability remaining on the item
+				// rounding up or down to the nearest item
+				itemCount = (int)Math.round(amount * (durabilityPercentage / (double)100));
+			}
+			
+			// flip the item count to become items to remove instead of items to leave
+			itemCount = amount - itemCount;
+			
+
+			for ( int i = 0 ; i < craftingGrid.length ; i++ )
+			{
+				if (craftingGrid[i] != null && craftingGrid[i].isItemEqual(materialStack))
+				{
+					if (itemCount > 0)
+					{
+						craftingGrid[i] = null;
+						itemCount--;
+					}
+					if (itemCount == 0 && nuggetCount > 0)
+					{
+						craftingGrid[i] = new ItemStack(nuggetStack.getItem(), nuggetCount, nuggetStack.getItemDamage());
+						nuggetCount = 0;
+					}
+				}
+			}
+			
+		}
+		
+		return craftingGrid;
+		
+		
+//		Map.Entry<String,Map.Entry<Integer,Integer>> m = new AbstractMap.SimpleEntry<String,Map.Entry<Integer,Integer>>("Hello World", new AbstractMap.SimpleEntry<Integer,Integer>(0, 0));		
+
+		
+		
+//        if (ModConfiguration.uncraftMethod == 0)
+//        {
+//            int count = 0;
+//            ItemStack s1 = uncraftIn.getStackInSlot(0);
+//
+//            int percent = (int) (((double) s1.getItemDamage() / (double) s1.getMaxDamage()) * 100);
+//            for (int i = 0; i < items.length; i++ )
+//            {
+//                if (items[i] != null)
+//                    count++ ;
+//            }
+//            int toRemove = Math.round((float) (percent * count) / 100f);
+//            if (toRemove > 0)
+//                for (int i = 0; i < items.length; i++ )
+//                {
+//                    if (items[i] != null)
+//                    {
+//                        toRemove-- ;
+//                        items[i] = null;
+//                        if (toRemove <= 0)
+//                        {
+//                            break;
+//                        }
+//                    }
+//                }
+//        }
+		
+	}
+	
+	
 	
 	
 	
 	public static void postInit()
 	{
 	}
-
+	
 	
 	
     /**

@@ -259,7 +259,8 @@ public class ContainerUncraftingTable extends Container
 					
 					// if the item in the input stack can be uncrafted...
 					if (this.uncraftingResult.canPopulateInventory())
-					{				
+					{
+//						UncraftingManager.removeItemsFromOutputByDamage(inputStack, this.uncraftingResult.getCraftingGrid());
 						populateOutputInventory();
 					}
 				}
@@ -380,24 +381,27 @@ public class ContainerUncraftingTable extends Container
 			// if the slot belongs to the uncrafting result grid
 			else if (slot.inventory.equals(uncraftOut))
 			{
-				// if the slot contains items
-				if (slot.getHasStack())
+				if (this.uncraftingResult.resultType == ResultType.VALID)
 				{
-					if (this.uncraftingResult.resultType == ResultType.VALID)
-					{
-						doUncraft();
-					}
-					
-					// attempt to add those items to the player's inventory
-					if (!playerInventory.addItemStackToInventory(slot.getStack()))
-					{
-						// TODO: shouldn't this spawn items in the world if they can't be added to the player's inventory?
-						return null;
-					}
-					// clear the slot
-					slot.putStack(null);
+					doUncraft();
 				}
+				
+				if (uncraftOut.isEmpty())
+				{
+					this.uncraftingResult = new UncraftingResult();
+					if (uncraftIn.getStackInSlot(0) != null) this.onCraftMatrixChanged(uncraftIn);
+				}
+				
+				// attempt to add those items to the player's inventory
+				if (!playerInventory.addItemStackToInventory(slot.getStack()))
+				{
+					// TODO: shouldn't this spawn items in the world if they can't be added to the player's inventory?
+					return null;
+				}
+				// clear the slot
+				slot.putStack(null);
 			}
+			
 			// if the slot belongs to the player's inventory
 			else if (slot.inventory.equals(playerInventory))
 			{

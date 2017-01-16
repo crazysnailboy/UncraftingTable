@@ -86,7 +86,6 @@ public class ModUncrafting
     }
 
     
-    
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
