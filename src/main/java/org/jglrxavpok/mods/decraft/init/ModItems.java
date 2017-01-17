@@ -1,6 +1,8 @@
-package org.jglrxavpok.mods.decraft.item;
+package org.jglrxavpok.mods.decraft.init;
 
 import org.jglrxavpok.mods.decraft.ModUncrafting;
+import org.jglrxavpok.mods.decraft.item.ItemNugget;
+import org.jglrxavpok.mods.decraft.item.ItemNugget.EnumNuggetType;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelResourceLocation;
