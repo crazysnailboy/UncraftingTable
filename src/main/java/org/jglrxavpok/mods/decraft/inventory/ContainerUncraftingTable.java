@@ -468,7 +468,14 @@ public class ContainerUncraftingTable extends Container
     }
 
 
-    @Override
+	@Override
+    public void putStackInSlot(int slotId, ItemStack stack)
+    {
+		// TODO: i assume there's a reason that Container does this, but this container seems to work without it!
+        // this.getSlot(slotId).putStack(stack);
+    }
+
+	@Override
     public boolean canInteractWith(EntityPlayer player)
     {
         return true;
