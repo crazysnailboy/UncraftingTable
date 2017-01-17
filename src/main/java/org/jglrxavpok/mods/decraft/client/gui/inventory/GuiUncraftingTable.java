@@ -309,7 +309,14 @@ public class GuiUncraftingTable extends GuiContainer
 				int textureX = (this.facing == ButtonFacing.LEFT ? 177 : 185);
 				int textureY = (mouseOnButton ? 35 : 23);
 				
+				GL11.glDisable(GL11.GL_LIGHTING);
+				GL11.glDisable(GL11.GL_DEPTH_TEST);
+
 				drawTexturedModalRect(this.xPosition, this.yPosition, textureX, textureY, this.width, this.height);
+				
+				GL11.glEnable(GL11.GL_LIGHTING);
+				GL11.glEnable(GL11.GL_DEPTH_TEST);
+
 				
 		        GL11.glPopMatrix();
 			}
