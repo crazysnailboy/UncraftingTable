@@ -334,7 +334,6 @@ public class UncraftingManager
 	}
 	
 	
-	
 	private static ItemStack getNuggetForOre(ItemStack oreStack)
 	{
 
@@ -394,8 +393,6 @@ public class UncraftingManager
 		// for each unique material in the crafting recipe...
 		for ( String key : materials.keySet())
 		{
-			System.out.println("key: " + key);
-			
 			// get an itemstack of the material from it's registry name (TODO: probably don't need to condense this to a string in the first place...)
 			ItemStack materialStack = new ItemStack(Item.REGISTRY.getObject(new ResourceLocation(key)));
 

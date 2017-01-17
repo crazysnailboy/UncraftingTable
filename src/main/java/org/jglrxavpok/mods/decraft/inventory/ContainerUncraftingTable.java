@@ -48,7 +48,6 @@ public class ContainerUncraftingTable extends Container
         {
             for (int col = 0; col < 3; ++col)
             {
-            	// arguments: inventory, slotIndex, xDisplayPosition, yDisplayPosition    
                 this.addSlotToContainer(new SlotUncraftResult(this.uncraftOut, col + row * 3, offsetX + col * 18, offsetY + row * 18));
             }
         }
@@ -296,6 +295,9 @@ public class ContainerUncraftingTable extends Container
     }
     
 
+    /**
+     * Called when the container is closed.
+     */
     @Override
     public void onContainerClosed(EntityPlayer player)
     {
@@ -401,6 +403,7 @@ public class ContainerUncraftingTable extends Container
 					slot.putStack(null);
 				}
 			}
+			
 			// if the slot belongs to the player's inventory
 			else if (slot.inventory.equals(playerInventory))
 			{
