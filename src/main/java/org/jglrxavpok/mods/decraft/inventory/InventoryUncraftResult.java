@@ -42,7 +42,7 @@ public class InventoryUncraftResult implements IInventory
     
 
     /**
-     * Returns the stack in slot i
+     * Returns the stack in the given slot.
      */
     @Override
     public ItemStack getStackInSlot(int index) 
@@ -70,8 +70,7 @@ public class InventoryUncraftResult implements IInventory
     
 
     /**
-     * Removes from an inventory slot (first arg) up to a specified number (second arg) of items and returns them in a
-     * new stack.
+     * Removes up to a specified number of items from an inventory slot and returns them in a new stack.
      */
     @Override
     public ItemStack decrStackSize(int index, int count) 
@@ -199,7 +198,6 @@ public class InventoryUncraftResult implements IInventory
 	}
     
     
-    
     /**
      * Returns the name of the inventory
      */
@@ -310,6 +308,7 @@ public class InventoryUncraftResult implements IInventory
 	{
 		return 0;
 	}
+
 	
     
     public boolean isEmpty()

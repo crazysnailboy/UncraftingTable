@@ -38,7 +38,6 @@ import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
-
 /**
  * Main part of the Uncrafting Table. The manager is used to parse the existing recipes and find the correct one depending on the given stack.
  * @author jglrxavpok
@@ -334,7 +333,6 @@ public class UncraftingManager
 	}
 	
 	
-	
 	private static ItemStack getNuggetForOre(ItemStack oreStack)
 	{
 
@@ -394,8 +392,6 @@ public class UncraftingManager
 		// for each unique material in the crafting recipe...
 		for ( String key : materials.keySet())
 		{
-			System.out.println("key: " + key);
-			
 			// get an itemstack of the material from it's registry name (TODO: probably don't need to condense this to a string in the first place...)
 			ItemStack materialStack = new ItemStack(Item.REGISTRY.getObject(new ResourceLocation(key)));
 

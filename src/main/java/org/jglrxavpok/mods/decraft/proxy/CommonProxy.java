@@ -3,14 +3,11 @@ package org.jglrxavpok.mods.decraft.proxy;
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
 import org.jglrxavpok.mods.decraft.common.network.message.RecipeNavigationMessage;
-import org.jglrxavpok.mods.decraft.item.ModItems;
+import org.jglrxavpok.mods.decraft.init.ModBlocks;
+import org.jglrxavpok.mods.decraft.init.ModItems;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingManager;
-import org.jglrxavpok.mods.decraft.stats.ModAchievements;
+import org.jglrxavpok.mods.decraft.stats.ModAchievementList;
 
-import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class CommonProxy {
@@ -23,11 +20,8 @@ public class CommonProxy {
 		// initialize the configuration
 	    ModConfiguration.preInit();
 	    
-        // register the block
-	    GameRegistry.register(ModUncrafting.uncraftingTable);
-	    GameRegistry.register(new ItemBlock(ModUncrafting.uncraftingTable).setRegistryName(ModUncrafting.uncraftingTable.getRegistryName()));
-
-        // register the items
+	    // register the blocks and items
+	    ModBlocks.preInit();
         ModItems.preInit();
 	    
         // register the network messages
@@ -41,24 +35,20 @@ public class CommonProxy {
 	 */
 	public void init(){
 		
-        // create block crafting recipe
-        GameRegistry.addShapedRecipe(new ItemStack(ModUncrafting.uncraftingTable), new Object[]
-        {
-            "SSS", "SXS", "SSS", 'X', Blocks.CRAFTING_TABLE, 'S', Blocks.COBBLESTONE
-        });
-        
-        // create the item crafting recipes
+        // create the crafting recipes
+		ModBlocks.init();
         ModItems.init();
         
         // initialize the achievements
-		ModAchievements.init();
-		
+		ModAchievementList.init();
 	}
 	
 	/**
 	 * Handle interaction with other mods, complete your setup based on this.
 	 */
 	public void postInit(){
+		
+		// initalize the uncrafting manager
 		UncraftingManager.postInit();
 	}
 
