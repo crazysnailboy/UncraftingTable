@@ -2,7 +2,6 @@ package org.jglrxavpok.mods.decraft.inventory;
 
 import java.util.List;
 
-import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.event.ItemUncraftedEvent;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingManager;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult;
@@ -36,8 +35,6 @@ public class ContainerUncraftingTable extends Container
 
 	public ContainerUncraftingTable(InventoryPlayer playerInventoryIn, World worldIn)
 	{
-		ModUncrafting.instance.getLogger().info("Hello World");
-		
 		this.worldObj = worldIn;
 		
 		// uncrafting book inventory for capturing enchantments (left standalone slot)
@@ -221,7 +218,6 @@ public class ContainerUncraftingTable extends Container
 	}
 	
 
-	
 	/**
 	 * Callback for when the crafting matrix is changed.
 	 */
@@ -263,7 +259,6 @@ public class ContainerUncraftingTable extends Container
 					// if the item in the input stack can be uncrafted...
 					if (this.uncraftingResult.canPopulateInventory())
 					{
-//						UncraftingManager.removeItemsFromOutputByDamage(inputStack, this.uncraftingResult.getCraftingGrid());
 						populateOutputInventory();
 					}
 				}
@@ -468,6 +463,13 @@ public class ContainerUncraftingTable extends Container
 		return null;
 	}
 
+
+	@Override
+    public void putStackInSlot(int slotId, ItemStack stack)
+    {
+		// TODO: i assume there's a reason that Container does this, but this container seems to work without it!
+        // this.getSlot(slotId).putStack(stack);
+    }
 	
 	@Override
 	public boolean canInteractWith(EntityPlayer player)
