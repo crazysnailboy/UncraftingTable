@@ -1,8 +1,7 @@
 package org.jglrxavpok.mods.decraft.stats;
 
-import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.event.ItemUncraftedEvent;
-import org.jglrxavpok.mods.decraft.event.UncraftingEvent;
+import org.jglrxavpok.mods.decraft.init.ModBlocks;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -11,45 +10,46 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.stats.Achievement;
+import net.minecraft.stats.StatBasic;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraftforge.common.AchievementPage;
 import net.minecraftforge.common.MinecraftForge;
 
-public class ModAchievements {
+public class ModAchievementList {
 
+	// event handler
 	private static AchievementEventHandler achievementEventHandler = new AchievementEventHandler();
-	
-    public static Achievement craftTable = new Achievement("createDecraftTable", "createDecraftTable", 1 - 2 - 2, -1 - 3, ModUncrafting.uncraftingTable, null);
-    public static Achievement uncraftAny = new Achievement("uncraftAnything", "uncraftAnything", 2 - 2, -2 - 2, Items.diamond_hoe, craftTable);
-    public static Achievement uncraftDiamondHoe = new Achievement("uncraftDiamondHoe", "uncraftDiamondHoe", 2 - 2, 0 - 2, Items.diamond_hoe, uncraftAny);
-    public static Achievement uncraftJunk = new Achievement("uncraftJunk", "uncraftJunk", 1 - 2, -1 - 2, Items.leather_boots, uncraftAny);
-    public static Achievement uncraftDiamondShovel = new Achievement("uncraftDiamondShovel", "uncraftDiamondShovel", 3 - 2, -1 - 2, Items.diamond_shovel, uncraftAny);
-    public static Achievement porteManteauAchievement = new Achievement("porteManteauAchievement", "porteManteauAchievement", 3 - 2, -4 - 2, Blocks.fence, craftTable);
 
+	// achievements
+    public static Achievement craftTable = new Achievement("createDecraftTable", "createDecraftTable", 1 - 2 - 2, -1 - 3, ModBlocks.uncrafting_table, null).registerStat();
+    public static Achievement uncraftAny = new Achievement("uncraftAnything", "uncraftAnything", 2 - 2, -2 - 2, Items.diamond_hoe, craftTable).registerStat();
+    public static Achievement uncraftDiamondHoe = new Achievement("uncraftDiamondHoe", "uncraftDiamondHoe", 2 - 2, 0 - 2, Items.diamond_hoe, uncraftAny).registerStat();
+    public static Achievement uncraftJunk = new Achievement("uncraftJunk", "uncraftJunk", 1 - 2, -1 - 2, Items.leather_boots, uncraftAny).registerStat();
+    public static Achievement uncraftDiamondShovel = new Achievement("uncraftDiamondShovel", "uncraftDiamondShovel", 3 - 2, -1 - 2, Items.diamond_shovel, uncraftAny).registerStat();
+    public static Achievement porteManteau = new Achievement("porteManteauAchievement", "porteManteauAchievement", 3 - 2, -4 - 2, Blocks.fence, craftTable).registerStat();
+
+    // stats
+    public static StatBasic uncraftedItemsStat = (StatBasic)(new StatBasic("stat.uncrafteditems", new ChatComponentTranslation("stat.uncrafteditems", new Object[0])).registerStat());
     
     
     public static void init(){
-    	
-		// register achievements
-        craftTable.registerStat();
-        uncraftAny.registerStat();
-        uncraftDiamondHoe.registerStat();
-        uncraftJunk.registerStat();
-        uncraftDiamondShovel.registerStat();
-        porteManteauAchievement.registerStat();
     	
         // register the acheivements page
         AchievementPage.registerAchievementPage(new AchievementPage("Uncrafting Table",
             new Achievement[]
             {
-            	craftTable, uncraftAny, uncraftDiamondHoe, uncraftJunk, uncraftDiamondShovel, porteManteauAchievement
+            	craftTable, uncraftAny, uncraftDiamondHoe, uncraftJunk, uncraftDiamondShovel, porteManteau
             })
         );
     	
     }
     
 	public static void clientInit() {
+		
+		// register the event handlers with the event busses
         FMLCommonHandler.instance().bus().register(achievementEventHandler);
         MinecraftForge.EVENT_BUS.register(achievementEventHandler);
+        
 	}
     
     
@@ -63,16 +63,12 @@ public class ModAchievements {
         {    	
 	    	Item item = event.crafting.getItem();
 	    	
-	    	if (item == Item.getItemFromBlock(ModUncrafting.uncraftingTable))
+	    	if (item == Item.getItemFromBlock(ModBlocks.uncrafting_table))
 			{
 	    		event.player.triggerAchievement(craftTable);
 			}
         }
     	
-	    @SubscribeEvent
-	    public void onUncrafting(UncraftingEvent event)
-	    {
-	    }
     	
 		/**
 		 * Event handler for a successful uncrafting operation
@@ -85,7 +81,7 @@ public class ModAchievements {
             event.player.triggerAchievement(uncraftAny);
 
             // if the uncrafted item was one of those with a specific achievement associated with it, trigegr that achievement
-	        Item uncraftedItem = event.getUncrafted().getItem();
+	        Item uncraftedItem = event.stack.getItem();
 	        if (uncraftedItem == Items.diamond_hoe)
 	        {
 	            event.player.triggerAchievement(uncraftDiamondHoe);
@@ -106,8 +102,7 @@ public class ModAchievements {
 	        }
 	        
 	        // increment the stat counter for the number of uncrafted items
-	        event.player.addStat(ModUncrafting.instance.uncraftedItemsStat, event.getRequiredNumber());
-//	        event.player.addStat(ModUncrafting.instance.uncraftedItemsStat, event.getUncrafted().stackSize);
+	        event.player.addStat(uncraftedItemsStat, event.quantity);
     	}
     	
     }

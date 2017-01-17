@@ -2,6 +2,7 @@ package org.jglrxavpok.mods.decraft.inventory;
 
 import java.util.List;
 
+import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.event.ItemUncraftedEvent;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingManager;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult;
@@ -35,6 +36,8 @@ public class ContainerUncraftingTable extends Container
 
 	public ContainerUncraftingTable(InventoryPlayer playerInventoryIn, World worldIn)
 	{
+		ModUncrafting.instance.getLogger().info("Hello World");
+		
 		this.worldObj = worldIn;
 		
 		// uncrafting book inventory for capturing enchantments (left standalone slot)
@@ -168,7 +171,7 @@ public class ContainerUncraftingTable extends Container
 		int multiplier = (uncraftIn.getStackInSlot(0).stackSize / minStackSize);
 
 		// fire an event indicating a successful uncrafting operation
-		MinecraftForge.EVENT_BUS.post(new ItemUncraftedEvent(playerInventory.player, uncraftIn.getStackInSlot(0), craftingGrid, minStackSize));
+		MinecraftForge.EVENT_BUS.post(new ItemUncraftedEvent(playerInventory.player, uncraftIn.getStackInSlot(0), (minStackSize * multiplier)));
 
 		
 		// change the status to uncrafted
