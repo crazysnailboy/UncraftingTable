@@ -198,6 +198,7 @@ public class InventoryUncraftResult implements IInventory
 	}
     
     
+    
     /**
      * Returns the name of the inventory
      */
