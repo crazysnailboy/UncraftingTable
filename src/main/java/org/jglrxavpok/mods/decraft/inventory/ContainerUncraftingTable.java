@@ -1,26 +1,16 @@
 package org.jglrxavpok.mods.decraft.inventory;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
 import org.jglrxavpok.mods.decraft.event.ItemUncraftedEvent;
-import org.jglrxavpok.mods.decraft.event.UncraftingEvent;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingManager;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult.ResultType;
-import org.jglrxavpok.mods.decraft.stats.ModAchievements;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
@@ -178,7 +168,7 @@ public class ContainerUncraftingTable extends Container
         int multiplier = (uncraftIn.getStackInSlot(0).getCount() / minStackSize);
         
         // fire an event indicating a successful uncrafting operation
-        MinecraftForge.EVENT_BUS.post(new ItemUncraftedEvent(playerInventory.player, uncraftIn.getStackInSlot(0), craftingGrid, minStackSize));
+		MinecraftForge.EVENT_BUS.post(new ItemUncraftedEvent(playerInventory.player, uncraftIn.getStackInSlot(0), (minStackSize * multiplier)));
         
         
 		// change the status to uncrafted
@@ -242,7 +232,7 @@ public class ContainerUncraftingTable extends Container
 			ItemStack inputStack = uncraftIn.getStackInSlot(0);
 			
 			// if the stack is empty
-			if (inputStack == ItemStack.EMPTY)
+			if (inputStack.isEmpty())
 			{
 				// if the slot is empty because we've finished uncrafting something
 				if (this.uncraftingResult.resultType == ResultType.UNCRAFTED)
@@ -301,8 +291,8 @@ public class ContainerUncraftingTable extends Container
 				this.uncraftingResult = new UncraftingResult();
 				if (uncraftIn.getStackInSlot(0) != ItemStack.EMPTY) this.onCraftMatrixChanged(uncraftIn);
 			}
-
 		}
+		
     }
     
 
@@ -326,7 +316,7 @@ public class ContainerUncraftingTable extends Container
             }
 
             // if there's an itemstack in the calculation slot, drop the stack into the world
-            itemstack = this.calculInput.getStackInSlot(0);
+            itemstack = this.calculInput.removeStackFromSlot(0);
             if (itemstack != ItemStack.EMPTY)
             {
                 player.dropItem(itemstack, false);
@@ -391,25 +381,29 @@ public class ContainerUncraftingTable extends Container
         	// if the slot belongs to the uncrafting result grid
             else if (slot.inventory.equals(uncraftOut))
             {
-				if (this.uncraftingResult.resultType == ResultType.VALID)
+				// if the slot contains items
+				if (slot.getHasStack())
 				{
-					doUncraft();
+					if (this.uncraftingResult.resultType == ResultType.VALID)
+					{
+						doUncraft();
+					}
+					
+					if (uncraftOut.isEmpty())
+					{
+						this.uncraftingResult = new UncraftingResult();
+						if (uncraftIn.getStackInSlot(0) != ItemStack.EMPTY) this.onCraftMatrixChanged(uncraftIn);
+					}
+					
+					// attempt to add those items to the player's inventory
+					if (!playerInventory.addItemStackToInventory(slot.getStack()))
+					{
+						// TODO: shouldn't this spawn items in the world if they can't be added to the player's inventory?
+						return ItemStack.EMPTY;
+					}
+					// clear the slot
+					slot.putStack(ItemStack.EMPTY);
 				}
-				
-				if (uncraftOut.isEmpty())
-				{
-					this.uncraftingResult = new UncraftingResult();
-					if (uncraftIn.getStackInSlot(0) != null) this.onCraftMatrixChanged(uncraftIn);
-				}
-            	
-            	// attempt to add those items to the player's inventory
-                if (!playerInventory.addItemStackToInventory(slot.getStack()))
-                {
-                	// TODO: shouldn't this spawn items in the world if they can't be added to the player's inventory?
-                    return ItemStack.EMPTY;
-                }
-                // clear the slot
-                slot.putStack(ItemStack.EMPTY);
             }
             
         	// if the slot belongs to the player's inventory

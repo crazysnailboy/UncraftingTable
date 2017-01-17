@@ -315,7 +315,7 @@ public class InventoryUncraftResult implements IInventory
 	{
         for (int i = 0; i < this.stackResult.length; i++ )
         {
-			if (stackResult[i].recipeItem != ItemStack.EMPTY || stackResult[i].containerItem != ItemStack.EMPTY) return false;
+			if (!(stackResult[i].recipeItem.isEmpty() && stackResult[i].containerItem.isEmpty())) return false;
         }
         return true;
 	}

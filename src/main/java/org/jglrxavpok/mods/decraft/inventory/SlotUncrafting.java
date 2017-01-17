@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 public class SlotUncrafting extends Slot
 {
 	
-	private ItemStack stack;
+	private ItemStack stack = ItemStack.EMPTY;
 	private ContainerUncraftingTable container;
 	
 
