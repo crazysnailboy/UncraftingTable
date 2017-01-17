@@ -1,9 +1,11 @@
 package org.jglrxavpok.mods.decraft.item.uncrafting;
 
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -88,8 +90,8 @@ public final class RecipeHandlers
 		public NonNullList<ItemStack> getCraftingGrid(IRecipe r)
 		{
 			// ShapelessRecipes.recipeItems is a List<ItemStack>, so convert it to an NonNullList<ItemStack> and return
-			NonNullList<ItemStack> stacks = NonNullList.<ItemStack>withSize(9, ItemStack.EMPTY);
-			stacks.addAll(((ShapelessRecipes)r).recipeItems);
+			NonNullList<ItemStack> stacks = NonNullList.<ItemStack>create();
+			stacks.addAll(Lists.newArrayList(Iterables.filter(((ShapelessRecipes)r).recipeItems, ItemStack.class)));
 			return stacks;
 		}
 	}
