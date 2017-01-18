@@ -22,31 +22,31 @@ import net.minecraft.world.World;
 
 public class GuiUncraftingTable extends GuiContainer
 {
-    private static final ResourceLocation UNCRAFTING_TABLE_GUI_TEXTURES = new ResourceLocation(ModUncrafting.MODID + ":textures/gui/container/uncrafting_table.png");
+	private static final ResourceLocation UNCRAFTING_TABLE_GUI_TEXTURES = new ResourceLocation(ModUncrafting.MODID + ":textures/gui/container/uncrafting_table.png");
 
-    public ContainerUncraftingTable container;
-    private World worldObj;
-    private EntityPlayer player;
-    private GuiButton previousRecipeButton;
-    private GuiButton nextRecipeButton;
+	public ContainerUncraftingTable container;
+	private World worldObj;
+	private EntityPlayer player;
+	private GuiButton previousRecipeButton;
+	private GuiButton nextRecipeButton;
 
-    public GuiUncraftingTable(InventoryPlayer playerInventory, World world)
-    {
-    	super(new ContainerUncraftingTable(playerInventory, world));
-        container = (ContainerUncraftingTable)inventorySlots;
-        this.worldObj = world;
-        this.player = playerInventory.player;
-    }
+	public GuiUncraftingTable(InventoryPlayer playerInventory, World world)
+	{
+		super(new ContainerUncraftingTable(playerInventory, world));
+		container = (ContainerUncraftingTable)inventorySlots;
+		this.worldObj = world;
+		this.player = playerInventory.player;
+	}
 
 
-    /**
-     * Adds the buttons (and other controls) to the screen in question.
-     */
-    @Override
-    public void initGui()
-    {
-        super.initGui();
-        
+	/**
+	 * Adds the buttons (and other controls) to the screen in question.
+	 */
+	@Override
+	public void initGui()
+	{
+		super.initGui();
+		
 		int guiX = (this.width - this.xSize) / 2;
 		int guiY = (this.height - this.ySize) / 2;
 		
@@ -55,143 +55,143 @@ public class GuiUncraftingTable extends GuiContainer
 		
 		this.previousRecipeButton.visible = false;
 		this.nextRecipeButton.visible = false;
-    }
-    
-    
-    /**
-     * Called from the main game loop to update the screen.
-     */
-    @Override
-    public void updateScreen()
-    {
-    	super.updateScreen();
-    	
-    	boolean haveMultipleRecipes = (container.uncraftingResult.craftingGrids.size() > 1);
-    	boolean hasNextRecipe = (container.uncraftingResult.selectedCraftingGrid < (container.uncraftingResult.craftingGrids.size() - 1));
-    	boolean hasPreviousRecipe = (container.uncraftingResult.selectedCraftingGrid > 0);
-    	boolean canChangeRecipe = (container.uncraftingResult.resultType != ResultType.UNCRAFTED);
+	}
+	
+	
+	/**
+	 * Called from the main game loop to update the screen.
+	 */
+	@Override
+	public void updateScreen()
+	{
+		super.updateScreen();
+		
+		boolean haveMultipleRecipes = (container.uncraftingResult.getRecipeCount() > 1);
+		boolean hasNextRecipe = (container.uncraftingResult.selectedCraftingGrid < (container.uncraftingResult.getRecipeCount() - 1));
+		boolean hasPreviousRecipe = (container.uncraftingResult.selectedCraftingGrid > 0);
+		boolean canChangeRecipe = (container.uncraftingResult.resultType != ResultType.UNCRAFTED);
 
-    	this.nextRecipeButton.visible = (haveMultipleRecipes && canChangeRecipe && hasNextRecipe);
-    	this.nextRecipeButton.enabled = this.nextRecipeButton.visible;
-    	
-    	this.previousRecipeButton.visible = (haveMultipleRecipes && canChangeRecipe && hasPreviousRecipe);
-    	this.nextRecipeButton.enabled = this.nextRecipeButton.visible;
-    }
-    
-    
-    @Override
-    protected void actionPerformed(net.minecraft.client.gui.GuiButton button)
-    {
-    	if (button == this.previousRecipeButton || button == this.nextRecipeButton)
-    	{
-	    	if (button == this.previousRecipeButton)
-	    	{
-	    		if (container.uncraftingResult.selectedCraftingGrid == 0) return;
-	    		container.uncraftingResult.selectedCraftingGrid--;
-	    	}
-	    	if (button == this.nextRecipeButton)
-	    	{
-	    		if (container.uncraftingResult.selectedCraftingGrid == (container.uncraftingResult.craftingGrids.size() - 1)) return;
-	    		container.uncraftingResult.selectedCraftingGrid++;
-	    	}
-    		container.switchRecipe();
-	    	
-	    	int recipeIndex = container.uncraftingResult.selectedCraftingGrid;
-	        ModUncrafting.instance.getNetwork().sendToServer(new RecipeNavigationMessage(recipeIndex));
-    	}
-    }
+		this.nextRecipeButton.visible = (haveMultipleRecipes && canChangeRecipe && hasNextRecipe);
+		this.nextRecipeButton.enabled = this.nextRecipeButton.visible;
+		
+		this.previousRecipeButton.visible = (haveMultipleRecipes && canChangeRecipe && hasPreviousRecipe);
+		this.nextRecipeButton.enabled = this.nextRecipeButton.visible;
+	}
+	
+	
+	@Override
+	protected void actionPerformed(net.minecraft.client.gui.GuiButton button)
+	{
+		if (button == this.previousRecipeButton || button == this.nextRecipeButton)
+		{
+			if (button == this.previousRecipeButton)
+			{
+				if (container.uncraftingResult.selectedCraftingGrid == 0) return;
+				container.uncraftingResult.selectedCraftingGrid--;
+			}
+			if (button == this.nextRecipeButton)
+			{
+				if (container.uncraftingResult.selectedCraftingGrid == (container.uncraftingResult.getRecipeCount() - 1)) return;
+				container.uncraftingResult.selectedCraftingGrid++;
+			}
+			container.switchRecipe();
+			
+			int recipeIndex = container.uncraftingResult.selectedCraftingGrid;
+			ModUncrafting.instance.getNetwork().sendToServer(new RecipeNavigationMessage(recipeIndex));
+		}
+	}
 
-    
-    private void drawUncraftingStatusMessage()
-    {
-        // get a message to display based on the status of the container
-        String statusMessage = "";
-        switch (container.uncraftingResult.resultType)
-        {
-        	// if the uncrafting status is "ready", display the xp cost for the operation
-	        case VALID: 
-	        	statusMessage = I18n.format("container.uncrafting.cost", container.uncraftingResult.experienceCost);
-	        	break;
-	        
-    		// if the item cannot be uncrafted, display a message to that effect
-        	case NOT_UNCRAFTABLE:
-        		statusMessage = I18n.format("uncrafting.result.impossible");
-        		break;
-        		
-        	// if there are not enough items in the item stack, display a message to that effect
-        	case NOT_ENOUGH_ITEMS: 
-        		statusMessage = I18n.format("uncrafting.result.needMoreStacks", container.uncraftingResult.getMinStackSize());
-        		break;
-        		
-        	// if the player does not have enough xp, display the xp cost for the operation
-        	case NOT_ENOUGH_XP: 
-	        	statusMessage = I18n.format("container.uncrafting.cost", container.uncraftingResult.experienceCost);
-        		break;
-        		
-        	// if the crafting recipe requires container items to be present, display a message to that effect 
-        	case NEED_CONTAINER_ITEMS:
-        		statusMessage = "Container Items"; // TODO
-        		break;
+	
+	private void drawUncraftingStatusMessage()
+	{
+		// get a message to display based on the status of the container
+		String statusMessage = "";
+		switch (container.uncraftingResult.resultType)
+		{
+			// if the uncrafting status is "ready", display the xp cost for the operation
+			case VALID: 
+				statusMessage = I18n.format("container.uncrafting.cost", container.uncraftingResult.experienceCost);
+				break;
+			
+			// if the item cannot be uncrafted, display a message to that effect
+			case NOT_UNCRAFTABLE:
+				statusMessage = I18n.format("uncrafting.result.impossible");
+				break;
+				
+			// if there are not enough items in the item stack, display a message to that effect
+			case NOT_ENOUGH_ITEMS: 
+				statusMessage = I18n.format("uncrafting.result.needMoreStacks", container.uncraftingResult.getMinStackSize());
+				break;
+				
+			// if the player does not have enough xp, display the xp cost for the operation
+			case NOT_ENOUGH_XP: 
+				statusMessage = I18n.format("container.uncrafting.cost", container.uncraftingResult.experienceCost);
+				break;
+				
+			// if the crafting recipe requires container items to be present, display a message to that effect 
+			case NEED_CONTAINER_ITEMS:
+				statusMessage = "Container Items"; // TODO
+				break;
 
-        		
-        	default: break;
-        }
-        
-        // if there is a message to display, render it
-        if (!statusMessage.equals(""))
-        {        
-        	int textX = 8;
-        	int textY = ySize - 96 + 2 - fontRendererObj.FONT_HEIGHT - 4; // 60
-        	
-        	// *** copied from GuiRepair ***
-        	// determine the text and shadow colours based on the uncrafting status
-        	int textColor = (container.uncraftingResult.isError() ? 16736352 : 8453920);  
-            int shadowColor = -16777216 | (textColor & 16579836) >> 2 | textColor & -16777216;
+				
+			default: break;
+		}
+		
+		// if there is a message to display, render it
+		if (!statusMessage.equals(""))
+		{		
+			int textX = 8;
+			int textY = ySize - 96 + 2 - fontRendererObj.FONT_HEIGHT - 4; // 60
+			
+			// *** copied from GuiRepair ***
+			// determine the text and shadow colours based on the uncrafting status
+			int textColor = (container.uncraftingResult.isError() ? 16736352 : 8453920);  
+			int shadowColor = -16777216 | (textColor & 16579836) >> 2 | textColor & -16777216;
 
-            // render the string 4 times at different positions in different colours to achieve the desired effect
-            this.fontRendererObj.drawString(statusMessage, textX, textY + 1, shadowColor);
-            this.fontRendererObj.drawString(statusMessage, textX + 1, textY, shadowColor);
-            this.fontRendererObj.drawString(statusMessage, textX + 1, textY + 1, shadowColor);
-            this.fontRendererObj.drawString(statusMessage, textX, textY, textColor);
-            // *** copied from GuiRepair ***
-        }
-    }
-    
-    
+			// render the string 4 times at different positions in different colours to achieve the desired effect
+			this.fontRendererObj.drawString(statusMessage, textX, textY + 1, shadowColor);
+			this.fontRendererObj.drawString(statusMessage, textX + 1, textY, shadowColor);
+			this.fontRendererObj.drawString(statusMessage, textX + 1, textY + 1, shadowColor);
+			this.fontRendererObj.drawString(statusMessage, textX, textY, textColor);
+			// *** copied from GuiRepair ***
+		}
+	}
+	
+	
 
-    @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
-    {
-    	GlStateManager.disableLighting();
-        
-    	// render the block name at the top of the gui
-        String title = I18n.format("container.uncrafting");
-        fontRendererObj.drawString(title, xSize / 2 - fontRendererObj.getStringWidth(title) / 2, 6, 4210752);
-        
-        // write "inventory" above the player inventory
-        fontRendererObj.drawString(I18n.format("container.inventory"), 8, ySize - 96 + 2, 4210752); // y = 72
+	@Override
+	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
+	{
+		GlStateManager.disableLighting();
+		
+		// render the block name at the top of the gui
+		String title = I18n.format("container.uncrafting");
+		fontRendererObj.drawString(title, xSize / 2 - fontRendererObj.getStringWidth(title) / 2, 6, 4210752);
+		
+		// write "inventory" above the player inventory
+		fontRendererObj.drawString(I18n.format("container.inventory"), 8, ySize - 96 + 2, 4210752); // y = 72
 
-        // draw a status message in red or green if appropriate for the status of the uncrafting operation
-    	drawUncraftingStatusMessage();
+		// draw a status message in red or green if appropriate for the status of the uncrafting operation
+		drawUncraftingStatusMessage();
 
-    	
-    	GlStateManager.enableLighting();
-    }
+		
+		GlStateManager.enableLighting();
+	}
 
-    @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
-    {
-    	GlStateManager.pushMatrix();
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+	@Override
+	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
+	{
+		GlStateManager.pushMatrix();
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
-        // bind the background gui texture
-        this.mc.getTextureManager().bindTexture(UNCRAFTING_TABLE_GUI_TEXTURES);
-        
+		// bind the background gui texture
+		this.mc.getTextureManager().bindTexture(UNCRAFTING_TABLE_GUI_TEXTURES);
+		
 		int guiX = (this.width - this.xSize) / 2;
 		int guiY = (this.height - this.ySize) / 2;
-        
-        // render the gui background
-        this.drawTexturedModalRect(guiX, guiY, 0, 0, this.xSize, this.ySize);
+		
+		// render the gui background
+		this.drawTexturedModalRect(guiX, guiY, 0, 0, this.xSize, this.ySize);
 
 		// if the uncrafting status of the container is "error", render the arrow with the cross over it
 		if (container.uncraftingResult.isError())
@@ -200,12 +200,12 @@ public class GuiUncraftingTable extends GuiContainer
 		}
 		
 		RenderHelper.enableGUIStandardItemLighting();
-        
-        // render a book over the left slot
-        int slotX = 20; int slotY = 35;
-        itemRender.renderItemIntoGUI(new ItemStack(Items.BOOK), guiX + slotX, guiY + slotY);
-        
-        // draw a gray rectangle over the item
+		
+		// render a book over the left slot
+		int slotX = 20; int slotY = 35;
+		itemRender.renderItemIntoGUI(new ItemStack(Items.BOOK), guiX + slotX, guiY + slotY);
+		
+		// draw a gray rectangle over the item
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		this.drawRect(guiX + slotX, guiY + slotY, guiX + slotX + 16, guiY + slotY + 16, 0x9f8b8b8b);
@@ -219,68 +219,68 @@ public class GuiUncraftingTable extends GuiContainer
 			ItemStack[] craftingGrid = container.uncraftingResult.getCraftingGrid();
 			
 			// loop through the slots in the temp inventory
-	        for ( int i = 0 ; i < craftingGrid.length ; i++ )
-	        {
-	        	ItemStack itemStack = craftingGrid[i];
-	        	// if the itemstack isn't empty
-	        	if (itemStack != null)
-	        	{
-	        		// find the screen position of the corresponding slot from the output inventory 
-		        	Slot renderSlot = container.getSlotFromInventory(container.uncraftOut, i);
-	        		slotX = renderSlot.xDisplayPosition;
-	        		slotY = renderSlot.yDisplayPosition;
-	        		
-	        		
-	        		// if the inventory slot is empty, render the item from the crafting recipe as the slot background
-	        		if (!renderSlot.getHasStack())
-	        		{
-	        		
-		        		// render the item in the position of the slot
-		        		itemRender.renderItemAndEffectIntoGUI(itemStack, guiX + slotX, guiY + slotY);
-		                if (itemStack.stackSize > 1)
-		                {
-		                	itemRender.renderItemOverlayIntoGUI(this.fontRendererObj, itemStack, guiX + slotX, guiY + slotY, String.valueOf(itemStack.stackSize));
-		                }
-		                
-		                // draw a coloured overlay over the item
-		                GL11.glDisable(GL11.GL_LIGHTING);
-		                GL11.glDisable(GL11.GL_DEPTH_TEST);
+			for ( int i = 0 ; i < craftingGrid.length ; i++ )
+			{
+				ItemStack itemStack = craftingGrid[i];
+				// if the itemstack isn't empty
+				if (itemStack != null)
+				{
+					// find the screen position of the corresponding slot from the output inventory 
+					Slot renderSlot = container.getSlotFromInventory(container.uncraftOut, i);
+					slotX = renderSlot.xDisplayPosition;
+					slotY = renderSlot.yDisplayPosition;
+					
+					
+					// if the inventory slot is empty, render the item from the crafting recipe as the slot background
+					if (!renderSlot.getHasStack())
+					{
+					
+						// render the item in the position of the slot
+						itemRender.renderItemAndEffectIntoGUI(itemStack, guiX + slotX, guiY + slotY);
+						if (itemStack.stackSize > 1)
+						{
+							itemRender.renderItemOverlayIntoGUI(this.fontRendererObj, itemStack, guiX + slotX, guiY + slotY, String.valueOf(itemStack.stackSize));
+						}
+						
+						// draw a coloured overlay over the item
+						GL11.glDisable(GL11.GL_LIGHTING);
+						GL11.glDisable(GL11.GL_DEPTH_TEST);
 	
-		                // use a gray overlay for normal items, or a red overlay for this with container items
-		                int color = 0x9F8B8B8B;
-		                if (itemStack.getItem().hasContainerItem(null)) // the hasContainerItem parameter is ignored, and ItemStack internally calls the deprecated version without the parameter anyway...
-		                {
-		                	Item containerItem = itemStack.getItem().getContainerItem();
-		                	Item slotItem = (renderSlot.getHasStack() ? renderSlot.getStack().getItem() : null);
-		                	
-		                	if (slotItem == null || (slotItem != null && containerItem != slotItem))
-		                	{
-		                		color = 0x80FF8B8B;
-		                	}
-		                }
-//		                int color = (itemStack.getItem().hasContainerItem(null) ?  0x80FF8B8B : 0x9F8B8B8B);  
-		                this.drawRect(guiX + slotX, guiY + slotY, guiX + slotX + 16, guiY + slotY + 16, color);
-		                
-		                GL11.glEnable(GL11.GL_LIGHTING);
-		                GL11.glEnable(GL11.GL_DEPTH_TEST);
-		                
-	        		}
-	        		
-	        	}
-	        }
+						// use a gray overlay for normal items, or a red overlay for this with container items
+						int color = 0x9F8B8B8B;
+						if (itemStack.getItem().hasContainerItem(null)) // the hasContainerItem parameter is ignored, and ItemStack internally calls the deprecated version without the parameter anyway...
+						{
+							Item containerItem = itemStack.getItem().getContainerItem();
+							Item slotItem = (renderSlot.getHasStack() ? renderSlot.getStack().getItem() : null);
+							
+							if (slotItem == null || (slotItem != null && containerItem != slotItem))
+							{
+								color = 0x80FF8B8B;
+							}
+						}
+//						int color = (itemStack.getItem().hasContainerItem(null) ?  0x80FF8B8B : 0x9F8B8B8B);  
+						this.drawRect(guiX + slotX, guiY + slotY, guiX + slotX + 16, guiY + slotY + 16, color);
+						
+						GL11.glEnable(GL11.GL_LIGHTING);
+						GL11.glEnable(GL11.GL_DEPTH_TEST);
+						
+					}
+					
+				}
+			}
 			
 		}
 		
 		RenderHelper.disableStandardItemLighting();
 		
 
-    	GlStateManager.popMatrix();
-    }
-    
-    
-    private class GuiButton extends net.minecraft.client.gui.GuiButton
-    {
-    	
+		GlStateManager.popMatrix();
+	}
+	
+	
+	private class GuiButton extends net.minecraft.client.gui.GuiButton
+	{
+		
 		private final ButtonFacing facing;
 
 		public GuiButton(int buttonId, int x, int y, ButtonFacing facing) 
@@ -294,9 +294,9 @@ public class GuiUncraftingTable extends GuiContainer
 		{
 			if (this.visible)
 			{
-		        GL11.glPushMatrix();
-		        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-		        
+				GL11.glPushMatrix();
+				GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+				
 				mc.getTextureManager().bindTexture(UNCRAFTING_TABLE_GUI_TEXTURES);
 				
 				boolean mouseOnButton = (mouseX >= this.xPosition) && (mouseY >= this.yPosition) && (mouseX < this.xPosition + this.width) && (mouseY < this.yPosition + this.height);
@@ -311,17 +311,17 @@ public class GuiUncraftingTable extends GuiContainer
 				GL11.glEnable(GL11.GL_LIGHTING);
 				GL11.glEnable(GL11.GL_DEPTH_TEST);
 				
-		        GL11.glPopMatrix();
+				GL11.glPopMatrix();
 			}
 
 		}
-    }
-    
+	}
+	
 	private static enum ButtonFacing
 	{
 		LEFT,
 		RIGHT
 	}
-    
+	
 
 }
