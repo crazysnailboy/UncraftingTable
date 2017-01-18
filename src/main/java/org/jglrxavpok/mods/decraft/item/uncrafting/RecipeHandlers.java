@@ -234,27 +234,27 @@ public final class RecipeHandlers
 				int inputHeight = (Integer)(recipeClass.getField("inputHeight").get(r));
 				
 				// *** copied from ic2.jeiIntegration.recipe.crafting.AdvRecipeWrapper ***
-			    int mask = masks[0];
-			    int itemIndex = 0;
-			    List ret = new ArrayList();
-			    for (int i = 0; i < 9; i++) 
-			    {
-			    	if ((i % 3 < inputWidth) && (i / 3 < inputHeight)) 
-			    	{
-			    		if ((mask >>> 8 - i & 0x1) != 0) 
-			    		{
-			    			ret.add(input[(itemIndex++)]);
-			    		} 
-			    		else 
-			    		{
-			    			ret.add(null);
-			    		}
-			    	}
-			    }
-			    
-			    return replaceRecipeInputs(ret);
+				int mask = masks[0];
+				int itemIndex = 0;
+				List ret = new ArrayList();
+				for (int i = 0; i < 9; i++) 
+				{
+					if ((i % 3 < inputWidth) && (i / 3 < inputHeight)) 
+					{
+						if ((mask >>> 8 - i & 0x1) != 0) 
+						{
+							ret.add(input[(itemIndex++)]);
+						} 
+						else 
+						{
+							ret.add(null);
+						}
+					}
+				}
+				
+				return replaceRecipeInputs(ret);
 				// *** copied from ic2.jeiIntegration.recipe.crafting.AdvRecipeWrapper ***
-			    
+				
 			}
 			catch(Exception ex) { return null; }
 		}
@@ -264,32 +264,32 @@ public final class RecipeHandlers
 			try
 			{
 				// *** copied from ic2.jeiIntegration.recipe.crafting.AdvRecipeWrapper ***
-			    List<List<ItemStack>> out = new ArrayList(list.size());
-			    for (Object recipe : list) // for (IRecipeInput recipe : list) 
-			    {
-			    	if (recipe == null)
-			    	{
-			    		out.add(null);
-			    	}
-			    	else
-			    	{
-			    		List<ItemStack> replace = (List<ItemStack>)(Class.forName("ic2.api.recipe.IRecipeInput").getMethod("getInputs", (Class[])null).invoke(recipe)); // List<ItemStack> replace = recipe.getInputs();
-			    		for (int i = 0; i < replace.size(); i++)
-			    		{
-			    			ItemStack stack = (ItemStack)replace.get(i);
-			    			if ((stack != null) && (Class.forName("ic2.api.item.IElectricItem").isInstance(stack.getItem()))) 
-			    			{
-			    				replace.set(i, stack.copy());
-			    			}
-			    			else if (stack != null)
-			    			{
-			    				stack.stackSize = (Integer)(Class.forName("ic2.api.recipe.IRecipeInput").getMethod("getAmount", (Class[])null).invoke(recipe)); // stack.stackSize = recipe.getAmount();
-			    			}
-			    		}
-			    		out.add(replace);
-			    	}
-			    }
-			    return out;
+				List<List<ItemStack>> out = new ArrayList(list.size());
+				for (Object recipe : list) // for (IRecipeInput recipe : list) 
+				{
+					if (recipe == null)
+					{
+						out.add(null);
+					}
+					else
+					{
+						List<ItemStack> replace = (List<ItemStack>)(Class.forName("ic2.api.recipe.IRecipeInput").getMethod("getInputs", (Class[])null).invoke(recipe)); // List<ItemStack> replace = recipe.getInputs();
+						for (int i = 0; i < replace.size(); i++)
+						{
+							ItemStack stack = (ItemStack)replace.get(i);
+							if ((stack != null) && (Class.forName("ic2.api.item.IElectricItem").isInstance(stack.getItem()))) 
+							{
+								replace.set(i, stack.copy());
+							}
+							else if (stack != null)
+							{
+								stack.stackSize = (Integer)(Class.forName("ic2.api.recipe.IRecipeInput").getMethod("getAmount", (Class[])null).invoke(recipe)); // stack.stackSize = recipe.getAmount();
+							}
+						}
+						out.add(replace);
+					}
+				}
+				return out;
 				// *** copied from ic2.jeiIntegration.recipe.crafting.AdvRecipeWrapper ***
 			}
 			catch(Exception ex) { return null; }
@@ -305,8 +305,8 @@ public final class RecipeHandlers
 				List<List<ItemStack>> items = getInputs(r);
 				if (items != null)
 				{
-				    for ( List<ItemStack> list : items )
-				    {
+					for ( List<ItemStack> list : items )
+					{
 						if (list != null && list.size() > 0)
 						{
 							ItemStack itemStack = list.get(0); 
@@ -317,7 +317,7 @@ public final class RecipeHandlers
 						{
 							itemStacks.add(null);
 						}
-				    }
+					}
 				}
 			}
 			catch(Exception ex) { }
