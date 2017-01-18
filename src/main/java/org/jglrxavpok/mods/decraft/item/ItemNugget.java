@@ -28,21 +28,21 @@ public class ItemNugget extends Item
 		return "item." + EnumNuggetType.byMetadata(stack.getMetadata()).getUnlocalizedName();
 	}
 	
-    @SideOnly(Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list) 
 	{
-    	for (EnumNuggetType nuggetType : EnumNuggetType.values())
-    	{
-            list.add(new ItemStack(item, 1, nuggetType.getMetadata()));
-    	}
+		for (EnumNuggetType nuggetType : EnumNuggetType.values())
+		{
+			list.add(new ItemStack(item, 1, nuggetType.getMetadata()));
+		}
 	}
 	
 	public static enum EnumNuggetType
 	{
 		DIAMOND(0, "diamond"),
-		EMERALD(1, "emerald"),
-		IRON(2, "iron");
+		EMERALD(1, "emerald");
+//		IRON(2, "iron");
 		
 		private final int meta;
 		private final String name;
@@ -85,5 +85,5 @@ public class ItemNugget extends Item
 			}
 		}
 	}
-    
+	
 }

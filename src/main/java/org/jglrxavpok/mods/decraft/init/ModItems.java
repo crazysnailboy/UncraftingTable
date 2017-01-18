@@ -46,18 +46,18 @@ public class ModItems
 		OreDictionary.registerOre("shardDiamond", new ItemStack(NUGGET, 1, 0));  // added for compatibility with Magic Bees
 		OreDictionary.registerOre("nuggetEmerald", new ItemStack(NUGGET, 1, 1));
 		OreDictionary.registerOre("shardEmerald", new ItemStack(NUGGET, 1, 1));  // added for compatibility with Magic Bees
-		OreDictionary.registerOre("nuggetIron", new ItemStack(NUGGET, 1, 2));
+//		OreDictionary.registerOre("nuggetIron", new ItemStack(NUGGET, 1, 2));
 		
 		
 		// register crafting recipes
 		// gems and ingots to nuggets
 		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.NUGGET, 9, 0), new Object[] { Items.DIAMOND }));
 		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.NUGGET, 9, 1), new Object[] { Items.EMERALD }));
-		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.NUGGET, 9, 2), new Object[] { Items.IRON_INGOT }));
+//		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.NUGGET, 9, 2), new Object[] { Items.IRON_INGOT }));
 		// nuggets to gems and ingots
 		GameRegistry.addRecipe(new ShapedOreRecipe(Items.DIAMOND, new Object[] { "FFF", "FFF", "FFF", Character.valueOf('F'), "nuggetDiamond" }));
 		GameRegistry.addRecipe(new ShapedOreRecipe(Items.EMERALD, new Object[] { "FFF", "FFF", "FFF", Character.valueOf('F'), "nuggetEmerald" }));
-		GameRegistry.addRecipe(new ShapedOreRecipe(Items.IRON_INGOT, new Object[] { "FFF", "FFF", "FFF", Character.valueOf('F'), "nuggetIron" }));
+//		GameRegistry.addRecipe(new ShapedOreRecipe(Items.IRON_INGOT, new Object[] { "FFF", "FFF", "FFF", Character.valueOf('F'), "nuggetIron" }));
 	}
 	
 }
