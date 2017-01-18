@@ -30,22 +30,22 @@ public class InventoryUncraftResult implements IInventory
 	}
 
 	
-    /**
-     * Returns the number of slots in the inventory.
-     */
-    @Override
-    public int getSizeInventory() 
-    {
-        return 9;
-    }
-    
+	/**
+	 * Returns the number of slots in the inventory.
+	 */
+	@Override
+	public int getSizeInventory() 
+	{
+		return 9;
+	}
+	
 
-    /**
-     * Returns the stack in slot i
-     */
-    @Override
-    public ItemStack getStackInSlot(int index) 
-    {
+	/**
+	 * Returns the stack in slot i
+	 */
+	@Override
+	public ItemStack getStackInSlot(int index) 
+	{
 		if (this.eventHandler.uncraftingResult.resultType == ResultType.INACTIVE)
 		{
 			return this.stackResult[index].containerItem;
@@ -65,16 +65,16 @@ public class InventoryUncraftResult implements IInventory
 		{
 			return this.stackResult[index].recipeItem; 
 		}
-    }
+	}
 
-    
-    /**
-     * Removes from an inventory slot (first arg) up to a specified number (second arg) of items and returns them in a
-     * new stack.
-     */
-    @Override
-    public ItemStack decrStackSize(int index, int count) 
-    {
+	
+	/**
+	 * Removes from an inventory slot (first arg) up to a specified number (second arg) of items and returns them in a
+	 * new stack.
+	 */
+	@Override
+	public ItemStack decrStackSize(int index, int count) 
+	{
 		// if the inventory has been modified by the user
 		if ((this.eventHandler.uncraftingResult.resultType == ResultType.VALID) || (this.eventHandler.uncraftingResult.resultType == ResultType.UNCRAFTED))
 		{
@@ -107,16 +107,16 @@ public class InventoryUncraftResult implements IInventory
 			}
 		}
 		return null;
-    }
-    
-    
-    /**
-     * When some containers are closed they call this on each slot, then drop whatever it returns as an EntityItem -
-     * like when you close a workbench GUI.
-     */
-    @Override
-    public ItemStack removeStackFromSlot(int index) 
-    {
+	}
+	
+	
+	/**
+	 * When some containers are closed they call this on each slot, then drop whatever it returns as an EntityItem -
+	 * like when you close a workbench GUI.
+	 */
+	@Override
+	public ItemStack removeStackFromSlot(int index) 
+	{
 		// if the inventory has been modified by the user
 		if (this.eventHandler.uncraftingResult.resultType == ResultType.UNCRAFTED)
 		{
@@ -142,15 +142,15 @@ public class InventoryUncraftResult implements IInventory
 			}
 		}
 		return null;
-    }
-    
+	}
+	
 
-    /**
-     * Sets the given item stack to the specified slot in the inventory (can be crafting or armor sections).
-     */
-    @Override
-    public void setInventorySlotContents(int index, ItemStack stack)
-    {
+	/**
+	 * Sets the given item stack to the specified slot in the inventory (can be crafting or armor sections).
+	 */
+	@Override
+	public void setInventorySlotContents(int index, ItemStack stack)
+	{
 		// if the slot isn't empty, and the item in the slot requires a container item
 		if (stack != null && this.stackResult[index].recipeItem != null && stackResult[index].recipeItem.getItem().hasContainerItem(null))
 		{
@@ -171,7 +171,8 @@ public class InventoryUncraftResult implements IInventory
 					
 					this.stackResult[index].recipeItem = newStack;
 					
-					this.eventHandler.uncraftingResult.craftingGrids.get(this.eventHandler.uncraftingResult.selectedCraftingGrid)[index] = newStack;
+					this.eventHandler.uncraftingResult.getCraftingGrid()[index] = newStack;
+//					this.eventHandler.uncraftingResult.craftingGrids.get(this.eventHandler.uncraftingResult.selectedCraftingGrid)[index] = newStack;
 								
 				}
 				
@@ -190,7 +191,7 @@ public class InventoryUncraftResult implements IInventory
 			
 			this.eventHandler.onCraftMatrixChanged(this);
 		}
-    }
+	}
 
 	public void setInventorySlotRecipeStack(int index, ItemStack stack)
 	{
@@ -198,9 +199,9 @@ public class InventoryUncraftResult implements IInventory
 	}
 
 	
-    /**
-     * Returns the name of the inventory
-     */
+	/**
+	 * Returns the name of the inventory
+	 */
 	@Override
 	public String getName() 
 	{
@@ -208,9 +209,9 @@ public class InventoryUncraftResult implements IInventory
 	}
 	
 	
-    /**
-     * Returns if the inventory is named
-     */
+	/**
+	 * Returns if the inventory is named
+	 */
 	@Override
 	public boolean hasCustomName() 
 	{
@@ -218,9 +219,9 @@ public class InventoryUncraftResult implements IInventory
 	}
 	
 	
-    /**
-     * Get the formatted ChatComponent that will be used for the sender's username in chat
-     */
+	/**
+	 * Get the formatted ChatComponent that will be used for the sender's username in chat
+	 */
 	@Override
 	public IChatComponent getDisplayName() 
 	{
@@ -229,35 +230,35 @@ public class InventoryUncraftResult implements IInventory
 	
 
 	/**
-     * Returns the maximum stack size for a inventory slot.
-     */
-    @Override
-    public int getInventoryStackLimit() 
-    {
-        return 64;
-    }
-    
+	 * Returns the maximum stack size for a inventory slot.
+	 */
+	@Override
+	public int getInventoryStackLimit() 
+	{
+		return 64;
+	}
+	
 
-    /**
-     * For tile entities, ensures the chunk containing the tile entity is saved to disk later - the game won't think it
-     * hasn't changed and skip it.
-     */
-    @Override
-    public void markDirty() 
-    {
-    }
-    
+	/**
+	 * For tile entities, ensures the chunk containing the tile entity is saved to disk later - the game won't think it
+	 * hasn't changed and skip it.
+	 */
+	@Override
+	public void markDirty() 
+	{
+	}
+	
 
-    /**
-     * Do not make give this method the name canInteractWith because it clashes with Container
-     */
-    @Override
-    public boolean isUseableByPlayer(EntityPlayer player) 
-    {
-        return true;
-    }
-    
-    
+	/**
+	 * Do not make give this method the name canInteractWith because it clashes with Container
+	 */
+	@Override
+	public boolean isUseableByPlayer(EntityPlayer player) 
+	{
+		return true;
+	}
+	
+	
 	@Override
 	public void openInventory(EntityPlayer player) 
 	{
@@ -269,13 +270,13 @@ public class InventoryUncraftResult implements IInventory
 	{
 	}
 	
-    
-    /**
-     * Returns true if automation is allowed to insert the given stack (ignoring stack size) into the given slot.
-     */
-    @Override
-    public boolean isItemValidForSlot(int index, ItemStack stack) 
-    {
+	
+	/**
+	 * Returns true if automation is allowed to insert the given stack (ignoring stack size) into the given slot.
+	 */
+	@Override
+	public boolean isItemValidForSlot(int index, ItemStack stack) 
+	{
 		// if the recipe item has a container item
 		if (stackResult[index].recipeItem != null && stackResult[index].recipeItem.getItem().hasContainerItem(null))
 		{
@@ -287,9 +288,9 @@ public class InventoryUncraftResult implements IInventory
 			return (stack.getItem() == containerItem);
 		}
 		else return false;
-    }
+	}
 
-    
+	
 	@Override
 	public int getField(int id) 
 	{
@@ -310,16 +311,16 @@ public class InventoryUncraftResult implements IInventory
 	}
 	
 
-    public boolean isEmpty()
-    {
+	public boolean isEmpty()
+	{
 		for (int i = 0; i < this.stackResult.length; i++ )
 		{
 			if (stackResult[i].recipeItem != null || stackResult[i].containerItem != null) return false;
 		}
 		return true;
-    }
+	}
 
-    
+	
 	@Override
 	public void clear() 
 	{
