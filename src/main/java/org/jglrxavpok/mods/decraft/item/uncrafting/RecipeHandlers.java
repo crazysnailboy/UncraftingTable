@@ -232,16 +232,16 @@ public final class RecipeHandlers
 				// *** copied from ic2.neiIntegration.core.recipehandler.AdvRecipeHandler ***
 				List<ItemStack>[] items = new List[9];
 				int i = 0;
-			    for (int j = 0; i < 9; i++) 
-			    {
-			    	if ((masks[0] & 1 << 8 - i) != 0)
-			    	{
-			    		List<ItemStack> inputs = (List<ItemStack>)(recipeClass.getMethod("expand", Object.class).invoke(r, input[j]));
-			    		if (inputs.isEmpty()) break;
-			    		items[i] = inputs;
-			    		j++;
-			    	}
-			    }
+				for (int j = 0; i < 9; i++) 
+				{
+					if ((masks[0] & 1 << 8 - i) != 0)
+					{
+						List<ItemStack> inputs = (List<ItemStack>)(recipeClass.getMethod("expand", Object.class).invoke(r, input[j]));
+						if (inputs.isEmpty()) break;
+						items[i] = inputs;
+						j++;
+					}
+				}
 				// *** copied from ic2.neiIntegration.core.recipehandler.AdvRecipeHandler ***
 
 				for (List<ItemStack> list : items )

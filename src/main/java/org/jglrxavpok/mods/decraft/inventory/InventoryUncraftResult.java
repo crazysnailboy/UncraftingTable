@@ -174,7 +174,8 @@ public class InventoryUncraftResult implements IInventory
 					
 					this.stackResult[index].recipeItem = newStack;
 					
-					this.eventHandler.uncraftingResult.craftingGrids.get(this.eventHandler.uncraftingResult.selectedCraftingGrid)[index] = newStack;
+					this.eventHandler.uncraftingResult.getCraftingGrid()[index] = newStack;
+//					this.eventHandler.uncraftingResult.craftingGrids.get(this.eventHandler.uncraftingResult.selectedCraftingGrid)[index] = newStack;
 								
 				}
 				
