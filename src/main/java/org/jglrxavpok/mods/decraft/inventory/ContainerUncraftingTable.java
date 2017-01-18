@@ -161,8 +161,8 @@ public class ContainerUncraftingTable extends Container
     	
     	
     	// get the minimum stack size and the crafting grid from the uncrafting result
-		int minStackSize = (uncraftingResult.minStackSizes.size() > 0 ? uncraftingResult.minStackSizes.get(uncraftingResult.selectedCraftingGrid) : 1);
-        NonNullList<ItemStack> craftingGrid = (uncraftingResult.craftingGrids.size() > 0 ? uncraftingResult.craftingGrids.get(uncraftingResult.selectedCraftingGrid) : null);
+		int minStackSize = uncraftingResult.getMinStackSize();
+		NonNullList<ItemStack> craftingGrid = uncraftingResult.getCraftingGrid();
         
         // calculate a multipler to determine how many items we've uncrafted
         int multiplier = (uncraftIn.getStackInSlot(0).getCount() / minStackSize);
