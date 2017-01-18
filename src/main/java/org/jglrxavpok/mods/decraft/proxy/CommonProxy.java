@@ -1,20 +1,18 @@
 package org.jglrxavpok.mods.decraft.proxy;
 
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.relauncher.Side;
 import org.jglrxavpok.mods.decraft.ModUncrafting;
-import org.jglrxavpok.mods.decraft.UncraftingManager;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
-import org.jglrxavpok.mods.decraft.network.UncraftingRequest;
-import org.jglrxavpok.mods.decraft.network.UncraftingResult;
-import org.jglrxavpok.mods.decraft.stats.ModAchievements;
+import org.jglrxavpok.mods.decraft.common.network.message.RecipeNavigationMessage;
+import org.jglrxavpok.mods.decraft.init.ModBlocks;
+import org.jglrxavpok.mods.decraft.init.ModItems;
+import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingManager;
+import org.jglrxavpok.mods.decraft.stats.ModAchievementList;
 
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.stats.Achievement;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
 
 public class CommonProxy {
 	
@@ -26,17 +24,12 @@ public class CommonProxy {
 		// initialize the configuration
 	    ModConfiguration.preInit();
 	    
-        // register the block
-	    GameRegistry.register(ModUncrafting.uncraftingTable); //, ModUncrafting.uncraftingTable.getRegistryName());
-
-	    ItemBlock itemBlock = new ItemBlock(ModUncrafting.uncraftingTable);
-	    itemBlock.setRegistryName(ModUncrafting.uncraftingTable.getRegistryName());
+	    // register the blocks and items
+	    ModBlocks.preInit();
+        ModItems.preInit();
 	    
-		GameRegistry.register(itemBlock);
-
-		SimpleNetworkWrapper network = ModUncrafting.instance.getNetwork();
-		network.registerMessage(UncraftingRequest.Handler.class, UncraftingRequest.class, 0, Side.SERVER);
-		network.registerMessage(UncraftingResult.Handler.class, UncraftingResult.class, 1, Side.CLIENT);
+        // register the network messages
+        ModUncrafting.instance.getNetwork().registerMessage(RecipeNavigationMessage.MessageHandler.class, RecipeNavigationMessage.class, 0, Side.SERVER);
 	}
 	
 	/**
@@ -45,21 +38,20 @@ public class CommonProxy {
 	 */
 	public void init(){
 		
-        // create block crafting recipe
-        GameRegistry.addShapedRecipe(new ItemStack(ModUncrafting.uncraftingTable), new Object[]
-        {
-            "SSS", "SXS", "SSS", 'X', Blocks.CRAFTING_TABLE, 'S', Blocks.COBBLESTONE
-        });
+        // create the crafting recipes
+		ModBlocks.init();
+        ModItems.init();
         
         // initialize the achievements
-		ModAchievements.init();
-		
+		ModAchievementList.init();
 	}
 	
 	/**
 	 * Handle interaction with other mods, complete your setup based on this.
 	 */
 	public void postInit(){
+		
+		// initalize the uncrafting manager
 		UncraftingManager.postInit();
 	}
 

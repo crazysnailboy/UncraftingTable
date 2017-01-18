@@ -1,4 +1,4 @@
-package org.jglrxavpok.mods.decraft;
+package org.jglrxavpok.mods.decraft.block;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -23,7 +23,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.jglrxavpok.mods.decraft.ModUncrafting;
-import org.jglrxavpok.mods.decraft.stats.ModAchievements;
+import org.jglrxavpok.mods.decraft.common.network.ModGuiHandler;
+import org.jglrxavpok.mods.decraft.stats.ModAchievementList;
 
 
 public class BlockUncraftingTable extends Block
@@ -102,7 +103,7 @@ public class BlockUncraftingTable extends Block
 			// if the block is adjacent to all three, trigger the achievement
 			if (furnace && chest && workbench) 
 			{
-				playerIn.addStat(ModAchievements.porteManteauAchievement);
+				playerIn.addStat(ModAchievementList.PORTEMANTEAU);
 			}
 		}
 	}

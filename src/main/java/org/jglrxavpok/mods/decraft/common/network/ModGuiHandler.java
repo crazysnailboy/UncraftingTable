@@ -1,11 +1,14 @@
-package org.jglrxavpok.mods.decraft;
+package org.jglrxavpok.mods.decraft.common.network;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import org.jglrxavpok.mods.decraft.client.GuiUncraftingTable;
+import org.jglrxavpok.mods.decraft.block.BlockUncraftingTable;
+import org.jglrxavpok.mods.decraft.client.gui.inventory.GuiUncraftingTable;
+import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
+import org.jglrxavpok.mods.decraft.inventory.ContainerUncraftingTable;
 
 import net.minecraftforge.fml.common.network.IGuiHandler;
 
@@ -45,8 +48,7 @@ public class ModGuiHandler implements IGuiHandler
         {
             if (id == GUI_TABLE)
             {
-                String name = I18n.format("tile.uncrafting_table.name");
-                return new GuiUncraftingTable(player.inventory, world, name);
+                return new GuiUncraftingTable(player.inventory, world);
             }
         }
         return null;
