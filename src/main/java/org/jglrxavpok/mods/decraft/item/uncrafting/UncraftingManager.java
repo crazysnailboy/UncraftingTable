@@ -402,7 +402,7 @@ public class UncraftingManager
 			}
 			
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 	
 	
