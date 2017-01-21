@@ -1,10 +1,11 @@
 {
 	"homepage": "https://minecraft.curseforge.com/projects/jglrxavpoks-uncrafting-table/files/",
 	"promos": {
-		"1.7.10-latest": "1.4.4-pre1",
+		"1.7.10-latest": "1.4.4-pre2",
 		"1.7.10-recommended": "1.4.3"
 	},
 	"1.7.10": {
+		"1.4.4-pre2": "Fixed incompatibility with Iron Chests",
 		"1.4.4-pre1": "New version with lots of new features!",
 		"1.4.3": ""
 	}
