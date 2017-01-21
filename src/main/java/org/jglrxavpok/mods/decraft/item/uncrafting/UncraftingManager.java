@@ -192,15 +192,18 @@ public class UncraftingManager
 					int minStackSize = recipeOutput.getCount();
 					NonNullList<ItemStack> craftingGrid = handler.getCraftingGrid(recipe);
 					
-					// if we're doing a partial material return on a damaged item, remove items from the crafting grid as appropriate
-					if (ModConfiguration.uncraftMethod == UncraftingMethod.JGLRXAVPOK && itemStack.isItemStackDamageable() && itemStack.isItemDamaged())
+					if (!craftingGrid.isEmpty())
 					{
-						craftingGrid = removeItemsFromOutputByDamage(itemStack, craftingGrid);
-					}
+						// if we're doing a partial material return on a damaged item, remove items from the crafting grid as appropriate
+						if (ModConfiguration.uncraftMethod == UncraftingMethod.JGLRXAVPOK && itemStack.isItemStackDamageable() && itemStack.isItemDamaged())
+						{
+							craftingGrid = removeItemsFromOutputByDamage(itemStack, craftingGrid);
+						}
 
-					// add the stack size and the crafting grid to the results list
-					Map.Entry<NonNullList<ItemStack>,Integer> pair = new java.util.AbstractMap.SimpleEntry<NonNullList<ItemStack>,Integer>(craftingGrid, minStackSize);
-					list.add(pair);
+						// add the stack size and the crafting grid to the results list
+						Map.Entry<NonNullList<ItemStack>,Integer> pair = new java.util.AbstractMap.SimpleEntry<NonNullList<ItemStack>,Integer>(craftingGrid, minStackSize);
+						list.add(pair);
+					}
 				}
 				// if we couldn't find a handler class for this IRecipe implementation, write some details to the log for debugging.
 				else ModUncrafting.instance.getLogger().error("findMatchingRecipes :: Unknown IRecipe implementation " + recipe.getClass().getCanonicalName() + " for item " + uniqueIdentifier);
