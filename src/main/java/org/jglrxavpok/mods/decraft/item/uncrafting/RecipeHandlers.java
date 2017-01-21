@@ -85,11 +85,15 @@ public final class RecipeHandlers
 			
 			// obtain the recipe items and the recipe dimensions
 			List<ItemStack> recipeItems = getOreRecipeItems(Arrays.asList(shapedRecipe.getInput()));
-			int recipeWidth = ((Integer)(ObfuscationReflectionHelper.getPrivateValue(ShapedOreRecipe.class, shapedRecipe, "width"))).intValue();
-			int recipeHeight = ((Integer)(ObfuscationReflectionHelper.getPrivateValue(ShapedOreRecipe.class, shapedRecipe, "height"))).intValue();
-
-			// rearrange the itemstacks according to the recipe width and height
-			return reshapeRecipe(recipeItems, recipeWidth, recipeHeight);
+			if (!recipeItems.isEmpty())
+			{
+				int recipeWidth = ((Integer)(ObfuscationReflectionHelper.getPrivateValue(ShapedOreRecipe.class, shapedRecipe, "width"))).intValue();
+				int recipeHeight = ((Integer)(ObfuscationReflectionHelper.getPrivateValue(ShapedOreRecipe.class, shapedRecipe, "height"))).intValue();
+	
+				// rearrange the itemstacks according to the recipe width and height
+				return reshapeRecipe(recipeItems, recipeWidth, recipeHeight);
+			}
+			else return new ItemStack[0];
 		}
 	}
 	
@@ -103,7 +107,12 @@ public final class RecipeHandlers
 		@Override
 		public ItemStack[] getCraftingGrid(IRecipe r)
 		{
-			return getOreRecipeItems(((ShapelessOreRecipe)r).getInput()).toArray(new ItemStack[9]);
+			List<ItemStack> recipeItems = getOreRecipeItems(((ShapelessOreRecipe)r).getInput());
+			if (!recipeItems.isEmpty())
+			{
+				return recipeItems.toArray(new ItemStack[9]);
+			}
+			else return new ItemStack[0];
 		}
 	}
 	
@@ -420,6 +429,15 @@ public final class RecipeHandlers
 			}
 			else if (itemObject instanceof List)
 			{
+				List list = (List)itemObject;
+				
+				if (list.isEmpty()) // this happens if there's an ore dictionary recipe registered, but no items registered for that dictionary entry
+				{
+					// abort parsing this recipe and return an empty list
+					itemStacks.clear();
+					break;
+				}
+				
 				itemStack = ((List<ItemStack>)itemObject).get(0);
 			}
 			else itemStack = (ItemStack)null;
