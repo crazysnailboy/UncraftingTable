@@ -207,15 +207,18 @@ public class UncraftingManager
 					int minStackSize = recipeOutput.stackSize;
 					ItemStack[] craftingGrid = handler.getCraftingGrid(recipe);
 
-					// if we're doing a partial material return on a damaged item, remove items from the crafting grid as appropriate
-					if (ModConfiguration.uncraftMethod == UncraftingMethod.JGLRXAVPOK && itemStack.isItemStackDamageable() && itemStack.isItemDamaged())
+					if (craftingGrid != null && craftingGrid.length > 0)
 					{
-						craftingGrid = removeItemsFromOutputByDamage(itemStack, craftingGrid);
+						// if we're doing a partial material return on a damaged item, remove items from the crafting grid as appropriate
+						if (ModConfiguration.uncraftMethod == UncraftingMethod.JGLRXAVPOK && itemStack.isItemStackDamageable() && itemStack.isItemDamaged())
+						{
+							craftingGrid = removeItemsFromOutputByDamage(itemStack, craftingGrid);
+						}
+						
+						// add the stack size and the crafting grid to the results list
+						Map.Entry<ItemStack[],Integer> pair = new java.util.AbstractMap.SimpleEntry<ItemStack[],Integer>(craftingGrid, minStackSize);
+						list.add(pair);
 					}
-					
-					// add the stack size and the crafting grid to the results list
-					Map.Entry<ItemStack[],Integer> pair = new java.util.AbstractMap.SimpleEntry<ItemStack[],Integer>(craftingGrid, minStackSize);
-					list.add(pair);
 					
 				}
 				// if we couldn't find a handler class for this IRecipe implementation, write some details to the log for debugging.
