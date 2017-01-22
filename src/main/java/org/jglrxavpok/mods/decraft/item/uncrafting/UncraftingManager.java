@@ -69,6 +69,12 @@ public class UncraftingManager
 			// set the result type as "not uncraftable"
 			uncraftingResult.resultType = ResultType.NOT_UNCRAFTABLE;
 		}
+		// if the player is not in creative mode, and doesn't have enough XP levels 
+		else if (!player.capabilities.isCreativeMode && player.experienceLevel < uncraftingResult.experienceCost)
+		{
+			// set the result type as "not enough xp"
+			uncraftingResult.resultType = ResultType.NOT_ENOUGH_XP;
+		}
 		else
 		{
 			// check to see if one of more of the items in the crafting recipe have container items
