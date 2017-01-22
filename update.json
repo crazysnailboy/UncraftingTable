@@ -1,10 +1,11 @@
 {
 	"homepage": "https://minecraft.curseforge.com/projects/jglrxavpoks-uncrafting-table/files/",
 	"promos": {
-		"1.11-latest": "1.7.1-pre4",
+		"1.11-latest": "1.7.1-pre5",
 		"1.11-recommended": "1.7"
 	},
 	"1.11": {
+		"1.7.1-pre5": "Fixed bug with multiplier not being correctly applied to stacked items",
 		"1.7.1-pre4": "Fixed duplication glitch if player doesn't have enough XP",
 		"1.7.1-pre3": "Fixed incompatibility with Iron Chests",
 		"1.7.1-pre2": "Fixed ItemStack bug with nugget lookup in Ore Dictionary",
