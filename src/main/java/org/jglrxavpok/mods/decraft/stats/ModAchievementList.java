@@ -15,7 +15,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
 
-public class ModAchievementList {
+public class ModAchievementList 
+{
 
 	// event handler
 	private static AchievementEventHandler achievementEventHandler = new AchievementEventHandler();
@@ -102,7 +103,5 @@ public class ModAchievementList {
 		}
 		
 	}
-	
-	
 	
 }

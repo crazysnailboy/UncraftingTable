@@ -127,7 +127,7 @@ public class ModConfiguration
 	
 	public static class ConfigEventHandler 
 	{
-		@SubscribeEvent //(priority = EventPriority.NORMAL)
+		@SubscribeEvent
 		public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) 
 		{
 			if (ModUncrafting.MODID.equals(event.modID) && !event.isWorldRunning)
