@@ -22,49 +22,50 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
 
+
 public class ModGuiConfig extends GuiConfig
 {
-    public ModGuiConfig(GuiScreen parent) 
-    {
-    	super(parent, 
+	public ModGuiConfig(GuiScreen parent) 
+	{
+		super(parent, 
  			getConfigElements(), 
 			ModUncrafting.MODID, 
 			false, 
 			false, 
 			"Uncrafting Table"
 		);
-    }
-    
-    
-    
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private static List<IConfigElement> getConfigElements()
-    {
-    	Configuration config = ModConfiguration.getConfig();
-    	
-    	List<IConfigElement> list = new ConfigElement(config.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements();
-    	
-    	//List<IConfigElement> list = new ConfigElement(ModUncrafting.config.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements();
-        return list;
-    }
-    
-    
-    @Override
-    public void initGui()
-    {
-        super.initGui();
-    }
+	}
+	
+	
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private static List<IConfigElement> getConfigElements()
+	{
+		Configuration config = ModConfiguration.getConfig();
+		
+		// top level settings
+		List<IConfigElement> list = new ConfigElement(config.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements();
+		
+		return list;
+	}
+	
+	
+	@Override
+	public void initGui()
+	{
+		super.initGui();
+	}
 
-    @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks)
-    {
-        super.drawScreen(mouseX, mouseY, partialTicks);
-    }
+	@Override
+	public void drawScreen(int mouseX, int mouseY, float partialTicks)
+	{
+		super.drawScreen(mouseX, mouseY, partialTicks);
+	}
 
-    @Override
-    protected void actionPerformed(GuiButton button)
-    {
-        super.actionPerformed(button);
-    }
+	@Override
+	protected void actionPerformed(GuiButton button)
+	{
+		super.actionPerformed(button);
+	}
 
 }

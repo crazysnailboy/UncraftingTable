@@ -8,6 +8,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import net.minecraft.item.ItemStack;
 
+
 public class UncraftingResult 
 {
 	

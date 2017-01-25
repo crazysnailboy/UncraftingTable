@@ -20,59 +20,60 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
+
 public class ContainerUncraftingTable extends Container
 {
 	public InventoryBasic calculInput = new InventoryBasic(null, false, 1);
 	public InventoryCrafting uncraftIn = new InventoryCrafting(this, 1, 1);
 	public InventoryUncraftResult uncraftOut = new InventoryUncraftResult(this);
-    public InventoryPlayer playerInventory;
-    
-    private World worldObj;
-    
-    public UncraftingResult uncraftingResult = new UncraftingResult();
-    
+	public InventoryPlayer playerInventory;
+	
+	private World worldObj;
+	
+	public UncraftingResult uncraftingResult = new UncraftingResult();
+	
 
-    public ContainerUncraftingTable(InventoryPlayer playerInventoryIn, World worldIn)
-    {
-        this.worldObj = worldIn;
-        
-        // uncrafting book inventory for capturing enchantments (left standalone slot)
-        this.addSlotToContainer(new Slot(this.calculInput, 0, 20, 35));
+	public ContainerUncraftingTable(InventoryPlayer playerInventoryIn, World worldIn)
+	{
+		this.worldObj = worldIn;
+		
+		// uncrafting book inventory for capturing enchantments (left standalone slot)
+		this.addSlotToContainer(new Slot(this.calculInput, 0, 20, 35));
 
-        // incrafting input inventory (right standalone slot)
+		// incrafting input inventory (right standalone slot)
 		this.addSlotToContainer(new SlotUncrafting(this.uncraftIn, 0, 45, 35, this));
-        
-    	// uncrafting output inventory
-        int offsetX = 106; int offsetY = 17;
-        for (int row = 0; row < 3; ++row)
-        {
-            for (int col = 0; col < 3; ++col)
-            {
-                this.addSlotToContainer(new SlotUncraftResult(this.uncraftOut, col + row * 3, offsetX + col * 18, offsetY + row * 18));
-            }
-        }
-        
-        // player inventory
-        for (int row = 0; row < 3; ++row)
-        {
-            for (int col = 0; col < 9; ++col)
-            {
-                this.addSlotToContainer(new Slot(playerInventoryIn, col + row * 9 + 9, 8 + col * 18, 84 + row * 18));
-            }
-        }
-        
-        // player hotbar inventory
-        for (int col = 0; col < 9; ++col)
-        {
-            this.addSlotToContainer(new Slot(playerInventoryIn, col, 8 + col * 18, 142));
-        }
+		
+		// uncrafting output inventory
+		int offsetX = 106; int offsetY = 17;
+		for (int row = 0; row < 3; ++row)
+		{
+			for (int col = 0; col < 3; ++col)
+			{
+				this.addSlotToContainer(new SlotUncraftResult(this.uncraftOut, col + row * 3, offsetX + col * 18, offsetY + row * 18));
+			}
+		}
+		
+		// player inventory
+		for (int row = 0; row < 3; ++row)
+		{
+			for (int col = 0; col < 9; ++col)
+			{
+				this.addSlotToContainer(new Slot(playerInventoryIn, col + row * 9 + 9, 8 + col * 18, 84 + row * 18));
+			}
+		}
+		
+		// player hotbar inventory
+		for (int col = 0; col < 9; ++col)
+		{
+			this.addSlotToContainer(new Slot(playerInventoryIn, col, 8 + col * 18, 142));
+		}
 
-        playerInventory = playerInventoryIn;
-    }
-    
-    
-    private void populateOutputInventory()
-    {
+		playerInventory = playerInventoryIn;
+	}
+	
+	
+	private void populateOutputInventory()
+	{
 		// get the minimum stack size and the crafting grid from the uncrafting result
 		int minStackSize = uncraftingResult.getMinStackSize();
 		ItemStack[] craftingGrid = uncraftingResult.getCraftingGrid();
@@ -115,11 +116,11 @@ public class ContainerUncraftingTable extends Container
 				}
 			}
 		}
-    }
-    
-    
-    private void doUncraft()
-    {
+	}
+	
+	
+	private void doUncraft()
+	{
 		// if we're not in creative mode
 		if (!playerInventory.player.capabilities.isCreativeMode)
 		{
@@ -175,9 +176,9 @@ public class ContainerUncraftingTable extends Container
 
 		// decrement the number of items in the input slot
 		uncraftIn.decrStackSize(0, (minStackSize * multiplier));
-    }
-    
-    
+	}
+	
+	
 	public void switchRecipe()
 	{
 		// remove the recipe items from the grid, if present
@@ -215,15 +216,15 @@ public class ContainerUncraftingTable extends Container
 		
 		populateOutputInventory();
 	}
-    
-    
+	
+	
 
-    /**
-     * Callback for when the crafting matrix is changed.
-     */
-    @Override
-    public void onCraftMatrixChanged(IInventory inventory)
-    {
+	/**
+	 * Callback for when the crafting matrix is changed.
+	 */
+	@Override
+	public void onCraftMatrixChanged(IInventory inventory)
+	{
 		// if the right input slot changes
 		if (inventory == uncraftIn)
 		{
@@ -292,15 +293,15 @@ public class ContainerUncraftingTable extends Container
 			}
 
 		}
-    }
-    
+	}
+	
 
-    /**
-     * Called when the container is closed.
-     */
-    @Override
-    public void onContainerClosed(EntityPlayer player)
-    {
+	/**
+	 * Called when the container is closed.
+	 */
+	@Override
+	public void onContainerClosed(EntityPlayer player)
+	{
 		super.onContainerClosed(player);
 
 		if (!this.worldObj.isRemote)
@@ -331,15 +332,15 @@ public class ContainerUncraftingTable extends Container
 				}
 			}
 		}
-    }
+	}
 
 
-    /**
-     * Called when a player shift-clicks on a slot.
-     */
-    @Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int index)
-    {
+	/**
+	 * Called when a player shift-clicks on a slot.
+	 */
+	@Override
+	public ItemStack transferStackInSlot(EntityPlayer player, int index)
+	{
 		// get the slot specified by the index
 		Slot slot = (Slot)this.inventorySlots.get(index);
 		
@@ -465,26 +466,26 @@ public class ContainerUncraftingTable extends Container
 			}
 		}
 		return null;
-    }
+	}
 
 
 	@Override
-    public void putStackInSlot(int slotId, ItemStack stack)
-    {
+	public void putStackInSlot(int slotId, ItemStack stack)
+	{
 		// TODO: i assume there's a reason that Container does this, but this container seems to work without it!
-        // this.getSlot(slotId).putStack(stack);
-    }
+		// this.getSlot(slotId).putStack(stack);
+	}
 
 	@Override
-    public boolean canInteractWith(EntityPlayer player)
-    {
-        return true;
-    }
-    
-    @Override
-    public boolean canMergeSlot(ItemStack stack, Slot slotIn)
-    {
-        return !slotIn.inventory.equals(uncraftOut);
-    }
+	public boolean canInteractWith(EntityPlayer player)
+	{
+		return true;
+	}
+	
+	@Override
+	public boolean canMergeSlot(ItemStack stack, Slot slotIn)
+	{
+		return !slotIn.inventory.equals(uncraftOut);
+	}
 
 }
