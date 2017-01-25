@@ -2,9 +2,7 @@ package org.jglrxavpok.mods.decraft.init;
 
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.item.ItemNugget;
-import org.jglrxavpok.mods.decraft.item.ItemNugget.EnumNuggetType;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -19,6 +17,7 @@ public class ModItems
 {
 
 	public static final Item nugget = new ItemNugget();
+
 	
 	public static void preInit()
 	{

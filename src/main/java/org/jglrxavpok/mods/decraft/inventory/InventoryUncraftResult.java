@@ -8,6 +8,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IChatComponent;
 
+
 public class InventoryUncraftResult implements IInventory
 {
 	private class ItemStackPair

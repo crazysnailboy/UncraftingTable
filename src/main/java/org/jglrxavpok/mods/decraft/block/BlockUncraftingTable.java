@@ -19,25 +19,25 @@ public class BlockUncraftingTable extends Block
 {
 
 	public BlockUncraftingTable()
-    {
-        super(Material.rock);
-        setUnlocalizedName("uncrafting_table");
-        setHardness(3.5F);
-        setStepSound(soundTypePiston);
-        this.setCreativeTab(CreativeTabs.tabDecorations);
-    }
+	{
+		super(Material.rock);
+		setUnlocalizedName("uncrafting_table");
+		setHardness(3.5F);
+		setStepSound(soundTypePiston);
+		this.setCreativeTab(CreativeTabs.tabDecorations);
+	}
 
 	
 	@Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ)
-    {	
-        if (!worldIn.isRemote)
-        {
-            playerIn.openGui(ModUncrafting.instance, ModGuiHandler.GUI_TABLE, worldIn, pos.getX(), pos.getY(), pos.getZ());
-    		checkForPorteManteau(playerIn, worldIn, pos);
-        }
-        return true;
-    }
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ)
+	{	
+		if (!worldIn.isRemote)
+		{
+			playerIn.openGui(ModUncrafting.instance, ModGuiHandler.GUI_TABLE, worldIn, pos.getX(), pos.getY(), pos.getZ());
+			checkForPorteManteau(playerIn, worldIn, pos);
+		}
+		return true;
+	}
 	
 
 
