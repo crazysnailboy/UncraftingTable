@@ -125,7 +125,6 @@ public class ModGuiConfigEntries
 		public UncraftingMethodCycleEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement<String> configElement)
 		{
 			super(owningScreen, owningEntryList, configElement);
-
 			beforeIndex = Integer.valueOf((String)configElement.get());
 			defaultIndex = Integer.valueOf((String)configElement.getDefault());
 			currentIndex = beforeIndex;
@@ -182,7 +181,6 @@ public class ModGuiConfigEntries
 			}
 		}
 
-		@SuppressWarnings("unchecked")
 		@Override
 		public boolean saveConfigElement()
 		{

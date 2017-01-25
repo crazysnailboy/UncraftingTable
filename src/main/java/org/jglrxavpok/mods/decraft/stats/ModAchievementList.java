@@ -15,6 +15,7 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraftforge.common.AchievementPage;
 import net.minecraftforge.common.MinecraftForge;
 
+
 public class ModAchievementList {
 
 	// event handler
@@ -41,7 +42,6 @@ public class ModAchievementList {
 				craftTable, uncraftAny, uncraftDiamondHoe, uncraftJunk, uncraftDiamondShovel, porteManteau
 			})
 		);
-		
 	}
 	
 	public static void clientInit() 
@@ -49,7 +49,6 @@ public class ModAchievementList {
 		// register the event handlers with the event busses
 		FMLCommonHandler.instance().bus().register(achievementEventHandler);
 		MinecraftForge.EVENT_BUS.register(achievementEventHandler);
-		
 	}
 	
 	
