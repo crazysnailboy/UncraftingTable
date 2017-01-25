@@ -1,5 +1,6 @@
 package org.jglrxavpok.mods.decraft.item.uncrafting;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -211,7 +212,7 @@ public class UncraftingManager
 						}
 						
 						// add the stack size and the crafting grid to the results list
-						Map.Entry<ItemStack[],Integer> pair = new java.util.AbstractMap.SimpleEntry<ItemStack[],Integer>(craftingGrid, minStackSize);
+						Map.Entry<ItemStack[],Integer> pair = new AbstractMap.SimpleEntry<ItemStack[],Integer>(craftingGrid, minStackSize);
 						list.add(pair);
 					}
 					
@@ -316,29 +317,41 @@ public class UncraftingManager
 		
 
 		// iterate through the itemstacks in the crafting recipe to determine the unique materials used, and the total number of each item
-		HashMap<String, Integer> materials = new HashMap<String, Integer>();
+		HashMap<String, Map.Entry<ItemStack,Integer>> materials = new HashMap<String, Map.Entry<ItemStack,Integer>>();
 		for ( ItemStack recipeStack : craftingGrid )
 		{
 			if (recipeStack != null)
 			{
+				// get the unique identifier string for the item in the current stack, and append a metadata value if appropriate
 				String key = GameRegistry.findUniqueIdentifierFor(recipeStack.getItem()).toString();
-				materials.put(key, (materials.containsKey(key) ? materials.get(key) : 0) + recipeStack.stackSize);
+				if (recipeStack.getItemDamage() != 0) key += "," + recipeStack.getItemDamage();
+
+				// if the map already contains a stack for this item, increment the number of items in the map
+				if (materials.containsKey(key))
+				{
+					materials.get(key).setValue(materials.get(key).getValue() + recipeStack.stackSize);
+				}
+				// if the map doesn't already contain a stack for this item, add the stack and the number of items in the stack
+				else
+				{
+					Map.Entry<ItemStack,Integer> value = new AbstractMap.SimpleEntry<ItemStack,Integer>(recipeStack.copy(), recipeStack.stackSize);
+					value.getKey().stackSize = 1;
+					materials.put(key, value);
+				}
 			}
 		}
 		
 		// for each unique material in the crafting recipe...
 		for ( String key : materials.keySet())
 		{
-			System.out.println("key: " + key);
-			
-			// get an itemstack of the material from it's registry name (TODO: probably don't need to condense this to a string in the first place...)
-			ItemStack materialStack = new ItemStack(GameData.getItemRegistry().getObject(key));
+			// get the itemstack of the material from the materials map
+			ItemStack materialStack = materials.get(key).getKey();
 
 			// check the ore dictionary to see if this material has a matching nugget
 			ItemStack nuggetStack = getNuggetForOre(materialStack);
 
 			
-			int amount = materials.get(key);
+			int amount = materials.get(key).getValue();
 			
 			int itemCount = 0;
 			int nuggetCount = 0;
@@ -358,13 +371,12 @@ public class UncraftingManager
 				// rounding up to the nearest item
 				itemCount = (int)Math.ceil(amount * (durabilityPercentage / (double)100));
 			}
-			
 			// if there's no nugget for this item in the ore dictionary
 			else
 			{
 				// calculate the total number of full items which most closely represent the percentage durability remaining on the item
-				// rounding up or down to the nearest item
-				itemCount = (int)Math.round(amount * (durabilityPercentage / (double)100));
+				// rounding down to the nearest item
+				itemCount = (int)Math.floor(amount * (durabilityPercentage / (double)100));
 			}
 			
 			// flip the item count to become items to remove instead of items to leave
@@ -401,16 +413,7 @@ public class UncraftingManager
 	 */
 	private static ItemStack getNuggetForOre(ItemStack oreStack)
 	{
-
-//		// *** copied from com.jaquadro.minecraft.storagedrawers.config.OreDictRegistry ***
-//		String[] oreTypes = { "ore", "block", "ingot", "nugget" };
-//		String[] oreMaterials = { "Iron", "Gold", "Diamond", "Emerald", "Aluminum", "Aluminium", "Tin", "Copper", "Lead", "Silver", "Platinum", "Nickel", "Osmium", "Invar", "Bronze", "Electrum", "Enderium" };
-//		// *** copied from com.jaquadro.minecraft.storagedrawers.config.OreDictRegistry ***
-		
-		
 		String[] oreTypes = { "gem", "ingot" };
-//		String[] oreMaterials = { "Diamond", "Emerald", "Gold", "Iron" };
-		
 		
 		int[] oreIds = OreDictionary.getOreIDs(oreStack);
 		for ( int oreId : oreIds )
