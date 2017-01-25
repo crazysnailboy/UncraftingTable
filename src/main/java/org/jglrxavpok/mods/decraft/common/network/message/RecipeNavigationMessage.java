@@ -45,16 +45,16 @@ public class RecipeNavigationMessage implements IMessage
 		@Override
 		public IMessage onMessage(RecipeNavigationMessage message, MessageContext ctx) 
 		{
-            EntityPlayerMP player = ctx.getServerHandler().playerEntity;
-            
-            Container container = player.openContainer;
-            if (container instanceof ContainerUncraftingTable)
-            {
-            	ContainerUncraftingTable uncraftingContainer = (ContainerUncraftingTable)container;
-            	uncraftingContainer.uncraftingResult.selectedCraftingGrid = message.recipeIndex;
-            	uncraftingContainer.switchRecipe();
-            }
-            
+			EntityPlayerMP player = ctx.getServerHandler().playerEntity;
+			
+			Container container = player.openContainer;
+			if (container instanceof ContainerUncraftingTable)
+			{
+				ContainerUncraftingTable uncraftingContainer = (ContainerUncraftingTable)container;
+				uncraftingContainer.uncraftingResult.selectedCraftingGrid = message.recipeIndex;
+				uncraftingContainer.switchRecipe();
+			}
+			
 			return null;
 		}
 	}

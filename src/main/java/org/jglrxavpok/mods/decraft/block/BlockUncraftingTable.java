@@ -18,34 +18,34 @@ import net.minecraft.world.World;
 public class BlockUncraftingTable extends Block
 {
 
-    @SideOnly(Side.CLIENT)
-    private IIcon topBlock;
-    
-    @SideOnly(Side.CLIENT)
-    private IIcon front;
-    private IIcon bottom;
-    private IIcon blockIcon;
+	@SideOnly(Side.CLIENT)
+	private IIcon topBlock;
+	
+	@SideOnly(Side.CLIENT)
+	private IIcon front;
+	private IIcon bottom;
+	private IIcon blockIcon;
 	
 
 	public BlockUncraftingTable()
-    {
-        super(Material.rock);
-        setBlockName("uncrafting_table");
-        setHardness(3.5F);
-        setStepSound(soundTypePiston);
-        this.setCreativeTab(CreativeTabs.tabDecorations);
-    }
+	{
+		super(Material.rock);
+		setBlockName("uncrafting_table");
+		setHardness(3.5F);
+		setStepSound(soundTypePiston);
+		this.setCreativeTab(CreativeTabs.tabDecorations);
+	}
 
 	@Override
 	public boolean onBlockActivated(World worldIn, int x, int y, int z, EntityPlayer player, int side, float subX, float subY, float subZ)
-    {
-        if (!worldIn.isRemote)
-        {
-        	player.openGui(ModUncrafting.instance, ModGuiHandler.GUI_TABLE, worldIn, x, y, z);
-    		checkForPorteManteau(player, worldIn, x, y, z);
-        }
-        return true;
-    }
+	{
+		if (!worldIn.isRemote)
+		{
+			player.openGui(ModUncrafting.instance, ModGuiHandler.GUI_TABLE, worldIn, x, y, z);
+			checkForPorteManteau(player, worldIn, x, y, z);
+		}
+		return true;
+	}
 
    
 	private void checkForPorteManteau(EntityPlayer player, World worldIn, int x, int y, int z)
@@ -104,23 +104,23 @@ public class BlockUncraftingTable extends Block
 		}
 	}
 	  
-    /**
-     * Gets the block's texture. Args: side, meta
-     */
-    @SideOnly(Side.CLIENT)
-    public IIcon getIcon(int side, int meta)
-    {
-    	return (IIcon) (side == 1 ? this.topBlock : (side == 0 ? bottom : (side != 3 && side != 1 ? this.blockIcon : this.front)));
-    }
-    
+	/**
+	 * Gets the block's texture. Args: side, meta
+	 */
+	@SideOnly(Side.CLIENT)
+	public IIcon getIcon(int side, int meta)
+	{
+		return (IIcon) (side == 1 ? this.topBlock : (side == 0 ? bottom : (side != 3 && side != 1 ? this.blockIcon : this.front)));
+	}
+	
 	@SideOnly(Side.CLIENT)
 	@Override
-    public void registerBlockIcons(IIconRegister reg)
-    {
-        this.blockIcon = reg.registerIcon("uncraftingTable:uncrafting_side");
-        this.topBlock = reg.registerIcon("uncraftingTable:uncrafting_top");
-        this.front = reg.registerIcon("uncraftingTable:uncrafting_front");
-        this.bottom = reg.registerIcon("uncraftingTable:uncrafting_bottom");
-    }
+	public void registerBlockIcons(IIconRegister reg)
+	{
+		this.blockIcon = reg.registerIcon("uncraftingTable:uncrafting_side");
+		this.topBlock = reg.registerIcon("uncraftingTable:uncrafting_top");
+		this.front = reg.registerIcon("uncraftingTable:uncrafting_front");
+		this.bottom = reg.registerIcon("uncraftingTable:uncrafting_bottom");
+	}
 
 }
