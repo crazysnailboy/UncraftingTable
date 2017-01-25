@@ -1,10 +1,10 @@
 package org.jglrxavpok.mods.decraft.block;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.util.Random;
-
 import javax.annotation.Nullable;
+
+import org.jglrxavpok.mods.decraft.ModUncrafting;
+import org.jglrxavpok.mods.decraft.common.network.ModGuiHandler;
+import org.jglrxavpok.mods.decraft.stats.ModAchievementList;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -18,39 +18,32 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
-import org.jglrxavpok.mods.decraft.ModUncrafting;
-import org.jglrxavpok.mods.decraft.common.network.ModGuiHandler;
-import org.jglrxavpok.mods.decraft.stats.ModAchievementList;
 
 
 public class BlockUncraftingTable extends Block
 {
 
 	public BlockUncraftingTable()
-    {
-        super(Material.ROCK);
-        setRegistryName("uncrafting_table");
-        setUnlocalizedName("uncrafting_table");
-        setHardness(3.5F);
-        setSoundType(SoundType.STONE);
-        this.setCreativeTab(CreativeTabs.DECORATIONS);
-    }
+	{
+		super(Material.ROCK);
+		setRegistryName("uncrafting_table");
+		setUnlocalizedName("uncrafting_table");
+		setHardness(3.5F);
+		setSoundType(SoundType.STONE);
+		this.setCreativeTab(CreativeTabs.DECORATIONS);
+	}
 
 	
 	@Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ)
-    {
-        if (!worldIn.isRemote)
-        {
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ)
+	{
+		if (!worldIn.isRemote)
+		{
 			playerIn.openGui(ModUncrafting.instance, ModGuiHandler.GUI_TABLE, worldIn, pos.getX(), pos.getY(), pos.getZ());
 			checkForPorteManteau(playerIn, worldIn, pos);
-        }
+		}
 		return true;
-    }
+	}
 
    
 	private void checkForPorteManteau(EntityPlayer playerIn, World worldIn, BlockPos pos)
