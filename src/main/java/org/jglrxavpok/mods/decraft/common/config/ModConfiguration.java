@@ -4,80 +4,78 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import cpw.mods.fml.client.config.GuiConfigEntries.ArrayEntry;
-import cpw.mods.fml.client.config.GuiConfigEntries.BooleanEntry;
+import org.jglrxavpok.mods.decraft.ModUncrafting;
+import org.jglrxavpok.mods.decraft.client.config.ModGuiConfigEntries;
+
 import cpw.mods.fml.client.config.GuiConfigEntries.NumberSliderEntry;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
-import org.jglrxavpok.mods.decraft.ModUncrafting;
-import org.jglrxavpok.mods.decraft.client.config.ModGuiConfigEntries;
 
-
-public class ModConfiguration {
+public class ModConfiguration 
+{
 	
 	private static Configuration config = null;
 	private static ConfigEventHandler configEventHandler = new ConfigEventHandler();
 
 	public static final String CATEGORY_UPDATES = "updates";
 	
-    public static int uncraftMethod;
-    public static int maxUsedLevel;
-    public static int standardLevel;
-    public static String[] excludedItems;
-    
-    public static boolean checkForUpdates;
-    public static boolean promptForLatest;
-    public static boolean promptForRecommended;
-    
+	public static int uncraftMethod;
+	public static int maxUsedLevel;
+	public static int standardLevel;
+	public static String[] excludedItems;
+	
+	public static boolean checkForUpdates;
+	public static boolean promptForLatest;
+	public static boolean promptForRecommended;
+	
 
-    
-    public static void preInit(){
-    	
+	
+	public static void preInit()
+	{
 		File configFile = new File(Loader.instance().getConfigDir(), ModUncrafting.MODID + ".cfg");
-    	
+		
 		config = new Configuration(configFile);
 		config.load();
-    	
+		
 		syncFromFile();
-    }
-    
-	public static void clientPreInit() {
-		
-		//MinecraftForge.EVENT_BUS.register(new ConfigEventHandler());
-		FMLCommonHandler.instance().bus().register(configEventHandler);
-		
 	}
 	
-	public static Configuration getConfig() {
+	public static void clientPreInit() 
+	{
+		FMLCommonHandler.instance().bus().register(configEventHandler);
+	}
+	
+	public static Configuration getConfig() 
+	{
 		return config;
 	}
 	
 	
-	public static void syncFromFile() {
+	public static void syncFromFile() 
+	{
 		syncConfig(true, true);
 	}
 
-	public static void syncFromGUI() {
+	public static void syncFromGUI() 
+	{
 		syncConfig(false, true);
 	}
 
-	public static void syncFromFields() {
+	public static void syncFromFields() 
+	{
 		syncConfig(false, false);
 	}
 	
 	
-	private static void syncConfig(boolean loadConfigFromFile, boolean readFieldsFromConfig) {	
+	private static void syncConfig(boolean loadConfigFromFile, boolean readFieldsFromConfig) 
+	{
 		
-		if (loadConfigFromFile) {
-			config.load();
-		}
+		if (loadConfigFromFile) config.load(); 
 		
 		Property propStandardLevel = config.get(Configuration.CATEGORY_GENERAL, "standardLevel", 5, "Minimum required level to uncraft an item", 0, 50);
 		propStandardLevel.setLanguageKey("uncrafting.options.standardLevel");
@@ -138,9 +136,8 @@ public class ModConfiguration {
 		catch(NoClassDefFoundError e) { }
 		
 		
-		
-		if (readFieldsFromConfig) {
-			
+		if (readFieldsFromConfig) 
+		{
 			standardLevel = propStandardLevel.getInt();
 			maxUsedLevel = propMaxLevel.getInt();
 			uncraftMethod = propUncraftMethod.getInt();
@@ -149,7 +146,6 @@ public class ModConfiguration {
 			checkForUpdates = propCheckForUpdates.getBoolean();
 			promptForLatest = propPromptForLatest.getBoolean();
 			promptForRecommended = propPromptForRecommended.getBoolean();
-					
 		}
 		
 		
@@ -162,19 +158,15 @@ public class ModConfiguration {
 		propPromptForLatest.set(promptForLatest);
 		propPromptForRecommended.set(promptForRecommended);
 		
-		
-		if (config.hasChanged()) {
-			config.save();
-		}
-		
+
+		if (config.hasChanged()) config.save();
 	}
 
 	
-	
-	
+
 	public static class ConfigEventHandler 
 	{
-		@SubscribeEvent //(priority = EventPriority.NORMAL)
+		@SubscribeEvent
 		public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) 
 		{
 			if (ModUncrafting.MODID.equals(event.modID) && !event.isWorldRunning)
@@ -184,5 +176,4 @@ public class ModConfiguration {
 		}
 	}
 	
-    
 }

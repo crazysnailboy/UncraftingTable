@@ -1,6 +1,5 @@
 package org.jglrxavpok.mods.decraft.item.uncrafting;
 
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -43,10 +42,6 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 
-/**
- * Main part of the Uncrafting Table. The manager is used to parse the existing recipes and find the correct one depending on the given stack.
- * 
- */
 public class UncraftingManager 
 {
 	
@@ -414,7 +409,7 @@ public class UncraftingManager
 		
 		
 		String[] oreTypes = { "gem", "ingot" };
-		String[] oreMaterials = { "Diamond", "Emerald", "Gold", "Iron" };
+//		String[] oreMaterials = { "Diamond", "Emerald", "Gold", "Iron" };
 		
 		
 		int[] oreIds = OreDictionary.getOreIDs(oreStack);

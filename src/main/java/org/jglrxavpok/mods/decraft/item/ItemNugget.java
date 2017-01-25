@@ -15,7 +15,7 @@ import net.minecraft.util.IIcon;
 public class ItemNugget extends Item 
 {
 
-    @SideOnly(Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	private IIcon[] icons = new IIcon[3];
 	
 	
@@ -39,33 +39,33 @@ public class ItemNugget extends Item
 		}
 	}	
 	
-    @SideOnly(Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void getSubItems(Item item, CreativeTabs tab, List list) 
 	{
-    	for ( int i = 0 ; i < icons.length ; i++ )
-    	{
-            list.add(new ItemStack(item, 1, i));
-    	}
+		for ( int i = 0 ; i < icons.length ; i++ )
+		{
+			list.add(new ItemStack(item, 1, i));
+		}
 	}
 	
 	
 	
-    @SideOnly(Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIconFromDamage(int meta) 
 	{
-	    if (meta > (icons.length - 1)) meta = 0;
-	    return this.icons[meta];
+		if (meta > (icons.length - 1)) meta = 0;
+		return this.icons[meta];
 	}
 
-    @SideOnly(Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerIcons(IIconRegister reg) 
 	{
-        this.icons[0] = reg.registerIcon(ModUncrafting.MODID + ":diamond_nugget");
-        this.icons[1] = reg.registerIcon(ModUncrafting.MODID + ":emerald_nugget");
-        this.icons[2] = reg.registerIcon(ModUncrafting.MODID + ":iron_nugget");
+		this.icons[0] = reg.registerIcon(ModUncrafting.MODID + ":diamond_nugget");
+		this.icons[1] = reg.registerIcon(ModUncrafting.MODID + ":emerald_nugget");
+		this.icons[2] = reg.registerIcon(ModUncrafting.MODID + ":iron_nugget");
 	}	
-    
+	
 }
