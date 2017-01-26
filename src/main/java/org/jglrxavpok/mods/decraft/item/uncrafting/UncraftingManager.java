@@ -34,6 +34,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
+
 /**
  * Main part of the Uncrafting Table. The manager is used to parse the existing recipes and find the correct one depending on the given stack.
  * 
@@ -272,11 +273,11 @@ public class UncraftingManager
 		// RecipesMapExtending extends ShapedRecipes, and causes a crash when attempting to uncraft a map
 		if (recipe instanceof RecipesMapExtending) return null;
 		// vanilla Minecraft recipe handlers
-		if (recipe instanceof ShapelessRecipes) return new ShapelessRecipeHandler(ShapelessRecipes.class);
-		if (recipe instanceof ShapedRecipes) return new ShapedRecipeHandler(ShapedRecipes.class);
+		if (recipe instanceof ShapelessRecipes) return new ShapelessRecipeHandler();
+		if (recipe instanceof ShapedRecipes) return new ShapedRecipeHandler();
 		// Forge Ore Dictionary recipe handlers
-		if (recipe instanceof ShapelessOreRecipe) return new ShapelessOreRecipeHandler(ShapelessOreRecipe.class);
-		if (recipe instanceof ShapedOreRecipe) return new ShapedOreRecipeHandler(ShapedOreRecipe.class);
+		if (recipe instanceof ShapelessOreRecipe) return new ShapelessOreRecipeHandler();
+		if (recipe instanceof ShapedOreRecipe) return new ShapedOreRecipeHandler();
 		
 		return null;
 	}

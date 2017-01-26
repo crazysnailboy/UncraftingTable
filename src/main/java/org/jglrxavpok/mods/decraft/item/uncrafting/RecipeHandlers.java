@@ -12,14 +12,13 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 
 /**
  * Recipe Handlers return the "crafting grid" depending on a crafting recipe.
- * @author jglrxavpok
+ * 
  */
 public final class RecipeHandlers
 {
@@ -30,18 +29,6 @@ public final class RecipeHandlers
 	 */
 	public static abstract class RecipeHandler
 	{
-//		private Class<? extends IRecipe> recipeType;
-
-		public RecipeHandler(Class<? extends IRecipe> recipe)
-		{
-//			this.recipeType = recipe;
-		}
-		
-//		public Class<? extends IRecipe> getType()
-//		{
-//			return recipeType;
-//		}
-		
 		public abstract NonNullList<ItemStack> getCraftingGrid(IRecipe s);
 	}
 	
@@ -53,11 +40,6 @@ public final class RecipeHandlers
 	 */
 	public static class ShapedRecipeHandler extends RecipeHandler
 	{
-		public ShapedRecipeHandler(Class<? extends IRecipe> recipe)
-		{
-			super(recipe);
-		}
-
 		@Override
 		public NonNullList<ItemStack> getCraftingGrid(IRecipe r)
 		{
@@ -81,11 +63,6 @@ public final class RecipeHandlers
 	 */
 	public static class ShapelessRecipeHandler extends RecipeHandler
 	{
-		public ShapelessRecipeHandler(Class<? extends IRecipe> recipe)
-		{
-			super(recipe);
-		}
-
 		@Override
 		public NonNullList<ItemStack> getCraftingGrid(IRecipe r)
 		{
@@ -103,11 +80,6 @@ public final class RecipeHandlers
 	 */
 	public static class ShapedOreRecipeHandler extends RecipeHandler
 	{
-		public ShapedOreRecipeHandler(Class<? extends IRecipe> recipe)
-		{
-			super(recipe);
-		}
-
 		@Override
 		public NonNullList<ItemStack> getCraftingGrid(IRecipe r)
 		{
@@ -135,11 +107,6 @@ public final class RecipeHandlers
 	 */
 	public static class ShapelessOreRecipeHandler extends RecipeHandler
 	{
-		public ShapelessOreRecipeHandler(Class<? extends IRecipe> recipe)
-		{
-			super(recipe);
-		}
-
 		@Override
 		public NonNullList<ItemStack> getCraftingGrid(IRecipe r)
 		{
@@ -196,7 +163,6 @@ public final class RecipeHandlers
 				}
 				
 				itemStack = ((List<ItemStack>)itemObject).get(0);
-				
 			}
 			else itemStack = ItemStack.EMPTY;
 			
@@ -206,4 +172,5 @@ public final class RecipeHandlers
 		return itemStacks;
 	}
 	
+
 }

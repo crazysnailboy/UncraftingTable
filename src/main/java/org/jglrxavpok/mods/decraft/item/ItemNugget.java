@@ -1,14 +1,12 @@
 package org.jglrxavpok.mods.decraft.item;
 
-import java.util.List;
-
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
 
 public class ItemNugget extends Item
 {
@@ -28,14 +26,14 @@ public class ItemNugget extends Item
 		return "item." + EnumNuggetType.byMetadata(stack.getMetadata()).getUnlocalizedName();
 	}
 	
-    @SideOnly(Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list) 
 	{
-    	for (EnumNuggetType nuggetType : EnumNuggetType.values())
-    	{
-            list.add(new ItemStack(item, 1, nuggetType.getMetadata()));
-    	}
+		for (EnumNuggetType nuggetType : EnumNuggetType.values())
+		{
+			list.add(new ItemStack(item, 1, nuggetType.getMetadata()));
+		}
 	}
 	
 	public static enum EnumNuggetType
@@ -85,5 +83,5 @@ public class ItemNugget extends Item
 			}
 		}
 	}
-    
+	
 }
