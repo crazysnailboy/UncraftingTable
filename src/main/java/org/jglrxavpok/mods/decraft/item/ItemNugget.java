@@ -12,11 +12,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 
+
 public class ItemNugget extends Item 
 {
-
+	
 	@SideOnly(Side.CLIENT)
-	private IIcon[] icons = new IIcon[3];
+	private IIcon[] icons;
 	
 	
 	public ItemNugget()
@@ -63,6 +64,7 @@ public class ItemNugget extends Item
 	@Override
 	public void registerIcons(IIconRegister reg) 
 	{
+		this.icons = new IIcon[3];
 		this.icons[0] = reg.registerIcon(ModUncrafting.MODID + ":diamond_nugget");
 		this.icons[1] = reg.registerIcon(ModUncrafting.MODID + ":emerald_nugget");
 		this.icons[2] = reg.registerIcon(ModUncrafting.MODID + ":iron_nugget");
