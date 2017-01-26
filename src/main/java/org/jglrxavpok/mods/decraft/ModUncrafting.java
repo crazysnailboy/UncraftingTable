@@ -5,8 +5,6 @@ import org.apache.logging.log4j.Logger;
 import org.jglrxavpok.mods.decraft.common.network.ModGuiHandler;
 import org.jglrxavpok.mods.decraft.proxy.CommonProxy;
 
-import net.minecraft.stats.StatBasic;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;

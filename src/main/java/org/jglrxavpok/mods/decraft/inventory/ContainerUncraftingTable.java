@@ -21,6 +21,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
+
 public class ContainerUncraftingTable extends Container
 {
 	public InventoryBasic calculInput = new InventoryBasic(null, false, 1);
