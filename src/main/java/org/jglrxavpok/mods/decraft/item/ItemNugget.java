@@ -14,8 +14,8 @@ import net.minecraft.util.IIcon;
 
 public class ItemNugget extends Item 
 {
-
-    @SideOnly(Side.CLIENT)
+    //disable SideOnly Client because it's effecting the serverside 
+    //@SideOnly(Side.CLIENT)
 	private IIcon[] icons = new IIcon[3];
 	
 	
