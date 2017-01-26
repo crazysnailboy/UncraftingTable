@@ -103,6 +103,7 @@ public class BlockUncraftingTable extends Block
 			}
 		}
 	}
+	
 	  
 	/**
 	 * Gets the block's texture. Args: side, meta
