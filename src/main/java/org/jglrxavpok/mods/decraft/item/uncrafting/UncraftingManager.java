@@ -374,7 +374,7 @@ public class UncraftingManager
 			else
 			{
 				// calculate the total number of full items which most closely represent the percentage durability remaining on the item
-				// rounding up or down to the nearest item
+				// rounding down to the nearest item
 				itemCount = (int)Math.floor(amount * (durabilityPercentage / (double)100));
 			}
 			
