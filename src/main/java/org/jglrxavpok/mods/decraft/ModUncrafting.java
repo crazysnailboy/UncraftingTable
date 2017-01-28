@@ -5,8 +5,6 @@ import org.apache.logging.log4j.Logger;
 import org.jglrxavpok.mods.decraft.common.network.ModGuiHandler;
 import org.jglrxavpok.mods.decraft.proxy.CommonProxy;
 
-import net.minecraft.stats.StatBasic;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -25,7 +23,7 @@ public class ModUncrafting
 	// constants
 	public static final String MODID = "uncraftingtable";
 	public static final String MODNAME = "jglrxavpok's Uncrafting Table";
-	public static final String VERSION = "1.7.1-pre2";
+	public static final String VERSION = "1.7.1-pre6";
 	public static final String GUIFACTORY = "org.jglrxavpok.mods.decraft.client.config.ModGuiFactory";
 	public static final String UPDATEJSON = "https://raw.githubusercontent.com/crazysnailboy/uncraftingTable/1.11.2/update.json";
 	

@@ -1,5 +1,6 @@
 package org.jglrxavpok.mods.decraft.item.uncrafting;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -33,6 +34,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
+
 
 /**
  * Main part of the Uncrafting Table. The manager is used to parse the existing recipes and find the correct one depending on the given stack.
@@ -68,6 +70,12 @@ public class UncraftingManager
 		{
 			// set the result type as "not uncraftable"
 			uncraftingResult.resultType = ResultType.NOT_UNCRAFTABLE;
+		}
+		// if the player is not in creative mode, and doesn't have enough XP levels 
+		else if (!player.capabilities.isCreativeMode && player.experienceLevel < uncraftingResult.experienceCost)
+		{
+			// set the result type as "not enough xp"
+			uncraftingResult.resultType = ResultType.NOT_ENOUGH_XP;
 		}
 		else
 		{
@@ -192,15 +200,21 @@ public class UncraftingManager
 					int minStackSize = recipeOutput.getCount();
 					NonNullList<ItemStack> craftingGrid = handler.getCraftingGrid(recipe);
 					
-					// if we're doing a partial material return on a damaged item, remove items from the crafting grid as appropriate
-					if (ModConfiguration.uncraftMethod == UncraftingMethod.JGLRXAVPOK && itemStack.isItemStackDamageable() && itemStack.isItemDamaged())
+					if (!craftingGrid.isEmpty())
 					{
-						craftingGrid = removeItemsFromOutputByDamage(itemStack, craftingGrid);
-					}
+						// if the recipe output contains the input item, disallow use of this recipe for uncrafting (e.g. white wool -> white wool + bonemeal)
+						if (craftingGridContainsInputItem(itemStack, craftingGrid)) continue;
 
-					// add the stack size and the crafting grid to the results list
-					Map.Entry<NonNullList<ItemStack>,Integer> pair = new java.util.AbstractMap.SimpleEntry<NonNullList<ItemStack>,Integer>(craftingGrid, minStackSize);
-					list.add(pair);
+						// if we're doing a partial material return on a damaged item, remove items from the crafting grid as appropriate
+						if (ModConfiguration.uncraftMethod == UncraftingMethod.JGLRXAVPOK && itemStack.isItemStackDamageable() && itemStack.isItemDamaged())
+						{
+							craftingGrid = removeItemsFromOutputByDamage(itemStack, craftingGrid);
+						}
+
+						// add the stack size and the crafting grid to the results list
+						Map.Entry<NonNullList<ItemStack>,Integer> pair = new AbstractMap.SimpleEntry<NonNullList<ItemStack>,Integer>(craftingGrid, minStackSize);
+						list.add(pair);
+					}
 				}
 				// if we couldn't find a handler class for this IRecipe implementation, write some details to the log for debugging.
 				else ModUncrafting.instance.getLogger().error("findMatchingRecipes :: Unknown IRecipe implementation " + recipe.getClass().getCanonicalName() + " for item " + uniqueIdentifier);
@@ -208,6 +222,25 @@ public class UncraftingManager
 		}
 		
 		return list;
+	}
+
+	
+	/**
+	 * Determines whether the crafting grid contains the input item
+	 * @param stack The item being uncrafted
+	 * @param craftingGrid The unmodified crafting recipe of the damageable item
+	 * @return True if one or more item from crafting grid matches the item being uncrafted
+	 */
+	private static boolean craftingGridContainsInputItem(ItemStack stack, NonNullList<ItemStack> craftingGrid)
+	{
+		for ( ItemStack recipeStack : craftingGrid )
+		{
+			if (ItemStack.areItemsEqual(stack, recipeStack))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	
@@ -263,11 +296,11 @@ public class UncraftingManager
 		// RecipesMapExtending extends ShapedRecipes, and causes a crash when attempting to uncraft a map
 		if (recipe instanceof RecipesMapExtending) return null;
 		// vanilla Minecraft recipe handlers
-		if (recipe instanceof ShapelessRecipes) return new ShapelessRecipeHandler(ShapelessRecipes.class);
-		if (recipe instanceof ShapedRecipes) return new ShapedRecipeHandler(ShapedRecipes.class);
+		if (recipe instanceof ShapelessRecipes) return new ShapelessRecipeHandler();
+		if (recipe instanceof ShapedRecipes) return new ShapedRecipeHandler();
 		// Forge Ore Dictionary recipe handlers
-		if (recipe instanceof ShapelessOreRecipe) return new ShapelessOreRecipeHandler(ShapelessOreRecipe.class);
-		if (recipe instanceof ShapedOreRecipe) return new ShapedOreRecipeHandler(ShapedOreRecipe.class);
+		if (recipe instanceof ShapelessOreRecipe) return new ShapelessOreRecipeHandler();
+		if (recipe instanceof ShapedOreRecipe) return new ShapedOreRecipeHandler();
 		
 		return null;
 	}
@@ -288,27 +321,41 @@ public class UncraftingManager
 		
 
 		// iterate through the itemstacks in the crafting recipe to determine the unique materials used, and the total number of each item
-		HashMap<String, Integer> materials = new HashMap<String, Integer>();
+		HashMap<String, Map.Entry<ItemStack,Integer>> materials = new HashMap<String, Map.Entry<ItemStack,Integer>>();
 		for ( ItemStack recipeStack : craftingGrid )
 		{
 			if (recipeStack != ItemStack.EMPTY)
 			{
+				// get the unique identifier string for the item in the current stack, and append a metadata value if appropriate
 				String key = Item.REGISTRY.getNameForObject(recipeStack.getItem()).toString();
-				materials.put(key, (materials.containsKey(key) ? materials.get(key) : 0) + recipeStack.getCount());
+				if (recipeStack.getItemDamage() != 0) key += "," + recipeStack.getItemDamage();
+				
+				// if the map already contains a stack for this item, increment the number of items in the map
+				if (materials.containsKey(key))
+				{
+					materials.get(key).setValue(materials.get(key).getValue() + recipeStack.getCount());
+				}
+				// if the map doesn't already contain a stack for this item, add the stack and the number of items in the stack
+				else
+				{
+					Map.Entry<ItemStack,Integer> value = new AbstractMap.SimpleEntry<ItemStack,Integer>(recipeStack.copy(), recipeStack.getCount());
+					value.getKey().setCount(1);
+					materials.put(key, value);
+				}
 			}
 		}
 		
 		// for each unique material in the crafting recipe...
 		for ( String key : materials.keySet())
 		{
-			// get an itemstack of the material from it's registry name (TODO: probably don't need to condense this to a string in the first place...)
-			ItemStack materialStack = new ItemStack(Item.REGISTRY.getObject(new ResourceLocation(key)));
+			// get the itemstack of the material from the materials map
+			ItemStack materialStack = materials.get(key).getKey();
 
 			// check the ore dictionary to see if this material has a matching nugget
 			ItemStack nuggetStack = getNuggetForOre(materialStack);
 
 			
-			int amount = materials.get(key);
+			int amount = materials.get(key).getValue();
 			
 			int itemCount = 0;
 			int nuggetCount = 0;
@@ -333,8 +380,8 @@ public class UncraftingManager
 			else
 			{
 				// calculate the total number of full items which most closely represent the percentage durability remaining on the item
-				// rounding up or down to the nearest item
-				itemCount = (int)Math.round(amount * (durabilityPercentage / (double)100));
+				// rounding down to the nearest item
+				itemCount = (int)Math.floor(amount * (durabilityPercentage / (double)100));
 			}
 			
 			// flip the item count to become items to remove instead of items to leave

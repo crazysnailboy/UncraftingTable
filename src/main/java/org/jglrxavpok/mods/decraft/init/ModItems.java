@@ -2,7 +2,6 @@ package org.jglrxavpok.mods.decraft.init;
 
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.item.ItemNugget;
-import org.jglrxavpok.mods.decraft.item.ItemNugget.EnumNuggetType;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.init.Items;
@@ -13,6 +12,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
+
 
 public class ModItems 
 {

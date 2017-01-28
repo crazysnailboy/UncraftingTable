@@ -8,49 +8,50 @@ import org.jglrxavpok.mods.decraft.init.ModItems;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingManager;
 import org.jglrxavpok.mods.decraft.stats.ModAchievementList;
 
-import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
-public class CommonProxy {
+
+public class CommonProxy 
+{
 	
 	/**
 	 * Run before anything else. Read your config, create blocks, items, etc, and register them with the GameRegistry
 	 */
-	public void preInit(){
-		
+	public void preInit()
+	{
 		// initialize the configuration
-	    ModConfiguration.preInit();
-	    
-	    // register the blocks and items
-	    ModBlocks.preInit();
-        ModItems.preInit();
-	    
-        // register the network messages
-        ModUncrafting.instance.getNetwork().registerMessage(RecipeNavigationMessage.MessageHandler.class, RecipeNavigationMessage.class, 0, Side.SERVER);
+		ModConfiguration.preInit();
+		
+		// register the blocks and items
+		ModBlocks.preInit();
+		ModItems.preInit();
+		
+		// register the network messages
+		ModUncrafting.instance.getNetwork().registerMessage(RecipeNavigationMessage.MessageHandler.class, RecipeNavigationMessage.class, 0, Side.SERVER);
+		
 	}
+	
 	
 	/**
 	 * Do your mod setup. Build whatever data structures you care about. Register recipes,
 	 * send FMLInterModComms messages to other mods.
 	 */
-	public void init(){
-		
-        // create the crafting recipes
+	public void init()
+	{
+		// create the crafting recipes
 		ModBlocks.init();
-        ModItems.init();
-        
-        // initialize the achievements
+		ModItems.init();
+		
+		// initialize the achievements
 		ModAchievementList.init();
 	}
+	
 	
 	/**
 	 * Handle interaction with other mods, complete your setup based on this.
 	 */
-	public void postInit(){
-		
+	public void postInit()
+	{
 		// initalize the uncrafting manager
 		UncraftingManager.postInit();
 	}
