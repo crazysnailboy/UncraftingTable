@@ -19,12 +19,11 @@ public class BlockUncraftingTable extends Block
 {
 
 	@SideOnly(Side.CLIENT)
-	private IIcon topBlock;
-	
+	private IIcon topIcon;
 	@SideOnly(Side.CLIENT)
-	private IIcon front;
-	private IIcon bottom;
-	private IIcon blockIcon;
+	private IIcon frontIcon;
+	@SideOnly(Side.CLIENT)
+	private IIcon bottomIcon;
 	
 
 	public BlockUncraftingTable()
@@ -105,23 +104,21 @@ public class BlockUncraftingTable extends Block
 	}
 	
 	  
-	/**
-	 * Gets the block's texture. Args: side, meta
-	 */
 	@SideOnly(Side.CLIENT)
+	@Override
 	public IIcon getIcon(int side, int meta)
 	{
-		return (IIcon) (side == 1 ? this.topBlock : (side == 0 ? bottom : (side != 3 && side != 1 ? this.blockIcon : this.front)));
+		return side == 1 ? this.topIcon : (side == 0 ? this.bottomIcon : (side != 2 && side != 4 ? this.blockIcon : this.frontIcon));
 	}
 	
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void registerBlockIcons(IIconRegister reg)
+	public void registerBlockIcons(IIconRegister iconRegister)
 	{
-		this.blockIcon = reg.registerIcon("uncraftingTable:uncrafting_side");
-		this.topBlock = reg.registerIcon("uncraftingTable:uncrafting_top");
-		this.front = reg.registerIcon("uncraftingTable:uncrafting_front");
-		this.bottom = reg.registerIcon("uncraftingTable:uncrafting_bottom");
+		this.blockIcon = iconRegister.registerIcon(ModUncrafting.MODID + ":uncrafting_side");
+		this.topIcon = iconRegister.registerIcon(ModUncrafting.MODID + ":uncrafting_top");
+		this.frontIcon = iconRegister.registerIcon(ModUncrafting.MODID + ":uncrafting_front");
+		this.bottomIcon = iconRegister.registerIcon(ModUncrafting.MODID + ":uncrafting_bottom");
 	}
 
 }
