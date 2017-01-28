@@ -361,4 +361,17 @@ public class InventoryUncraftResult implements IInventory
 		return false;
 	}
 
+	public int missingContainerItemCount()
+	{
+		int count = 0;
+		for (int index = 0; index < this.stackResult.length; ++index)
+		{
+			if (stackResult[index].recipeItem != ItemStack.EMPTY && stackResult[index].recipeItem.getItem().hasContainerItem(null) && this.stackResult[index].containerItem == ItemStack.EMPTY)
+			{
+				count++;
+			}
+		}
+		return count;
+	}
+
 }
