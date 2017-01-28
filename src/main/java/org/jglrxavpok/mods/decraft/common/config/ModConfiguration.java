@@ -28,8 +28,8 @@ public class ModConfiguration
 	public static String[] excludedItems;
 
 	
-	public static void preInit(){
-		
+	public static void preInit()
+	{
 		File configFile = new File(Loader.instance().getConfigDir(), ModUncrafting.MODID + ".cfg");
 		
 		config = new Configuration(configFile);
