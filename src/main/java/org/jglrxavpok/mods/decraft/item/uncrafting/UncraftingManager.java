@@ -202,6 +202,9 @@ public class UncraftingManager
 					
 					if (!craftingGrid.isEmpty())
 					{
+						// if the recipe output contains the input item, disallow use of this recipe for uncrafting (e.g. white wool -> white wool + bonemeal)
+						if (craftingGridContainsInputItem(itemStack, craftingGrid)) continue;
+
 						// if we're doing a partial material return on a damaged item, remove items from the crafting grid as appropriate
 						if (ModConfiguration.uncraftMethod == UncraftingMethod.JGLRXAVPOK && itemStack.isItemStackDamageable() && itemStack.isItemDamaged())
 						{
@@ -219,6 +222,25 @@ public class UncraftingManager
 		}
 		
 		return list;
+	}
+
+	
+	/**
+	 * Determines whether the crafting grid contains the input item
+	 * @param stack The item being uncrafted
+	 * @param craftingGrid The unmodified crafting recipe of the damageable item
+	 * @return True if one or more item from crafting grid matches the item being uncrafted
+	 */
+	private static boolean craftingGridContainsInputItem(ItemStack stack, NonNullList<ItemStack> craftingGrid)
+	{
+		for ( ItemStack recipeStack : craftingGrid )
+		{
+			if (ItemStack.areItemsEqual(stack, recipeStack))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	
