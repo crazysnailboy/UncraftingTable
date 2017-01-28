@@ -107,7 +107,7 @@ public class GuiUncraftingTable extends GuiContainer
 	private void drawUncraftingStatusMessage()
 	{
 		// get a message to display based on the status of the container
-		String statusMessage = "";
+		String statusMessage = ""; int quantityNeeded = 0;
 		switch (container.uncraftingResult.resultType)
 		{
 			// if the uncrafting status is "ready", display the xp cost for the operation
@@ -122,7 +122,8 @@ public class GuiUncraftingTable extends GuiContainer
 				
 			// if there are not enough items in the item stack, display a message to that effect
 			case NOT_ENOUGH_ITEMS: 
-				statusMessage = I18n.format("uncrafting.result.needMoreStacks", container.uncraftingResult.getMinStackSize());
+				quantityNeeded = (container.uncraftingResult.getMinStackSize() - container.uncraftIn.getStackInSlot(0).stackSize); 
+				statusMessage = I18n.format("uncrafting.result.needMoreStacks", quantityNeeded);
 				break;
 				
 			// if the player does not have enough xp, display the xp cost for the operation
@@ -132,7 +133,8 @@ public class GuiUncraftingTable extends GuiContainer
 				
 			// if the crafting recipe requires container items to be present, display a message to that effect 
 			case NEED_CONTAINER_ITEMS:
-				statusMessage = "Container Items"; // TODO
+				quantityNeeded = container.uncraftOut.missingContainerItemCount();
+				statusMessage = I18n.format("uncrafting.result.needMoreStacks", quantityNeeded);
 				break;
 
 				
