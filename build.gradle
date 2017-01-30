@@ -20,7 +20,7 @@ plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 */
-version = "1.5.1-pre3"
+version = "1.5.1-pre4"
 group= "org.jglrxavpok.mods.decraft" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "[1.8.9]UncraftingTable"
 
