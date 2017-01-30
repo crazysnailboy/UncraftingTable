@@ -45,8 +45,10 @@ public final class RecipeHandlers
 			// cast the IRecipe instance
 			ShapedRecipes shapedRecipe = (ShapedRecipes)r;
 
-			// obtain the recipe items and the recipe dimensions
-			List<ItemStack> recipeItems = Arrays.asList(shapedRecipe.recipeItems);
+			// get a copy of the recipe items with normalised metadata
+			List<ItemStack> recipeItems = copyRecipeStacks(Arrays.asList(shapedRecipe.recipeItems));
+			
+			// get the recipe dimensions
 			int recipeWidth = shapedRecipe.recipeWidth;
 			int recipeHeight = shapedRecipe.recipeHeight;
 
@@ -65,8 +67,14 @@ public final class RecipeHandlers
 		@Override
 		public ItemStack[] getCraftingGrid(IRecipe r)
 		{
-			// ShapelessRecipes.recipeItems is a List<ItemStack>, so convert it to an ItemStack[] and return
-			return Iterables.toArray(Iterables.filter(((ShapelessRecipes)r).recipeItems, ItemStack.class), ItemStack.class);
+			// cast the IRecipe instance
+			ShapelessRecipes shapelessRecipe = (ShapelessRecipes)r;
+			
+			// get a copy of the recipe items with normalised metadata
+			List<ItemStack> recipeItems = copyRecipeStacks(shapelessRecipe.recipeItems);
+
+			// convert the itemstack list to an array
+			return recipeItems.toArray(new ItemStack[9]); // return Iterables.toArray(Iterables.filter(recipeItems, ItemStack.class), ItemStack.class);
 		}
 	}
 	
@@ -83,10 +91,12 @@ public final class RecipeHandlers
 			// cast the IRecipe instance
 			ShapedOreRecipe shapedRecipe = (ShapedOreRecipe)r;
 			
-			// obtain the recipe items and the recipe dimensions
-			List<ItemStack> recipeItems = getOreRecipeItems(Arrays.asList(shapedRecipe.getInput()));
+			// get a copy of the recipe items with normalised metadata
+			List<ItemStack> recipeItems = copyRecipeStacks(getOreRecipeItems(Arrays.asList(shapedRecipe.getInput())));
+			
 			if (!recipeItems.isEmpty())
 			{
+				// get the recipe dimensions
 				int recipeWidth = ((Integer)(ObfuscationReflectionHelper.getPrivateValue(ShapedOreRecipe.class, shapedRecipe, "width"))).intValue();
 				int recipeHeight = ((Integer)(ObfuscationReflectionHelper.getPrivateValue(ShapedOreRecipe.class, shapedRecipe, "height"))).intValue();
 	
@@ -107,9 +117,15 @@ public final class RecipeHandlers
 		@Override
 		public ItemStack[] getCraftingGrid(IRecipe r)
 		{
-			List<ItemStack> recipeItems = getOreRecipeItems(((ShapelessOreRecipe)r).getInput());
+			// cast the IRecipe instance
+			ShapelessOreRecipe shapelessRecipe = (ShapelessOreRecipe)r;
+			
+			// get a copy of the recipe items with normalised metadata
+			List<ItemStack> recipeItems = copyRecipeStacks(getOreRecipeItems(shapelessRecipe.getInput()));
+			
 			if (!recipeItems.isEmpty())
 			{
+				// convert the itemstack list to an array
 				return recipeItems.toArray(new ItemStack[9]);
 			}
 			else return new ItemStack[0];
@@ -153,13 +169,12 @@ public final class RecipeHandlers
 						itemStack = ((List<ItemStack>)itemObject).get(0);
 					}
 					else itemStack = (ItemStack)null;
-					
-					if (itemStack != null && itemStack.getItemDamage() == Short.MAX_VALUE) itemStack.setItemDamage(0); 
+
 					itemStacks.add(itemStack);
 				}
 			}
 			catch(Exception ex) { }
-			return itemStacks.toArray(new ItemStack[9]);
+			return copyRecipeStacks(itemStacks).toArray(new ItemStack[9]);
 		}
 		
 	}
@@ -185,30 +200,23 @@ public final class RecipeHandlers
 		@Override
 		public ItemStack[] getCraftingGrid(IRecipe r)
 		{
+			List<ItemStack> itemStacks = new ArrayList<ItemStack>();
 			try
 			{
-				List<ItemStack> stacks = new ArrayList<ItemStack>();
-				
 				for ( Object target : (ArrayList<Object>)recipeClass.getMethod("getInput", (Class[])null).invoke(r))
 				{
 					if (target instanceof ItemStack)
 					{
-						stacks.add((ItemStack)target);
+						itemStacks.add((ItemStack)target);
 					}
 					else if (target instanceof ArrayList)
 					{
-						stacks.add(((ArrayList<ItemStack>)target).get(0));
+						itemStacks.add(((ArrayList<ItemStack>)target).get(0));
 					}
 				}
-				
-				return stacks.toArray(new ItemStack[9]);
 			}
-			catch(Exception ex)
-			{
-				System.out.println("ShapelessMekanismRecipeHandler.getCraftingGrid: " + ex.getMessage());
-				System.out.println(ex.getStackTrace());
-			}
-			return null;
+			catch(Exception ex) { }
+			return copyRecipeStacks(itemStacks).toArray(new ItemStack[9]);
 		}
 		
 	}
@@ -314,9 +322,7 @@ public final class RecipeHandlers
 					{
 						if (list != null && list.size() > 0)
 						{
-							ItemStack itemStack = list.get(0); 
-							if (itemStack != null && itemStack.getItemDamage() == Short.MAX_VALUE) itemStack.setItemDamage(0); 
-							itemStacks.add(itemStack);
+							itemStacks.add(list.get(0));
 						}
 						else
 						{
@@ -325,8 +331,8 @@ public final class RecipeHandlers
 					}
 				}
 			}
-			catch(Exception ex) { System.out.println(ex.getMessage()); }
-			return itemStacks.toArray(new ItemStack[9]);
+			catch(Exception ex) { }
+			return copyRecipeStacks(itemStacks).toArray(new ItemStack[9]);
 		}
 	}
 	
@@ -350,43 +356,37 @@ public final class RecipeHandlers
 		@Override
 		public ItemStack[] getCraftingGrid(IRecipe r)
 		{
+			List<ItemStack> itemStacks = new ArrayList<ItemStack>();
 			try
 			{
-				Class AdvShapelessRecipe = Class.forName("ic2.core.recipe.AdvShapelessRecipe");
 				Class RecipeInputItemStack = Class.forName("ic2.api.recipe.RecipeInputItemStack");
 				Class RecipeInputOreDict = Class.forName("ic2.api.recipe.RecipeInputOreDict");
 				
-				List<ItemStack> stacks = new ArrayList<ItemStack>();
-				for ( Object target : (Object[])AdvShapelessRecipe.getField("input").get(r))
+				for ( Object target : (Object[])recipeClass.getField("input").get(r))
 				{
 					if (RecipeInputItemStack.isInstance(target))
 					{
 						ItemStack itemStack = (ItemStack)RecipeInputItemStack.getField("input").get(target); 
-						stacks.add(itemStack);
+						itemStacks.add(itemStack);
 					}
 					else if (RecipeInputOreDict.isInstance(target))
 					{
-						List<ItemStack> itemStacks = (List<ItemStack>)(RecipeInputOreDict.getMethod("getInputs", (Class[])null).invoke(target));
-						stacks.add(itemStacks.get(0));
+						List<ItemStack> _itemStacks = (List<ItemStack>)(RecipeInputOreDict.getMethod("getInputs", (Class[])null).invoke(target));
+						itemStacks.add(_itemStacks.get(0));
 					}
 					else if (target instanceof ItemStack)
 					{
-						stacks.add((ItemStack)target);
+						itemStacks.add((ItemStack)target);
 					}
 					else if (target instanceof ArrayList)
 					{
-						stacks.add(((ArrayList<ItemStack>)target).get(0));
+						itemStacks.add(((ArrayList<ItemStack>)target).get(0));
 					}
 				}
 				
-				return stacks.toArray(new ItemStack[9]);
 			}
-			catch(Exception ex) 
-			{ 
-				System.out.println("ShapelessIC2RecipeHandler.getCraftingGrid: " + ex.getMessage());
-				System.out.println(ex.getStackTrace().toString());
-			}
-			return null;
+			catch(Exception ex) { }
+			return copyRecipeStacks(itemStacks).toArray(new ItemStack[9]);
 		}
 	}
 	
@@ -437,10 +437,31 @@ public final class RecipeHandlers
 			}
 			else itemStack = (ItemStack)null;
 			
-			if (itemStack != null && itemStack.getItemDamage() == Short.MAX_VALUE) itemStack.setItemDamage(0); 
 			itemStacks.add(itemStack);
 		}
 		return itemStacks;
+	}
+	
+	
+	/**
+	 * Copies the ItemStacks in a list to a new list, whilst normalising the item damage for the OreDictionary wildcard value
+	 */
+	private static List<ItemStack> copyRecipeStacks(List<ItemStack> inputStacks)
+	{
+		List<ItemStack> outputStacks = new ArrayList<ItemStack>();
+		
+		for ( ItemStack inputStack : inputStacks )
+		{
+			if (inputStack != null)
+			{
+				ItemStack outputStack = inputStack.copy();
+				if (outputStack.getItemDamage() == Short.MAX_VALUE) outputStack.setItemDamage(0);
+				outputStacks.add(outputStack);
+			}
+			else outputStacks.add(null);
+		}
+		
+		return outputStacks;
 	}
 
 
