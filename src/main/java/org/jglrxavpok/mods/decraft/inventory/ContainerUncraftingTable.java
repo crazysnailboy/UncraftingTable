@@ -99,11 +99,8 @@ public class ContainerUncraftingTable extends Container
 					int amount = craftingGrid[iSlot].stackSize * multiplier;
 					if (amount > craftingGrid[iSlot].getMaxStackSize()) amount = craftingGrid[iSlot].getMaxStackSize(); 
 					
-					// if the crafting recipe doesn't specify a metadata value, use the default
-					int meta = craftingGrid[iSlot].getItemDamage(); if (meta == Short.MAX_VALUE) meta = 0;
-
 					// create the new itemstack to place in the uncrafting inventory
-					ItemStack newStack = new ItemStack(craftingGrid[iSlot].getItem(), amount, meta);
+					ItemStack newStack = new ItemStack(craftingGrid[iSlot].getItem(), amount, craftingGrid[iSlot].getItemDamage());
 					
 					// if the crafting recipe item has NBT data, copy that onto the new itemstack
 					if (craftingGrid[iSlot].hasTagCompound())
