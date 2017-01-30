@@ -211,7 +211,39 @@ public class ContainerUncraftingTable extends Container
 		
 		uncraftOut.clearContainerItems();
 		
-		populateOutputInventory();
+		if (uncraftIn.getStackInSlot(0).stackSize < uncraftingResult.getMinStackSize())
+		{
+			uncraftingResult.resultType = ResultType.NOT_ENOUGH_ITEMS;
+		}
+		else if (!playerInventory.player.capabilities.isCreativeMode && playerInventory.player.experienceLevel < uncraftingResult.experienceCost)
+		{		
+			uncraftingResult.resultType = ResultType.NOT_ENOUGH_XP;
+		}
+		else
+		{
+			// check to see if one of more of the items in the crafting recipe have container items
+			for ( ItemStack recipeStack : uncraftingResult.getCraftingGrid() )
+			{
+				if (recipeStack != null && recipeStack.getItem().hasContainerItem(null)) // the hasContainerItem parameter is ignored, and ItemStack internally calls the deprecated version without the parameter anyway...
+				{
+					uncraftingResult.resultType = ResultType.NEED_CONTAINER_ITEMS;
+					break;
+				}
+			}
+
+			// if no container items are present, and all the other checks pass
+			if (uncraftingResult.resultType != ResultType.NEED_CONTAINER_ITEMS)
+			{
+				// the uncrafting operation can be performed
+				uncraftingResult.resultType = ResultType.VALID;
+			}
+			
+		}
+		
+		if (uncraftingResult.canPopulateInventory())
+		{
+			populateOutputInventory();
+		}
 	}
 	
 	
