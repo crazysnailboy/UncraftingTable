@@ -1,0 +1,39 @@
+#ru_RU
+
+tile.uncrafting_table.name=Антиверстак
+
+item.diamondNugget.name=Алмазный самородок
+item.emeraldNugget.name=Изумрудный самородок
+item.ironNugget.name=Железный самородок
+
+achievement.createDecraftTable=Как в старые времена
+achievement.createDecraftTable.desc=Создайте антиверстак !
+achievement.uncraftAnything=Разбери вещь !
+achievement.uncraftAnything.desc=Вы только что разобрали вещь !
+achievement.uncraftDiamondHoe=Разбери алмазную мотыгу !
+achievement.uncraftDiamondHoe.desc=Мы почти обанкротились.
+achievement.uncraftJunk=Время переработки !
+achievement.uncraftJunk.desc=Эта вещь была бесполезной.
+achievement.uncraftDiamondShovel=Время для более дешевого подхода.
+achievement.uncraftDiamondShovel.desc=Железные лопаты лучше.
+achievement.porteManteauAchievement=Все в одном !
+achievement.porteManteauAchievement.desc=ยงk <3 всех
+
+container.uncrafting=Антиверстак
+container.uncrafting.cost=Уровней требуется: %1$s
+
+uncrafting.result.ready=Готово
+uncrafting.result.impossible=Не разбираемое
+uncrafting.result.needMoreStacks=Требуется еще %1$s вещи(ей)
+
+stat.uncrafteditems=Разобранные вещи
+
+uncrafting.compute=Вычисление
+uncrafting.options.method=Метод разборки
+uncrafting.options.method.tooltip=ID используемой формулы для разборки.
+uncrafting.options.standardLevel=Минимальный уровень
+uncrafting.options.standardLevel.tooltip=Минимально требуемый уровень для разборки вещи
+uncrafting.options.maxUsedLevel=Максимальный уровень
+uncrafting.options.maxUsedLevel.tooltip=Максимально требуемый уровень для разборки вещи
+uncrafting.options.excludedItems=Исключенные вещи
+uncrafting.options.excludedItems.tooltip=ID предметов, которые не могут быть разобраны
