@@ -82,36 +82,38 @@ public class ContainerUncraftingTable extends Container
 		int multiplier = (uncraftIn.getStackInSlot(0).stackSize / minStackSize);
 		
 		// for each slot in the selected uncrafting result grid
-		for ( int iSlot = 0 ; iSlot < craftingGrid.length ; iSlot++ )
+		for ( int index = 0 ; index < craftingGrid.length ; index++ )
 		{
 			// if the slot in the result grid isn't empty
-			if (craftingGrid[iSlot] != null)
+			if (craftingGrid[index] != null)
 			{
 				// populate the slot in the output inventory with the correct number of items
 				if (
 					uncraftingResult.resultType == ResultType.VALID
 					||
-					(uncraftingResult.resultType == ResultType.NEED_CONTAINER_ITEMS && craftingGrid[iSlot].getItem().hasContainerItem(null))
+					(uncraftingResult.resultType == ResultType.NEED_CONTAINER_ITEMS && craftingGrid[index].getItem().hasContainerItem(null))
 				)
 				{
 					
 					// determine how many items we need to place in the inventory slot
-					int amount = craftingGrid[iSlot].stackSize * multiplier;
-					if (amount > craftingGrid[iSlot].getMaxStackSize()) amount = craftingGrid[iSlot].getMaxStackSize(); 
+					int amount = craftingGrid[index].stackSize * multiplier;
+					if (amount > craftingGrid[index].getMaxStackSize()) amount = craftingGrid[index].getMaxStackSize(); 
 					
 					// create the new itemstack to place in the uncrafting inventory
-					ItemStack newStack = new ItemStack(craftingGrid[iSlot].getItem(), amount, craftingGrid[iSlot].getItemDamage());
+					ItemStack newStack = new ItemStack(craftingGrid[index].getItem(), amount, craftingGrid[index].getItemDamage());
 					
 					// if the crafting recipe item has NBT data, copy that onto the new itemstack
-					if (craftingGrid[iSlot].hasTagCompound())
+					if (craftingGrid[index].hasTagCompound())
 					{
-						newStack.setTagCompound(craftingGrid[iSlot].getTagCompound());
+						newStack.setTagCompound(craftingGrid[index].getTagCompound());
 					}
 
 					// add the new itemstack to the inventory
-					uncraftOut.setInventorySlotRecipeStack(iSlot, newStack);
+					uncraftOut.setInventorySlotRecipeStack(index, newStack);
 				}
 			}
+			// if the slot in the result grid is empty, clear the corresponding slot in the inventory
+			else uncraftOut.setInventorySlotRecipeStack(index, null);
 		}
 	}
 	
@@ -379,12 +381,8 @@ public class ContainerUncraftingTable extends Container
 			// if the slot belongs to the calculation inventory
 			if (slot.inventory.equals(calculInput))
 			{
-				// get the stack of items in the slot
-				ItemStack itemstack1 = slot.getStack();
-				// let the slot know the player has picked up the stack of items
-				slot.onPickupFromSlot(player, itemstack1);
-				// attempt add the items to the player's inventory
-				if (!playerInventory.addItemStackToInventory(itemstack1))
+				// attempt to add the stack to the player's inventory
+				if (!playerInventory.addItemStackToInventory(slot.getStack()))
 				{
 					// TODO: shouldn't this spawn items in the world if they can't be added to the player's inventory?
 					return null;
@@ -396,7 +394,7 @@ public class ContainerUncraftingTable extends Container
 			// if the slot belongs to the input inventory
 			else if (slot.inventory.equals(uncraftIn))
 			{
-				// attempt add the items to the player's inventory
+				// attempt to add the stack to the player's inventory
 				if (!playerInventory.addItemStackToInventory(slot.getStack()))
 				{
 					// TODO: shouldn't this spawn items in the world if they can't be added to the player's inventory?
@@ -409,88 +407,70 @@ public class ContainerUncraftingTable extends Container
 			// if the slot belongs to the uncrafting result grid
 			else if (slot.inventory.equals(uncraftOut))
 			{
-				// if the slot contains items
-				if (slot.getHasStack())
+				if (this.uncraftingResult.resultType == ResultType.VALID)
 				{
-					if (this.uncraftingResult.resultType == ResultType.VALID)
-					{
-						doUncraft();
-					}
-					
-					if (uncraftOut.isEmpty())
-					{
-						this.uncraftingResult = new UncraftingResult();
-						if (uncraftIn.getStackInSlot(0) != null) this.onCraftMatrixChanged(uncraftIn);
-					}
-					
-					// attempt to add those items to the player's inventory
-					if (!playerInventory.addItemStackToInventory(slot.getStack()))
-					{
-						// TODO: shouldn't this spawn items in the world if they can't be added to the player's inventory?
-						return null;
-					}
-					// clear the slot
-					slot.putStack(null);
+					doUncraft();
 				}
+				
+				if (uncraftOut.isEmpty())
+				{
+					this.uncraftingResult = new UncraftingResult();
+					if (uncraftIn.getStackInSlot(0) != null) this.onCraftMatrixChanged(uncraftIn);
+				}
+				
+				// attempt to add those items to the player's inventory
+				if (!playerInventory.addItemStackToInventory(slot.getStack()))
+				{
+					// TODO: shouldn't this spawn items in the world if they can't be added to the player's inventory?
+					return null;
+				}
+				// clear the slot
+				slot.putStack(null);
 			}
 			
 			// if the slot belongs to the player's inventory
 			else if (slot.inventory.equals(playerInventory))
 			{
-				Slot calcInput = null;
-				Slot uncraftSlot = null;
-				// iterate through all the slots in this container's inventories
-				for (Object s : inventorySlots)
+				// the target slot is the left slot if the player is shift clicking on a book, otherwise it's the right slot
+				int targetIndex = (slot.getStack().getItem() == Items.BOOK ? 0 : 1);
+				Slot targetSlot = (Slot)inventorySlots.get(index);
+				
+				// if the calculation input slot doesn't contain items
+				if (targetSlot.getStack() == null)
 				{
-					Slot s1 = (Slot)s;
-					// if the current slot belongs to the calculation inventory 
-					if (s1.inventory.equals(calculInput))
-					{
-						// set the temporary slot variable for the calculation slot to reference this slot
-						calcInput = s1;
-					}
-					// if the current slot belongs to the input inventory
-					else if (s1.inventory.equals(uncraftIn))
-					{
-						// set the temporary slot variable for the input slot to reference this slot
-						uncraftSlot = s1;
-					}
+					// put the items from the clicked slot into the calculation slot
+					targetSlot.putStack(slot.getStack());
+					// clear the clicked slot
+					slot.putStack(null);
 				}
-				// if we matched to the calculation input slot
-				if (calcInput != null)
+				// if the calculation slot does contain items
+				else
 				{
-					// if the calculation input slot doesn't contain items
-					if (calcInput.getStack() == null)
+					ItemStack itemstack1 = slot.getStack();
+					ItemStack itemstack = itemstack1.copy();
+
+					if (!mergeItemStack(itemstack1, targetIndex, targetIndex + 1, false))
 					{
-						// put the items from the clicked slot into the calculation slot
-						calcInput.putStack(slot.getStack());
-						// clear the clicked slot
+						return null;
+					}
+					
+					if (itemstack1.stackSize == 0)
+					{
 						slot.putStack(null);
 					}
-					// if the calculation slot does contain items
 					else
 					{
-						// if the clicked slot does contain items
-						if (slot.getStack() != null)
-						{
-							// get the items currently in the clicked slot
-							ItemStack i = slot.getStack();
-							// tell the clicked slot that the player has picked up the items
-							slot.onPickupFromSlot(player, slot.getStack());
-							// put the items from the calculation slot into the player's inventory
-							slot.putStack(calcInput.getStack().copy());
-							// put the items that were in the player's inventory into the calculation slot
-							calcInput.putStack(i.copy());
-							// trigger the crafting matrix change for the calculation slot
-							this.onCraftMatrixChanged(calculInput);
-						}
-						// if the clicked slot doesn't contain items
-						else
-						{
-							// do nothing
-							return null;
-						}
+						slot.onSlotChanged();
 					}
+
+					if (itemstack1.stackSize == itemstack.stackSize)
+					{
+						return null;
+					}
+
+					slot.onPickupFromSlot(player, itemstack1);
+
+					return itemstack;
 				}
 			}
 		}
