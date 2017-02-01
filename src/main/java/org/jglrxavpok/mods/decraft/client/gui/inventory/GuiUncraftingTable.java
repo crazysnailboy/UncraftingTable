@@ -111,7 +111,10 @@ public class GuiUncraftingTable extends GuiContainer
 		{
 			// if the uncrafting status is "ready", display the xp cost for the operation
 			case VALID: 
-				statusMessage = I18n.format("container.uncrafting.cost", container.uncraftingResult.experienceCost);
+				if (container.uncraftingResult.experienceCost > 0)
+				{
+					statusMessage = I18n.format("container.uncrafting.cost", container.uncraftingResult.experienceCost);
+				}
 				break;
 			
 			// if the item cannot be uncrafted, display a message to that effect
