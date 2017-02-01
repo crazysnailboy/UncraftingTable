@@ -1,10 +1,11 @@
 {
 	"homepage": "https://minecraft.curseforge.com/projects/jglrxavpoks-uncrafting-table/files/",
 	"promos": {
-		"1.7.10-latest": "1.4.4-pre4",
+		"1.7.10-latest": "1.4.4-pre5",
 		"1.7.10-recommended": "1.4.3"
 	},
 	"1.7.10": {
+		"1.4.4-pre5": "Fixed dupe glitch, fixed shift click into wrong slot",
 		"1.4.4-pre4": "Fixed two bugs",
 		"1.4.4-pre3": "Fixed server crash plus other minor changes",
 		"1.4.4-pre2": "Fixed incompatibility with Iron Chests",
