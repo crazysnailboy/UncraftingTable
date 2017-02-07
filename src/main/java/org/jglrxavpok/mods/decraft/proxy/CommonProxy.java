@@ -2,20 +2,14 @@ package org.jglrxavpok.mods.decraft.proxy;
 
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
+import org.jglrxavpok.mods.decraft.common.network.message.ConfigSyncMessage;
 import org.jglrxavpok.mods.decraft.common.network.message.RecipeNavigationMessage;
 import org.jglrxavpok.mods.decraft.init.ModBlocks;
 import org.jglrxavpok.mods.decraft.init.ModItems;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingManager;
 import org.jglrxavpok.mods.decraft.stats.ModAchievementList;
 
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
-import net.minecraft.stats.Achievement;
 
 
 public class CommonProxy 
@@ -35,6 +29,7 @@ public class CommonProxy
 
 		// register the network messages
 		ModUncrafting.instance.getNetwork().registerMessage(RecipeNavigationMessage.MessageHandler.class, RecipeNavigationMessage.class, 0, Side.SERVER);
+		ModUncrafting.instance.getNetwork().registerMessage(ConfigSyncMessage.MessageHandler.class, ConfigSyncMessage.class, 1, Side.CLIENT);
 	}
 	
 	

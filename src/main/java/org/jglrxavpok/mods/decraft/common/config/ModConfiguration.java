@@ -6,12 +6,16 @@ import java.util.List;
 
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.client.config.ModGuiConfigEntries;
+import org.jglrxavpok.mods.decraft.common.network.message.ConfigSyncMessage;
 
 import cpw.mods.fml.client.config.GuiConfigEntries.NumberSliderEntry;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
@@ -20,7 +24,6 @@ public class ModConfiguration
 {
 	
 	private static Configuration config = null;
-	private static ConfigEventHandler configEventHandler = new ConfigEventHandler();
 
 	public static final String CATEGORY_UPDATES = "updates";
 	
@@ -43,11 +46,13 @@ public class ModConfiguration
 		config.load();
 		
 		syncFromFile();
+		
+		FMLCommonHandler.instance().bus().register(new ConfigEventHandler());
 	}
 	
 	public static void clientPreInit() 
 	{
-		FMLCommonHandler.instance().bus().register(configEventHandler);
+		FMLCommonHandler.instance().bus().register(new ClientConfigEventHandler());
 	}
 	
 	public static Configuration getConfig() 
@@ -165,6 +170,19 @@ public class ModConfiguration
 	
 
 	public static class ConfigEventHandler 
+	{
+		@SubscribeEvent
+		public void onPlayerLoggedIn(PlayerLoggedInEvent event)
+		{
+			if (!event.player.worldObj.isRemote)
+			{
+				ModUncrafting.instance.getNetwork().sendTo(new ConfigSyncMessage(), (EntityPlayerMP)event.player);
+			}
+		}
+		
+	}
+
+	public static class ClientConfigEventHandler 
 	{
 		@SubscribeEvent
 		public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) 
