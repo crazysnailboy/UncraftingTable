@@ -2,6 +2,7 @@ package org.jglrxavpok.mods.decraft.proxy;
 
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
+import org.jglrxavpok.mods.decraft.common.network.message.ConfigSyncMessage;
 import org.jglrxavpok.mods.decraft.common.network.message.RecipeNavigationMessage;
 import org.jglrxavpok.mods.decraft.init.ModBlocks;
 import org.jglrxavpok.mods.decraft.init.ModItems;
@@ -28,7 +29,7 @@ public class CommonProxy
 		
 		// register the network messages
 		ModUncrafting.instance.getNetwork().registerMessage(RecipeNavigationMessage.MessageHandler.class, RecipeNavigationMessage.class, 0, Side.SERVER);
-		
+		ModUncrafting.instance.getNetwork().registerMessage(ConfigSyncMessage.MessageHandler.class, ConfigSyncMessage.class, 1, Side.CLIENT);
 	}
 	
 	
