@@ -6,7 +6,9 @@ import java.util.List;
 
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.client.config.ModGuiConfigEntries;
+import org.jglrxavpok.mods.decraft.common.network.message.ConfigSyncMessage;
 
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -14,14 +16,14 @@ import net.minecraftforge.fml.client.config.GuiConfigEntries.NumberSliderEntry;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 
 
 public class ModConfiguration 
 {
 	
 	private static Configuration config = null;
-	private static ConfigEventHandler configEventHandler = new ConfigEventHandler();
-
+	
 	public static int uncraftMethod;
 	public static int maxUsedLevel;
 	public static int standardLevel;
@@ -36,11 +38,13 @@ public class ModConfiguration
 		config.load();
 		
 		syncFromFile();
+		
+		MinecraftForge.EVENT_BUS.register(new ConfigEventHandler());
 	}
 	
-	public static void clientPreInit() 
+	public static void clientPreInit()
 	{
-		MinecraftForge.EVENT_BUS.register(new ConfigEventHandler());
+		MinecraftForge.EVENT_BUS.register(new ClientConfigEventHandler());
 	}
 	
 	public static Configuration getConfig() 
@@ -127,6 +131,18 @@ public class ModConfiguration
 	
 	
 	public static class ConfigEventHandler 
+	{
+		@SubscribeEvent
+		public void onPlayerLoggedIn(PlayerLoggedInEvent event)
+		{
+			if (!event.player.worldObj.isRemote)
+			{
+				ModUncrafting.instance.getNetwork().sendTo(new ConfigSyncMessage(), (EntityPlayerMP)event.player);
+			}
+		}
+	}
+	
+	public static class ClientConfigEventHandler
 	{
 		@SubscribeEvent
 		public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) 
