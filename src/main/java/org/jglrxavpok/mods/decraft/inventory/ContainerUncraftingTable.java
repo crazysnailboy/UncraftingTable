@@ -3,6 +3,7 @@ package org.jglrxavpok.mods.decraft.inventory;
 import java.util.List;
 
 import org.jglrxavpok.mods.decraft.event.ItemUncraftedEvent;
+import org.jglrxavpok.mods.decraft.inventory.InventoryUncraftResult.StackType;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingManager;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult.ResultType;
@@ -74,6 +75,17 @@ public class ContainerUncraftingTable extends Container
 	
 	private void populateOutputInventory()
 	{
+		// remove the recipe items from the grid, if present
+		uncraftOut.clear(StackType.RECIPE);
+		
+		// if the grid isn't empty, it has container items in it
+		if ((uncraftingResult.resultType != ResultType.VALID) && (!uncraftOut.isEmpty()))
+		{
+			// so move those back into the player inventory
+			returnContainerItemsToPlayer();
+		}
+		
+		
 		// get the minimum stack size and the crafting grid from the uncrafting result
 		int minStackSize = uncraftingResult.getMinStackSize();
 		ItemStack[] craftingGrid = uncraftingResult.getCraftingGrid();
@@ -91,7 +103,7 @@ public class ContainerUncraftingTable extends Container
 				if (
 					uncraftingResult.resultType == ResultType.VALID
 					||
-					(uncraftingResult.resultType == ResultType.NEED_CONTAINER_ITEMS && craftingGrid[index].getItem().hasContainerItem(null))
+					(uncraftingResult.resultType == ResultType.NEED_CONTAINER_ITEMS && craftingGrid[index].getItem().hasContainerItem(craftingGrid[index])) // the hasContainerItem parameter is usually ignored, but some mods (Immersive Engineering) need it to be there
 				)
 				{
 					
@@ -109,11 +121,11 @@ public class ContainerUncraftingTable extends Container
 					}
 
 					// add the new itemstack to the inventory
-					uncraftOut.setInventorySlotRecipeStack(index, newStack);
+					uncraftOut.setInventorySlotContents(index, newStack, StackType.RECIPE);
 				}
 			}
 			// if the slot in the result grid is empty, clear the corresponding slot in the inventory
-			else uncraftOut.setInventorySlotRecipeStack(index, null);
+			else uncraftOut.setInventorySlotContents(index, null, StackType.RECIPE);
 		}
 	}
 	
@@ -178,69 +190,43 @@ public class ContainerUncraftingTable extends Container
 	}
 	
 	
+	private void returnContainerItemsToPlayer()
+	{
+		// for each slot in the output grid 
+		for (int i = 0; i < uncraftOut.getSizeInventory(); i++ )
+		{
+			// determine the item in the current slot
+			ItemStack stack = uncraftOut.getStackInSlot(i, StackType.CONTAINER);
+			if (stack != null)
+			{
+				// move the item currently in the output into the player inventory 
+				if (!playerInventory.addItemStackToInventory(stack))
+				{
+					// if the item cannot be added to the player inventory, spawn the item in the world instead
+					playerInventory.player.dropPlayerItemWithRandomChoice(stack, false);
+				}
+			}
+		}
+		uncraftOut.clear(StackType.CONTAINER);
+	}
+
+	
 	public void switchRecipe()
 	{
 		// remove the recipe items from the grid, if present
-		uncraftOut.clearRecipeItems();
+		uncraftOut.clear(StackType.RECIPE);
 		
 		// if the grid isn't empty, it has container items in it
 		if (!this.uncraftOut.isEmpty())
 		{
 			// so move those back into the player inventory
-			
-			// for each slot in the output grid 
-			for (int i = 0; i < uncraftOut.getSizeInventory(); i++ )
-			{
-				// determine the item in the current slot
-				ItemStack item = uncraftOut.getStackInSlot(i);
-				if (item != null)
-				{
-					// move the item currently in the output into the player inventory 
-					if (!playerInventory.addItemStackToInventory(item))
-					{
-						// if the item cannot be added to the player inventory, spawn the item in the world instead
-						if (!worldObj.isRemote)
-						{
-							EntityItem e = playerInventory.player.entityDropItem(item, 0.5f);
-							e.posX = playerInventory.player.posX;
-							e.posY = playerInventory.player.posY;
-							e.posZ = playerInventory.player.posZ;
-						}
-					}
-				}
-			}
+			returnContainerItemsToPlayer();
 		}
 		
-		uncraftOut.clearContainerItems();
+		// determine the uncrafting result type for the newly selected recipe
+		UncraftingManager.recalculateResultType(uncraftingResult, playerInventory.player, uncraftIn.getStackInSlot(0));  
 		
-		if (uncraftIn.getStackInSlot(0).stackSize < uncraftingResult.getMinStackSize())
-		{
-			uncraftingResult.resultType = ResultType.NOT_ENOUGH_ITEMS;
-		}
-		else if (!playerInventory.player.capabilities.isCreativeMode && playerInventory.player.experienceLevel < uncraftingResult.experienceCost)
-		{		
-			uncraftingResult.resultType = ResultType.NOT_ENOUGH_XP;
-		}
-		else
-		{
-			// check to see if one of more of the items in the crafting recipe have container items
-			for ( ItemStack recipeStack : uncraftingResult.getCraftingGrid() )
-			{
-				if (recipeStack != null && recipeStack.getItem().hasContainerItem(null)) // the hasContainerItem parameter is ignored, and ItemStack internally calls the deprecated version without the parameter anyway...
-				{
-					uncraftingResult.resultType = ResultType.NEED_CONTAINER_ITEMS;
-					break;
-				}
-			}
-
-			// if no container items are present, and all the other checks pass
-			if (uncraftingResult.resultType != ResultType.NEED_CONTAINER_ITEMS)
-			{
-				// the uncrafting operation can be performed
-				uncraftingResult.resultType = ResultType.VALID;
-			}
-		}
-		
+		// populate the output inventory if it's appropriate to do so
 		if (uncraftingResult.canPopulateInventory())
 		{
 			populateOutputInventory();
@@ -248,6 +234,23 @@ public class ContainerUncraftingTable extends Container
 	}
 	
 
+	public void onInputItemChanged()
+	{
+		ItemStack inputStack = uncraftIn.getStackInSlot(0);
+		
+		if (inputStack == null)
+		{
+			// TODO: move logic out of onCraftMatrixChanged ? 
+		}
+		else
+		{
+			this.uncraftingResult = UncraftingManager.getUncraftingResult(playerInventory.player, inputStack);
+		}
+		
+		onCraftMatrixChanged(uncraftIn);
+	}
+
+	
 	/**
 	 * Callback for when the crafting matrix is changed.
 	 */
@@ -266,16 +269,20 @@ public class ContainerUncraftingTable extends Container
 				// if the slot is empty because we've finished uncrafting something
 				if (this.uncraftingResult.resultType == ResultType.UNCRAFTED)
 				{
+					// if the player has removed all the items from the uncrafting grid
 					if (uncraftOut.isEmpty())
 					{
+						// clear the uncrafting result
 						this.uncraftingResult = new UncraftingResult();
 					}
 				}
+				// if it's empty because the player removed the items
 				if (this.uncraftingResult.resultType != ResultType.UNCRAFTED)
 				{
-					uncraftOut.clearRecipeItems();
+					// clear the recipe items from the output grid
+					uncraftOut.clear(StackType.RECIPE);
+					// clear the uncrafting result
 					this.uncraftingResult = new UncraftingResult();
-					
 				}
 			}
 			// if the stack is not empty
@@ -283,13 +290,18 @@ public class ContainerUncraftingTable extends Container
 			{
 				if (this.uncraftingResult.resultType != ResultType.UNCRAFTED)
 				{
-					// populate the uncrafting result based on the contents of the right hand slot
-					this.uncraftingResult = UncraftingManager.getUncraftingResult(playerInventory.player, inputStack);
+					// update the uncrafting result type for the updated input stack
+					UncraftingManager.recalculateResultType(uncraftingResult, playerInventory.player, uncraftIn.getStackInSlot(0));  
 					
 					// if the item in the input stack can be uncrafted...
 					if (this.uncraftingResult.canPopulateInventory())
 					{
 						populateOutputInventory();
+					}
+					else //if (this.uncraftingResult.resultType == ResultType.NOT_UNCRAFTABLE)
+					{
+						uncraftOut.clear(StackType.RECIPE);
+						if (!uncraftOut.isEmpty()) returnContainerItemsToPlayer();
 					}
 				}
 			}
@@ -310,10 +322,10 @@ public class ContainerUncraftingTable extends Container
 				doUncraft();
 			}
 			
-			else if (this.uncraftingResult.resultType == ResultType.UNCRAFTED)
-			{
-				//uncraftOut.clearContainerItems();
-			}
+//			else if (this.uncraftingResult.resultType == ResultType.UNCRAFTED)
+//			{
+//				//uncraftOut.clearContainerItems();
+//			}
 			
 			if (uncraftOut.isEmpty())
 			{
@@ -416,14 +428,37 @@ public class ContainerUncraftingTable extends Container
 					if (uncraftIn.getStackInSlot(0) != null) this.onCraftMatrixChanged(uncraftIn);
 				}
 				
-				// attempt to add those items to the player's inventory
-				if (!playerInventory.addItemStackToInventory(slot.getStack()))
+				if (this.uncraftingResult.resultType == ResultType.UNCRAFTED)
 				{
-					// TODO: shouldn't this spawn items in the world if they can't be added to the player's inventory?
-					return null;
+					ItemStack stack = uncraftOut.getStackInSlot(slot.getSlotIndex(), StackType.RECIPE);
+					if (!playerInventory.addItemStackToInventory(stack))
+					{
+						// TODO: shouldn't this spawn items in the world if they can't be added to the player's inventory?
+						return null;
+					}
+					// clear the slot
+					slot.putStack(null);
 				}
-				// clear the slot
-				slot.putStack(null);
+				else
+				{
+					ItemStack stack = uncraftOut.getStackInSlot(slot.getSlotIndex(), StackType.CONTAINER);
+					// attempt to add the stack to the player's inventory
+					if (!playerInventory.addItemStackToInventory(stack))
+					{
+						// TODO: shouldn't this spawn items in the world if they can't be added to the player's inventory?
+						return null;
+					}
+					uncraftOut.setInventorySlotContents(slot.getSlotIndex(), null, StackType.CONTAINER);
+				}
+
+//				// attempt to add those items to the player's inventory
+//				if (!playerInventory.addItemStackToInventory(slot.getStack()))
+//				{
+//					// TODO: shouldn't this spawn items in the world if they can't be added to the player's inventory?
+//					return null;
+//				}
+//				// clear the slot
+//				slot.putStack(null);
 			}
 			
 			// if the slot belongs to the player's inventory
