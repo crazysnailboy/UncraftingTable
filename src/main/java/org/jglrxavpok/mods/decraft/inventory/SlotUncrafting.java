@@ -24,12 +24,22 @@ public class SlotUncrafting extends Slot
 	{
 		super.onSlotChanged();
 
-		// ensure that the container's onCraftMatrixChanged method is called when the number of items in the slot is increased
 		ItemStack stack = this.getStack();
-		if (stack != ItemStack.EMPTY && this.stack != ItemStack.EMPTY && stack.isItemEqual(this.stack) && stack.getCount() > this.stack.getCount())
+		
+		if (!ItemStack.areItemsEqual(stack, this.stack))
+		{
+			this.container.onInputItemChanged();
+		}
+		else if (stack != null && this.stack != null)
 		{
 			this.container.onCraftMatrixChanged(this.inventory);
 		}
+		
+		// ensure that the container's onCraftMatrixChanged method is called when the number of items in the slot is increased
+//		if (stack != ItemStack.EMPTY && this.stack != ItemStack.EMPTY && stack.isItemEqual(this.stack) && stack.getCount() > this.stack.getCount())
+//		{
+//			this.container.onCraftMatrixChanged(this.inventory);
+//		}
 		this.stack = (stack == ItemStack.EMPTY ? ItemStack.EMPTY : stack.copy());
 	}
 	
