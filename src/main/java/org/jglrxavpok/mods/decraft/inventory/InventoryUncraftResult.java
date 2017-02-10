@@ -12,6 +12,13 @@ import net.minecraft.util.text.ITextComponent;
 public class InventoryUncraftResult implements IInventory
 {
 	
+	public enum StackType
+	{
+		RECIPE,
+		CONTAINER
+	}
+
+	
 	private class ItemStackPair
 	{
 		private ItemStack recipeItem = ItemStack.EMPTY;
@@ -54,7 +61,7 @@ public class InventoryUncraftResult implements IInventory
 		}
 		else if (this.eventHandler.uncraftingResult.resultType == ResultType.NEED_CONTAINER_ITEMS)
 		{		
-			if (this.stackResult[index].recipeItem != ItemStack.EMPTY && stackResult[index].recipeItem.getItem().hasContainerItem(null) && this.stackResult[index].containerItem != ItemStack.EMPTY)
+			if (this.stackResult[index].recipeItem != ItemStack.EMPTY && stackResult[index].recipeItem.getItem().hasContainerItem(stackResult[index].recipeItem) && this.stackResult[index].containerItem != ItemStack.EMPTY) // the hasContainerItem parameter is usually ignored, but some mods (Immersive Engineering) need it to be there
 			{
 				return this.stackResult[index].recipeItem;
 			}
@@ -69,7 +76,17 @@ public class InventoryUncraftResult implements IInventory
 		}
 	}
 	
+	public ItemStack getStackInSlot(int index, StackType stackType)
+	{
+		switch (stackType)
+		{
+			case RECIPE: return this.stackResult[index].recipeItem;
+			case CONTAINER: return this.stackResult[index].containerItem;
+			default: return null;
+		}
+	}
 
+	
 	/**
 	 * Removes up to a specified number of items from an inventory slot and returns them in a new stack.
 	 */
@@ -153,7 +170,7 @@ public class InventoryUncraftResult implements IInventory
 	public void setInventorySlotContents(int index, ItemStack stack)
 	{
 		// if the slot isn't empty, and the item in the slot requires a container item
-		if (stack != ItemStack.EMPTY && this.stackResult[index].recipeItem != ItemStack.EMPTY && stackResult[index].recipeItem.getItem().hasContainerItem(null))
+		if (stack != ItemStack.EMPTY && this.stackResult[index].recipeItem != ItemStack.EMPTY && stackResult[index].recipeItem.getItem().hasContainerItem(stackResult[index].recipeItem)) // the hasContainerItem parameter is usually ignored, but some mods (Immersive Engineering) need it to be there
 		{
 			// get the container item for the recipe item
 			Item recipeItem = stackResult[index].recipeItem.getItem();
@@ -168,13 +185,13 @@ public class InventoryUncraftResult implements IInventory
 				// if the recipe item and the container items are equal
 				if (recipeItem == containerItem)
 				{
+					// copy the container stack into the recipe stack
 					ItemStack newStack = stack.copy();
-					
 					this.stackResult[index].recipeItem = newStack;
 					
-					this.eventHandler.uncraftingResult.getCraftingGrid().set(index, newStack);
-//					this.eventHandler.uncraftingResult.craftingGrids.get(this.eventHandler.uncraftingResult.selectedCraftingGrid).set(index, newStack);
-								
+					// update the uncrafting recipe itself with the provided container item rather than the default
+					// (this is for mods like tinker's construct where chisels vary based on nbt data)
+					this.eventHandler.uncraftingResult.getCraftingGrid().set(index, newStack); // TODO: this probably shouldn't be happening in the inventory
 				}
 				
 				this.eventHandler.onCraftMatrixChanged(this);
@@ -194,9 +211,13 @@ public class InventoryUncraftResult implements IInventory
 		}
 	}
 	
-	public void setInventorySlotRecipeStack(int index, ItemStack stack)
+	public void setInventorySlotContents(int index, ItemStack stack, StackType stackType)
 	{
-		this.stackResult[index].recipeItem = stack;
+		switch (stackType)
+		{
+			case RECIPE: this.stackResult[index].recipeItem = stack; break;
+			case CONTAINER: this.stackResult[index].containerItem = stack; break;
+		}
 	}
 
 	
@@ -279,7 +300,7 @@ public class InventoryUncraftResult implements IInventory
 	public boolean isItemValidForSlot(int index, ItemStack stack) 
 	{
 		// if the recipe item has a container item
-		if (stackResult[index].recipeItem != ItemStack.EMPTY && stackResult[index].recipeItem.getItem().hasContainerItem(null))
+		if (stackResult[index].recipeItem != ItemStack.EMPTY && stackResult[index].recipeItem.getItem().hasContainerItem(stackResult[index].recipeItem)) // the hasContainerItem parameter is usually ignored, but some mods (Immersive Engineering) need it to be there
 		{
 			// get the container item for the recipe item
 			Item recipeItem = stackResult[index].recipeItem.getItem();
@@ -333,27 +354,32 @@ public class InventoryUncraftResult implements IInventory
 		}
 	}
 	
-	public void clearRecipeItems()
+	public void clear(StackType stackType)
 	{
-		for (int i = 0; i < this.stackResult.length; ++i)
+		switch (stackType)
 		{
-			this.stackResult[i].recipeItem = ItemStack.EMPTY;
+			case RECIPE: 
+				for (int i = 0; i < this.stackResult.length; ++i)
+				{
+					this.stackResult[i].recipeItem = ItemStack.EMPTY;
+				}
+				break;
+
+			case CONTAINER: 
+				for (int i = 0; i < this.stackResult.length; ++i)
+				{
+					this.stackResult[i].containerItem = ItemStack.EMPTY;
+				}
+				break;
 		}
 	}
-	
-	public void clearContainerItems()
-	{
-		for (int i = 0; i < this.stackResult.length; ++i)
-		{
-			this.stackResult[i].containerItem = ItemStack.EMPTY;
-		}
-	}
+
 	
 	public boolean missingContainerItems()
 	{
 		for (int index = 0; index < this.stackResult.length; ++index)
 		{
-			if (stackResult[index].recipeItem != ItemStack.EMPTY && stackResult[index].recipeItem.getItem().hasContainerItem(null) && this.stackResult[index].containerItem == ItemStack.EMPTY)
+			if (stackResult[index].recipeItem != ItemStack.EMPTY && stackResult[index].recipeItem.getItem().hasContainerItem(stackResult[index].recipeItem) && this.stackResult[index].containerItem == ItemStack.EMPTY) // the hasContainerItem parameter is usually ignored, but some mods (Immersive Engineering) need it to be there
 			{
 				return true;
 			}
@@ -366,7 +392,7 @@ public class InventoryUncraftResult implements IInventory
 		int count = 0;
 		for (int index = 0; index < this.stackResult.length; ++index)
 		{
-			if (stackResult[index].recipeItem != ItemStack.EMPTY && stackResult[index].recipeItem.getItem().hasContainerItem(null) && this.stackResult[index].containerItem == ItemStack.EMPTY)
+			if (stackResult[index].recipeItem != ItemStack.EMPTY && stackResult[index].recipeItem.getItem().hasContainerItem(stackResult[index].recipeItem) && this.stackResult[index].containerItem == ItemStack.EMPTY) // the hasContainerItem parameter is usually ignored, but some mods (Immersive Engineering) need it to be there
 			{
 				count++;
 			}
