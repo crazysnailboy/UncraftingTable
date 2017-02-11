@@ -305,10 +305,26 @@ public class InventoryUncraftResult implements IInventory
 		{
 			// get the container item for the recipe item
 			Item recipeItem = stackResult[index].recipeItem.getItem();
-			Item containerItem = recipeItem.getContainerItem(); if (containerItem == null) containerItem = recipeItem;  // some mods (e.g. IC2) use a null container item for some recipes
+			Item containerItem = recipeItem.getContainerItem(); // if (containerItem == null) containerItem = recipeItem;  // some mods (e.g. IC2, IE) use a null container item for some recipes
 
-			// the input item is valid if it matches the container item			
-			return (stack.getItem() == containerItem);
+			if (containerItem == null) // some mods (e.g. IC2, IE) use a null container item for some recipes
+			{
+				return ItemStack.areItemsEqual(stackResult[index].recipeItem, stack);
+			}
+			else
+			{
+//				if (containerItem.getHasSubtypes()) // TODO
+//				{
+//				}
+//				else
+//				{
+//				}
+				
+				return (stack.getItem() == containerItem);
+			}
+
+			// the input item is valid if it matches the container item
+//			return (stack.getItem() == containerItem);
 		}
 		else return false;
 	}
