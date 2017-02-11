@@ -46,8 +46,10 @@ public final class RecipeHandlers
 			// cast the IRecipe instance
 			ShapedRecipes shapedRecipe = (ShapedRecipes)r;
 
-			// obtain the recipe items and the recipe dimensions
-			List<ItemStack> recipeItems = Arrays.asList(shapedRecipe.recipeItems);
+			// get a copy of the recipe items with normalised metadata
+			List<ItemStack> recipeItems = copyRecipeStacks(Arrays.asList(shapedRecipe.recipeItems));
+			
+			// get the recipe dimensions
 			int recipeWidth = shapedRecipe.recipeWidth;
 			int recipeHeight = shapedRecipe.recipeHeight;
 
@@ -66,10 +68,14 @@ public final class RecipeHandlers
 		@Override
 		public NonNullList<ItemStack> getCraftingGrid(IRecipe r)
 		{
-			// ShapelessRecipes.recipeItems is a List<ItemStack>, so convert it to an NonNullList<ItemStack> and return
-			NonNullList<ItemStack> stacks = NonNullList.<ItemStack>create();
-			stacks.addAll(Lists.newArrayList(Iterables.filter(((ShapelessRecipes)r).recipeItems, ItemStack.class)));
-			return stacks;
+			// cast the IRecipe instance
+			ShapelessRecipes shapelessRecipe = (ShapelessRecipes)r;
+			
+			// get a copy of the recipe items with normalised metadata
+			NonNullList<ItemStack> recipeItems = copyRecipeStacks(shapelessRecipe.recipeItems);
+
+			// return the itemstacks
+			return recipeItems;
 		}
 	}
 	
@@ -87,11 +93,13 @@ public final class RecipeHandlers
 			ShapedOreRecipe shapedRecipe = (ShapedOreRecipe)r;
 			
 			// obtain the recipe items and the recipe dimensions
-			List<ItemStack> recipeItems = getOreRecipeItems(Arrays.asList(shapedRecipe.getInput()));
+			List<ItemStack> recipeItems = copyRecipeStacks(getOreRecipeItems(Arrays.asList(shapedRecipe.getInput())));
+			
 			if (!recipeItems.isEmpty())
 			{
-				int recipeWidth = shapedRecipe.getWidth(); // int recipeWidth = ((Integer)(ObfuscationReflectionHelper.getPrivateValue(ShapedOreRecipe.class, shapedRecipe, "width"))).intValue();
-				int recipeHeight = shapedRecipe.getHeight(); // int recipeHeight = ((Integer)(ObfuscationReflectionHelper.getPrivateValue(ShapedOreRecipe.class, shapedRecipe, "height"))).intValue();
+				// get the recipe dimensions
+				int recipeWidth = shapedRecipe.getWidth();
+				int recipeHeight = shapedRecipe.getHeight();
 
 				// rearrange the itemstacks according to the recipe width and height
 				return reshapeRecipe(recipeItems, recipeWidth, recipeHeight);
@@ -110,9 +118,15 @@ public final class RecipeHandlers
 		@Override
 		public NonNullList<ItemStack> getCraftingGrid(IRecipe r)
 		{
-			NonNullList<ItemStack> recipeItems = getOreRecipeItems(((ShapelessOreRecipe)r).getInput());
+			// cast the IRecipe instance
+			ShapelessOreRecipe shapelessRecipe = (ShapelessOreRecipe)r;
+			
+			// get a copy of the recipe items with normalised metadata
+			NonNullList<ItemStack> recipeItems = copyRecipeStacks(getOreRecipeItems(shapelessRecipe.getInput()));
+			
 			if (!recipeItems.isEmpty())
 			{
+				// return the itemstacks
 				return recipeItems;
 			}
 			else return NonNullList.<ItemStack>create();
@@ -166,11 +180,27 @@ public final class RecipeHandlers
 			}
 			else itemStack = ItemStack.EMPTY;
 			
-			if (itemStack != ItemStack.EMPTY && itemStack.getItemDamage() == Short.MAX_VALUE) itemStack.setItemDamage(0); 
 			itemStacks.set(i, itemStack);
 		}
 		return itemStacks;
 	}
 	
+
+	/**
+	 * Copies the ItemStacks in a list to a new list, whilst normalising the item damage for the OreDictionary wildcard value
+	 */
+	private static NonNullList<ItemStack> copyRecipeStacks(List<ItemStack> inputStacks)
+	{
+		NonNullList<ItemStack> outputStacks = NonNullList.<ItemStack>withSize(9, ItemStack.EMPTY);
+
+		for ( int i = 0 ; i < inputStacks.size() ; i++ )
+		{
+			ItemStack outputStack = inputStacks.get(i).copy();
+			if (outputStack.getItemDamage() == Short.MAX_VALUE) outputStack.setItemDamage(0);
+			outputStacks.set(i, outputStack);
+		}
+		
+		return outputStacks;
+	}
 
 }

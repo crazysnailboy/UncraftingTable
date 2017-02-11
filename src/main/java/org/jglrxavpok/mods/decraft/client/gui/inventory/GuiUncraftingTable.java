@@ -112,7 +112,10 @@ public class GuiUncraftingTable extends GuiContainer
 		{
 			// if the uncrafting status is "ready", display the xp cost for the operation
 			case VALID: 
-				statusMessage = I18n.format("container.uncrafting.cost", container.uncraftingResult.experienceCost);
+				if (container.uncraftingResult.experienceCost > 0)
+				{
+					statusMessage = I18n.format("container.uncrafting.cost", container.uncraftingResult.experienceCost);
+				}
 				break;
 			
 			// if the item cannot be uncrafted, display a message to that effect
@@ -246,13 +249,13 @@ public class GuiUncraftingTable extends GuiContainer
 							itemRender.renderItemOverlayIntoGUI(this.fontRendererObj, itemStack, guiX + slotX, guiY + slotY, String.valueOf(itemStack.getCount()));
 						}
 						
-						// draw a coloured overlay over the item
 						GL11.glDisable(GL11.GL_LIGHTING);
 						GL11.glDisable(GL11.GL_DEPTH_TEST);
 	
+						// draw a coloured overlay over the item
 						// use a gray overlay for normal items, or a red overlay for this with container items
 						int color = 0x9F8B8B8B;
-						if (itemStack.getItem().hasContainerItem(null)) // the hasContainerItem parameter is ignored, and ItemStack internally calls the deprecated version without the parameter anyway...
+						if (itemStack.getItem().hasContainerItem(itemStack)) // the hasContainerItem parameter is usually ignored, but some mods (Immersive Engineering) need it to be there
 						{
 							Item containerItem = itemStack.getItem().getContainerItem();
 							Item slotItem = (renderSlot.getHasStack() ? renderSlot.getStack().getItem() : null);
@@ -262,7 +265,6 @@ public class GuiUncraftingTable extends GuiContainer
 								color = 0x80FF8B8B;
 							}
 						}
-//						int color = (itemStack.getItem().hasContainerItem(null) ?  0x80FF8B8B : 0x9F8B8B8B);  
 						this.drawRect(guiX + slotX, guiY + slotY, guiX + slotX + 16, guiY + slotY + 16, color);
 						
 						GL11.glEnable(GL11.GL_LIGHTING);

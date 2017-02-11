@@ -1,5 +1,7 @@
 package org.jglrxavpok.mods.decraft.inventory;
 
+import org.jglrxavpok.mods.decraft.inventory.InventoryUncraftResult.StackType;
+
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -23,4 +25,15 @@ public class SlotUncraftResult extends Slot
 		return this.inventory.isItemValidForSlot(this.getSlotIndex(), stack);
 	}
 	
+    /**
+     * Returns the maximum stack size for a given slot
+     */
+	@Override
+    public int getSlotStackLimit()
+    {
+		// the stack limit is the number of required container items for the recipe item (usually one), or zero
+		ItemStack stack = ((InventoryUncraftResult)this.inventory).getStackInSlot(this.getSlotIndex(), StackType.RECIPE);
+		return (stack != null && stack.getItem().hasContainerItem(stack) ? stack.getCount() : 0);
+    }
+
 }

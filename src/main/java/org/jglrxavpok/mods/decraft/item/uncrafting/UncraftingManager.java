@@ -82,7 +82,7 @@ public class UncraftingManager
 			// check to see if one of more of the items in the crafting recipe have container items
 			for ( ItemStack recipeStack : uncraftingResult.getCraftingGrid() )
 			{
-				if (recipeStack != ItemStack.EMPTY && recipeStack.getItem().hasContainerItem(null)) // the hasContainerItem parameter is ignored, and ItemStack internally calls the deprecated version without the parameter anyway...
+				if (recipeStack != ItemStack.EMPTY && recipeStack.getItem().hasContainerItem(recipeStack)) // the hasContainerItem parameter is usually ignored, but some mods (Immersive Engineering) need it to be there
 				{
 					uncraftingResult.resultType = ResultType.NEED_CONTAINER_ITEMS;
 					break;
@@ -101,6 +101,51 @@ public class UncraftingManager
 	}
 	
 
+	public static void recalculateResultType(UncraftingResult uncraftingResult, EntityPlayer player, ItemStack itemStack)
+	{	
+		uncraftingResult.resultType = ResultType.INACTIVE;
+
+		// if the minimum stack size is greater than the number of items in the slot
+		if (uncraftingResult.getRecipeCount() > 0 && itemStack.getCount() < uncraftingResult.getMinStackSize())
+		{
+			// set the result type as "not enough items"
+			uncraftingResult.resultType = ResultType.NOT_ENOUGH_ITEMS;
+		}
+		// if no crafting recipe could be found
+		else if (uncraftingResult.getRecipeCount() == 0)
+		{
+			// set the result type as "not uncraftable"
+			uncraftingResult.resultType = ResultType.NOT_UNCRAFTABLE;
+		}
+		// if the player is not in creative mode, and doesn't have enough XP levels 
+		else if (!player.capabilities.isCreativeMode && player.experienceLevel < uncraftingResult.experienceCost)
+		{
+			// set the result type as "not enough xp"
+			uncraftingResult.resultType = ResultType.NOT_ENOUGH_XP;
+		}
+		else
+		{
+			// check to see if one of more of the items in the crafting recipe have container items
+			for ( ItemStack recipeStack : uncraftingResult.getCraftingGrid() )
+			{
+				if (recipeStack != ItemStack.EMPTY && recipeStack.getItem().hasContainerItem(recipeStack)) // the hasContainerItem parameter is usually ignored, but some mods (Immersive Engineering) need it to be there
+				{
+					uncraftingResult.resultType = ResultType.NEED_CONTAINER_ITEMS;
+					break;
+				}
+			}
+
+			// if no container items are present, and all the other checks pass
+			if (uncraftingResult.resultType != ResultType.NEED_CONTAINER_ITEMS)
+			{
+				// the uncrafting operation can be performed
+				uncraftingResult.resultType = ResultType.VALID;
+			}
+			
+		}
+	}
+
+	
 	/**
 	 * Copies enchantments from an item onto a collection of enchanted books.
 	 * @param itemStack The item which has the enchantments to copy
@@ -324,7 +369,7 @@ public class UncraftingManager
 		HashMap<String, Map.Entry<ItemStack,Integer>> materials = new HashMap<String, Map.Entry<ItemStack,Integer>>();
 		for ( ItemStack recipeStack : craftingGrid )
 		{
-			if (recipeStack != ItemStack.EMPTY)
+			if (!recipeStack.isEmpty())
 			{
 				// get the unique identifier string for the item in the current stack, and append a metadata value if appropriate
 				String key = Item.REGISTRY.getNameForObject(recipeStack.getItem()).toString();
@@ -428,7 +473,7 @@ public class UncraftingManager
 		String[] oreTypes = { "gem", "ingot" };
 		String[] oreMaterials = { "Diamond", "Emerald", "Gold", "Iron" };
 		
-		
+
 		int[] oreIds = OreDictionary.getOreIDs(oreStack);
 		for ( int oreId : oreIds )
 		{
