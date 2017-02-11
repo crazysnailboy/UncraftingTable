@@ -2,6 +2,7 @@ package org.jglrxavpok.mods.decraft.proxy;
 
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
+import org.jglrxavpok.mods.decraft.common.config.ModJsonConfiguration;
 import org.jglrxavpok.mods.decraft.common.network.message.ConfigSyncMessage;
 import org.jglrxavpok.mods.decraft.common.network.message.RecipeNavigationMessage;
 import org.jglrxavpok.mods.decraft.init.ModBlocks;
@@ -22,6 +23,7 @@ public class CommonProxy
 	{
 		// initialize the configuration
 		ModConfiguration.preInit();
+		ModJsonConfiguration.preInit();
 		
 		// register the blocks and items
 		ModBlocks.preInit();
