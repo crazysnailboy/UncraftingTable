@@ -369,7 +369,7 @@ public class UncraftingManager
 		HashMap<String, Map.Entry<ItemStack,Integer>> materials = new HashMap<String, Map.Entry<ItemStack,Integer>>();
 		for ( ItemStack recipeStack : craftingGrid )
 		{
-			if (recipeStack != ItemStack.EMPTY)
+			if (!recipeStack.isEmpty())
 			{
 				// get the unique identifier string for the item in the current stack, and append a metadata value if appropriate
 				String key = Item.REGISTRY.getNameForObject(recipeStack.getItem()).toString();
@@ -473,7 +473,7 @@ public class UncraftingManager
 		String[] oreTypes = { "gem", "ingot" };
 		String[] oreMaterials = { "Diamond", "Emerald", "Gold", "Iron" };
 		
-		
+
 		int[] oreIds = OreDictionary.getOreIDs(oreStack);
 		for ( int oreId : oreIds )
 		{
