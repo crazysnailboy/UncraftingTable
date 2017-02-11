@@ -11,16 +11,19 @@ import java.util.Map;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
-import org.jglrxavpok.mods.decraft.item.uncrafting.RecipeHandlers.RecipeHandler;
-import org.jglrxavpok.mods.decraft.item.uncrafting.RecipeHandlers.ShapedIC2RecipeHandler;
-import org.jglrxavpok.mods.decraft.item.uncrafting.RecipeHandlers.ShapedMekanismRecipeHandler;
-import org.jglrxavpok.mods.decraft.item.uncrafting.RecipeHandlers.ShapedOreRecipeHandler;
-import org.jglrxavpok.mods.decraft.item.uncrafting.RecipeHandlers.ShapedRecipeHandler;
-import org.jglrxavpok.mods.decraft.item.uncrafting.RecipeHandlers.ShapelessIC2RecipeHandler;
-import org.jglrxavpok.mods.decraft.item.uncrafting.RecipeHandlers.ShapelessMekanismRecipeHandler;
-import org.jglrxavpok.mods.decraft.item.uncrafting.RecipeHandlers.ShapelessOreRecipeHandler;
-import org.jglrxavpok.mods.decraft.item.uncrafting.RecipeHandlers.ShapelessRecipeHandler;
+import org.jglrxavpok.mods.decraft.common.config.ModJsonConfiguration;
+import org.jglrxavpok.mods.decraft.common.config.ModJsonConfiguration.ItemMapping;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult.ResultType;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.RecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.ShapedOreRecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.ShapedRecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.ShapelessOreRecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.ShapelessRecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.IC2RecipeHandlers.ShapedIC2RecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.IC2RecipeHandlers.ShapelessIC2RecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.MekanismRecipeHandlers.ShapedMekanismRecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.MekanismRecipeHandlers.ShapelessMekanismRecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.TinkersRecipeHandlers;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -224,11 +227,11 @@ public class UncraftingManager
 		List<Map.Entry<ItemStack[],Integer>> list = new ArrayList<Map.Entry<ItemStack[],Integer>>();
 
 		// check whether uncrafting of this item is disabled in config
-		String uniqueIdentifier = Item.REGISTRY.getNameForObject(itemStack.getItem()).toString();
-		if (itemStack.getItemDamage() > 0) uniqueIdentifier += "," + Integer.toString(itemStack.getItemDamage());
+		String itemName = Item.REGISTRY.getNameForObject(itemStack.getItem()).toString();
+		String registryNameWithDamage = itemName + (itemStack.getItemDamage() > 0 ? "," + Integer.toString(itemStack.getItemDamage()) : "");
 		
 		// if uncrafting of this item is disabled, return the empty list
-		if (ArrayUtils.indexOf(ModConfiguration.excludedItems, uniqueIdentifier) >= 0) return list;
+		if (ArrayUtils.indexOf(ModConfiguration.excludedItems, registryNameWithDamage) >= 0) return list;
 
 		
 		// iterate over all the crafting recipes known to the crafting manager
@@ -239,10 +242,25 @@ public class UncraftingManager
 			ItemStack recipeOutput = recipe.getRecipeOutput();
 			if (ItemStack.areItemsEqualIgnoreDurability(itemStack, recipeOutput))
 			{
+				ItemMapping mapping = null;
+				
+				if (ModJsonConfiguration.itemMappings.containsKey(itemName))
+				{
+					mapping = ModJsonConfiguration.itemMappings.get(itemName);
+				}
+				
+				if (mapping != null && mapping.recipeType != null)
+				{
+					if (!recipe.getClass().getCanonicalName().equals(mapping.recipeType)) continue;
+				}
+				
+				
 				// get an instance of the appropriate handler class for the IRecipe type of the crafting recipe
 				RecipeHandler handler = getRecipeHandler(recipe);
 				if (handler != null)
 				{
+					handler.inputStack = itemStack.copy();
+					
 					// get the minimum stack size required to uncraft, and the itemstacks that comprise the crafting ingredients
 					int minStackSize = recipeOutput.stackSize;
 					ItemStack[] craftingGrid = handler.getCraftingGrid(recipe);
@@ -261,10 +279,15 @@ public class UncraftingManager
 						// add the stack size and the crafting grid to the results list
 						Map.Entry<ItemStack[],Integer> pair = new AbstractMap.SimpleEntry<ItemStack[],Integer>(craftingGrid, minStackSize);
 						list.add(pair);
+						
+						if (mapping != null && mapping.singleRecipe == true)
+						{
+							break;
+						}
 					}
 				}
 				// if we couldn't find a handler class for this IRecipe implementation, write some details to the log for debugging.
-				else ModUncrafting.instance.getLogger().error("findMatchingRecipes :: Unknown IRecipe implementation " + recipe.getClass().getCanonicalName() + " for item " + uniqueIdentifier);
+				else ModUncrafting.instance.getLogger().error("findMatchingRecipes :: Unknown IRecipe implementation " + recipe.getClass().getCanonicalName() + " for item " + itemName);
 			}
 		}
 		
@@ -340,6 +363,14 @@ public class UncraftingManager
 	 */
 	private static RecipeHandler getRecipeHandler(IRecipe recipe)
 	{
+		try
+		{
+			if (TinkersRecipeHandlers.TableRecipeHandler.recipeClass.isInstance(recipe)) return new TinkersRecipeHandlers.TableRecipeHandler(); 
+		}
+		catch(Exception ex) { }
+		
+		
+		
 		// RecipesMapExtending extends ShapedRecipes, and causes a crash when attempting to uncraft a map
 		if (recipe instanceof RecipesMapExtending) return null;
 		// vanilla Minecraft recipe handlers

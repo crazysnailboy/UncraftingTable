@@ -23,7 +23,7 @@ public class ModUncrafting
 	// constants
 	public static final String MODID = "uncraftingTable";
 	public static final String MODNAME = "jglrxavpok's Uncrafting Table";
-	public static final String VERSION = "1.6.1-pre7";
+	public static final String VERSION = "1.6.1-pre8";
 	public static final String GUIFACTORY = "org.jglrxavpok.mods.decraft.client.config.ModGuiFactory";
 	public static final String UPDATEJSON = "https://raw.githubusercontent.com/crazysnailboy/uncraftingTable/1.9.4/update.json";
 	

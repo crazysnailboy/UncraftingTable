@@ -2,7 +2,6 @@ package org.jglrxavpok.mods.decraft.inventory;
 
 import java.util.List;
 
-import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.event.ItemUncraftedEvent;
 import org.jglrxavpok.mods.decraft.inventory.InventoryUncraftResult.StackType;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingManager;
@@ -208,6 +207,27 @@ public class ContainerUncraftingTable extends Container
 	}
 	
 	
+	private void returnUncraftingOutputItemsToPlayer()
+	{
+		// for each slot in the output grid 
+		for (int i = 0; i < uncraftOut.getSizeInventory(); i++ )
+		{
+			// determine the item in the current slot
+			ItemStack stack = uncraftOut.getStackInSlot(i, StackType.RECIPE);
+			if (stack != null)
+			{
+				// move the item currently in the output into the player inventory 
+				if (!playerInventory.addItemStackToInventory(stack))
+				{
+					// if the item cannot be added to the player inventory, spawn the item in the world instead
+					playerInventory.player.dropItem(stack, false);
+				}
+			}
+		}
+		uncraftOut.clear(StackType.RECIPE);
+	}
+	
+	
 	public void switchRecipe()
 	{
 		// remove the recipe items from the grid, if present
@@ -241,6 +261,10 @@ public class ContainerUncraftingTable extends Container
 		}
 		else
 		{
+			if (uncraftingResult.resultType == ResultType.UNCRAFTED && !uncraftOut.isEmpty())
+			{
+				returnUncraftingOutputItemsToPlayer();	
+			}
 			this.uncraftingResult = UncraftingManager.getUncraftingResult(playerInventory.player, inputStack);
 		}
 		
@@ -292,10 +316,10 @@ public class ContainerUncraftingTable extends Container
 					
 					// if the item in the input stack can be uncrafted...
 					if (this.uncraftingResult.canPopulateInventory())
-					{				
+					{
 						populateOutputInventory();
 					}
-					else //if (this.uncraftingResult.resultType == ResultType.NOT_UNCRAFTABLE)
+					else
 					{
 						uncraftOut.clear(StackType.RECIPE);
 						if (!uncraftOut.isEmpty()) returnContainerItemsToPlayer();
@@ -319,15 +343,24 @@ public class ContainerUncraftingTable extends Container
 				doUncraft();
 			}
 			
-//			else if (this.uncraftingResult.resultType == ResultType.UNCRAFTED)
-//			{
-//				//uncraftOut.clearContainerItems();
-//			}
+			else if (this.uncraftingResult.resultType == ResultType.UNCRAFTED)
+			{
+				uncraftOut.clear(StackType.CONTAINER);
+			}
 			
 			if (uncraftOut.isEmpty())
 			{
-				this.uncraftingResult = new UncraftingResult();
-				if (uncraftIn.getStackInSlot(0) != null) this.onCraftMatrixChanged(uncraftIn);
+				if (uncraftIn.getStackInSlot(0) == null)
+				{
+					uncraftingResult = new UncraftingResult();
+				}
+				else
+				{
+					UncraftingManager.recalculateResultType(uncraftingResult, playerInventory.player, uncraftIn.getStackInSlot(0));
+				}
+				
+//				this.uncraftingResult = new UncraftingResult();
+//				if (uncraftIn.getStackInSlot(0) != null) this.onCraftMatrixChanged(uncraftIn);
 			}
 
 		}
