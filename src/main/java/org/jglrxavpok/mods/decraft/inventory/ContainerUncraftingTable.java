@@ -198,6 +198,27 @@ public class ContainerUncraftingTable extends Container
 	}
 
 	
+	private void returnUncraftingOutputItemsToPlayer()
+	{
+		// for each slot in the output grid 
+		for (int i = 0; i < uncraftOut.getSizeInventory(); i++ )
+		{
+			// determine the item in the current slot
+			ItemStack stack = uncraftOut.getStackInSlot(i, StackType.RECIPE);
+			if (stack != ItemStack.EMPTY)
+			{
+				// move the item currently in the output into the player inventory 
+				if (!playerInventory.addItemStackToInventory(stack))
+				{
+					// if the item cannot be added to the player inventory, spawn the item in the world instead
+					playerInventory.player.dropItem(stack, false);
+				}
+			}
+		}
+		uncraftOut.clear(StackType.RECIPE);
+	}
+
+	
 	public void switchRecipe()
 	{
 		// remove the recipe items from the grid, if present
@@ -225,12 +246,16 @@ public class ContainerUncraftingTable extends Container
 	{
 		ItemStack inputStack = uncraftIn.getStackInSlot(0);
 		
-		if (inputStack == null)
+		if (inputStack.isEmpty())
 		{
 			// TODO: move logic out of onCraftMatrixChanged ? 
 		}
 		else
 		{
+			if (uncraftingResult.resultType == ResultType.UNCRAFTED && !uncraftOut.isEmpty())
+			{
+				returnUncraftingOutputItemsToPlayer();	
+			}
 			this.uncraftingResult = UncraftingManager.getUncraftingResult(playerInventory.player, inputStack);
 		}
 		
@@ -285,7 +310,7 @@ public class ContainerUncraftingTable extends Container
 					{				
 						populateOutputInventory();
 					}
-					else //if (this.uncraftingResult.resultType == ResultType.NOT_UNCRAFTABLE)
+					else
 					{
 						uncraftOut.clear(StackType.RECIPE);
 						if (!uncraftOut.isEmpty()) returnContainerItemsToPlayer();
@@ -309,15 +334,24 @@ public class ContainerUncraftingTable extends Container
 				doUncraft();
 			}
 			
-//			else if (this.uncraftingResult.resultType == ResultType.UNCRAFTED)
-//			{
-//				//uncraftOut.clearContainerItems();
-//			}
+			else if (this.uncraftingResult.resultType == ResultType.UNCRAFTED)
+			{
+				uncraftOut.clear(StackType.CONTAINER);
+			}
 			
 			if (uncraftOut.isEmpty())
 			{
-				this.uncraftingResult = new UncraftingResult();
-				if (uncraftIn.getStackInSlot(0) != ItemStack.EMPTY) this.onCraftMatrixChanged(uncraftIn);
+				if (uncraftIn.getStackInSlot(0) == ItemStack.EMPTY)
+				{
+					uncraftingResult = new UncraftingResult();
+				}
+				else
+				{
+					UncraftingManager.recalculateResultType(uncraftingResult, playerInventory.player, uncraftIn.getStackInSlot(0));
+				}
+				
+//				this.uncraftingResult = new UncraftingResult();
+//				if (uncraftIn.getStackInSlot(0) != ItemStack.EMPTY) this.onCraftMatrixChanged(uncraftIn);
 			}
 		}
 		
