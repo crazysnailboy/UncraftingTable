@@ -1,10 +1,11 @@
 {
 	"homepage": "https://minecraft.curseforge.com/projects/jglrxavpoks-uncrafting-table/files/",
 	"promos": {
-		"1.8.9-latest": "1.5.1-pre6",
+		"1.8.9-latest": "1.5.1-pre7",
 		"1.8.9-recommended": "1.5"
 	},
 	"1.8.9": {
+		"1.5.1-pre7": "various bug fixes, improved mod support",
 		"1.5.1-pre6": "added network message to sync config when player joins server",
 		"1.5.1-pre5": "Fixed dupe glitch, fixed shift click into wrong slot",
 		"1.5.1-pre4": "Fixed two bugs",
