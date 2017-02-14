@@ -463,14 +463,17 @@ public class ContainerUncraftingTable extends Container
 				
 				if (this.uncraftingResult.resultType == ResultType.UNCRAFTED)
 				{
-					ItemStack stack = uncraftOut.getStackInSlot(slot.getSlotIndex(), StackType.RECIPE);
-					if (!playerInventory.addItemStackToInventory(stack))
+					ItemStack stack1 = uncraftOut.getStackInSlot(slot.getSlotIndex(), StackType.RECIPE);
+					ItemStack stack = stack1.copy();
+					
+	                if (!this.mergeItemStack(stack1, 11, 47, true)) // if (!playerInventory.addItemStackToInventory(stack1))
 					{
-						// TODO: shouldn't this spawn items in the world if they can't be added to the player's inventory?
 						return null;
 					}
 					// clear the slot
 					slot.putStack(null);
+					
+					return stack;
 				}
 				else
 				{
