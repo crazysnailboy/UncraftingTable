@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.network.IGuiHandler;
 
 public class ModGuiHandler implements IGuiHandler
 {
-	
+
 	public static final int GUI_TABLE = 0;
 
 	/**

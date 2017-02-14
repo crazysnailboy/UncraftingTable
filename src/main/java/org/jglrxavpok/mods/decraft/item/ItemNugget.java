@@ -20,44 +20,44 @@ public class ItemNugget extends Item
 		this.setRegistryName("nugget");
 		this.setCreativeTab(CreativeTabs.tabMaterials);
 	}
-	
+
 	@Override
-	public String getUnlocalizedName(ItemStack stack) 
+	public String getUnlocalizedName(ItemStack stack)
 	{
 		return "item." + EnumNuggetType.byMetadata(stack.getMetadata()).getUnlocalizedName();
 	}
-	
+
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void getSubItems(Item item, CreativeTabs tab, List list) 
+	public void getSubItems(Item item, CreativeTabs tab, List list)
 	{
 		for (EnumNuggetType nuggetType : EnumNuggetType.values())
 		{
 			list.add(new ItemStack(item, 1, nuggetType.getMetadata()));
 		}
 	}
-	
+
 	public static enum EnumNuggetType
 	{
 		DIAMOND(0, "diamond"),
 		EMERALD(1, "emerald"),
 		IRON(2, "iron");
-		
+
 		private final int meta;
 		private final String name;
 		private static final EnumNuggetType[] META_LOOKUP = new EnumNuggetType[values().length];
-		
+
 
 		public int getMetadata()
 		{
 			return this.meta;
 		}
-		
+
 		public String getUnlocalizedName()
 		{
 			return this.name + "Nugget";
 		}
-		
+
 		public String getRegistryName()
 		{
 			return this.name + "_nugget";
@@ -78,11 +78,11 @@ public class ItemNugget extends Item
 
 		static
 		{
-			for (EnumNuggetType value : values()) 
+			for (EnumNuggetType value : values())
 			{
 				META_LOOKUP[value.getMetadata()] = value;
 			}
 		}
 	}
-	
+
 }

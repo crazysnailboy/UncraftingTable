@@ -12,9 +12,9 @@ import org.jglrxavpok.mods.decraft.stats.ModAchievementList;
 import net.minecraftforge.fml.relauncher.Side;
 
 
-public class CommonProxy 
+public class CommonProxy
 {
-	
+
 	/**
 	 * Run before anything else. Read your config, create blocks, items, etc, and register them with the GameRegistry
 	 */
@@ -22,7 +22,7 @@ public class CommonProxy
 	{
 		// initialize the configuration
 		ModConfiguration.preInit();
-		
+
 		// register the blocks and items
 		ModBlocks.preInit();
 		ModItems.preInit();
@@ -31,7 +31,7 @@ public class CommonProxy
 		ModUncrafting.instance.getNetwork().registerMessage(RecipeNavigationMessage.MessageHandler.class, RecipeNavigationMessage.class, 0, Side.SERVER);
 		ModUncrafting.instance.getNetwork().registerMessage(ConfigSyncMessage.MessageHandler.class, ConfigSyncMessage.class, 1, Side.CLIENT);
 	}
-	
+
 
 	/**
 	 * Do your mod setup. Build whatever data structures you care about. Register recipes,
@@ -42,12 +42,12 @@ public class CommonProxy
 		// create the crafting recipes
 		ModBlocks.init();
 		ModItems.init();
-		
+
 		// initialize the achievements
 		ModAchievementList.init();
 	}
-	
-	
+
+
 	/**
 	 * Handle interaction with other mods, complete your setup based on this.
 	 */

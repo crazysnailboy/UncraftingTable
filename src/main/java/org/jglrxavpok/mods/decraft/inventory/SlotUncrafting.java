@@ -5,27 +5,27 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 
-public class SlotUncrafting extends Slot 
+public class SlotUncrafting extends Slot
 {
 
 	private ItemStack stack;
 	private ContainerUncraftingTable container;
-	
 
-	public SlotUncrafting(IInventory inventoryIn, int index, int xPosition, int yPosition, ContainerUncraftingTable containerIn) 
+
+	public SlotUncrafting(IInventory inventoryIn, int index, int xPosition, int yPosition, ContainerUncraftingTable containerIn)
 	{
 		super(inventoryIn, index, xPosition, yPosition);
 		this.container = containerIn;
 	}
-	
-	
+
+
 	@Override
 	public void onSlotChanged()
 	{
 		super.onSlotChanged();
 
 		ItemStack stack = this.getStack();
-		
+
 		if (!ItemStack.areItemsEqual(stack, this.stack))
 		{
 			this.container.onInputItemChanged();
@@ -34,7 +34,7 @@ public class SlotUncrafting extends Slot
 		{
 			this.container.onCraftMatrixChanged(this.inventory);
 		}
-		
+
 		// ensure that the container's onCraftMatrixChanged method is called when the number of items in the slot is increased
 //		if (stack != null && this.stack != null && stack.isItemEqual(this.stack) && stack.stackSize > this.stack.stackSize)
 //		{
@@ -42,5 +42,5 @@ public class SlotUncrafting extends Slot
 //		}
 		this.stack = (stack == null ? null : stack.copy());
 	}
-	
+
 }

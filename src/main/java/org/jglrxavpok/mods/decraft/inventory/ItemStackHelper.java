@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 /**
  * ItemStack helper methods to replicate functionality from the 1.9+ ItemStack class
  */
-public class ItemStackHelper 
+public class ItemStackHelper
 {
 
 	/**

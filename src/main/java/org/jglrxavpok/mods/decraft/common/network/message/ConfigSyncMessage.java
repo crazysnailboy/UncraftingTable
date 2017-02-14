@@ -12,20 +12,20 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class ConfigSyncMessage implements IMessage
 {
-	
+
 	private int uncraftMethod = ModConfiguration.uncraftMethod;
 	private int standardLevel = ModConfiguration.standardLevel;
 	private int maxUsedLevel = ModConfiguration.maxUsedLevel;
 	private String[] excludedItems = ModConfiguration.excludedItems;
 
-	
-	
+
+
 	public ConfigSyncMessage()
 	{
 	}
 
 	@Override
-	public void fromBytes(ByteBuf buf) 
+	public void fromBytes(ByteBuf buf)
 	{
 		uncraftMethod = ByteBufUtils.readVarShort(buf);
 		standardLevel = ByteBufUtils.readVarShort(buf);
@@ -34,24 +34,24 @@ public class ConfigSyncMessage implements IMessage
 	}
 
 	@Override
-	public void toBytes(ByteBuf buf) 
+	public void toBytes(ByteBuf buf)
 	{
 		ByteBufUtils.writeVarShort(buf, uncraftMethod);
 		ByteBufUtils.writeVarShort(buf, standardLevel);
 		ByteBufUtils.writeVarShort(buf, maxUsedLevel);
 		ByteBufUtils.writeUTF8String(buf, String.join("|", excludedItems));
 	}
-	
-	
+
+
 	public static final class MessageHandler implements IMessageHandler<ConfigSyncMessage, IMessage>
-	{	
+	{
 		@Override
-		public IMessage onMessage(final ConfigSyncMessage message, MessageContext ctx) 
+		public IMessage onMessage(final ConfigSyncMessage message, MessageContext ctx)
 		{
 			Minecraft minecraft = Minecraft.getMinecraft();
 			minecraft.addScheduledTask(new Runnable()
 			{
-				public void run() 
+				public void run()
 				{
 					ModConfiguration.uncraftMethod = message.uncraftMethod;
 					ModConfiguration.maxUsedLevel = message.maxUsedLevel;
@@ -59,7 +59,7 @@ public class ConfigSyncMessage implements IMessage
 					ModConfiguration.excludedItems = message.excludedItems;
 				}
 			});
-			
+
 			return null;
 		}
 	}

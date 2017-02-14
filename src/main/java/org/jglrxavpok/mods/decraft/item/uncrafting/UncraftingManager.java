@@ -36,7 +36,7 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 
-public class UncraftingManager 
+public class UncraftingManager
 {
 
 	/**
@@ -47,14 +47,14 @@ public class UncraftingManager
 	 */
 	public static UncraftingResult getUncraftingResult(EntityPlayer player, ItemStack itemStack)
 	{
-		
+
 		UncraftingResult uncraftingResult = new UncraftingResult();
-		
+
 		// get the crafting grids and minimum stack sizes which could result in the input item
 		uncraftingResult.craftingGrids = findMatchingRecipes(itemStack);
 		// determine the xp cost for the uncrafting operation
 		uncraftingResult.experienceCost = getUncraftingXpCost(itemStack);
-		
+
 		// if the minimum stack size is greater than the number of items in the slot
 		if (uncraftingResult.getRecipeCount() > 0 && itemStack.stackSize < uncraftingResult.getMinStackSize())
 		{
@@ -67,7 +67,7 @@ public class UncraftingManager
 			// set the result type as "not uncraftable"
 			uncraftingResult.resultType = ResultType.NOT_UNCRAFTABLE;
 		}
-		// if the player is not in creative mode, and doesn't have enough XP levels 
+		// if the player is not in creative mode, and doesn't have enough XP levels
 		else if (!player.capabilities.isCreativeMode && player.experienceLevel < uncraftingResult.experienceCost)
 		{
 			// set the result type as "not enough xp"
@@ -91,14 +91,14 @@ public class UncraftingManager
 				// the uncrafting operation can be performed
 				uncraftingResult.resultType = ResultType.VALID;
 			}
-			
+
 		}
 		return uncraftingResult;
 	}
-	
-	
+
+
 	public static void recalculateResultType(UncraftingResult uncraftingResult, EntityPlayer player, ItemStack itemStack)
-	{	
+	{
 		uncraftingResult.resultType = ResultType.INACTIVE;
 
 		// if the minimum stack size is greater than the number of items in the slot
@@ -113,7 +113,7 @@ public class UncraftingManager
 			// set the result type as "not uncraftable"
 			uncraftingResult.resultType = ResultType.NOT_UNCRAFTABLE;
 		}
-		// if the player is not in creative mode, and doesn't have enough XP levels 
+		// if the player is not in creative mode, and doesn't have enough XP levels
 		else if (!player.capabilities.isCreativeMode && player.experienceLevel < uncraftingResult.experienceCost)
 		{
 			// set the result type as "not enough xp"
@@ -137,11 +137,11 @@ public class UncraftingManager
 				// the uncrafting operation can be performed
 				uncraftingResult.resultType = ResultType.VALID;
 			}
-			
+
 		}
 	}
 
-	
+
 	/**
 	 * Copies enchantments from an item onto a collection of enchanted books.
 	 * @param itemStack The item which has the enchantments to copy
@@ -150,15 +150,15 @@ public class UncraftingManager
 	 */
 	public static List<ItemStack> getItemEnchantments(ItemStack itemStack, ItemStack containerItems)
 	{
-		// initialise a list of itemstacks to hold enchanted books  
+		// initialise a list of itemstacks to hold enchanted books
 		ArrayList<ItemStack> enchantedBooks = new ArrayList<ItemStack>();
-		
+
 		// if the item being uncrafted has enchantments, and the container itemstack contains books
 		if (itemStack.isItemEnchanted() && containerItems != null && containerItems.getItem() == Items.book)
 		{
 			// build a map of the enchantments on the item in the input stack
 			Map itemEnchantments = EnchantmentHelper.getEnchantments(itemStack);
-			
+
 			// if the item has more than one enchantment, and we have at least the same number of books as enchantments
 			// create an itemstack of enchanted books with a single enchantment per book
 			if (itemEnchantments.size() > 1 && itemEnchantments.size() <= containerItems.stackSize)
@@ -182,7 +182,7 @@ public class UncraftingManager
 					bookEnchantments.clear();
 				}
 			}
-			
+
 			// if there's a single enchantment, or fewer books than enchantments
 			// copy all of the enchantments from the item onto a single book
 			else
@@ -194,21 +194,21 @@ public class UncraftingManager
 				// add the book to the enchanted books collection
 				enchantedBooks.add(enchantedBook);
 			}
-			
+
 		}
-		
+
 		// return the list of enchanted books
 		return enchantedBooks;
 	}
-	
-	
+
+
 	public static void postInit()
 	{
 	}
 
-	
+
 	/**
-	 * Returns the available crafting recipes and associated minimum stack sizes which can be used to perform an uncrafting operation 
+	 * Returns the available crafting recipes and associated minimum stack sizes which can be used to perform an uncrafting operation
 	 * @param itemStack The ItemStack containing the target item
 	 * @return A collection of the ItemStack arrays representing the crafting recipe - one element per recipe found
 	 */
@@ -220,11 +220,11 @@ public class UncraftingManager
 		// check whether uncrafting of this item is disabled in config
 		String uniqueIdentifier = Item.itemRegistry.getNameForObject(itemStack.getItem()).toString();
 		if (itemStack.getItemDamage() > 0) uniqueIdentifier += "," + Integer.toString(itemStack.getItemDamage());
-		
+
 		// if uncrafting of this item is disabled, return the empty list
 		if (ArrayUtils.indexOf(ModConfiguration.excludedItems, uniqueIdentifier) >= 0) return list;
-		
-		
+
+
 		// iterate over all the crafting recipes known to the crafting manager
 		List<IRecipe> recipeList = CraftingManager.getInstance().getRecipeList();
 		for ( IRecipe recipe : recipeList )
@@ -240,7 +240,7 @@ public class UncraftingManager
 					// get the minimum stack size required to uncraft, and the itemstacks that comprise the crafting ingredients
 					int minStackSize = recipeOutput.stackSize;
 					ItemStack[] craftingGrid = handler.getCraftingGrid(recipe);
-					
+
 					if (craftingGrid != null && craftingGrid.length > 0)
 					{
 						// if the recipe output contains the input item, disallow use of this recipe for uncrafting (e.g. white wool -> white wool + bonemeal)
@@ -261,11 +261,11 @@ public class UncraftingManager
 				else ModUncrafting.instance.getLogger().error("findMatchingRecipes :: Unknown IRecipe implementation " + recipe.getClass().getCanonicalName() + " for item " + uniqueIdentifier);
 			}
 		}
-		
+
 		return list;
 	}
-	
-	
+
+
 	/**
 	 * Determines whether the crafting grid contains the input item
 	 * @param stack The item being uncrafted
@@ -284,7 +284,7 @@ public class UncraftingManager
 		return false;
 	}
 
-	
+
 	/**
 	 * Determines the XP cost of the uncrafting operation
 	 * @param itemStack The ItemStack containing the target item
@@ -298,7 +298,7 @@ public class UncraftingManager
 			// the xp cost is the standard cost
 			return ModConfiguration.standardLevel;
 		}
-		
+
 		// if we're using Xell75's & Zenen's uncrafting method...
 		if (ModConfiguration.uncraftMethod == UncraftingMethod.XELL75_ZENEN)
 		{
@@ -326,10 +326,10 @@ public class UncraftingManager
 		return -1; // return ModConfiguration.standardLevel;
 	}
 
-	
+
 	/**
 	 * Creates an uncrafting recipe handler capable of uncrafting the given IRecipe instance
-	 * @param recipe The IRecipe instance of the crafting recipe 
+	 * @param recipe The IRecipe instance of the crafting recipe
 	 * @return The RecipeHandler instance which can be used to uncraft the IRecipe
 	 */
 	private static RecipeHandler getRecipeHandler(IRecipe recipe)
@@ -342,7 +342,7 @@ public class UncraftingManager
 		// Forge Ore Dictionary recipe handlers
 		if (recipe instanceof ShapelessOreRecipe) return new ShapelessOreRecipeHandler();
 		if (recipe instanceof ShapedOreRecipe) return new ShapedOreRecipeHandler();
-		
+
 		// recipe handlers for reflected IRecipe types from other mods
 		try
 		{
@@ -351,12 +351,12 @@ public class UncraftingManager
 			if (ShapelessIC2RecipeHandler.recipeClass.isInstance(recipe)) return new ShapelessIC2RecipeHandler();
 		}
 		catch(Exception ex) { }
-		
+
 		return null;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Modifies the crafting recipe for a damageable item to return some of the ingredients depending on the damage of the input item.
 	 * @param stack The damaged item
@@ -368,7 +368,7 @@ public class UncraftingManager
 		// calculate the percentage durability remaining on the item
 		double damagePercentage = (100 * ((double)stack.getItemDamage() / (double)stack.getMaxDamage()));
 		double durabilityPercentage = 100 - (100 * ((double)stack.getItemDamage() / (double)stack.getMaxDamage()));
-		
+
 
 		// iterate through the itemstacks in the crafting recipe to determine the unique materials used, and the total number of each item
 		HashMap<String, Map.Entry<ItemStack,Integer>> materials = new HashMap<String, Map.Entry<ItemStack,Integer>>();
@@ -379,7 +379,7 @@ public class UncraftingManager
 				// get the unique identifier string for the item in the current stack, and append a metadata value if appropriate
 				String key = Item.itemRegistry.getNameForObject(recipeStack.getItem()).toString();
 				if (recipeStack.getItemDamage() != 0) key += "," + recipeStack.getItemDamage();
-				
+
 				// if the map already contains a stack for this item, increment the number of items in the map
 				if (materials.containsKey(key))
 				{
@@ -394,7 +394,7 @@ public class UncraftingManager
 				}
 			}
 		}
-		
+
 		// for each unique material in the crafting recipe...
 		for ( String key : materials.keySet())
 		{
@@ -404,12 +404,12 @@ public class UncraftingManager
 			// check the ore dictionary to see if this material has a matching nugget
 			ItemStack nuggetStack = getNuggetForOre(materialStack);
 
-			
+
 			int amount = materials.get(key).getValue();
-			
+
 			int itemCount = 0;
 			int nuggetCount = 0;
-			
+
 			// if we found a nugget item in the ore dictionary
 			if (nuggetStack != null)
 			{
@@ -425,7 +425,7 @@ public class UncraftingManager
 				// rounding up to the nearest item
 				itemCount = (int)Math.ceil(amount * (durabilityPercentage / (double)100));
 			}
-			
+
 			// if there's no nugget for this item in the ore dictionary
 			else
 			{
@@ -433,10 +433,10 @@ public class UncraftingManager
 				// rounding up or down to the nearest item
 				itemCount = (int)Math.floor(amount * (durabilityPercentage / (double)100));
 			}
-			
+
 			// flip the item count to become items to remove instead of items to leave
 			itemCount = amount - itemCount;
-			
+
 
 			for ( int i = 0 ; i < craftingGrid.length ; i++ )
 			{
@@ -454,13 +454,13 @@ public class UncraftingManager
 					}
 				}
 			}
-			
+
 		}
-		
+
 		return craftingGrid;
 	}
-	
-	
+
+
 	/**
 	 * Helper method to check the ore dictionary for nuggets of the same material type as a gem or an ingot.
 	 * @param oreStack The ItemStack containing ingots or gems we want to match
@@ -473,18 +473,18 @@ public class UncraftingManager
 //		String[] oreTypes = { "ore", "block", "ingot", "nugget" };
 //		String[] oreMaterials = { "Iron", "Gold", "Diamond", "Emerald", "Aluminum", "Aluminium", "Tin", "Copper", "Lead", "Silver", "Platinum", "Nickel", "Osmium", "Invar", "Bronze", "Electrum", "Enderium" };
 //		// *** copied from com.jaquadro.minecraft.storagedrawers.config.OreDictRegistry ***
-		
-		
+
+
 		String[] oreTypes = { "gem", "ingot" };
 		String[] oreMaterials = { "Diamond", "Emerald", "Gold", "Iron" };
-		
-		
+
+
 		int[] oreIds = OreDictionary.getOreIDs(oreStack);
 		for ( int oreId : oreIds )
 		{
 			String oreName = OreDictionary.getOreName(oreId); // e.g. "gemDiamond"
 			String[] oreNameParts = oreName.split("(?=\\p{Upper})"); // e.g. { "gem", "Diamond" }
-			
+
 			if (oreNameParts.length == 2 && ArrayUtils.indexOf(oreTypes, oreNameParts[0]) >= 0)
 			{
 				String nuggetName = "nugget" + oreNameParts[1]; // e.g. "nuggetDiamond"
@@ -495,16 +495,16 @@ public class UncraftingManager
 					ItemStack nuggetOre = nuggetOres.get(0);
 					return nuggetOre;
 				}
-				
+
 			}
-			
+
 		}
 		return null;
 	}
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * Constants to identify the different uncrafting algorithms
 	 */

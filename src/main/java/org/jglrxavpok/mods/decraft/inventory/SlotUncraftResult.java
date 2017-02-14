@@ -6,10 +6,10 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 
-public class SlotUncraftResult extends Slot 
+public class SlotUncraftResult extends Slot
 {
 
-	public SlotUncraftResult(InventoryUncraftResult inventoryIn, int index, int xPosition, int yPosition) 
+	public SlotUncraftResult(InventoryUncraftResult inventoryIn, int index, int xPosition, int yPosition)
 	{
 		super(inventoryIn, index, xPosition, yPosition);
 	}

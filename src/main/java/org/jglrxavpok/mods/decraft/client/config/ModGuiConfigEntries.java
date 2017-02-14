@@ -7,29 +7,29 @@ import net.minecraftforge.fml.client.config.GuiConfigEntries.ButtonEntry;
 import net.minecraftforge.fml.client.config.IConfigElement;
 
 
-public class ModGuiConfigEntries 
+public class ModGuiConfigEntries
 {
-	
-	public static class ExcludedItemsArrayEntry extends ArrayEntry 
+
+	public static class ExcludedItemsArrayEntry extends ArrayEntry
 	{
 
-		public ExcludedItemsArrayEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement configElement) 
+		public ExcludedItemsArrayEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement configElement)
 		{
 			super(owningScreen, owningEntryList, configElement);
 		}
-		
+
 		@Override
 		public void updateValueButtonText()
 		{
 			this.btnValue.displayString = currentValues.length + " item(s)";
 		}
-		
+
 	}
 
-	
+
 	public static class UncraftingMethodCycleEntry extends ButtonEntry
 	{
-		
+
 		protected final int beforeIndex;
 		protected final int defaultIndex;
 		protected int currentIndex;
@@ -115,5 +115,5 @@ public class ModGuiConfigEntries
 			return new String[] { getCurrentValue() };
 		}
 	}
-	
+
 }
