@@ -21,6 +21,9 @@ public class ModJsonConfiguration
 		public boolean singleRecipe = false;
 		public String recipeType = null;
 		public int[] replaceSlots = null;
+		
+		public boolean matchTag = false;
+		public String tagName = null;
 	}
 
 
@@ -64,6 +67,9 @@ public class ModJsonConfiguration
 			if (jsonMapping.has("recipeType")) itemMapping.recipeType = jsonMapping.get("recipeType").getAsString();
 			if (jsonMapping.has("replaceSlots")) itemMapping.replaceSlots = gson.fromJson(jsonMapping.get("replaceSlots").getAsJsonArray(), int[].class);
 
+			if (jsonMapping.has("matchTag")) itemMapping.matchTag = jsonMapping.get("matchTag").getAsBoolean();
+			if (jsonMapping.has("tagName")) itemMapping.tagName = jsonMapping.get("tagName").getAsString();
+			
 			itemMappings.put(itemName, itemMapping);
 		}
 	}
