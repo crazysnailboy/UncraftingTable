@@ -8,7 +8,7 @@ import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.Recip
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 
-public class IC2RecipeHandlers 
+public class IC2RecipeHandlers
 {
 
 	/**
