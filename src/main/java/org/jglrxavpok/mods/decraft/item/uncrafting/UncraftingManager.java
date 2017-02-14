@@ -36,6 +36,8 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.RecipesMapExtending;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
@@ -244,14 +246,19 @@ public class UncraftingManager
 			{
 				ItemMapping mapping = null;
 
+				// check to see if we have custom mapping data for this item
 				if (ModJsonConfiguration.itemMappings.containsKey(itemName))
 				{
 					mapping = ModJsonConfiguration.itemMappings.get(itemName);
 				}
 
-				if (mapping != null && mapping.recipeType != null)
+				// if we do...
+				if (mapping != null)
 				{
-					if (!recipe.getClass().getCanonicalName().equals(mapping.recipeType)) continue;
+					// if the mapping data specifies a particular IRecipe instance, and the current recipe does not match, continue
+					if ((mapping.recipeType != null) && (!recipe.getClass().getCanonicalName().equals(mapping.recipeType))) continue;
+					// if the mapping data specifies a match on NBT data, and the data does not match, continue
+					if ((mapping.matchTag == true) && (!areItemStackSubTagsEqual(itemStack, recipeOutput, mapping.tagName))) continue;
 				}
 
 
@@ -280,8 +287,10 @@ public class UncraftingManager
 						Map.Entry<ItemStack[],Integer> pair = new AbstractMap.SimpleEntry<ItemStack[],Integer>(craftingGrid, minStackSize);
 						list.add(pair);
 
+						// if we have custom mapping data which specifies a single recipe
 						if (mapping != null && mapping.singleRecipe == true)
 						{
+							// we've found that recipe, so break out of the loop
 							break;
 						}
 					}
@@ -295,6 +304,22 @@ public class UncraftingManager
 	}
 
 
+	private static boolean areItemStackSubTagsEqual(ItemStack stackA, ItemStack stackB, String tagName)
+	{
+		NBTTagCompound tagA = stackA.getTagCompound();
+		NBTTagCompound tagB = stackB.getTagCompound();
+
+		if (tagA != null && tagB != null)
+		{
+			NBTBase subTagA = tagA.getTag(tagName);
+			NBTBase subTagB = tagB.getTag(tagName);
+			return subTagA.equals(subTagB);
+		}
+
+		return false;
+	}
+
+
 	/**
 	 * Determines whether the crafting grid contains the input item
 	 * @param stack The item being uncrafted
@@ -305,7 +330,7 @@ public class UncraftingManager
 	{
 		for ( ItemStack recipeStack : craftingGrid )
 		{
-			if (ItemStack.areItemsEqual(stack, recipeStack))
+			if (ItemStack.areItemsEqual(stack, recipeStack) && ItemStack.areItemStackTagsEqual(stack, recipeStack))
 			{
 				return true;
 			}
@@ -457,15 +482,15 @@ public class UncraftingManager
 			{
 				// calculate the number of full items and nuggets which most closely represent the percentage durability remaining on the item
 				// rounding down to the nearest nugget
-				itemCount = (int)Math.floor(amount * (durabilityPercentage / (double)100));
-				nuggetCount = ((int)Math.floor((amount * 9) * (durabilityPercentage / (double)100))) - (itemCount * 9);
+				itemCount = (int)Math.floor(amount * (durabilityPercentage / 100));
+				nuggetCount = ((int)Math.floor((amount * 9) * (durabilityPercentage / 100))) - (itemCount * 9);
 			}
 			// if the stack contains sticks
 			else if (ArrayUtils.contains(OreDictionary.getOreIDs(materialStack), OreDictionary.getOreID("stickWood")))
 			{
 				// calculate the total number of full items which most closely represent the percentage durability remaining on the item
 				// rounding up to the nearest item
-				itemCount = (int)Math.ceil(amount * (durabilityPercentage / (double)100));
+				itemCount = (int)Math.ceil(amount * (durabilityPercentage / 100));
 			}
 
 			// if there's no nugget for this item in the ore dictionary
@@ -473,7 +498,7 @@ public class UncraftingManager
 			{
 				// calculate the total number of full items which most closely represent the percentage durability remaining on the item
 				// rounding down to the nearest item
-				itemCount = (int)Math.floor(amount * (durabilityPercentage / (double)100));
+				itemCount = (int)Math.floor(amount * (durabilityPercentage / 100));
 			}
 
 			// flip the item count to become items to remove instead of items to leave
