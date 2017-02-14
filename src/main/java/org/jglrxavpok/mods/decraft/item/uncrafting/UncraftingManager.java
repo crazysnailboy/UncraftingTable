@@ -11,12 +11,12 @@ import java.util.Map;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
-import org.jglrxavpok.mods.decraft.item.uncrafting.RecipeHandlers.RecipeHandler;
-import org.jglrxavpok.mods.decraft.item.uncrafting.RecipeHandlers.ShapedOreRecipeHandler;
-import org.jglrxavpok.mods.decraft.item.uncrafting.RecipeHandlers.ShapedRecipeHandler;
-import org.jglrxavpok.mods.decraft.item.uncrafting.RecipeHandlers.ShapelessOreRecipeHandler;
-import org.jglrxavpok.mods.decraft.item.uncrafting.RecipeHandlers.ShapelessRecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult.ResultType;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.RecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.ShapedOreRecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.ShapedRecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.ShapelessOreRecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.ShapelessRecipeHandler;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;

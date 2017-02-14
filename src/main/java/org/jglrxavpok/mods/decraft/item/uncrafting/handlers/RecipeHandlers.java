@@ -1,4 +1,4 @@
-package org.jglrxavpok.mods.decraft.item.uncrafting;
+package org.jglrxavpok.mods.decraft.item.uncrafting.handlers;
 
 
 import java.util.Arrays;
@@ -30,6 +30,76 @@ public final class RecipeHandlers
 	public static abstract class RecipeHandler
 	{
 		public abstract NonNullList<ItemStack> getCraftingGrid(IRecipe s);
+		
+		/**
+		 * Takes a list of ItemStacks from a shaped recipe and correctly positions them according to the recipe width and height
+		 */
+		protected static NonNullList<ItemStack> reshapeRecipe(List<ItemStack> recipeItems, int recipeWidth, int recipeHeight) 
+		{
+			NonNullList<ItemStack> stacks = NonNullList.<ItemStack>withSize(9, ItemStack.EMPTY);
+			for ( int row = 0 ; row < recipeHeight ; row++ )
+			{
+				for (int col = 0 ; col < recipeWidth ; col++ )
+				{
+					stacks.set((row * 3) + col, recipeItems.get(col + row * recipeWidth));
+				}
+			}
+			return stacks;
+		}
+		
+		
+		/**
+		 * Converts a collection of OreDictionary recipe items into a list of ItemStacks
+		 */
+		protected static NonNullList<ItemStack> getOreRecipeItems(List<Object> itemObjects)
+		{
+			NonNullList<ItemStack> itemStacks = NonNullList.<ItemStack>withSize(9, ItemStack.EMPTY);
+			for ( int i = 0 ; i < itemObjects.size() ; i++ )
+			{
+				Object itemObject = itemObjects.get(i);
+				ItemStack itemStack;
+				
+				if (itemObject instanceof ItemStack)
+				{
+					itemStack = (ItemStack)itemObject;
+				}
+				else if (itemObject instanceof List)
+				{
+					List list = (List)itemObject;
+					
+					if (list.isEmpty()) // this happens if there's an ore dictionary recipe registered, but no items registered for that dictionary entry
+					{
+						// abort parsing this recipe and return an empty list
+						return NonNullList.<ItemStack>create();
+					}
+					
+					itemStack = ((List<ItemStack>)itemObject).get(0);
+				}
+				else itemStack = ItemStack.EMPTY;
+				
+				itemStacks.set(i, itemStack);
+			}
+			return itemStacks;
+		}
+		
+
+		/**
+		 * Copies the ItemStacks in a list to a new list, whilst normalising the item damage for the OreDictionary wildcard value
+		 */
+		protected static NonNullList<ItemStack> copyRecipeStacks(List<ItemStack> inputStacks)
+		{
+			NonNullList<ItemStack> outputStacks = NonNullList.<ItemStack>withSize(9, ItemStack.EMPTY);
+
+			for ( int i = 0 ; i < inputStacks.size() ; i++ )
+			{
+				ItemStack outputStack = inputStacks.get(i).copy();
+				if (outputStack.getItemDamage() == Short.MAX_VALUE) outputStack.setItemDamage(0);
+				outputStacks.set(i, outputStack);
+			}
+			
+			return outputStacks;
+		}
+		
 	}
 	
 	
@@ -134,73 +204,5 @@ public final class RecipeHandlers
 	}
 	
 	
-	/**
-	 * Takes a list of ItemStacks from a shaped recipe and correctly positions them according to the recipe width and height
-	 */
-	private static NonNullList<ItemStack> reshapeRecipe(List<ItemStack> recipeItems, int recipeWidth, int recipeHeight) 
-	{
-		NonNullList<ItemStack> stacks = NonNullList.<ItemStack>withSize(9, ItemStack.EMPTY);
-		for ( int row = 0 ; row < recipeHeight ; row++ )
-		{
-			for (int col = 0 ; col < recipeWidth ; col++ )
-			{
-				stacks.set((row * 3) + col, recipeItems.get(col + row * recipeWidth));
-			}
-		}
-		return stacks;
-	}
-	
-	
-	/**
-	 * Converts a collection of OreDictionary recipe items into a list of ItemStacks
-	 */
-	private static NonNullList<ItemStack> getOreRecipeItems(List<Object> itemObjects)
-	{
-		NonNullList<ItemStack> itemStacks = NonNullList.<ItemStack>withSize(9, ItemStack.EMPTY);
-		for ( int i = 0 ; i < itemObjects.size() ; i++ )
-		{
-			Object itemObject = itemObjects.get(i);
-			ItemStack itemStack;
-			
-			if (itemObject instanceof ItemStack)
-			{
-				itemStack = (ItemStack)itemObject;
-			}
-			else if (itemObject instanceof List)
-			{
-				List list = (List)itemObject;
-				
-				if (list.isEmpty()) // this happens if there's an ore dictionary recipe registered, but no items registered for that dictionary entry
-				{
-					// abort parsing this recipe and return an empty list
-					return NonNullList.<ItemStack>create();
-				}
-				
-				itemStack = ((List<ItemStack>)itemObject).get(0);
-			}
-			else itemStack = ItemStack.EMPTY;
-			
-			itemStacks.set(i, itemStack);
-		}
-		return itemStacks;
-	}
-	
-
-	/**
-	 * Copies the ItemStacks in a list to a new list, whilst normalising the item damage for the OreDictionary wildcard value
-	 */
-	private static NonNullList<ItemStack> copyRecipeStacks(List<ItemStack> inputStacks)
-	{
-		NonNullList<ItemStack> outputStacks = NonNullList.<ItemStack>withSize(9, ItemStack.EMPTY);
-
-		for ( int i = 0 ; i < inputStacks.size() ; i++ )
-		{
-			ItemStack outputStack = inputStacks.get(i).copy();
-			if (outputStack.getItemDamage() == Short.MAX_VALUE) outputStack.setItemDamage(0);
-			outputStacks.set(i, outputStack);
-		}
-		
-		return outputStacks;
-	}
 
 }
