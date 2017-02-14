@@ -25,31 +25,31 @@ import net.minecraftforge.common.config.Configuration;
 
 public class ModGuiConfig extends GuiConfig
 {
-	public ModGuiConfig(GuiScreen parent) 
+	public ModGuiConfig(GuiScreen parent)
 	{
-		super(parent, 
- 			getConfigElements(), 
-			ModUncrafting.MODID, 
-			false, 
-			false, 
+		super(parent,
+ 			getConfigElements(),
+			ModUncrafting.MODID,
+			false,
+			false,
 			"Uncrafting Table"
 		);
 	}
-	
-	
-	
+
+
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private static List<IConfigElement> getConfigElements()
 	{
 		Configuration config = ModConfiguration.getConfig();
-		
+
 		// top level settings
 		List<IConfigElement> list = new ConfigElement(config.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements();
-		
+
 		return list;
 	}
-	
-	
+
+
 	@Override
 	public void initGui()
 	{

@@ -7,10 +7,10 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 
-public class SlotUncraftResult extends Slot 
+public class SlotUncraftResult extends Slot
 {
 
-	public SlotUncraftResult(InventoryUncraftResult inventoryIn, int index, int xPosition, int yPosition) 
+	public SlotUncraftResult(InventoryUncraftResult inventoryIn, int index, int xPosition, int yPosition)
 	{
 		super(inventoryIn, index, xPosition, yPosition);
 	}
@@ -35,5 +35,5 @@ public class SlotUncraftResult extends Slot
 		ItemStack stack = ((InventoryUncraftResult)this.inventory).getStackInSlot(this.getSlotIndex(), StackType.RECIPE);
 		return (stack != null && stack.getItem().hasContainerItem(stack) ? stack.stackSize : 0);
     }
-	
+
 }

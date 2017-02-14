@@ -9,14 +9,14 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 
-public class TinkersRecipeHandlers 
+public class TinkersRecipeHandlers
 {
 
 	public static class TableRecipeHandler extends ShapedOreRecipeHandler
 	{
-		
-		public static Class<? extends IRecipe> recipeClass;		
-		
+
+		public static Class<? extends IRecipe> recipeClass;
+
 		static
 		{
 			try
@@ -25,19 +25,19 @@ public class TinkersRecipeHandlers
 			}
 			catch(ClassNotFoundException ex) { }
 		}
-		
-		
+
+
 		@Override
 		public ItemStack[] getCraftingGrid(IRecipe r)
 		{
 			ItemStack[] result = super.getCraftingGrid(r);
-			
-			
+
+
 			String itemName = Item.REGISTRY.getNameForObject(inputStack.getItem()).toString();
 			if (ModJsonConfiguration.itemMappings.containsKey(itemName))
 			{
 				ItemMapping mapping = ModJsonConfiguration.itemMappings.get(itemName);
-				
+
 				if (mapping.replaceSlots != null)
 				{
 					ItemStack textureBlock = ItemStack.loadItemStackFromNBT(inputStack.getTagCompound().getCompoundTag("textureBlock"));
@@ -50,9 +50,9 @@ public class TinkersRecipeHandlers
 					}
 				}
 			}
-			
+
 			return result;
 		}
 	}
-	
+
 }
