@@ -1,4 +1,9 @@
 {
+	"immersiveengineering:conveyor": {
+		"matchTag": true,
+		"tagName": "conveyorType"
+	},
+
 	"tconstruct:toolforge": {
 		"singleRecipe": true,
 		"recipeType": "slimeknights.tconstruct.tools.common.TableRecipe",
