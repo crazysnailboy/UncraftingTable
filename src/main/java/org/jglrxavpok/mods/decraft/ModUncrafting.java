@@ -26,7 +26,7 @@ public class ModUncrafting
 	public static final String VERSION = "1.4.4-pre7";
 	public static final String GUIFACTORY = "org.jglrxavpok.mods.decraft.client.config.ModGuiFactory";
 	public static final String UPDATEJSON = "https://raw.githubusercontent.com/crazysnailboy/uncraftingTable/1.7.10/update.json";
-	
+
 	private static final String CLIENT_PROXY_CLASS = "org.jglrxavpok.mods.decraft.proxy.ClientProxy";
 	private static final String SERVER_PROXY_CLASS = "org.jglrxavpok.mods.decraft.proxy.CommonProxy";
 
@@ -34,7 +34,7 @@ public class ModUncrafting
 	// mod instance
 	@Instance(ModUncrafting.MODID)
 	public static ModUncrafting instance;
-	
+
 	// proxy
 	@SidedProxy(clientSide = CLIENT_PROXY_CLASS, serverSide = SERVER_PROXY_CLASS)
 	public static CommonProxy proxy;
@@ -47,8 +47,8 @@ public class ModUncrafting
 
 	// network
 	private static SimpleNetworkWrapper network = NetworkRegistry.INSTANCE.newSimpleChannel(ModUncrafting.MODID);
-	
-	
+
+
 	public Logger getLogger()
 	{
 		return logger;
@@ -59,7 +59,7 @@ public class ModUncrafting
 		return network;
 	}
 
-	
+
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
@@ -70,16 +70,16 @@ public class ModUncrafting
 	public void init(FMLInitializationEvent event)
 	{
 		proxy.init();
-		
+
 		// register the gui handler
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, guiHandler);
 	}
-	
+
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event)
 	{
 		proxy.postInit();
-		
+
 	}
 
 }

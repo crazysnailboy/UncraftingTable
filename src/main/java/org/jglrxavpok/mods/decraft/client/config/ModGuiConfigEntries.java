@@ -9,29 +9,29 @@ import cpw.mods.fml.client.config.IConfigElement;
 import net.minecraft.client.resources.I18n;
 
 
-public class ModGuiConfigEntries 
+public class ModGuiConfigEntries
 {
 
-	public static class ExcludedItemsArrayEntry extends ArrayEntry 
+	public static class ExcludedItemsArrayEntry extends ArrayEntry
 	{
 
-		public ExcludedItemsArrayEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement configElement) 
+		public ExcludedItemsArrayEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement configElement)
 		{
 			super(owningScreen, owningEntryList, configElement);
 		}
-		
+
 		@Override
 		public void updateValueButtonText()
 		{
 			this.btnValue.displayString = currentValues.length + " item(s)";
 		}
-		
+
 	}
-	
-	
+
+
 	public static class BooleanEntry extends ButtonEntry
 	{
-		
+
 		protected final boolean beforeValue;
 		protected boolean currentValue;
 
@@ -113,11 +113,11 @@ public class ModGuiConfigEntries
 			return new Boolean[] { getCurrentValue() };
 		}
 	}
-	
-	
+
+
 	public static class UncraftingMethodCycleEntry extends ButtonEntry
 	{
-		
+
 		protected final int beforeIndex;
 		protected final int defaultIndex;
 		protected int currentIndex;
@@ -204,5 +204,5 @@ public class ModGuiConfigEntries
 			return new String[] { getCurrentValue() };
 		}
 	}
-	
+
 }

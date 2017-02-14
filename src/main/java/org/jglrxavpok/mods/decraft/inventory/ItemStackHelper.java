@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 /**
  * ItemStack helper methods to replicate functionality from later versions of the ItemStack class
  */
-public class ItemStackHelper 
+public class ItemStackHelper
 {
 
 	/**
@@ -17,7 +17,7 @@ public class ItemStackHelper
 	{
 		return stackA == stackB ? true : (stackA != null && stackB != null ? stackA.isItemEqual(stackB) : false);
 	}
-	
+
 	/**
 	 * Compares two ItemStack instances to determine whether the items are the same, ignoring any difference in durability
 	 */

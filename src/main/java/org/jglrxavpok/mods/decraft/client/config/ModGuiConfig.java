@@ -19,23 +19,23 @@ import net.minecraftforge.common.config.Configuration;
 
 public class ModGuiConfig extends GuiConfig
 {
-	public ModGuiConfig(GuiScreen parent) 
+	public ModGuiConfig(GuiScreen parent)
 	{
-		super(parent, 
- 			getConfigElements(), 
-			ModUncrafting.MODID, 
-			false, 
-			false, 
+		super(parent,
+ 			getConfigElements(),
+			ModUncrafting.MODID,
+			false,
+			false,
 			"Uncrafting Table"
 		);
 	}
-	
-	
+
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private static List<IConfigElement> getConfigElements()
 	{
 		Configuration config = ModConfiguration.getConfig();
-		
+
 		// top level settings
 		List<IConfigElement> list = new ConfigElement(config.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements();
 
@@ -43,8 +43,8 @@ public class ModGuiConfig extends GuiConfig
 		list.add(new DummyCategoryElement("updateConfigDummyElement", "uncrafting.options.updates", CategoryEntryUpdates.class));
 		return list;
 	}
-	
-	
+
+
 	@Override
 	public void initGui()
 	{
@@ -62,16 +62,16 @@ public class ModGuiConfig extends GuiConfig
 	{
 		super.actionPerformed(button);
 	}
-	
-	
+
+
 	public static class CategoryEntryUpdates extends CategoryEntry
 	{
 
-		public CategoryEntryUpdates(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement configElement) 
+		public CategoryEntryUpdates(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement configElement)
 		{
 			super(owningScreen, owningEntryList, configElement);
-		}	
-		
+		}
+
 		@Override
 		protected GuiScreen buildChildScreen()
 		{
@@ -79,7 +79,7 @@ public class ModGuiConfig extends GuiConfig
 			ConfigElement configurationCategory = new ConfigElement(configuration.getCategory(ModConfiguration.CATEGORY_UPDATES));
 			List<IConfigElement> propertiesOnThisScreen = configurationCategory.getChildElements();
 			String windowTitle = I18n.format("uncrafting.options.updates");
-			
+
 			return new GuiConfig(this.owningScreen, propertiesOnThisScreen,
 				this.owningScreen.modID,
 				ModConfiguration.CATEGORY_UPDATES,
@@ -87,9 +87,9 @@ public class ModGuiConfig extends GuiConfig
 				this.configElement.requiresMcRestart() || this.owningScreen.allRequireMcRestart,
 				windowTitle
 			);
-			
+
 		}
 	}
-	
+
 
 }

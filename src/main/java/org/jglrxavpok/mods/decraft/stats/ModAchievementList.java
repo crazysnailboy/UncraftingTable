@@ -31,8 +31,8 @@ public class ModAchievementList {
 
 	// stats
 	public static StatBasic uncraftedItemsStat = (StatBasic)(new StatBasic("stat.uncrafteditems", new ChatComponentTranslation("stat.uncrafteditems", new Object[0])).registerStat());
-	
-	
+
+
 	public static void init()
 	{
 		// register the acheivements page
@@ -43,31 +43,31 @@ public class ModAchievementList {
 			})
 		);
 	}
-	
-	public static void clientInit() 
+
+	public static void clientInit()
 	{
 		// register the event handlers with the event busses
 		FMLCommonHandler.instance().bus().register(achievementEventHandler);
 		MinecraftForge.EVENT_BUS.register(achievementEventHandler);
 	}
-	
-	
-	
+
+
+
 	public static class AchievementEventHandler
 	{
-		
+
 		@SubscribeEvent
 		public void onItemCrafted(PlayerEvent.ItemCraftedEvent event)
-		{		
+		{
 			Item item = event.crafting.getItem();
-			
+
 			if (item == Item.getItemFromBlock(ModBlocks.uncrafting_table))
 			{
 				event.player.triggerAchievement(craftTable);
 			}
 		}
-		
-		
+
+
 		/**
 		 * Event handler for a successful uncrafting operation
 		 * @param event
@@ -98,11 +98,11 @@ public class ModAchievementList {
 			{
 				event.player.triggerAchievement(uncraftJunk);
 			}
-			
+
 			// increment the stat counter for the number of uncrafted items
 			event.player.addStat(uncraftedItemsStat, event.quantity);
 		}
-		
+
 	}
-	
+
 }
