@@ -30,7 +30,7 @@ public class BlockUncraftingTable extends Block
 		this.setCreativeTab(CreativeTabs.DECORATIONS);
 	}
 
-	
+
 	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
@@ -42,13 +42,13 @@ public class BlockUncraftingTable extends Block
 		return true;
 	}
 
-   
+
 	private void checkForPorteManteau(EntityPlayer playerIn, World worldIn, BlockPos pos)
 	{
 		boolean furnace = false;
 		boolean chest = false;
 		boolean workbench = false;
-		
+
 		// if the block beneath is a fence...
 		if (worldIn.getBlockState(pos.down()).getBlock() instanceof net.minecraft.block.BlockFence)
 		{
@@ -56,7 +56,7 @@ public class BlockUncraftingTable extends Block
 			Block blockWest = worldIn.getBlockState(pos.west()).getBlock();
 			Block blockNorth = worldIn.getBlockState(pos.north()).getBlock();
 			Block blockSouth = worldIn.getBlockState(pos.south()).getBlock();
-			
+
 			// check if one of the adjacent blocks is a furnace
 			if (
 				(blockNorth == Blocks.FURNACE || blockNorth == Blocks.LIT_FURNACE) ||
@@ -67,31 +67,31 @@ public class BlockUncraftingTable extends Block
 			{
 				furnace = true;
 			}
-			
+
 			// check if one of the adjacent blocks is a chest
 			if (
 				(blockNorth == Blocks.CHEST || blockNorth == Blocks.TRAPPED_CHEST || blockNorth == Blocks.ENDER_CHEST) ||
-				(blockSouth == Blocks.CHEST || blockSouth == Blocks.TRAPPED_CHEST || blockSouth == Blocks.ENDER_CHEST) || 
+				(blockSouth == Blocks.CHEST || blockSouth == Blocks.TRAPPED_CHEST || blockSouth == Blocks.ENDER_CHEST) ||
 				(blockEast == Blocks.CHEST || blockEast == Blocks.TRAPPED_CHEST || blockEast == Blocks.ENDER_CHEST) ||
 				(blockWest == Blocks.CHEST || blockWest == Blocks.TRAPPED_CHEST || blockWest == Blocks.ENDER_CHEST)
 			)
 			{
 				chest = true;
 			}
-			
+
 			// check if one of the adjacent blocks is a crafting table
 			if (
-				(blockNorth == Blocks.CRAFTING_TABLE) || 
-				(blockSouth == Blocks.CRAFTING_TABLE) || 
-				(blockEast == Blocks.CRAFTING_TABLE) || 
+				(blockNorth == Blocks.CRAFTING_TABLE) ||
+				(blockSouth == Blocks.CRAFTING_TABLE) ||
+				(blockEast == Blocks.CRAFTING_TABLE) ||
 				(blockWest == Blocks.CRAFTING_TABLE)
 			)
 			{
 				workbench = true;
 			}
-			
+
 			// if the block is adjacent to all three, trigger the achievement
-			if (furnace && chest && workbench) 
+			if (furnace && chest && workbench)
 			{
 				playerIn.addStat(ModAchievementList.PORTEMANTEAU);
 			}
