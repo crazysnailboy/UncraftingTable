@@ -18,5 +18,5 @@ public class ItemUncraftedEvent extends Event
 		this.stack = stack;
 		this.quantity = quantity;
 	}
-	
+
 }
