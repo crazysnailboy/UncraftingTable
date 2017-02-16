@@ -2,10 +2,15 @@ package org.jglrxavpok.mods.decraft.item.uncrafting.handlers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.IC2RecipeHandlers.ShapedIC2RecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.IC2RecipeHandlers.ShapelessIC2RecipeHandler;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.RecipesMapExtending;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
@@ -20,6 +25,34 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 public final class RecipeHandlers
 {
 
+	public static final HashMap<Class<? extends IRecipe>, RecipeHandler> handlers = new HashMap<Class<? extends IRecipe>, RecipeHandler>();
+
+
+	public static void postInit()
+	{
+		buildHandlerMap();
+	}
+
+
+	private static void buildHandlerMap()
+	{
+		// RecipesMapExtending extends ShapedRecipes, and causes a crash when attempting to uncraft a map
+		handlers.put(RecipesMapExtending.class, null);
+
+		// vanilla Minecraft recipe handlers
+		handlers.put(ShapedRecipes.class, new ShapedRecipeHandler());
+		handlers.put(ShapelessRecipes.class, new ShapelessRecipeHandler());
+
+		// Forge Ore Dictionary recipe handlers
+		handlers.put(ShapedOreRecipe.class, new ShapedOreRecipeHandler());
+		handlers.put(ShapelessOreRecipe.class, new ShapelessOreRecipeHandler());
+
+		// ic2 recipe handlers
+		if (ShapedIC2RecipeHandler.recipeClass != null) handlers.put(ShapedIC2RecipeHandler.recipeClass, new ShapedIC2RecipeHandler());
+		if (ShapelessIC2RecipeHandler.recipeClass != null) handlers.put(ShapelessIC2RecipeHandler.recipeClass, new ShapelessIC2RecipeHandler());
+	}
+	
+	
 	/**
 	 * Abstract base class extended by the different types of recipe handler
 	 *
