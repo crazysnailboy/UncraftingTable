@@ -2,13 +2,12 @@ package org.jglrxavpok.mods.decraft.item.uncrafting.handlers;
 
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.RecipesMapExtending;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.NonNullList;
@@ -23,6 +22,30 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 public final class RecipeHandlers
 {
 
+	public static final HashMap<Class<? extends IRecipe>, RecipeHandler> HANDLERS = new HashMap<Class<? extends IRecipe>, RecipeHandler>();
+
+	
+	public static void postInit()
+	{
+		buildHandlerMap();
+	}
+
+	
+	private static void buildHandlerMap()
+	{
+		// RecipesMapExtending extends ShapedRecipes, and causes a crash when attempting to uncraft a map
+		HANDLERS.put(RecipesMapExtending.class, null);
+
+		// vanilla Minecraft recipe handlers
+		HANDLERS.put(ShapedRecipes.class, new ShapedRecipeHandler());
+		HANDLERS.put(ShapelessRecipes.class, new ShapelessRecipeHandler());
+
+		// Forge Ore Dictionary recipe handlers
+		HANDLERS.put(ShapedOreRecipe.class, new ShapedOreRecipeHandler());
+		HANDLERS.put(ShapelessOreRecipe.class, new ShapelessOreRecipeHandler());
+	}
+
+	
 	/**
 	 * Abstract base class extended by the different types of recipe handler
 	 *
@@ -103,7 +126,14 @@ public final class RecipeHandlers
 	}
 
 
+	public interface INBTSensitiveRecipeHandler
+	{
+		void setInputStack(ItemStack stack);
 
+		ItemStack getInputStack();
+	}
+
+	
 	/**
 	 * Handler for vanilla Minecraft shaped recipes
 	 *
