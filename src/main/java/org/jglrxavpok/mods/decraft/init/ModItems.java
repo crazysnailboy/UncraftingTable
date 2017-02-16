@@ -14,41 +14,41 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 
-public class ModItems 
+public class ModItems
 {
 
 	public static final Item NUGGET = new ItemNugget();
-	
+
 	public static void preInit()
 	{
 		// register the items
 		GameRegistry.register(NUGGET);
 	}
-	
-	public static void clientPreInit() 
+
+	public static void clientPreInit()
 	{
 		// register the item models
 		for (ItemNugget.EnumNuggetType nuggetType : ItemNugget.EnumNuggetType.values())
 		{
 			String registryName = nuggetType.getRegistryName();
 			int metadata = nuggetType.getMetadata();
-			
+
 			ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation(ModUncrafting.MODID + ":" + registryName, "inventory");
 			ModelLoader.setCustomModelResourceLocation(NUGGET, metadata, itemModelResourceLocation);
 		}
 	}
-	
-	
+
+
 	public static void init()
 	{
 		// register the ore dictionary entries
-		OreDictionary.registerOre("nuggetDiamond", new ItemStack(NUGGET, 1, 0));  
+		OreDictionary.registerOre("nuggetDiamond", new ItemStack(NUGGET, 1, 0));
 		OreDictionary.registerOre("shardDiamond", new ItemStack(NUGGET, 1, 0));  // added for compatibility with Magic Bees
 		OreDictionary.registerOre("nuggetEmerald", new ItemStack(NUGGET, 1, 1));
 		OreDictionary.registerOre("shardEmerald", new ItemStack(NUGGET, 1, 1));  // added for compatibility with Magic Bees
 //		OreDictionary.registerOre("nuggetIron", new ItemStack(NUGGET, 1, 2));
-		
-		
+
+
 		// register crafting recipes
 		// gems and ingots to nuggets
 		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.NUGGET, 9, 0), new Object[] { Items.DIAMOND }));
@@ -59,5 +59,5 @@ public class ModItems
 		GameRegistry.addRecipe(new ShapedOreRecipe(Items.EMERALD, new Object[] { "FFF", "FFF", "FFF", Character.valueOf('F'), "nuggetEmerald" }));
 //		GameRegistry.addRecipe(new ShapedOreRecipe(Items.IRON_INGOT, new Object[] { "FFF", "FFF", "FFF", Character.valueOf('F'), "nuggetIron" }));
 	}
-	
+
 }

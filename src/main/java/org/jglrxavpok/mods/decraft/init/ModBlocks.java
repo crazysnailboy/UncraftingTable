@@ -11,19 +11,19 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 
-public class ModBlocks 
+public class ModBlocks
 {
 
 	public static final BlockUncraftingTable UNCRAFTING_TABLE = new BlockUncraftingTable();
 
-	
+
 	public static void preInit()
-	{	
+	{
 		// register the block
 		GameRegistry.register(UNCRAFTING_TABLE);
 		GameRegistry.register(new ItemBlock(UNCRAFTING_TABLE).setRegistryName(UNCRAFTING_TABLE.getRegistryName()));
 	}
-	
+
 	public static void init()
 	{
 		// create block crafting recipe
@@ -32,7 +32,7 @@ public class ModBlocks
 			"SSS", "SXS", "SSS", 'X', Blocks.CRAFTING_TABLE, 'S', Blocks.COBBLESTONE
 		});
 	}
-	
+
 	public static void clientInit()
 	{
 		// register the block model
