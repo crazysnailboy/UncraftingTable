@@ -7,7 +7,7 @@ import org.jglrxavpok.mods.decraft.common.network.message.ConfigSyncMessage;
 import org.jglrxavpok.mods.decraft.common.network.message.RecipeNavigationMessage;
 import org.jglrxavpok.mods.decraft.init.ModBlocks;
 import org.jglrxavpok.mods.decraft.init.ModItems;
-import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingManager;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers;
 import org.jglrxavpok.mods.decraft.stats.ModAchievementList;
 
 import net.minecraftforge.fml.relauncher.Side;
@@ -55,8 +55,8 @@ public class CommonProxy
 	 */
 	public void postInit()
 	{
-		// initalize the uncrafting manager
-		UncraftingManager.postInit();
+		// initalize the recipe handlers
+		RecipeHandlers.postInit();
 	}
 
 }

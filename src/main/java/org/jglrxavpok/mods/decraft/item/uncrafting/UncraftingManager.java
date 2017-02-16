@@ -14,6 +14,8 @@ import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
 import org.jglrxavpok.mods.decraft.common.config.ModJsonConfiguration;
 import org.jglrxavpok.mods.decraft.common.config.ModJsonConfiguration.ItemMapping;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult.ResultType;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.INBTSensitiveRecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.RecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.ShapedOreRecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.ShapedRecipeHandler;
@@ -213,11 +215,6 @@ public class UncraftingManager
 	}
 
 
-	public static void postInit()
-	{
-	}
-
-
 	/**
 	 * Returns the available crafting recipes and associated minimum stack sizes which can be used to perform an uncrafting operation
 	 * @param itemStack The ItemStack containing the target item
@@ -263,10 +260,11 @@ public class UncraftingManager
 
 
 				// get an instance of the appropriate handler class for the IRecipe type of the crafting recipe
-				RecipeHandler handler = getRecipeHandler(recipe);
+				RecipeHandler handler = RecipeHandlers.HANDLERS.get(recipe.getClass());
 				if (handler != null)
 				{
-					handler.inputStack = itemStack.copy();
+					if (handler instanceof INBTSensitiveRecipeHandler) ((INBTSensitiveRecipeHandler)handler).setInputStack(itemStack.copy());
+
 
 					// get the minimum stack size required to uncraft, and the itemstacks that comprise the crafting ingredients
 					int minStackSize = recipeOutput.stackSize;
@@ -379,49 +377,6 @@ public class UncraftingManager
 
 		return -1; // return ModConfiguration.standardLevel;
 	}
-
-
-	/**
-	 * Creates an uncrafting recipe handler capable of uncrafting the given IRecipe instance
-	 * @param recipe The IRecipe instance of the crafting recipe
-	 * @return The RecipeHandler instance which can be used to uncraft the IRecipe
-	 */
-	private static RecipeHandler getRecipeHandler(IRecipe recipe)
-	{
-		try
-		{
-			if (TinkersRecipeHandlers.TableRecipeHandler.recipeClass.isInstance(recipe)) return new TinkersRecipeHandlers.TableRecipeHandler();
-		}
-		catch(Exception ex) { }
-
-
-
-		// RecipesMapExtending extends ShapedRecipes, and causes a crash when attempting to uncraft a map
-		if (recipe instanceof RecipesMapExtending) return null;
-		// vanilla Minecraft recipe handlers
-		if (recipe instanceof ShapelessRecipes) return new ShapelessRecipeHandler();
-		if (recipe instanceof ShapedRecipes) return new ShapedRecipeHandler();
-		// Forge Ore Dictionary recipe handlers
-		if (recipe instanceof ShapelessOreRecipe) return new ShapelessOreRecipeHandler();
-		if (recipe instanceof ShapedOreRecipe) return new ShapedOreRecipeHandler();
-
-		// recipe handlers for reflected IRecipe types from other mods
-		try
-		{
-			// ic2 recipes
-			if (ShapedIC2RecipeHandler.recipeClass.isInstance(recipe)) return new ShapedIC2RecipeHandler();
-			if (ShapelessIC2RecipeHandler.recipeClass.isInstance(recipe)) return new ShapelessIC2RecipeHandler();
-
-			// mekanism recipes
-			if (ShapedMekanismRecipeHandler.recipeClass.isInstance(recipe)) return new ShapedMekanismRecipeHandler();
-			if (ShapelessMekanismRecipeHandler.recipeClass.isInstance(recipe)) return new ShapelessMekanismRecipeHandler();
-
-		}
-		catch(Exception ex) { }
-
-		return null;
-	}
-
 
 
 	/**
