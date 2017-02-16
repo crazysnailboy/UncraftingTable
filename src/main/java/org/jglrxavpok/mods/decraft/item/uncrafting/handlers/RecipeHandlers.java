@@ -2,10 +2,18 @@ package org.jglrxavpok.mods.decraft.item.uncrafting.handlers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.IC2RecipeHandlers.ShapedIC2RecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.IC2RecipeHandlers.ShapelessIC2RecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.MekanismRecipeHandlers.ShapedMekanismRecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.MekanismRecipeHandlers.ShapelessMekanismRecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.TinkersRecipeHandlers;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.RecipesMapExtending;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
@@ -20,14 +28,47 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 public final class RecipeHandlers
 {
 
+	public static final HashMap<Class<? extends IRecipe>, RecipeHandler> HANDLERS = new HashMap<Class<? extends IRecipe>, RecipeHandler>();
+
+
+	public static void postInit()
+	{
+		buildHandlerMap();
+	}
+
+
+	private static void buildHandlerMap()
+	{
+		// RecipesMapExtending extends ShapedRecipes, and causes a crash when attempting to uncraft a map
+		HANDLERS.put(RecipesMapExtending.class, null);
+
+		// vanilla Minecraft recipe handlers
+		HANDLERS.put(ShapedRecipes.class, new ShapedRecipeHandler());
+		HANDLERS.put(ShapelessRecipes.class, new ShapelessRecipeHandler());
+
+		// Forge Ore Dictionary recipe handlers
+		HANDLERS.put(ShapedOreRecipe.class, new ShapedOreRecipeHandler());
+		HANDLERS.put(ShapelessOreRecipe.class, new ShapelessOreRecipeHandler());
+
+		// ic2 recipe handlers
+		if (ShapedIC2RecipeHandler.recipeClass != null) HANDLERS.put(ShapedIC2RecipeHandler.recipeClass, new ShapedIC2RecipeHandler());
+		if (ShapelessIC2RecipeHandler.recipeClass != null) HANDLERS.put(ShapelessIC2RecipeHandler.recipeClass, new ShapelessIC2RecipeHandler());
+
+		// mekanism recipe handlers
+		if (ShapedMekanismRecipeHandler.recipeClass != null) HANDLERS.put(ShapedMekanismRecipeHandler.recipeClass, new ShapedMekanismRecipeHandler());
+		if (ShapelessMekanismRecipeHandler.recipeClass != null) HANDLERS.put(ShapelessMekanismRecipeHandler.recipeClass, new ShapelessMekanismRecipeHandler());
+
+		// tinker's construct recipe handlers
+		if (TinkersRecipeHandlers.TableRecipeHandler.recipeClass != null) HANDLERS.put(TinkersRecipeHandlers.TableRecipeHandler.recipeClass, new TinkersRecipeHandlers.TableRecipeHandler());
+	}
+
+
 	/**
 	 * Abstract base class extended by the different types of recipe handler
 	 *
 	 */
 	public static abstract class RecipeHandler
 	{
-		public ItemStack inputStack;
-
 		public abstract ItemStack[] getCraftingGrid(IRecipe s);
 
 
@@ -104,6 +145,14 @@ public final class RecipeHandlers
 			return outputStacks;
 		}
 
+	}
+
+
+	public interface INBTSensitiveRecipeHandler
+	{
+		void setInputStack(ItemStack stack);
+
+		ItemStack getInputStack();
 	}
 
 
