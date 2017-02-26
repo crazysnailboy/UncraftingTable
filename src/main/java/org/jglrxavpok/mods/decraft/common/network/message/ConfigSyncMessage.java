@@ -30,7 +30,7 @@ public class ConfigSyncMessage implements IMessage
 		uncraftMethod = ByteBufUtils.readVarShort(buf);
 		standardLevel = ByteBufUtils.readVarShort(buf);
 		maxUsedLevel = ByteBufUtils.readVarShort(buf);
-		excludedItems = ByteBufUtils.readUTF8String(buf).split("|");
+		excludedItems = ByteBufUtils.readUTF8String(buf).split("\\|");
 	}
 
 	@Override
@@ -51,6 +51,7 @@ public class ConfigSyncMessage implements IMessage
 			Minecraft minecraft = Minecraft.getMinecraft();
 			minecraft.addScheduledTask(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					ModConfiguration.uncraftMethod = message.uncraftMethod;
