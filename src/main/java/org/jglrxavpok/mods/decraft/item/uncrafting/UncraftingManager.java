@@ -17,15 +17,6 @@ import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult.ResultType;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.INBTSensitiveRecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.RecipeHandler;
-import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.ShapedOreRecipeHandler;
-import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.ShapedRecipeHandler;
-import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.ShapelessOreRecipeHandler;
-import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.ShapelessRecipeHandler;
-import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.IC2RecipeHandlers.ShapedIC2RecipeHandler;
-import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.IC2RecipeHandlers.ShapelessIC2RecipeHandler;
-import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.MekanismRecipeHandlers.ShapedMekanismRecipeHandler;
-import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.MekanismRecipeHandlers.ShapelessMekanismRecipeHandler;
-import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.TinkersRecipeHandlers;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -35,14 +26,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.RecipesMapExtending;
-import net.minecraft.item.crafting.ShapedRecipes;
-import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.oredict.ShapedOreRecipe;
-import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 
 /**
@@ -225,12 +211,12 @@ public class UncraftingManager
 		// initialize a list of tuples to hold the crafting grid and stack sizes
 		List<Map.Entry<ItemStack[],Integer>> list = new ArrayList<Map.Entry<ItemStack[],Integer>>();
 
-		// check whether uncrafting of this item is disabled in config
+		// if uncrafting of this item is disabled in config, return the empty list
 		String itemName = Item.REGISTRY.getNameForObject(itemStack.getItem()).toString();
-		String registryNameWithDamage = itemName + (itemStack.getItemDamage() > 0 ? "," + Integer.toString(itemStack.getItemDamage()) : "");
+		String itemNameWithDamage = itemName + (itemStack.getItemDamage() > 0 ? "," + Integer.toString(itemStack.getItemDamage()) : "");
 
-		// if uncrafting of this item is disabled, return the empty list
-		if (ArrayUtils.indexOf(ModConfiguration.excludedItems, registryNameWithDamage) >= 0) return list;
+		if (ArrayUtils.indexOf(ModConfiguration.excludedItems, itemName) >= 0) return list;
+		if (ArrayUtils.indexOf(ModConfiguration.excludedItems, itemNameWithDamage) >= 0) return list;
 
 
 		// iterate over all the crafting recipes known to the crafting manager
@@ -437,15 +423,15 @@ public class UncraftingManager
 			{
 				// calculate the number of full items and nuggets which most closely represent the percentage durability remaining on the item
 				// rounding down to the nearest nugget
-				itemCount = (int)Math.floor(amount * (durabilityPercentage / 100));
-				nuggetCount = ((int)Math.floor((amount * 9) * (durabilityPercentage / 100))) - (itemCount * 9);
+				itemCount = (int)Math.floor(amount * (durabilityPercentage / (double)100));
+				nuggetCount = ((int)Math.floor((amount * 9) * (durabilityPercentage / (double)100))) - (itemCount * 9);
 			}
 			// if the stack contains sticks
 			else if (ArrayUtils.contains(OreDictionary.getOreIDs(materialStack), OreDictionary.getOreID("stickWood")))
 			{
 				// calculate the total number of full items which most closely represent the percentage durability remaining on the item
 				// rounding up to the nearest item
-				itemCount = (int)Math.ceil(amount * (durabilityPercentage / 100));
+				itemCount = (int)Math.ceil(amount * (durabilityPercentage / (double)100));
 			}
 
 			// if there's no nugget for this item in the ore dictionary
@@ -453,7 +439,7 @@ public class UncraftingManager
 			{
 				// calculate the total number of full items which most closely represent the percentage durability remaining on the item
 				// rounding down to the nearest item
-				itemCount = (int)Math.floor(amount * (durabilityPercentage / 100));
+				itemCount = (int)Math.floor(amount * (durabilityPercentage / (double)100));
 			}
 
 			// flip the item count to become items to remove instead of items to leave
