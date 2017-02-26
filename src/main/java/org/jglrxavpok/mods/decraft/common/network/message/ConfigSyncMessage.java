@@ -28,7 +28,7 @@ public class ConfigSyncMessage implements IMessage
 		uncraftMethod = ByteBufUtils.readVarShort(buf);
 		standardLevel = ByteBufUtils.readVarShort(buf);
 		maxUsedLevel = ByteBufUtils.readVarShort(buf);
-		excludedItems = ByteBufUtils.readUTF8String(buf).split("|");
+		excludedItems = ByteBufUtils.readUTF8String(buf).split("\\|");
 	}
 
 	@Override
