@@ -1,17 +1,18 @@
 {
 	"homepage": "https://minecraft.curseforge.com/projects/jglrxavpoks-uncrafting-table/files/",
 	"promos": {
-		"1.7.10-latest": "1.4.4-pre7",
+		"1.7.10-latest": "1.4.4-pre8",
 		"1.7.10-recommended": "1.4.3"
 	},
 	"1.7.10": {
+		"1.4.4-pre8": "fixed bug with excluded items config",
 		"1.4.4-pre7": "various bug fixes, improved mod support",
 		"1.4.4-pre6": "added network message to sync config when player joins server",
-		"1.4.4-pre5": "Fixed dupe glitch, fixed shift click into wrong slot",
-		"1.4.4-pre4": "Fixed two bugs",
-		"1.4.4-pre3": "Fixed server crash plus other minor changes",
-		"1.4.4-pre2": "Fixed incompatibility with Iron Chests",
-		"1.4.4-pre1": "New version with lots of new features!",
+		"1.4.4-pre5": "fixed dupe glitch, fixed shift click into wrong slot",
+		"1.4.4-pre4": "fixed two bugs",
+		"1.4.4-pre3": "fixed server crash plus other minor changes",
+		"1.4.4-pre2": "fixed incompatibility with Iron Chests",
+		"1.4.4-pre1": "new version with lots of new features!",
 		"1.4.3": ""
 	}
 }
