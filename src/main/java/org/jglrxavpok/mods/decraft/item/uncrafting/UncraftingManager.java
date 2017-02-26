@@ -14,10 +14,6 @@ import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult.ResultType;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.RecipeHandler;
-import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.ShapedOreRecipeHandler;
-import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.ShapedRecipeHandler;
-import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.ShapelessOreRecipeHandler;
-import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.ShapelessRecipeHandler;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -27,13 +23,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.RecipesMapExtending;
-import net.minecraft.item.crafting.ShapedRecipes;
-import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.oredict.ShapedOreRecipe;
-import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 
 /**
@@ -216,12 +207,12 @@ public class UncraftingManager
 		// initialize a list of tuples to hold the crafting grid and stack sizes
 		List<Map.Entry<NonNullList<ItemStack>,Integer>> list = new ArrayList<Map.Entry<NonNullList<ItemStack>,Integer>>();
 
-		// check whether uncrafting of this item is disabled in config
-		String uniqueIdentifier = Item.REGISTRY.getNameForObject(itemStack.getItem()).toString();
-		if (itemStack.getItemDamage() > 0) uniqueIdentifier += "," + Integer.toString(itemStack.getItemDamage());
+		// if uncrafting of this item is disabled in config, return the empty list
+		String itemName = Item.REGISTRY.getNameForObject(itemStack.getItem()).toString();
+		String itemNameWithDamage = itemName + (itemStack.getItemDamage() > 0 ? "," + Integer.toString(itemStack.getItemDamage()) : "");
 
-		// if uncrafting of this item is disabled, return the empty list
-		if (ArrayUtils.indexOf(ModConfiguration.excludedItems, uniqueIdentifier) >= 0) return list;
+		if (ArrayUtils.indexOf(ModConfiguration.excludedItems, itemName) >= 0) return list;
+		if (ArrayUtils.indexOf(ModConfiguration.excludedItems, itemNameWithDamage) >= 0) return list;
 
 
 		// iterate over all the crafting recipes known to the crafting manager
@@ -257,7 +248,7 @@ public class UncraftingManager
 					}
 				}
 				// if we couldn't find a handler class for this IRecipe implementation, write some details to the log for debugging.
-				else ModUncrafting.instance.getLogger().error("findMatchingRecipes :: Unknown IRecipe implementation " + recipe.getClass().getCanonicalName() + " for item " + uniqueIdentifier);
+				else ModUncrafting.instance.getLogger().error("findMatchingRecipes :: Unknown IRecipe implementation " + recipe.getClass().getCanonicalName() + " for item " + itemName);
 			}
 		}
 
