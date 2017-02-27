@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.AE2RecipeHandlers.ShapedAE2RecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.AE2RecipeHandlers.ShapelessAE2RecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.IC2RecipeHandlers.ShapedIC2RecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.IC2RecipeHandlers.ShapelessIC2RecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.MekanismRecipeHandlers.ShapedMekanismRecipeHandler;
@@ -50,7 +52,11 @@ public final class RecipeHandlers
 		HANDLERS.put(ShapedOreRecipe.class, new ShapedOreRecipeHandler());
 		HANDLERS.put(ShapelessOreRecipe.class, new ShapelessOreRecipeHandler());
 
-		// ic2 recipe handlers
+		// applied energistics 2 handlers
+		if (ShapedAE2RecipeHandler.recipeClass != null) HANDLERS.put(ShapedAE2RecipeHandler.recipeClass, new ShapedAE2RecipeHandler());
+		if (ShapelessAE2RecipeHandler.recipeClass != null) HANDLERS.put(ShapelessAE2RecipeHandler.recipeClass, new ShapelessAE2RecipeHandler());
+
+		// industrialcraft 2 recipe handlers
 		if (ShapedIC2RecipeHandler.recipeClass != null) HANDLERS.put(ShapedIC2RecipeHandler.recipeClass, new ShapedIC2RecipeHandler());
 		if (ShapelessIC2RecipeHandler.recipeClass != null) HANDLERS.put(ShapelessIC2RecipeHandler.recipeClass, new ShapelessIC2RecipeHandler());
 
