@@ -1,0 +1,47 @@
+#zh_CN
+
+tile.uncrafting_table.name=分解工作台
+
+item.diamondNugget.name=钻石粒
+item.emeraldNugget.name=绿宝石粒
+item.ironNugget.name=铁粒
+
+achievement.createDecraftTable=犹如OL的一天。
+achievement.createDecraftTable.desc=合成一个分解工作台！
+achievement.uncraftAnything=分解一个物品！
+achievement.uncraftAnything.desc=您刚刚分解了一个物品！
+achievement.uncraftDiamondHoe=分解一个钻石锄！
+achievement.uncraftDiamondHoe.desc=我们差不多破产了。
+achievement.uncraftJunk=回收时间！
+achievement.uncraftJunk.desc=这个物品是无用的。
+achievement.uncraftDiamondShovel=该选取更廉价的方针了。
+achievement.uncraftDiamondShovel.desc=铁铲更好。
+achievement.porteManteauAchievement=多合一！
+achievement.porteManteauAchievement.desc=爱所有的玩家。
+
+container.uncrafting=分解工作台
+container.uncrafting.cost=支付等级: %1$s
+
+uncrafting.result.ready=就绪
+uncrafting.result.impossible=不能分解
+uncrafting.result.needMoreStacks=需要 %1$s 物品
+
+stat.uncrafteditems=分解物品
+
+uncrafting.compute=计算
+uncrafting.options.method=分解模式
+uncrafting.options.method.tooltip=分解物品使用的模式
+uncrafting.options.standardLevel=最低支付等级
+uncrafting.options.standardLevel.tooltip=分解物品所需支付等级的最低值
+uncrafting.options.maxUsedLevel=最高支付等级
+uncrafting.options.maxUsedLevel.tooltip=分解物品所需支付等级的最高值
+uncrafting.options.excludedItems=排除物品
+uncrafting.options.excludedItems.tooltip=排除的物品将不能被分解
+uncrafting.options.updates=更新通知
+uncrafting.options.updates.tooltip=配置更新通知的选项
+uncrafting.options.updates.checkForUpdates=自动检查更新
+uncrafting.options.updates.promptForLatest=全版本更新提示（包括实验版）
+uncrafting.options.updates.promptForRecommended=推荐版更新提示
+
+chat.update.newlatest=新的版本 %1$s 已发布，点击此更新。
+chat.update.newrecommended=新的推荐版 %1$s 已发布，点击此更新。
