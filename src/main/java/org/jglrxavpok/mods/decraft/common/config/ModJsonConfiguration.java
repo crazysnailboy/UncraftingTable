@@ -8,7 +8,6 @@ import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.util.FileUtils;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -21,9 +20,12 @@ public class ModJsonConfiguration
 		public boolean singleRecipe = false;
 		public String recipeType = null;
 		public int[] replaceSlots = null;
-		
+
 		public boolean matchTag = false;
 		public String tagName = null;
+
+		public boolean matchField = false;
+		public String[] fieldNames = null;
 	}
 
 
@@ -69,7 +71,10 @@ public class ModJsonConfiguration
 
 			if (jsonMapping.has("matchTag")) itemMapping.matchTag = jsonMapping.get("matchTag").getAsBoolean();
 			if (jsonMapping.has("tagName")) itemMapping.tagName = jsonMapping.get("tagName").getAsString();
-			
+
+			if (jsonMapping.has("matchField")) itemMapping.matchField = jsonMapping.get("matchField").getAsBoolean();
+			if (jsonMapping.has("fieldNames")) itemMapping.fieldNames = gson.fromJson(jsonMapping.get("fieldNames").getAsJsonArray(), String[].class);
+
 			itemMappings.put(itemName, itemMapping);
 		}
 	}
