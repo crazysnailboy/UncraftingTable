@@ -1,10 +1,11 @@
 {
 	"homepage": "https://minecraft.curseforge.com/projects/jglrxavpoks-uncrafting-table/files/",
 	"promos": {
-		"1.7.10-latest": "1.4.4-pre8",
-		"1.7.10-recommended": "1.4.3"
+		"1.7.10-latest": "1.4.4-pre9",
+		"1.7.10-recommended": "1.4.4-pre9"
 	},
 	"1.7.10": {
+		"1.4.4-pre9": "Applied Energistics support, MineTweaker bug fix, Chinese translation",
 		"1.4.4-pre8": "fixed bug with excluded items config",
 		"1.4.4-pre7": "various bug fixes, improved mod support",
 		"1.4.4-pre6": "added network message to sync config when player joins server",
