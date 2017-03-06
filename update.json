@@ -1,10 +1,11 @@
 {
 	"homepage": "https://minecraft.curseforge.com/projects/jglrxavpoks-uncrafting-table/files/",
 	"promos": {
-		"1.8.9-latest": "1.5.1-pre8",
-		"1.8.9-recommended": "1.5"
+		"1.8.9-latest": "1.5.1-pre9",
+		"1.8.9-recommended": "1.5.1-pre9"
 	},
 	"1.8.9": {
+		"1.5.1-pre9": "CraftTweaker bug fix, Chinese translation",
 		"1.5.1-pre8": "fixed bug with excluded items config",
 		"1.5.1-pre7": "various bug fixes, improved mod support",
 		"1.5.1-pre6": "added network message to sync config when player joins server",
