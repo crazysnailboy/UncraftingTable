@@ -29,7 +29,22 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 public final class RecipeHandlers
 {
 
-	public static final HashMap<Class<? extends IRecipe>, RecipeHandler> handlers = new HashMap<Class<? extends IRecipe>, RecipeHandler>();
+
+	public static class HandlerMap extends HashMap<Class<? extends IRecipe>, RecipeHandler>
+	{
+		public RecipeHandler get(Class<? extends IRecipe> key)
+		{
+			RecipeHandler result = super.get(key);
+			while (result == null && key.getSuperclass() != IRecipe.class)
+			{
+				key = (Class<? extends IRecipe>)key.getSuperclass();
+				result = super.get(key);
+			}
+			return result;
+		}
+	}
+
+	public static final HandlerMap handlers = new HandlerMap(); // public static final HashMap<Class<? extends IRecipe>, RecipeHandler> handlers = new HashMap<Class<? extends IRecipe>, RecipeHandler>();
 
 
 	public static void postInit()
