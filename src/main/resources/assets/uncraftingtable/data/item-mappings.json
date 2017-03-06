@@ -13,5 +13,67 @@
 		"singleRecipe": true,
 		"recipeType": "slimeknights.tconstruct.tools.common.TableRecipe",
 		"replaceSlots": [3]
+	},
+	
+	"thermalfoundation:helmet": {
+		"matchField": true,
+		"fieldNames": ["itemDamage","field_77991_e"]
+	},
+	"thermalfoundation:chestplate": {
+		"matchField": true,
+		"fieldNames": ["itemDamage","field_77991_e"]
+	},
+	"thermalfoundation:leggings": {
+		"matchField": true,
+		"fieldNames": ["itemDamage","field_77991_e"]
+	},
+	"thermalfoundation:boots": {
+		"matchField": true,
+		"fieldNames": ["itemDamage","field_77991_e"]
+	},
+	
+	"thermalfoundation:axe": {
+		"matchField": true,
+		"fieldNames": ["itemDamage","field_77991_e"]
+	},
+	"thermalfoundation:bow": {
+		"matchField": true,
+		"fieldNames": ["itemDamage","field_77991_e"]
+	},
+	"thermalfoundation:fishing_rod": {
+		"matchField": true,
+		"fieldNames": ["itemDamage","field_77991_e"]
+	},
+	"thermalfoundation:hammer": {
+		"matchField": true,
+		"fieldNames": ["itemDamage","field_77991_e"]
+	},
+	"thermalfoundation:hoe": {
+		"matchField": true,
+		"fieldNames": ["itemDamage","field_77991_e"]
+	},
+	"thermalfoundation:pickaxe": {
+		"matchField": true,
+		"fieldNames": ["itemDamage","field_77991_e"]
+	},
+	"thermalfoundation:shears": {
+		"matchField": true,
+		"fieldNames": ["itemDamage","field_77991_e"]
+	},
+	"thermalfoundation:shield": {
+		"matchField": true,
+		"fieldNames": ["itemDamage","field_77991_e"]
+	},
+	"thermalfoundation:shovel": {
+		"matchField": true,
+		"fieldNames": ["itemDamage","field_77991_e"]
+	},
+	"thermalfoundation:sickle": {
+		"matchField": true,
+		"fieldNames": ["itemDamage","field_77991_e"]
+	},
+	"thermalfoundation:sword": {
+		"matchField": true,
+		"fieldNames": ["itemDamage","field_77991_e"]
 	}
 }
