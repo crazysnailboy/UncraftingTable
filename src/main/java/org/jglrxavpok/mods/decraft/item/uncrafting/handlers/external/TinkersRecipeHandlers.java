@@ -56,14 +56,14 @@ public class TinkersRecipeHandlers
 
 			return result;
 		}
-		
-		
+
+
 		@Override
 		public void setInputStack(ItemStack stack) { this.inputStack = stack; }
 
 		@Override
 		public ItemStack getInputStack() { return this.inputStack; }
-		
+
 	}
 
 }

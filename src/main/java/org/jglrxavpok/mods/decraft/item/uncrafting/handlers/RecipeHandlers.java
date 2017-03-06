@@ -64,7 +64,7 @@ public final class RecipeHandlers
 		HANDLERS.put(ShapedOreRecipe.class, new ShapedOreRecipeHandler());
 		HANDLERS.put(ShapelessOreRecipe.class, new ShapelessOreRecipeHandler());
 
-		// ic2 recipe handlers
+		// industrialcraft 2 recipe handlers
 		if (ShapedIC2RecipeHandler.recipeClass != null) HANDLERS.put(ShapedIC2RecipeHandler.recipeClass, new ShapedIC2RecipeHandler());
 		if (ShapelessIC2RecipeHandler.recipeClass != null) HANDLERS.put(ShapelessIC2RecipeHandler.recipeClass, new ShapelessIC2RecipeHandler());
 
