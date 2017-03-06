@@ -28,6 +28,7 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.oredict.OreDictionary;
 
 
@@ -227,21 +228,17 @@ public class UncraftingManager
 			ItemStack recipeOutput = recipe.getRecipeOutput();
 			if (ItemStack.areItemsEqualIgnoreDurability(itemStack, recipeOutput))
 			{
-				ItemMapping mapping = null;
-
-				// check to see if we have custom mapping data for this item
-				if (ModJsonConfiguration.itemMappings.containsKey(itemName))
-				{
-					mapping = ModJsonConfiguration.itemMappings.get(itemName);
-				}
-
-				// if we do...
+				// load any custom mapping data we have for this item
+				ItemMapping mapping = ModJsonConfiguration.itemMappings.get(itemName);
+				// if we have mapping data...
 				if (mapping != null)
 				{
 					// if the mapping data specifies a particular IRecipe instance, and the current recipe does not match, continue
 					if ((mapping.recipeType != null) && (!recipe.getClass().getCanonicalName().equals(mapping.recipeType))) continue;
 					// if the mapping data specifies a match on NBT data, and the data does not match, continue
 					if ((mapping.matchTag == true) && (!areItemStackSubTagsEqual(itemStack, recipeOutput, mapping.tagName))) continue;
+					// if the mapping data specifies a match on a private field, and the field values do not match, continue
+					if ((mapping.matchField == true) && (!arePrivateFieldValuesEqual(itemStack, recipeOutput, mapping.fieldNames))) continue;
 				}
 
 
@@ -301,6 +298,14 @@ public class UncraftingManager
 		}
 
 		return false;
+	}
+
+	private static boolean arePrivateFieldValuesEqual(ItemStack stackA, ItemStack stackB, String[] fieldNames)
+	{
+		Object oA = ObfuscationReflectionHelper.getPrivateValue(ItemStack.class, stackA, fieldNames);
+		Object oB = ObfuscationReflectionHelper.getPrivateValue(ItemStack.class, stackB, fieldNames);
+
+		return oA.equals(oB);
 	}
 
 
