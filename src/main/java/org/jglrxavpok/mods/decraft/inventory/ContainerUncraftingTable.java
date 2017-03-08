@@ -8,7 +8,6 @@ import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingManager;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult.ResultType;
 
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
@@ -174,6 +173,7 @@ public class ContainerUncraftingTable extends Container
 
 		// decrement the number of items in the input slot by the minimum stack size
 		uncraftIn.decrStackSize(0, (minStackSize * multiplier));
+		if (uncraftIn.getStackInSlot(0).getCount() == 0) uncraftIn.setInventorySlotContents(0, ItemStack.EMPTY);
 	}
 
 
