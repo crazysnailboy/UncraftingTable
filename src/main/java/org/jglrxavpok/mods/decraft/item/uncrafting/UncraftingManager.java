@@ -14,8 +14,8 @@ import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
 import org.jglrxavpok.mods.decraft.common.config.ModJsonConfiguration;
 import org.jglrxavpok.mods.decraft.common.config.ModJsonConfiguration.ItemMapping;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult.ResultType;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.NBTSensitiveRecipeHandlers.INBTSensitiveRecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers;
-import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.INBTSensitiveRecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.RecipeHandler;
 
 import net.minecraft.enchantment.Enchantment;
@@ -226,6 +226,8 @@ public class UncraftingManager
 		{
 			// if the current recipe can be used to craft the item
 			ItemStack recipeOutput = recipe.getRecipeOutput();
+			if (recipeOutput == null) recipeOutput = RecipeHandler.getPossibleRecipeOutput(recipe, itemStack);
+
 			if (ItemStack.areItemsEqualIgnoreDurability(itemStack, recipeOutput))
 			{
 				// load any custom mapping data we have for this item
@@ -246,8 +248,8 @@ public class UncraftingManager
 				RecipeHandler handler = RecipeHandlers.HANDLERS.get(recipe.getClass());
 				if (handler != null)
 				{
+					// if the recipe is nbt sensitive, copy the input itemstack into the recipe handler
 					if (handler instanceof INBTSensitiveRecipeHandler) ((INBTSensitiveRecipeHandler)handler).setInputStack(itemStack.copy());
-
 
 					// get the minimum stack size required to uncraft, and the itemstacks that comprise the crafting ingredients
 					int minStackSize = recipeOutput.stackSize;
