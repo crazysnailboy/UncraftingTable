@@ -12,8 +12,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.potion.PotionUtils;
 
-public final class NBTSensitiveRecipeHandlers 
+public final class NBTSensitiveRecipeHandlers
 {
 
 	/**
@@ -134,6 +135,37 @@ public final class NBTSensitiveRecipeHandlers
 
 	        if (inputStack.getItem() == Items.FIREWORK_CHARGE) recipeItems.addAll(getFireworkStarItems());
 	        if (inputStack.getItem() == Items.FIREWORKS) recipeItems.addAll(getFireworkRocketItems());
+
+			return recipeItems.toArray(new ItemStack[9]);
+		}
+	}
+
+
+	/**
+	 * Handler for tipped arrow recipes which utilise the RecipeTippedArrow IRecipe implementation
+	 *
+	 */
+	public static class TippedArrowRecipeHandler extends NBTSensitiveRecipeHandler
+	{
+		@Override
+		public ItemStack[] getCraftingGrid(IRecipe r)
+		{
+			List<ItemStack> recipeItems = new ArrayList<ItemStack>();
+
+			for ( int i = 0 ; i < 9 ; i++ )
+			{
+				if (i != 4)
+				{
+					recipeItems.add(new ItemStack(Items.ARROW, 1));
+				}
+				else
+				{
+					ItemStack stack = new ItemStack(Items.LINGERING_POTION, 1);
+		            PotionUtils.addPotionToItemStack(stack, PotionUtils.getPotionFromItem(inputStack));
+		            PotionUtils.appendEffects(stack, PotionUtils.getFullEffectsFromItem(inputStack));
+					recipeItems.add(stack);
+				}
+			}
 
 			return recipeItems.toArray(new ItemStack[9]);
 		}
