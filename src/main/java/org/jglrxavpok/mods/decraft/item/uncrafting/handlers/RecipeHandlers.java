@@ -6,11 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.NBTSensitiveRecipeHandlers.FireworksRecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.NBTSensitiveRecipeHandlers.TippedArrowRecipeHandler;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.RecipeFireworks;
+import net.minecraft.item.crafting.RecipeTippedArrow;
 import net.minecraft.item.crafting.RecipesMapExtending;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
@@ -61,6 +63,7 @@ public final class RecipeHandlers
 		HANDLERS.put(ShapedRecipes.class, new ShapedRecipeHandler());
 		HANDLERS.put(ShapelessRecipes.class, new ShapelessRecipeHandler());
 		HANDLERS.put(RecipeFireworks.class, new FireworksRecipeHandler());
+		HANDLERS.put(RecipeTippedArrow.class, new TippedArrowRecipeHandler());
 
 		// Forge Ore Dictionary recipe handlers
 		HANDLERS.put(ShapedOreRecipe.class, new ShapedOreRecipeHandler());
@@ -70,6 +73,7 @@ public final class RecipeHandlers
 	private static void buildRecipeOutputMap()
 	{
 		RECIPE_OUTPUTS.put(RecipeFireworks.class, new ItemStack[] { new ItemStack(Items.FIREWORK_CHARGE), new ItemStack(Items.FIREWORKS, 3) });
+		RECIPE_OUTPUTS.put(RecipeTippedArrow.class, new ItemStack[] { new ItemStack(Items.TIPPED_ARROW, 8) });
 	}
 
 
