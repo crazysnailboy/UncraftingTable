@@ -3,7 +3,7 @@ package org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jglrxavpok.mods.decraft.common.config.ModJsonConfiguration;
 import org.jglrxavpok.mods.decraft.common.config.ModJsonConfiguration.ItemMapping;
-import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.INBTSensitiveRecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.NBTSensitiveRecipeHandlers.INBTSensitiveRecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.ShapedOreRecipeHandler;
 
 import net.minecraft.item.Item;

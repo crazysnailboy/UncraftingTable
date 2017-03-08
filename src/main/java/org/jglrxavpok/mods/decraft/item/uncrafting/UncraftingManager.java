@@ -14,8 +14,8 @@ import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
 import org.jglrxavpok.mods.decraft.common.config.ModJsonConfiguration;
 import org.jglrxavpok.mods.decraft.common.config.ModJsonConfiguration.ItemMapping;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult.ResultType;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.NBTSensitiveRecipeHandlers.INBTSensitiveRecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers;
-import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.INBTSensitiveRecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.RecipeHandler;
 
 import net.minecraft.enchantment.Enchantment;
@@ -226,6 +226,8 @@ public class UncraftingManager
 		{
 			// if the current recipe can be used to craft the item
 			ItemStack recipeOutput = recipe.getRecipeOutput();
+			if (recipeOutput == null) recipeOutput = RecipeHandler.getPossibleRecipeOutput(recipe, itemStack);
+
 			if (ItemStack.areItemsEqualIgnoreDurability(itemStack, recipeOutput))
 			{
 				// load any custom mapping data we have for this item
@@ -246,8 +248,8 @@ public class UncraftingManager
 				RecipeHandler handler = RecipeHandlers.HANDLERS.get(recipe.getClass());
 				if (handler != null)
 				{
+					// if the recipe is nbt sensitive, copy the input itemstack into the recipe handler
 					if (handler instanceof INBTSensitiveRecipeHandler) ((INBTSensitiveRecipeHandler)handler).setInputStack(itemStack.copy());
-
 
 					// get the minimum stack size required to uncraft, and the itemstacks that comprise the crafting ingredients
 					int minStackSize = recipeOutput.stackSize;
@@ -428,15 +430,15 @@ public class UncraftingManager
 			{
 				// calculate the number of full items and nuggets which most closely represent the percentage durability remaining on the item
 				// rounding down to the nearest nugget
-				itemCount = (int)Math.floor(amount * (durabilityPercentage / (double)100));
-				nuggetCount = ((int)Math.floor((amount * 9) * (durabilityPercentage / (double)100))) - (itemCount * 9);
+				itemCount = (int)Math.floor(amount * (durabilityPercentage / 100));
+				nuggetCount = ((int)Math.floor((amount * 9) * (durabilityPercentage / 100))) - (itemCount * 9);
 			}
 			// if the stack contains sticks
 			else if (ArrayUtils.contains(OreDictionary.getOreIDs(materialStack), OreDictionary.getOreID("stickWood")))
 			{
 				// calculate the total number of full items which most closely represent the percentage durability remaining on the item
 				// rounding up to the nearest item
-				itemCount = (int)Math.ceil(amount * (durabilityPercentage / (double)100));
+				itemCount = (int)Math.ceil(amount * (durabilityPercentage / 100));
 			}
 
 			// if there's no nugget for this item in the ore dictionary
@@ -444,7 +446,7 @@ public class UncraftingManager
 			{
 				// calculate the total number of full items which most closely represent the percentage durability remaining on the item
 				// rounding down to the nearest item
-				itemCount = (int)Math.floor(amount * (durabilityPercentage / (double)100));
+				itemCount = (int)Math.floor(amount * (durabilityPercentage / 100));
 			}
 
 			// flip the item count to become items to remove instead of items to leave
