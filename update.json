@@ -1,10 +1,11 @@
 {
 	"homepage": "https://minecraft.curseforge.com/projects/jglrxavpoks-uncrafting-table/files/",
 	"promos": {
-		"1.11.2-latest": "1.7.1-pre12",
-		"1.11.2-recommended": "1.7.1-pre12"
+		"1.11.2-latest": "1.7.1-pre13",
+		"1.11.2-recommended": "1.7.1-pre13"
 	},
 	"1.11.2": {
+		"1.7.1-pre13": "added ability to uncraft fireworks and tipped arrows, fixed bug with input stack not being cleared after uncrafting",
 		"1.7.1-pre12": "CraftTweaker bug fix, Chinese translation",
 		"1.7.1-pre11": "fixed bug with excluded items config",
 		"1.7.1-pre10": "various bug fixes",
