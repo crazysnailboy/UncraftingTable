@@ -4,7 +4,7 @@ tile.uncrafting_table.name=分解工作台
 
 item.diamondNugget.name=钻石粒
 item.emeraldNugget.name=绿宝石粒
-item.ironNugget.name=铁粒
+item.leatherStrip.name=Leather Strip
 
 achievement.createDecraftTable=犹如OL的一天。
 achievement.createDecraftTable.desc=合成一个分解工作台！

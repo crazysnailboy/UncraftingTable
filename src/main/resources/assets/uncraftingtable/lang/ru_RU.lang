@@ -4,7 +4,7 @@ tile.uncrafting_table.name=Антиверстак
 
 item.diamondNugget.name=Алмазный самородок
 item.emeraldNugget.name=Изумрудный самородок
-item.ironNugget.name=Железный самородок
+item.leatherStrip.name=Leather Strip
 
 achievement.createDecraftTable=Как в старые времена
 achievement.createDecraftTable.desc=Создайте антиверстак !

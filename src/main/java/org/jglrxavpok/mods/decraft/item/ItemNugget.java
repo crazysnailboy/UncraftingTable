@@ -38,12 +38,15 @@ public class ItemNugget extends Item
 
 	public static enum EnumNuggetType
 	{
-		DIAMOND(0, "diamond"),
-		EMERALD(1, "emerald");
-//		IRON(2, "iron");
+		DIAMOND(0, "diamondNugget", "diamond_nugget"),
+		EMERALD(1, "emeraldNugget", "emerald_nugget"),
+//		IRON(2, "ironNugget", "iron_nugget"),
+		LEATHER(3, "leatherStrip", "leather_strip");
 
 		private final int meta;
-		private final String name;
+		private final String unlocalizedName;
+		private final String registryName;
+
 		private static final EnumNuggetType[] META_LOOKUP = new EnumNuggetType[values().length];
 
 
@@ -54,12 +57,12 @@ public class ItemNugget extends Item
 
 		public String getUnlocalizedName()
 		{
-			return this.name + "Nugget";
+			return this.unlocalizedName;
 		}
 
 		public String getRegistryName()
 		{
-			return this.name + "_nugget";
+			return this.registryName;
 		}
 
 		public static EnumNuggetType byMetadata(int meta)
@@ -69,10 +72,11 @@ public class ItemNugget extends Item
 		}
 
 
-		private EnumNuggetType(int meta, String name)
+		private EnumNuggetType(int meta, String unlocalizedName, String registryName)
 		{
 			this.meta = meta;
-			this.name = name;
+			this.unlocalizedName = unlocalizedName;
+			this.registryName = registryName;
 		}
 
 		static
