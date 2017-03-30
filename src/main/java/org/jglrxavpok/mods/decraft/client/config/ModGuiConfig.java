@@ -26,7 +26,7 @@ public class ModGuiConfig extends GuiConfig
 			ModUncrafting.MODID,
 			false,
 			false,
-			"Uncrafting Table"
+			ModUncrafting.MODNAME
 		);
 	}
 
@@ -39,8 +39,10 @@ public class ModGuiConfig extends GuiConfig
 		// top level settings
 		List<IConfigElement> list = new ConfigElement(config.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements();
 
-		// update checker settings
+		// second level settings
+		list.add(new DummyCategoryElement("nuggetsConfigDummyElement", "uncrafting.options.nuggets", CategoryEntryNuggets.class));
 		list.add(new DummyCategoryElement("updateConfigDummyElement", "uncrafting.options.updates", CategoryEntryUpdates.class));
+
 		return list;
 	}
 
@@ -91,5 +93,32 @@ public class ModGuiConfig extends GuiConfig
 		}
 	}
 
+
+	public static class CategoryEntryNuggets extends CategoryEntry
+	{
+
+		public CategoryEntryNuggets(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement configElement)
+		{
+			super(owningScreen, owningEntryList, configElement);
+		}
+
+		@Override
+		protected GuiScreen buildChildScreen()
+		{
+			Configuration configuration = ModConfiguration.getConfig();
+			ConfigElement configurationCategory = new ConfigElement(configuration.getCategory(ModConfiguration.CATEGORY_NUGGETS));
+			List<IConfigElement> propertiesOnThisScreen = configurationCategory.getChildElements();
+			String windowTitle = I18n.format("uncrafting.options.nuggets");
+
+			return new GuiConfig(this.owningScreen, propertiesOnThisScreen,
+				this.owningScreen.modID,
+				ModConfiguration.CATEGORY_NUGGETS,
+				this.configElement.requiresWorldRestart() || this.owningScreen.allRequireWorldRestart,
+				this.configElement.requiresMcRestart() || this.owningScreen.allRequireMcRestart,
+				windowTitle
+			);
+
+		}
+	}
 
 }
