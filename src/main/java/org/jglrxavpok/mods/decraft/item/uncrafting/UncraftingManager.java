@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.jglrxavpok.mods.decraft.ModUncrafting;
@@ -440,9 +441,12 @@ public class UncraftingManager
 			String oreName = OreDictionary.getOreName(oreId); // e.g. "gemDiamond"
 			String[] oreNameParts = oreName.split("(?=\\p{Upper})"); // e.g. { "gem", "Diamond" }
 
-			if (oreNameParts.length == 2 && ArrayUtils.indexOf(oreTypes, oreNameParts[0]) >= 0)
+			if ((oreNameParts.length == 1) || (oreNameParts.length == 2 && ArrayUtils.indexOf(oreTypes, oreNameParts[0]) >= 0))
 			{
-				String nuggetName = "nugget" + oreNameParts[1]; // e.g. "nuggetDiamond"
+				String oreNamePart = oreNameParts[oreNameParts.length - 1];
+				if (Pattern.matches("^[a-z]+", oreNamePart)) oreNamePart = oreNamePart.substring(0, 1).toUpperCase() + oreNamePart.substring(1); // e.g. "leather" -> "Leather"
+
+				String nuggetName = "nugget" + oreNamePart; // e.g. "nuggetDiamond"
 
 				List<ItemStack> nuggetOres = OreDictionary.getOres(nuggetName);
 				if (!nuggetOres.isEmpty())

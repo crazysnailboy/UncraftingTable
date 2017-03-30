@@ -31,26 +31,18 @@ public class ItemNugget extends Item
 	@Override
 	public String getUnlocalizedName(ItemStack stack)
 	{
-		switch(stack.getItemDamage())
-		{
-			case 0: return "item.diamondNugget";
-			case 1: return "item.emeraldNugget";
-			case 2: return "item.ironNugget";
-			default: return this.getUnlocalizedName();
-		}
+		return "item." + EnumNuggetType.byMetadata(stack.getItemDamage()).getUnlocalizedName();
 	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void getSubItems(Item item, CreativeTabs tab, List list)
 	{
-		for ( int i = 0 ; i < icons.length ; i++ )
+		for (EnumNuggetType nuggetType : EnumNuggetType.values())
 		{
-			list.add(new ItemStack(item, 1, i));
+			list.add(new ItemStack(item, 1, nuggetType.getMetadata()));
 		}
 	}
-
-
 
 	@SideOnly(Side.CLIENT)
 	@Override
@@ -64,10 +56,63 @@ public class ItemNugget extends Item
 	@Override
 	public void registerIcons(IIconRegister reg)
 	{
-		this.icons = new IIcon[3];
-		this.icons[0] = reg.registerIcon(ModUncrafting.MODID + ":diamond_nugget");
-		this.icons[1] = reg.registerIcon(ModUncrafting.MODID + ":emerald_nugget");
-		this.icons[2] = reg.registerIcon(ModUncrafting.MODID + ":iron_nugget");
+		this.icons = new IIcon[EnumNuggetType.values().length];
+		for (EnumNuggetType nuggetType : EnumNuggetType.values())
+		{
+			this.icons[nuggetType.getMetadata()] = reg.registerIcon(ModUncrafting.MODID + ":" + nuggetType.getRegistryName());
+		}
+	}
+
+	public static enum EnumNuggetType
+	{
+		DIAMOND(0, "diamondNugget", "diamond_nugget"),
+		EMERALD(1, "emeraldNugget", "emerald_nugget"),
+		IRON(2, "ironNugget", "iron_nugget"),
+		LEATHER(3, "leatherStrip", "leather_strip");
+
+		private final int meta;
+		private final String unlocalizedName;
+		private final String registryName;
+
+		private static final EnumNuggetType[] META_LOOKUP = new EnumNuggetType[values().length];
+
+
+		public int getMetadata()
+		{
+			return this.meta;
+		}
+
+		public String getUnlocalizedName()
+		{
+			return this.unlocalizedName;
+		}
+
+		public String getRegistryName()
+		{
+			return this.registryName;
+		}
+
+		public static EnumNuggetType byMetadata(int meta)
+		{
+			if (meta < 0 || meta >= META_LOOKUP.length) meta = 0;
+			return META_LOOKUP[meta];
+		}
+
+
+		private EnumNuggetType(int meta, String unlocalizedName, String registryName)
+		{
+			this.meta = meta;
+			this.unlocalizedName = unlocalizedName;
+			this.registryName = registryName;
+		}
+
+		static
+		{
+			for (EnumNuggetType value : values())
+			{
+				META_LOOKUP[value.getMetadata()] = value;
+			}
+		}
 	}
 
 }
