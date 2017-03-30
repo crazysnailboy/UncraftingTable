@@ -5,6 +5,7 @@ tile.uncrafting_table.name=Uncrafting Table
 item.diamondNugget.name=Diamond Nugget
 item.emeraldNugget.name=Emerald Nugget
 item.ironNugget.name=Iron Nugget
+item.leatherStrip.name=Leather Strip
 
 achievement.createDecraftTable=Like the ol'days
 achievement.createDecraftTable.desc=Create an Uncrafting Table !
