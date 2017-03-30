@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.jglrxavpok.mods.decraft.ModUncrafting;
@@ -483,16 +484,7 @@ public class UncraftingManager
 	 */
 	private static ItemStack getNuggetForOre(ItemStack oreStack)
 	{
-
-//		// *** copied from com.jaquadro.minecraft.storagedrawers.config.OreDictRegistry ***
-//		String[] oreTypes = { "ore", "block", "ingot", "nugget" };
-//		String[] oreMaterials = { "Iron", "Gold", "Diamond", "Emerald", "Aluminum", "Aluminium", "Tin", "Copper", "Lead", "Silver", "Platinum", "Nickel", "Osmium", "Invar", "Bronze", "Electrum", "Enderium" };
-//		// *** copied from com.jaquadro.minecraft.storagedrawers.config.OreDictRegistry ***
-
-
 		String[] oreTypes = { "gem", "ingot" };
-		String[] oreMaterials = { "Diamond", "Emerald", "Gold", "Iron" };
-
 
 		int[] oreIds = OreDictionary.getOreIDs(oreStack);
 		for ( int oreId : oreIds )
@@ -500,9 +492,12 @@ public class UncraftingManager
 			String oreName = OreDictionary.getOreName(oreId); // e.g. "gemDiamond"
 			String[] oreNameParts = oreName.split("(?=\\p{Upper})"); // e.g. { "gem", "Diamond" }
 
-			if (oreNameParts.length == 2 && ArrayUtils.indexOf(oreTypes, oreNameParts[0]) >= 0)
+			if ((oreNameParts.length == 1) || (oreNameParts.length == 2 && ArrayUtils.indexOf(oreTypes, oreNameParts[0]) >= 0))
 			{
-				String nuggetName = "nugget" + oreNameParts[1]; // e.g. "nuggetDiamond"
+				String oreNamePart = oreNameParts[oreNameParts.length - 1];
+				if (Pattern.matches("^[a-z]+", oreNamePart)) oreNamePart = oreNamePart.substring(0, 1).toUpperCase() + oreNamePart.substring(1); // e.g. "leather" -> "Leather"
+
+				String nuggetName = "nugget" + oreNamePart; // e.g. "nuggetDiamond"
 
 				List<ItemStack> nuggetOres = OreDictionary.getOres(nuggetName);
 				if (!nuggetOres.isEmpty())
