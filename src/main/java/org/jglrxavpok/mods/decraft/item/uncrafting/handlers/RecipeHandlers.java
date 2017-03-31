@@ -85,7 +85,7 @@ public final class RecipeHandlers
 	 */
 	public static abstract class RecipeHandler
 	{
-		public abstract ItemStack[] getCraftingGrid(IRecipe s);
+		public abstract ItemStack[] getCraftingGrid(IRecipe r);
 
 
 		/**

@@ -331,7 +331,6 @@ public class UncraftingManager
 		double damagePercentage = (100 * ((double)stack.getItemDamage() / (double)stack.getMaxDamage()));
 		double durabilityPercentage = 100 - (100 * ((double)stack.getItemDamage() / (double)stack.getMaxDamage()));
 
-
 		// iterate through the itemstacks in the crafting recipe to determine the unique materials used, and the total number of each item
 		HashMap<String, Map.Entry<ItemStack,Integer>> materials = new HashMap<String, Map.Entry<ItemStack,Integer>>();
 		for ( ItemStack recipeStack : craftingGrid )
@@ -364,30 +363,39 @@ public class UncraftingManager
 			ItemStack materialStack = materials.get(key).getKey();
 
 			// check the ore dictionary to see if this material has a matching nugget
-			ItemStack nuggetStack = getNuggetForOre(materialStack);
+			ItemStack nuggetStack = (ModConfiguration.useNuggets ? getNuggetForOre(materialStack) : null);
 
 
 			int amount = materials.get(key).getValue();
-
 			int itemCount = 0;
 			int nuggetCount = 0;
 
+
+			// if the stack contains sticks
+			if (ArrayUtils.contains(OreDictionary.getOreIDs(materialStack), OreDictionary.getOreID("stickWood")))
+			{
+				// calculate the total number of full items which most closely represent the percentage durability remaining on the item
+				// rounding up to the nearest item
+				itemCount = (int)Math.ceil(amount * (durabilityPercentage / (double)100));
+			}
+			// if the stack contains leather and we should use rabbit hide
+			else if (ModConfiguration.useRabbitHide && ArrayUtils.contains(OreDictionary.getOreIDs(materialStack), OreDictionary.getOreID("leather")))
+			{
+				nuggetStack = new ItemStack(Items.rabbit_hide, 1, 0);
+
+				// calculate the number of pieces of leather and pieces of rabbit hide which most closely represent the percentage durability remaining on the item
+				// rounding down to the nearest piece of rabbit hide
+				itemCount = (int)Math.floor(amount * (durabilityPercentage / (double)100));
+				nuggetCount = ((int)Math.floor((amount * 4) * (durabilityPercentage / (double)100))) - (itemCount * 4);
+			}
 			// if we found a nugget item in the ore dictionary
-			if (nuggetStack != null)
+			else if (nuggetStack != null)
 			{
 				// calculate the number of full items and nuggets which most closely represent the percentage durability remaining on the item
 				// rounding down to the nearest nugget
 				itemCount = (int)Math.floor(amount * (durabilityPercentage / (double)100));
 				nuggetCount = ((int)Math.floor((amount * 9) * (durabilityPercentage / (double)100))) - (itemCount * 9);
 			}
-			// if the stack contains sticks
-			else if (ArrayUtils.contains(OreDictionary.getOreIDs(materialStack), OreDictionary.getOreID("stickWood")))
-			{
-				// calculate the total number of full items which most closely represent the percentage durability remaining on the item
-				// rounding up to the nearest item
-				itemCount = (int)Math.ceil(amount * (durabilityPercentage / (double)100));
-			}
-
 			// if there's no nugget for this item in the ore dictionary
 			else
 			{
@@ -396,10 +404,15 @@ public class UncraftingManager
 				itemCount = (int)Math.floor(amount * (durabilityPercentage / (double)100));
 			}
 
+
+			// ensure that at least one nugget is returned regardless of durability
+			if (ModConfiguration.ensureReturn && itemCount == 0 && nuggetCount == 0 && nuggetStack != null) nuggetCount = 1;
+
 			// flip the item count to become items to remove instead of items to leave
 			itemCount = amount - itemCount;
 
 
+			// remove the items from the crafting grid until we've removed the appropriate number.
 			for ( int i = 0 ; i < craftingGrid.length ; i++ )
 			{
 				if (craftingGrid[i] != null && craftingGrid[i].isItemEqual(materialStack))
