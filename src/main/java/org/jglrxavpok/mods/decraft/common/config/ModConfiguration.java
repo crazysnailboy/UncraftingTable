@@ -24,10 +24,18 @@ public class ModConfiguration
 
 	private static Configuration config = null;
 
-	public static int uncraftMethod;
-	public static int maxUsedLevel;
-	public static int standardLevel;
-	public static String[] excludedItems;
+	public static final String CATEGORY_NUGGETS = "nuggets";
+
+
+	public static int standardLevel = 5;
+	public static int maxUsedLevel = 30;
+	public static int uncraftMethod = 0;
+	public static String[] excludedItems = new String[] { };
+
+	public static boolean useNuggets = true;
+	public static boolean registerNuggets = true;
+	public static boolean useRabbitHide = false;
+	public static boolean ensureReturn = true;
 
 
 	public static void preInit()
@@ -74,22 +82,41 @@ public class ModConfiguration
 
 		if (loadConfigFromFile) config.load();
 
-		Property propStandardLevel = config.get(Configuration.CATEGORY_GENERAL, "standardLevel", 5, "Minimum required level to uncraft an item", 0, 50);
+		Property propStandardLevel = config.get(Configuration.CATEGORY_GENERAL, "standardLevel", standardLevel, "Minimum required level to uncraft an item", 0, 50);
 		propStandardLevel.setLanguageKey("uncrafting.options.standardLevel");
 		propStandardLevel.setRequiresMcRestart(false);
 
-		Property propMaxLevel = config.get(Configuration.CATEGORY_GENERAL, "maxUsedLevel", 30, "Maximum required level to uncraft an item", 0, 50);
+		Property propMaxLevel = config.get(Configuration.CATEGORY_GENERAL, "maxUsedLevel", maxUsedLevel, "Maximum required level to uncraft an item", 0, 50);
 		propMaxLevel.setLanguageKey("uncrafting.options.maxUsedLevel");
 		propMaxLevel.setRequiresMcRestart(false);
 
-		Property propUncraftMethod = config.get(Configuration.CATEGORY_GENERAL, "uncraftMethod", 0, "ID of the used uncrafting equation.");
+		Property propUncraftMethod = config.get(Configuration.CATEGORY_GENERAL, "uncraftMethod", uncraftMethod, "ID of the used uncrafting equation.");
 		propUncraftMethod.setLanguageKey("uncrafting.options.method");
 		propUncraftMethod.setValidValues(new String[] { "jglrxavpok", "Xell75 & zenen" });
 		propUncraftMethod.setRequiresMcRestart(false);
 
-		Property propExcludedItems = config.get(Configuration.CATEGORY_GENERAL, "excludedItems", new String[] { }, "List of items which cannot be uncrafted");
+		Property propExcludedItems = config.get(Configuration.CATEGORY_GENERAL, "excludedItems", excludedItems, "List of items which cannot be uncrafted");
 		propExcludedItems.setLanguageKey("uncrafting.options.excludedItems");
 		propExcludedItems.setRequiresMcRestart(false);
+
+
+		Property propUseNuggets = config.get(ModConfiguration.CATEGORY_NUGGETS, "useNuggets", useNuggets, "Use available nuggets for partial returns of damaged items");
+		propUseNuggets.setLanguageKey("uncrafting.options.nuggets.useNuggets");
+		propUseNuggets.setRequiresMcRestart(false);
+
+		Property propRegisterNuggets = config.get(ModConfiguration.CATEGORY_NUGGETS, "registerNuggets", registerNuggets, "Register additional nuggets to use for partial returns of damaged Vanilla items");
+		propRegisterNuggets.setLanguageKey("uncrafting.options.nuggets.registerNuggets");
+		propRegisterNuggets.setRequiresMcRestart(true);
+
+		Property propUseRabbitHide = config.get(ModConfiguration.CATEGORY_NUGGETS, "useRabbitHide", useRabbitHide, "Use Rabbit Hide for partial returns of damaged Leather items");
+		propUseRabbitHide.setLanguageKey("uncrafting.options.nuggets.useRabbitHide");
+		propUseRabbitHide.setRequiresMcRestart(false);
+
+		Property propEnsureReturn = config.get(ModConfiguration.CATEGORY_NUGGETS, "ensureReturn", ensureReturn, "Ensure that at least one nugget is returned, even for items with 0% durability");
+		propEnsureReturn.setLanguageKey("uncrafting.options.nuggets.ensureReturn");
+		propEnsureReturn.setRequiresMcRestart(false);
+
+
 
 		try
 		{
@@ -98,12 +125,24 @@ public class ModConfiguration
 			propUncraftMethod.setConfigEntryClass(ModGuiConfigEntries.UncraftingMethodCycleEntry.class);
 			propExcludedItems.setConfigEntryClass(ModGuiConfigEntries.ExcludedItemsArrayEntry.class);
 
+			propUseNuggets.setConfigEntryClass(ModGuiConfigEntries.BooleanEntry.class);
+			propRegisterNuggets.setConfigEntryClass(ModGuiConfigEntries.BooleanEntry.class);
+			propUseRabbitHide.setConfigEntryClass(ModGuiConfigEntries.BooleanEntry.class);
+			propEnsureReturn.setConfigEntryClass(ModGuiConfigEntries.BooleanEntry.class);
+
 			List<String> propOrderGeneral = new ArrayList<String>();
 			propOrderGeneral.add(propStandardLevel.getName());
 			propOrderGeneral.add(propMaxLevel.getName());
 			propOrderGeneral.add(propUncraftMethod.getName());
 			propOrderGeneral.add(propExcludedItems.getName());
 			config.setCategoryPropertyOrder(Configuration.CATEGORY_GENERAL, propOrderGeneral);
+
+			List<String> propOrderNuggets = new ArrayList<String>();
+			propOrderNuggets.add(propUseNuggets.getName());
+			propOrderNuggets.add(propRegisterNuggets.getName());
+			propOrderNuggets.add(propUseRabbitHide.getName());
+			propOrderNuggets.add(propEnsureReturn.getName());
+			config.setCategoryPropertyOrder(ModConfiguration.CATEGORY_NUGGETS, propOrderNuggets);
 
 		}
 		catch(NoClassDefFoundError e) { }
@@ -115,6 +154,11 @@ public class ModConfiguration
 			maxUsedLevel = propMaxLevel.getInt();
 			uncraftMethod = propUncraftMethod.getInt();
 			excludedItems = propExcludedItems.getStringList();
+
+			useNuggets = propUseNuggets.getBoolean();
+			registerNuggets = propRegisterNuggets.getBoolean();
+			useRabbitHide = propUseRabbitHide.getBoolean();
+			ensureReturn = propEnsureReturn.getBoolean();
 		}
 
 
@@ -122,6 +166,11 @@ public class ModConfiguration
 		propMaxLevel.set(maxUsedLevel);
 		propUncraftMethod.set(uncraftMethod);
 		propExcludedItems.set(excludedItems);
+
+		propUseNuggets.set(useNuggets);
+		propRegisterNuggets.set(registerNuggets);
+		propUseRabbitHide.set(useRabbitHide);
+		propEnsureReturn.set(ensureReturn);
 
 
 		if (config.hasChanged()) config.save();
