@@ -28,12 +28,21 @@ uncrafting.result.needMoreStacks=需要 %1$s 物品
 
 stat.uncrafteditems=分解物品
 
-uncrafting.compute=计算
-uncrafting.options.method=分解模式
-uncrafting.options.method.tooltip=分解物品使用的模式
 uncrafting.options.standardLevel=最低支付等级
 uncrafting.options.standardLevel.tooltip=分解物品所需支付等级的最低值
 uncrafting.options.maxUsedLevel=最高支付等级
 uncrafting.options.maxUsedLevel.tooltip=分解物品所需支付等级的最高值
+uncrafting.options.method=分解模式
+uncrafting.options.method.tooltip=分解物品使用的模式
 uncrafting.options.excludedItems=排除物品
 uncrafting.options.excludedItems.tooltip=排除的物品将不能被分解
+
+uncrafting.options.nuggets=Nugget Options
+uncrafting.options.nuggets.useNuggets=Use Nuggets
+uncrafting.options.nuggets.useNuggets.tooltip=Use available nuggets for partial returns of damaged items
+uncrafting.options.nuggets.registerNuggets=Register Nuggets
+uncrafting.options.nuggets.registerNuggets.tooltip=Register additional nuggets to use for partial returns of damaged Vanilla items
+uncrafting.options.nuggets.useRabbitHide=Use Rabbit Hide
+uncrafting.options.nuggets.useRabbitHide.tooltip=Use Rabbit Hide for partial returns of damaged Leather items
+uncrafting.options.nuggets.ensureReturn=Ensure a Return
+uncrafting.options.nuggets.ensureReturn.tooptip=Ensure that at least one nugget is returned, even for items with 0% durability
