@@ -29,12 +29,21 @@ uncrafting.result.needMoreStacks=Il manque %1$s objet(s).
 
 stat.uncrafteditems=Nombre d'objets décraftés
 
-uncrafting.compute=Calculs
-uncrafting.options.method=Méthode de décrafting
-uncrafting.options.method.tooltip=ID of the used uncrafting equation
 uncrafting.options.standardLevel=Niveau minimum d'XP
 uncrafting.options.standardLevel.tooltip=Niveau minimum d'XP requis
 uncrafting.options.maxUsedLevel=Niveau maximum d'XP
 uncrafting.options.maxUsedLevel.tooltip=Niveau maximum d'XP requis
+uncrafting.options.method=Méthode de décrafting
+uncrafting.options.method.tooltip=ID of the used uncrafting equation
 uncrafting.options.excludedItems=Excluded Items
 uncrafting.options.excludedItems.tooltip=Item IDs for items which cannot be uncrafted
+
+uncrafting.options.nuggets=Nugget Options
+uncrafting.options.nuggets.useNuggets=Use Nuggets
+uncrafting.options.nuggets.useNuggets.tooltip=Use available nuggets for partial returns of damaged items
+uncrafting.options.nuggets.registerNuggets=Register Nuggets
+uncrafting.options.nuggets.registerNuggets.tooltip=Register additional nuggets to use for partial returns of damaged Vanilla items
+uncrafting.options.nuggets.useRabbitHide=Use Rabbit Hide
+uncrafting.options.nuggets.useRabbitHide.tooltip=Use Rabbit Hide for partial returns of damaged Leather items
+uncrafting.options.nuggets.ensureReturn=Ensure a Return
+uncrafting.options.nuggets.ensureReturn.tooptip=Ensure that at least one nugget is returned, even for items with 0% durability
