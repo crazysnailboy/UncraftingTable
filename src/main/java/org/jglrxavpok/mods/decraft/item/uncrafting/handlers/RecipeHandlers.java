@@ -5,8 +5,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.NBTSensitiveRecipeHandlers.FireworksRecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.NBTSensitiveRecipeHandlers.TippedArrowRecipeHandler;
+
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.RecipeFireworks;
+import net.minecraft.item.crafting.RecipeTippedArrow;
 import net.minecraft.item.crafting.RecipesMapExtending;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
@@ -22,15 +28,32 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 public final class RecipeHandlers
 {
 
-	public static final HashMap<Class<? extends IRecipe>, RecipeHandler> HANDLERS = new HashMap<Class<? extends IRecipe>, RecipeHandler>();
+	public static class RecipeMap<T> extends HashMap<Class<? extends IRecipe>, T>
+	{
+		public T get(Class<? extends IRecipe> key)
+		{
+			T result = super.get(key);
+			while (result == null && key.getSuperclass() != Object.class) // while (result == null && key.getSuperclass() != IRecipe.class)
+			{
+				key = (Class<? extends IRecipe>)key.getSuperclass();
+				result = super.get(key);
+			}
+			return result;
+		}
+	}
 
-	
+
+	public static final RecipeMap<RecipeHandler> HANDLERS = new RecipeMap<RecipeHandler>();
+	private static final RecipeMap<ItemStack[]> RECIPE_OUTPUTS = new RecipeMap<ItemStack[]>();
+
+
 	public static void postInit()
 	{
 		buildHandlerMap();
+		buildRecipeOutputMap();
 	}
 
-	
+
 	private static void buildHandlerMap()
 	{
 		// RecipesMapExtending extends ShapedRecipes, and causes a crash when attempting to uncraft a map
@@ -39,20 +62,51 @@ public final class RecipeHandlers
 		// vanilla Minecraft recipe handlers
 		HANDLERS.put(ShapedRecipes.class, new ShapedRecipeHandler());
 		HANDLERS.put(ShapelessRecipes.class, new ShapelessRecipeHandler());
+		HANDLERS.put(RecipeFireworks.class, new FireworksRecipeHandler());
+		HANDLERS.put(RecipeTippedArrow.class, new TippedArrowRecipeHandler());
 
 		// Forge Ore Dictionary recipe handlers
 		HANDLERS.put(ShapedOreRecipe.class, new ShapedOreRecipeHandler());
 		HANDLERS.put(ShapelessOreRecipe.class, new ShapelessOreRecipeHandler());
 	}
 
-	
+	private static void buildRecipeOutputMap()
+	{
+		RECIPE_OUTPUTS.put(RecipeFireworks.class, new ItemStack[] { new ItemStack(Items.FIREWORK_CHARGE), new ItemStack(Items.FIREWORKS, 3) });
+		RECIPE_OUTPUTS.put(RecipeTippedArrow.class, new ItemStack[] { new ItemStack(Items.TIPPED_ARROW, 8) });
+	}
+
+
 	/**
 	 * Abstract base class extended by the different types of recipe handler
 	 *
 	 */
 	public static abstract class RecipeHandler
 	{
-		public abstract NonNullList<ItemStack> getCraftingGrid(IRecipe s);
+		public abstract NonNullList<ItemStack> getCraftingGrid(IRecipe r);
+
+
+		/**
+		 * Checks a list of known output items from an IRecipe implementation to see if the input stack contains one of those items,
+		 * and returns the input stack if present in the possible output list.
+		 * Used for when an IRecipe implementation returns a null value from getRecipeOutput(),
+		 */
+		public static ItemStack getPossibleRecipeOutput(IRecipe r, ItemStack inputStack)
+		{
+			ItemStack[] outputStacks = RecipeHandlers.RECIPE_OUTPUTS.get(r.getClass());
+			if (outputStacks != null && outputStacks.length > 0)
+			{
+				for ( ItemStack outputStack : outputStacks )
+				{
+					if (ItemStack.areItemsEqual(inputStack, outputStack))
+					{
+						return outputStack.copy();
+					}
+				}
+			}
+			return ItemStack.EMPTY;
+		}
+
 
 		/**
 		 * Takes a list of ItemStacks from a shaped recipe and correctly positions them according to the recipe width and height
@@ -126,14 +180,6 @@ public final class RecipeHandlers
 	}
 
 
-	public interface INBTSensitiveRecipeHandler
-	{
-		void setInputStack(ItemStack stack);
-
-		ItemStack getInputStack();
-	}
-
-	
 	/**
 	 * Handler for vanilla Minecraft shaped recipes
 	 *
@@ -232,7 +278,5 @@ public final class RecipeHandlers
 			else return NonNullList.<ItemStack>create();
 		}
 	}
-
-
 
 }

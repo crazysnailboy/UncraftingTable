@@ -7,11 +7,13 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult.ResultType;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.NBTSensitiveRecipeHandlers.INBTSensitiveRecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.RecipeHandler;
 
@@ -137,6 +139,20 @@ public class UncraftingManager
 	}
 
 
+	public static int recalculateExperienceCost(ItemStack inputStack, ItemStack bookStack)
+	{
+		int experienceCost = getUncraftingXpCost(inputStack);
+
+		if (!bookStack.isEmpty() && !inputStack.isEmpty() && inputStack.isItemEnchanted())
+		{
+			int enchantmentCount = EnchantmentHelper.getEnchantments(inputStack).size();
+			experienceCost += (enchantmentCount * ModConfiguration.enchantmentCost);
+		}
+
+		return Math.min(experienceCost, ModConfiguration.maxUsedLevel);
+	}
+
+
 	/**
 	 * Copies enchantments from an item onto a collection of enchanted books.
 	 * @param itemStack The item which has the enchantments to copy
@@ -221,12 +237,17 @@ public class UncraftingManager
 		{
 			// if the current recipe can be used to craft the item
 			ItemStack recipeOutput = recipe.getRecipeOutput();
+			if (recipeOutput.isEmpty()) recipeOutput = RecipeHandler.getPossibleRecipeOutput(recipe, itemStack);
+
 			if (ItemStack.areItemsEqualIgnoreDurability(itemStack, recipeOutput))
 			{
 				// get an instance of the appropriate handler class for the IRecipe type of the crafting recipe
 				RecipeHandler handler = RecipeHandlers.HANDLERS.get(recipe.getClass());
 				if (handler != null)
 				{
+					// if the recipe is nbt sensitive, copy the input itemstack into the recipe handler
+					if (handler instanceof INBTSensitiveRecipeHandler) ((INBTSensitiveRecipeHandler)handler).setInputStack(itemStack.copy());
+
 					// get the minimum stack size required to uncraft, and the itemstacks that comprise the crafting ingredients
 					int minStackSize = recipeOutput.getCount();
 					NonNullList<ItemStack> craftingGrid = handler.getCraftingGrid(recipe);
@@ -329,7 +350,6 @@ public class UncraftingManager
 		double damagePercentage = (100 * ((double)stack.getItemDamage() / (double)stack.getMaxDamage()));
 		double durabilityPercentage = 100 - (100 * ((double)stack.getItemDamage() / (double)stack.getMaxDamage()));
 
-
 		// iterate through the itemstacks in the crafting recipe to determine the unique materials used, and the total number of each item
 		HashMap<String, Map.Entry<ItemStack,Integer>> materials = new HashMap<String, Map.Entry<ItemStack,Integer>>();
 		for ( ItemStack recipeStack : craftingGrid )
@@ -366,26 +386,34 @@ public class UncraftingManager
 
 
 			int amount = materials.get(key).getValue();
-
 			int itemCount = 0;
 			int nuggetCount = 0;
 
+			// if the stack contains sticks
+			if (ArrayUtils.contains(OreDictionary.getOreIDs(materialStack), OreDictionary.getOreID("stickWood")))
+			{
+				// calculate the total number of full items which most closely represent the percentage durability remaining on the item
+				// rounding up to the nearest item
+				itemCount = (int)Math.ceil(amount * (durabilityPercentage / (double)100));
+			}
+			// if the stack contains leather and we should use rabbit hide
+			else if (ModConfiguration.useRabbitHide && ArrayUtils.contains(OreDictionary.getOreIDs(materialStack), OreDictionary.getOreID("leather")))
+			{
+				nuggetStack = new ItemStack(Items.RABBIT_HIDE, 1, 0);
+
+				// calculate the number of pieces of leather and pieces of rabbit hide which most closely represent the percentage durability remaining on the item
+				// rounding down to the nearest piece of rabbit hide
+				itemCount = (int)Math.floor(amount * (durabilityPercentage / 100));
+				nuggetCount = ((int)Math.floor((amount * 4) * (durabilityPercentage / 100))) - (itemCount * 4);
+			}
 			// if we found a nugget item in the ore dictionary
-			if (nuggetStack != ItemStack.EMPTY)
+			else if (nuggetStack != ItemStack.EMPTY)
 			{
 				// calculate the number of full items and nuggets which most closely represent the percentage durability remaining on the item
 				// rounding down to the nearest nugget
 				itemCount = (int)Math.floor(amount * (durabilityPercentage / (double)100));
 				nuggetCount = ((int)Math.floor((amount * 9) * (durabilityPercentage / (double)100))) - (itemCount * 9);
 			}
-			// if the stack contains sticks
-			else if (ArrayUtils.contains(OreDictionary.getOreIDs(materialStack), OreDictionary.getOreID("stickWood")))
-			{
-				// calculate the total number of full items which most closely represent the percentage durability remaining on the item
-				// rounding up to the nearest item
-				itemCount = (int)Math.ceil(amount * (durabilityPercentage / (double)100));
-			}
-
 			// if there's no nugget for this item in the ore dictionary
 			else
 			{
@@ -394,10 +422,15 @@ public class UncraftingManager
 				itemCount = (int)Math.floor(amount * (durabilityPercentage / (double)100));
 			}
 
+
+			// ensure that at least one nugget is returned regardless of durability
+			if (ModConfiguration.ensureReturn && itemCount == 0 && nuggetCount == 0 && nuggetStack != null) nuggetCount = 1;
+
 			// flip the item count to become items to remove instead of items to leave
 			itemCount = amount - itemCount;
 
 
+			// remove the items from the crafting grid until we've removed the appropriate number.
 			for ( int i = 0 ; i < craftingGrid.size() ; i++ )
 			{
 				if (craftingGrid.get(i) != null && craftingGrid.get(i).isItemEqual(materialStack))
@@ -428,16 +461,7 @@ public class UncraftingManager
 	 */
 	private static ItemStack getNuggetForOre(ItemStack oreStack)
 	{
-
-//		// *** copied from com.jaquadro.minecraft.storagedrawers.config.OreDictRegistry ***
-//		String[] oreTypes = { "ore", "block", "ingot", "nugget" };
-//		String[] oreMaterials = { "Iron", "Gold", "Diamond", "Emerald", "Aluminum", "Aluminium", "Tin", "Copper", "Lead", "Silver", "Platinum", "Nickel", "Osmium", "Invar", "Bronze", "Electrum", "Enderium" };
-//		// *** copied from com.jaquadro.minecraft.storagedrawers.config.OreDictRegistry ***
-
-
 		String[] oreTypes = { "gem", "ingot" };
-		String[] oreMaterials = { "Diamond", "Emerald", "Gold", "Iron" };
-
 
 		int[] oreIds = OreDictionary.getOreIDs(oreStack);
 		for ( int oreId : oreIds )
@@ -445,9 +469,12 @@ public class UncraftingManager
 			String oreName = OreDictionary.getOreName(oreId); // e.g. "gemDiamond"
 			String[] oreNameParts = oreName.split("(?=\\p{Upper})"); // e.g. { "gem", "Diamond" }
 
-			if (oreNameParts.length == 2 && ArrayUtils.indexOf(oreTypes, oreNameParts[0]) >= 0)
+			if ((oreNameParts.length == 1) || (oreNameParts.length == 2 && ArrayUtils.indexOf(oreTypes, oreNameParts[0]) >= 0))
 			{
-				String nuggetName = "nugget" + oreNameParts[1]; // e.g. "nuggetDiamond"
+				String oreNamePart = oreNameParts[oreNameParts.length - 1];
+				if (Pattern.matches("^[a-z]+", oreNamePart)) oreNamePart = oreNamePart.substring(0, 1).toUpperCase() + oreNamePart.substring(1); // e.g. "leather" -> "Leather"
+
+				String nuggetName = "nugget" + oreNamePart; // e.g. "nuggetDiamond"
 
 				List<ItemStack> nuggetOres = OreDictionary.getOres(nuggetName);
 				if (!nuggetOres.isEmpty())
@@ -461,6 +488,7 @@ public class UncraftingManager
 		}
 		return ItemStack.EMPTY;
 	}
+
 
 
 	/**

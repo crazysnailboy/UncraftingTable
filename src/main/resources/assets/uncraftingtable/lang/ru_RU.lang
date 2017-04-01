@@ -4,7 +4,7 @@ tile.uncrafting_table.name=Антиверстак
 
 item.diamondNugget.name=Алмазный самородок
 item.emeraldNugget.name=Изумрудный самородок
-item.ironNugget.name=Железный самородок
+item.leatherStrip.name=Leather Strip
 
 achievement.createDecraftTable=Как в старые времена
 achievement.createDecraftTable.desc=Создайте антиверстак !
@@ -28,12 +28,23 @@ uncrafting.result.needMoreStacks=Требуется еще %1$s вещи(ей)
 
 stat.uncrafteditems=Разобранные вещи
 
-uncrafting.compute=Вычисление
-uncrafting.options.method=Метод разборки
-uncrafting.options.method.tooltip=ID используемой формулы для разборки.
 uncrafting.options.standardLevel=Минимальный уровень
 uncrafting.options.standardLevel.tooltip=Минимально требуемый уровень для разборки вещи
 uncrafting.options.maxUsedLevel=Максимальный уровень
 uncrafting.options.maxUsedLevel.tooltip=Максимально требуемый уровень для разборки вещи
+uncrafting.options.enchantmentCost=Enchantment Cost
+uncrafting.options.enchantmentCost.tooltip=Cost per enchantment when removing enchantments onto books
+uncrafting.options.method=Метод разборки
+uncrafting.options.method.tooltip=ID используемой формулы для разборки.
 uncrafting.options.excludedItems=Исключенные вещи
 uncrafting.options.excludedItems.tooltip=ID предметов, которые не могут быть разобраны
+
+uncrafting.options.nuggets=Nugget Options
+uncrafting.options.nuggets.useNuggets=Use Nuggets
+uncrafting.options.nuggets.useNuggets.tooltip=Use available nuggets for partial returns of damaged items
+uncrafting.options.nuggets.registerNuggets=Register Nuggets
+uncrafting.options.nuggets.registerNuggets.tooltip=Register additional nuggets to use for partial returns of damaged Vanilla items
+uncrafting.options.nuggets.useRabbitHide=Use Rabbit Hide
+uncrafting.options.nuggets.useRabbitHide.tooltip=Use Rabbit Hide for partial returns of damaged Leather items
+uncrafting.options.nuggets.ensureReturn=Ensure a Return
+uncrafting.options.nuggets.ensureReturn.tooptip=Ensure that at least one nugget is returned, even for items with 0% durability
