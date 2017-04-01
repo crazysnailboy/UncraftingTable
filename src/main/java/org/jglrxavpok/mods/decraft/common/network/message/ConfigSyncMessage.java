@@ -14,6 +14,7 @@ public class ConfigSyncMessage implements IMessage
 
 	private int standardLevel = ModConfiguration.standardLevel;
 	private int maxUsedLevel = ModConfiguration.maxUsedLevel;
+	private int enchantmentCost = ModConfiguration.enchantmentCost;
 	private int uncraftMethod = ModConfiguration.uncraftMethod;
 	private String[] excludedItems = ModConfiguration.excludedItems;
 	private boolean useNuggets = ModConfiguration.useNuggets;
@@ -31,6 +32,7 @@ public class ConfigSyncMessage implements IMessage
 	{
 		standardLevel = ByteBufUtils.readVarShort(buf);
 		maxUsedLevel = ByteBufUtils.readVarShort(buf);
+		enchantmentCost = ByteBufUtils.readVarShort(buf);
 		uncraftMethod = ByteBufUtils.readVarShort(buf);
 		excludedItems = ByteBufUtils.readUTF8String(buf).split("\\|");
 		useNuggets = (ByteBufUtils.readVarShort(buf) == 1);
@@ -44,6 +46,7 @@ public class ConfigSyncMessage implements IMessage
 	{
 		ByteBufUtils.writeVarShort(buf, standardLevel);
 		ByteBufUtils.writeVarShort(buf, maxUsedLevel);
+		ByteBufUtils.writeVarShort(buf, enchantmentCost);
 		ByteBufUtils.writeVarShort(buf, uncraftMethod);
 		ByteBufUtils.writeUTF8String(buf, String.join("|", excludedItems));
 		ByteBufUtils.writeVarShort(buf, (useNuggets ? 1 : 0));
@@ -66,6 +69,7 @@ public class ConfigSyncMessage implements IMessage
 				{
 					ModConfiguration.maxUsedLevel = message.maxUsedLevel;
 					ModConfiguration.standardLevel = message.standardLevel;
+					ModConfiguration.enchantmentCost = message.enchantmentCost;
 					ModConfiguration.uncraftMethod = message.uncraftMethod;
 					ModConfiguration.excludedItems = message.excludedItems;
 					ModConfiguration.useNuggets = message.useNuggets;
