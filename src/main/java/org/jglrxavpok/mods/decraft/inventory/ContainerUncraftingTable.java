@@ -39,7 +39,7 @@ public class ContainerUncraftingTable extends Container
 		this.worldObj = worldIn;
 
 		// uncrafting book inventory for capturing enchantments (left standalone slot)
-		this.addSlotToContainer(new Slot(this.calculInput, 0, 20, 35));
+		this.addSlotToContainer(new SlotBook(this.calculInput, 0, 20, 35, this));
 
 		// incrafting input inventory (right standalone slot)
 		this.addSlotToContainer(new SlotUncrafting(this.uncraftIn, 0, 45, 35, this));
@@ -257,6 +257,7 @@ public class ContainerUncraftingTable extends Container
 				returnUncraftingOutputItemsToPlayer();
 			}
 			this.uncraftingResult = UncraftingManager.getUncraftingResult(playerInventory.player, inputStack);
+			this.uncraftingResult.experienceCost = UncraftingManager.recalculateExperienceCost(inputStack, calculInput.getStackInSlot(0));
 		}
 
 		onCraftMatrixChanged(uncraftIn);
@@ -269,8 +270,14 @@ public class ContainerUncraftingTable extends Container
 	@Override
 	public void onCraftMatrixChanged(IInventory inventory)
 	{
+
+		if (inventory == calculInput)
+		{
+			this.uncraftingResult.experienceCost = UncraftingManager.recalculateExperienceCost(uncraftIn.getStackInSlot(0), calculInput.getStackInSlot(0));
+		}
+
 		// if the right input slot changes
-		if (inventory == uncraftIn)
+		else if (inventory == uncraftIn)
 		{
 			// get the stack in the input inventory slot
 			ItemStack inputStack = uncraftIn.getStackInSlot(0);
