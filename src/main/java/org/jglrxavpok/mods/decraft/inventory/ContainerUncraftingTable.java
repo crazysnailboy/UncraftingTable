@@ -38,7 +38,7 @@ public class ContainerUncraftingTable extends Container
 		this.worldObj = worldIn;
 
 		// uncrafting book inventory for capturing enchantments (left standalone slot)
-		this.addSlotToContainer(new Slot(this.calculInput, 0, 20, 35));
+		this.addSlotToContainer(new SlotBook(this.calculInput, 0, 20, 35, this));
 
 		// incrafting input inventory (right standalone slot)
 		this.addSlotToContainer(new SlotUncrafting(this.uncraftIn, 0, 45, 35, this));
@@ -266,6 +266,7 @@ public class ContainerUncraftingTable extends Container
 				returnUncraftingOutputItemsToPlayer();
 			}
 			this.uncraftingResult = UncraftingManager.getUncraftingResult(playerInventory.player, inputStack);
+			this.uncraftingResult.experienceCost = UncraftingManager.recalculateExperienceCost(inputStack, calculInput.getStackInSlot(0));
 		}
 
 		onCraftMatrixChanged(uncraftIn);
@@ -278,8 +279,14 @@ public class ContainerUncraftingTable extends Container
 	@Override
 	public void onCraftMatrixChanged(IInventory inventory)
 	{
+
+		if (inventory == calculInput)
+		{
+			this.uncraftingResult.experienceCost = UncraftingManager.recalculateExperienceCost(uncraftIn.getStackInSlot(0), calculInput.getStackInSlot(0));
+		}
+
 		// if the right input slot changes
-		if (inventory == uncraftIn)
+		else if (inventory == uncraftIn)
 		{
 			// get the stack in the input inventory slot
 			ItemStack inputStack = uncraftIn.getStackInSlot(0);
@@ -413,7 +420,7 @@ public class ContainerUncraftingTable extends Container
 	public ItemStack transferStackInSlot(EntityPlayer player, int index)
 	{
 		// get the slot specified by the index
-		Slot slot = (Slot)this.inventorySlots.get(index);
+		Slot slot = this.inventorySlots.get(index);
 
 		// if the slot is valid and contains a stack of items
 		if (slot != null && slot.getHasStack())
@@ -499,7 +506,7 @@ public class ContainerUncraftingTable extends Container
 			{
 				// the target slot is the left slot if the player is shift clicking on a book, otherwise it's the right slot
 				int targetIndex = (slot.getStack().getItem() == Items.BOOK ? 0 : 1);
-				Slot targetSlot = (Slot)inventorySlots.get(index);
+				Slot targetSlot = inventorySlots.get(index);
 
 				// if the calculation input slot doesn't contain items
 				if (targetSlot.getStack() == null)
