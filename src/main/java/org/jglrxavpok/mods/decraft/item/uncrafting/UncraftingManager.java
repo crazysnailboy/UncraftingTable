@@ -134,6 +134,20 @@ public class UncraftingManager
 	}
 
 
+	public static int recalculateExperienceCost(ItemStack inputStack, ItemStack bookStack)
+	{
+		int experienceCost = getUncraftingXpCost(inputStack);
+
+		if (bookStack != null && inputStack != null && inputStack.isItemEnchanted())
+		{
+			int enchantmentCount = EnchantmentHelper.getEnchantments(inputStack).size();
+			experienceCost += (enchantmentCount * ModConfiguration.enchantmentCost);
+		}
+
+		return Math.min(experienceCost, ModConfiguration.maxUsedLevel);
+	}
+
+
 	/**
 	 * Copies enchantments from an item onto a collection of enchanted books.
 	 * @param itemStack The item which has the enchantments to copy

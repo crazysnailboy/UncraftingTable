@@ -29,6 +29,7 @@ public class ModConfiguration
 
 	public static int standardLevel = 5;
 	public static int maxUsedLevel = 30;
+	public static int enchantmentCost = 1;
 	public static int uncraftMethod = 0;
 	public static String[] excludedItems = new String[] { };
 
@@ -90,6 +91,10 @@ public class ModConfiguration
 		propMaxLevel.setLanguageKey("uncrafting.options.maxUsedLevel");
 		propMaxLevel.setRequiresMcRestart(false);
 
+		Property propEnchantmentCost = config.get(Configuration.CATEGORY_GENERAL, "enchantmentCost", enchantmentCost, "Cost per enchantment when removing enchantments onto books", 0, 10);
+		propEnchantmentCost.setLanguageKey("uncrafting.options.enchantmentCost");
+		propEnchantmentCost.setRequiresMcRestart(false);
+
 		Property propUncraftMethod = config.get(Configuration.CATEGORY_GENERAL, "uncraftMethod", uncraftMethod, "ID of the used uncrafting equation.");
 		propUncraftMethod.setLanguageKey("uncrafting.options.method");
 		propUncraftMethod.setValidValues(new String[] { "jglrxavpok", "Xell75 & zenen" });
@@ -122,6 +127,7 @@ public class ModConfiguration
 		{
 			propStandardLevel.setConfigEntryClass(NumberSliderEntry.class);
 			propMaxLevel.setConfigEntryClass(NumberSliderEntry.class);
+			propEnchantmentCost.setConfigEntryClass(NumberSliderEntry.class);
 			propUncraftMethod.setConfigEntryClass(ModGuiConfigEntries.UncraftingMethodCycleEntry.class);
 			propExcludedItems.setConfigEntryClass(ModGuiConfigEntries.ExcludedItemsArrayEntry.class);
 
@@ -133,6 +139,7 @@ public class ModConfiguration
 			List<String> propOrderGeneral = new ArrayList<String>();
 			propOrderGeneral.add(propStandardLevel.getName());
 			propOrderGeneral.add(propMaxLevel.getName());
+			propOrderGeneral.add(propEnchantmentCost.getName());
 			propOrderGeneral.add(propUncraftMethod.getName());
 			propOrderGeneral.add(propExcludedItems.getName());
 			config.setCategoryPropertyOrder(Configuration.CATEGORY_GENERAL, propOrderGeneral);
@@ -152,6 +159,7 @@ public class ModConfiguration
 		{
 			standardLevel = propStandardLevel.getInt();
 			maxUsedLevel = propMaxLevel.getInt();
+			enchantmentCost = propEnchantmentCost.getInt();
 			uncraftMethod = propUncraftMethod.getInt();
 			excludedItems = propExcludedItems.getStringList();
 
@@ -164,6 +172,7 @@ public class ModConfiguration
 
 		propStandardLevel.set(standardLevel);
 		propMaxLevel.set(maxUsedLevel);
+		propEnchantmentCost.set(enchantmentCost);
 		propUncraftMethod.set(uncraftMethod);
 		propExcludedItems.set(excludedItems);
 
