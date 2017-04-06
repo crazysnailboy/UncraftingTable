@@ -38,11 +38,8 @@ public class ModItems
 			// register the item models
 			for (ItemNugget.EnumNuggetType nuggetType : ItemNugget.EnumNuggetType.values())
 			{
-				String registryName = nuggetType.getRegistryName();
-				int metadata = nuggetType.getMetadata();
-
-				ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation(ModUncrafting.MODID + ":" + registryName, "inventory");
-				ModelLoader.setCustomModelResourceLocation(nugget, metadata, itemModelResourceLocation);
+				ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation(ModUncrafting.MODID + ":" + nuggetType.getRegistryName(), "inventory");
+				ModelLoader.setCustomModelResourceLocation(nugget, nuggetType.getMetadata(), itemModelResourceLocation);
 			}
 		}
 	}
