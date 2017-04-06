@@ -5,6 +5,8 @@ import org.jglrxavpok.mods.decraft.inventory.ContainerUncraftingTable;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
+import net.minecraft.util.IThreadListener;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -43,17 +45,25 @@ public class RecipeNavigationMessage implements IMessage
 	{
 
 		@Override
-		public IMessage onMessage(RecipeNavigationMessage message, MessageContext ctx)
+		public IMessage onMessage(final RecipeNavigationMessage message, MessageContext ctx)
 		{
-			EntityPlayerMP player = ctx.getServerHandler().playerEntity;
+			final EntityPlayerMP player = ctx.getServerHandler().playerEntity;
 
-			Container container = player.openContainer;
-			if (container instanceof ContainerUncraftingTable)
+			IThreadListener threadListener = (WorldServer)player.world;
+			threadListener.addScheduledTask(new Runnable()
 			{
-				ContainerUncraftingTable uncraftingContainer = (ContainerUncraftingTable)container;
-				uncraftingContainer.uncraftingResult.selectedCraftingGrid = message.recipeIndex;
-				uncraftingContainer.switchRecipe();
-			}
+				@Override
+				public void run()
+				{
+					Container container = player.openContainer;
+					if (container instanceof ContainerUncraftingTable)
+					{
+						ContainerUncraftingTable uncraftingContainer = (ContainerUncraftingTable)container;
+						uncraftingContainer.uncraftingResult.selectedCraftingGrid = message.recipeIndex;
+						uncraftingContainer.switchRecipe();
+					}
+				}
+			});
 
 			return null;
 		}
