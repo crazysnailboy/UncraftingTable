@@ -2,7 +2,6 @@ package org.jglrxavpok.mods.decraft;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jglrxavpok.mods.decraft.common.network.ModGuiHandler;
 import org.jglrxavpok.mods.decraft.proxy.CommonProxy;
 
 import net.minecraftforge.fml.common.Mod;
@@ -20,33 +19,26 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 public class ModUncrafting
 {
 
-	// constants
 	public static final String MODID = "uncraftingtable";
 	public static final String MODNAME = "jglrxavpok's Uncrafting Table";
-	public static final String VERSION = "1.7.1-pre13";
+	public static final String VERSION = "${version}";
 	public static final String GUIFACTORY = "org.jglrxavpok.mods.decraft.client.config.ModGuiFactory";
-	public static final String UPDATEJSON = "https://raw.githubusercontent.com/crazysnailboy/uncraftingTable/1.11.2/update.json";
+	public static final String UPDATEJSON = "https://raw.githubusercontent.com/crazysnailboy/UncraftingTable/1.11.2/update.json";
 
 	private static final String CLIENT_PROXY_CLASS = "org.jglrxavpok.mods.decraft.proxy.ClientProxy";
 	private static final String SERVER_PROXY_CLASS = "org.jglrxavpok.mods.decraft.proxy.CommonProxy";
 
 
-	// mod instance
-	@Instance(ModUncrafting.MODID)
+	@Instance(MODID)
 	public static ModUncrafting instance;
 
-	// proxy
 	@SidedProxy(clientSide = CLIENT_PROXY_CLASS, serverSide = SERVER_PROXY_CLASS)
 	public static CommonProxy proxy;
 
-	// gui handler
-	public ModGuiHandler guiHandler = new ModGuiHandler();
 
-	// logger
-	private static Logger logger = LogManager.getLogger(ModUncrafting.MODID);
+	private static Logger logger = LogManager.getLogger(MODID);
 
-	// network
-	private static SimpleNetworkWrapper network = NetworkRegistry.INSTANCE.newSimpleChannel(ModUncrafting.MODID);
+	private static SimpleNetworkWrapper network = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
 
 
 	public Logger getLogger()
@@ -70,9 +62,6 @@ public class ModUncrafting
 	public void init(FMLInitializationEvent event)
 	{
 		proxy.init();
-
-		// register the gui handler
-		NetworkRegistry.INSTANCE.registerGuiHandler(ModUncrafting.instance, guiHandler);
 	}
 
 	@EventHandler
