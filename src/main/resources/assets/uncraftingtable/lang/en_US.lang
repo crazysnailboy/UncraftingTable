@@ -41,6 +41,7 @@ uncrafting.options.excludedItems=Excluded Items
 uncrafting.options.excludedItems.tooltip=Item IDs for items which cannot be uncrafted
 
 uncrafting.options.nuggets=Nugget Options
+uncrafting.options.nuggets.tooltip=Click to configure options for nuggets
 uncrafting.options.nuggets.useNuggets=Use Nuggets
 uncrafting.options.nuggets.useNuggets.tooltip=Use available nuggets for partial returns of damaged items
 uncrafting.options.nuggets.registerNuggets=Register Nuggets
