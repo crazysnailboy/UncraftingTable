@@ -1,10 +1,11 @@
 {
 	"homepage": "https://minecraft.curseforge.com/projects/jglrxavpoks-uncrafting-table/files/",
 	"promos": {
-		"1.7.10-latest": "1.4.4-pre10",
-		"1.7.10-recommended": "1.4.4-pre10"
+		"1.7.10-latest": "1.4.4-pre11",
+		"1.7.10-recommended": "1.4.4-pre11"
 	},
 	"1.7.10": {
+		"1.4.4-pre11": "leather strips and rabbit hide, unenchanting now costs XP, more config options",
 		"1.4.4-pre10": "added ability to uncraft fireworks",
 		"1.4.4-pre9": "Applied Energistics support, MineTweaker bug fix, Chinese translation",
 		"1.4.4-pre8": "fixed bug with excluded items config",
