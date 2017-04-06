@@ -10,7 +10,6 @@ import cpw.mods.fml.client.config.GuiConfig;
 import cpw.mods.fml.client.config.GuiConfigEntries;
 import cpw.mods.fml.client.config.GuiConfigEntries.CategoryEntry;
 import cpw.mods.fml.client.config.IConfigElement;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.common.config.ConfigElement;
@@ -19,15 +18,10 @@ import net.minecraftforge.common.config.Configuration;
 
 public class ModGuiConfig extends GuiConfig
 {
+
 	public ModGuiConfig(GuiScreen parent)
 	{
-		super(parent,
- 			getConfigElements(),
-			ModUncrafting.MODID,
-			false,
-			false,
-			ModUncrafting.MODNAME
-		);
+		super(parent, getConfigElements(), ModUncrafting.MODID, false, false, ModUncrafting.MODNAME);
 	}
 
 
@@ -44,25 +38,6 @@ public class ModGuiConfig extends GuiConfig
 		list.add(new DummyCategoryElement("updateConfigDummyElement", "uncrafting.options.updates", CategoryEntryUpdates.class));
 
 		return list;
-	}
-
-
-	@Override
-	public void initGui()
-	{
-		super.initGui();
-	}
-
-	@Override
-	public void drawScreen(int mouseX, int mouseY, float partialTicks)
-	{
-		super.drawScreen(mouseX, mouseY, partialTicks);
-	}
-
-	@Override
-	protected void actionPerformed(GuiButton button)
-	{
-		super.actionPerformed(button);
 	}
 
 
