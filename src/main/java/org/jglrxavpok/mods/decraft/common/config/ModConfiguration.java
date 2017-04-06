@@ -8,6 +8,7 @@ import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.client.config.ModGuiConfigEntries;
 import org.jglrxavpok.mods.decraft.common.network.message.ConfigSyncMessage;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -204,9 +205,16 @@ public class ModConfiguration
 		@SubscribeEvent
 		public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event)
 		{
-			if (ModUncrafting.MODID.equals(event.modID) && !event.isWorldRunning)
+			if (ModUncrafting.MODID.equals(event.modID))
 			{
-				syncFromGUI();
+				if (!event.isWorldRunning || Minecraft.getMinecraft().isSingleplayer())
+				{
+					syncFromGUI();
+					if (event.isWorldRunning && Minecraft.getMinecraft().isSingleplayer())
+					{
+						ModUncrafting.instance.getNetwork().sendToServer(new ConfigSyncMessage());
+					}
+				}
 			}
 		}
 	}
