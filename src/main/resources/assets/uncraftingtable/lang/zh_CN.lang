@@ -40,6 +40,7 @@ uncrafting.options.excludedItems=排除物品
 uncrafting.options.excludedItems.tooltip=排除的物品将不能被分解
 
 uncrafting.options.nuggets=Nugget Options
+uncrafting.options.nuggets.tooltip=Click to configure options for nuggets
 uncrafting.options.nuggets.useNuggets=Use Nuggets
 uncrafting.options.nuggets.useNuggets.tooltip=Use available nuggets for partial returns of damaged items
 uncrafting.options.nuggets.registerNuggets=Register Nuggets

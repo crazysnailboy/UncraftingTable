@@ -264,8 +264,11 @@ public class UncraftingManager
 						}
 
 						// add the stack size and the crafting grid to the results list
-						Map.Entry<NonNullList<ItemStack>,Integer> pair = new AbstractMap.SimpleEntry<NonNullList<ItemStack>,Integer>(craftingGrid, minStackSize);
-						list.add(pair);
+						if (countFilledSlotsInCraftingGrid(craftingGrid) > 0)
+						{
+							Map.Entry<NonNullList<ItemStack>,Integer> pair = new AbstractMap.SimpleEntry<NonNullList<ItemStack>,Integer>(craftingGrid, minStackSize);
+							list.add(pair);
+						}
 					}
 				}
 				// if we couldn't find a handler class for this IRecipe implementation, write some details to the log for debugging.
@@ -274,6 +277,17 @@ public class UncraftingManager
 		}
 
 		return list;
+	}
+
+
+	private static int countFilledSlotsInCraftingGrid(NonNullList<ItemStack> craftingGrid)
+	{
+		int result = 0;
+		for ( int i = 0 ; i < craftingGrid.size() ; i++ )
+		{
+			if (!craftingGrid.get(i).isEmpty()) result++;
+		}
+		return result;
 	}
 
 
@@ -394,7 +408,7 @@ public class UncraftingManager
 			{
 				// calculate the total number of full items which most closely represent the percentage durability remaining on the item
 				// rounding up to the nearest item
-				itemCount = (int)Math.ceil(amount * (durabilityPercentage / (double)100));
+				itemCount = (int)Math.ceil(amount * (durabilityPercentage / 100));
 			}
 			// if the stack contains leather and we should use rabbit hide
 			else if (ModConfiguration.useRabbitHide && ArrayUtils.contains(OreDictionary.getOreIDs(materialStack), OreDictionary.getOreID("leather")))
@@ -411,15 +425,15 @@ public class UncraftingManager
 			{
 				// calculate the number of full items and nuggets which most closely represent the percentage durability remaining on the item
 				// rounding down to the nearest nugget
-				itemCount = (int)Math.floor(amount * (durabilityPercentage / (double)100));
-				nuggetCount = ((int)Math.floor((amount * 9) * (durabilityPercentage / (double)100))) - (itemCount * 9);
+				itemCount = (int)Math.floor(amount * (durabilityPercentage / 100));
+				nuggetCount = ((int)Math.floor((amount * 9) * (durabilityPercentage / 100))) - (itemCount * 9);
 			}
 			// if there's no nugget for this item in the ore dictionary
 			else
 			{
 				// calculate the total number of full items which most closely represent the percentage durability remaining on the item
 				// rounding down to the nearest item
-				itemCount = (int)Math.floor(amount * (durabilityPercentage / (double)100));
+				itemCount = (int)Math.floor(amount * (durabilityPercentage / 100));
 			}
 
 

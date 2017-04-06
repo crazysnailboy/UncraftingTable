@@ -32,7 +32,7 @@ public class ItemNugget extends Item
 	{
 		for (EnumNuggetType nuggetType : EnumNuggetType.values())
 		{
-			list.add(new ItemStack(item, 1, nuggetType.getMetadata()));
+			if (nuggetType.getRegistryName() != null) list.add(new ItemStack(item, 1, nuggetType.getMetadata()));
 		}
 	}
 
@@ -40,7 +40,7 @@ public class ItemNugget extends Item
 	{
 		DIAMOND(0, "diamondNugget", "diamond_nugget"),
 		EMERALD(1, "emeraldNugget", "emerald_nugget"),
-//		IRON(2, "ironNugget", "iron_nugget"),
+		IRON(2, null, null), // IRON(2, "ironNugget", "iron_nugget"),
 		LEATHER(3, "leatherStrip", "leather_strip");
 
 		private final int meta;
