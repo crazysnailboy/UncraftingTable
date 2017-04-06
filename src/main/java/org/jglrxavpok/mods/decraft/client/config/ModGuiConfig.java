@@ -5,7 +5,6 @@ import java.util.List;
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
 
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.common.config.ConfigElement;
@@ -19,17 +18,11 @@ import net.minecraftforge.fml.client.config.IConfigElement;
 
 public class ModGuiConfig extends GuiConfig
 {
+
 	public ModGuiConfig(GuiScreen parent)
 	{
-		super(parent,
- 			getConfigElements(),
-			ModUncrafting.MODID,
-			false,
-			false,
-			ModUncrafting.MODNAME
-		);
+		super(parent, getConfigElements(), ModUncrafting.MODID, false, false, ModUncrafting.MODNAME);
 	}
-
 
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -44,25 +37,6 @@ public class ModGuiConfig extends GuiConfig
 		list.add(new DummyCategoryElement("nuggetsConfigDummyElement", "uncrafting.options.nuggets", CategoryEntryNuggets.class));
 
 		return list;
-	}
-
-
-	@Override
-	public void initGui()
-	{
-		super.initGui();
-	}
-
-	@Override
-	public void drawScreen(int mouseX, int mouseY, float partialTicks)
-	{
-		super.drawScreen(mouseX, mouseY, partialTicks);
-	}
-
-	@Override
-	protected void actionPerformed(GuiButton button)
-	{
-		super.actionPerformed(button);
 	}
 
 
