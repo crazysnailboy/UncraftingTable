@@ -1,10 +1,11 @@
 {
 	"homepage": "https://minecraft.curseforge.com/projects/jglrxavpoks-uncrafting-table/files/",
 	"promos": {
-		"1.9.4-latest": "1.6.1-pre11",
-		"1.9.4-recommended": "1.6.1-pre11"
+		"1.9.4-latest": "1.6.1-pre12",
+		"1.9.4-recommended": "1.6.1-pre12"
 	},
 	"1.9.4": {
+		"1.6.1-pre12": "leather strips and rabbit hide, unenchanting now costs XP, more config options",
 		"1.6.1-pre11": "added ability to uncraft fireworks and tipped arrows",
 		"1.6.1-pre10": "CraftTweaker bug fix, Chinese translation",
 		"1.6.1-pre9": "fixed bug with excluded items config",
