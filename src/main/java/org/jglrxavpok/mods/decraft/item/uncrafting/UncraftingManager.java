@@ -282,8 +282,11 @@ public class UncraftingManager
 						}
 
 						// add the stack size and the crafting grid to the results list
-						Map.Entry<ItemStack[],Integer> pair = new AbstractMap.SimpleEntry<ItemStack[],Integer>(craftingGrid, minStackSize);
-						list.add(pair);
+						if (countFilledSlotsInCraftingGrid(craftingGrid) > 0)
+						{
+							Map.Entry<ItemStack[],Integer> pair = new AbstractMap.SimpleEntry<ItemStack[],Integer>(craftingGrid, minStackSize);
+							list.add(pair);
+						}
 
 						// if we have custom mapping data which specifies a single recipe
 						if (mapping != null && mapping.singleRecipe == true)
@@ -323,6 +326,20 @@ public class UncraftingManager
 		Object oB = ObfuscationReflectionHelper.getPrivateValue(ItemStack.class, stackB, fieldNames);
 
 		return oA.equals(oB);
+	}
+
+
+	private static int countFilledSlotsInCraftingGrid(ItemStack[] craftingGrid)
+	{
+		int result = 0;
+		if (craftingGrid != null)
+		{
+			for ( int i = 0 ; i < craftingGrid.length ; i++ )
+			{
+				if (craftingGrid[i] != null) result++;
+			}
+		}
+		return result;
 	}
 
 
