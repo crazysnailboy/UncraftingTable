@@ -1,13 +1,17 @@
 package org.jglrxavpok.mods.decraft.common.network.message;
 
+import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.IThreadListener;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
 
 public class ConfigSyncMessage implements IMessage
 {
@@ -58,11 +62,27 @@ public class ConfigSyncMessage implements IMessage
 
 	public static final class MessageHandler implements IMessageHandler<ConfigSyncMessage, IMessage>
 	{
+
+		private IThreadListener getThreadListener(MessageContext ctx)
+		{
+			try
+			{
+				if (ctx.side == Side.SERVER) return (WorldServer)ctx.getServerHandler().playerEntity.worldObj;
+				else if (ctx.side == Side.CLIENT) return Minecraft.getMinecraft();
+				else return null;
+			}
+			catch(Exception ex)
+			{
+				ModUncrafting.instance.getLogger().catching(ex);
+				return null;
+			}
+		}
+
 		@Override
 		public IMessage onMessage(final ConfigSyncMessage message, MessageContext ctx)
 		{
-			Minecraft minecraft = Minecraft.getMinecraft();
-			minecraft.addScheduledTask(new Runnable()
+			IThreadListener threadListener = getThreadListener(ctx);
+			threadListener.addScheduledTask(new Runnable()
 			{
 				@Override
 				public void run()
