@@ -31,10 +31,11 @@ public class ModGuiConfigEntries
 
 	public static class BooleanEntry extends ButtonEntry
 	{
-		protected final boolean beforeValue;
-		protected boolean	   currentValue;
 
-		private BooleanEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement configElement)
+		protected final boolean beforeValue;
+		protected boolean currentValue;
+
+		public BooleanEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement configElement)
 		{
 			super(owningScreen, owningEntryList, configElement);
 			this.beforeValue = Boolean.valueOf(configElement.get().toString());
@@ -53,8 +54,7 @@ public class ModGuiConfigEntries
 		@Override
 		public void valueButtonPressed(int slotIndex)
 		{
-			if (enabled())
-				currentValue = !currentValue;
+			if (enabled()) currentValue = !currentValue;
 		}
 
 		@Override
