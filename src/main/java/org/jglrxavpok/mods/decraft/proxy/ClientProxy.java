@@ -31,7 +31,7 @@ public class ClientProxy extends CommonProxy
 	{
 		super.postInit();
 
-		// initalize the version checker
+		// initialize the version checker
 		VersionChecker.clientPostInit();
 	}
 

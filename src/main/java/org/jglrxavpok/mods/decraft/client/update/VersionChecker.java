@@ -1,7 +1,17 @@
 package org.jglrxavpok.mods.decraft.client.update;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.Charset;
+
+import org.apache.commons.io.IOUtils;
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -35,6 +45,84 @@ public class VersionChecker
 	}
 
 
+	public static class VersionCheckerTask implements Runnable
+	{
+
+		private static String homepageUrl = "";
+
+		private static String latestVersion = "";
+		private static String recommendedVersion = "";
+
+		private static boolean isLatestVersion = false;
+		private static boolean isRecommendedVersion = false;
+
+
+		@Override
+		public void run()
+		{
+			InputStream inputStream = null;
+
+			try
+			{
+				// read the url into the input stream
+				inputStream = new URL(ModUncrafting.UPDATEJSON).openStream();
+			}
+			catch (MalformedURLException ex) { ex.printStackTrace(); }
+			catch (IOException ex) { ex.printStackTrace(); }
+
+			try
+			{
+				// read the stream contents as a string
+				String jsonText = IOUtils.toString(inputStream, Charset.defaultCharset());
+
+				// parse the string as JSON
+				JsonObject updateObject = new JsonParser().parse(jsonText).getAsJsonObject();
+
+				// get the homepage url
+				homepageUrl = updateObject.get("homepage").getAsString();
+
+				// get the latest and recommended versions of the mod for this minecraft version
+				JsonObject promosObject = updateObject.getAsJsonObject("promos");
+				latestVersion = promosObject.get(cpw.mods.fml.common.Loader.MC_VERSION + "-latest").getAsString();
+				recommendedVersion = promosObject.get(cpw.mods.fml.common.Loader.MC_VERSION + "-recommended").getAsString();
+
+			}
+			catch (IOException ex) { ex.printStackTrace(); }
+			finally { IOUtils.closeQuietly(inputStream); }
+
+			isLatestVersion = ModUncrafting.VERSION.equals(latestVersion);
+			isRecommendedVersion = ModUncrafting.VERSION.equals(recommendedVersion);
+
+		}
+
+		public boolean isLatestVersion()
+		{
+			return isLatestVersion;
+		}
+
+		public boolean isRecommendedVersion()
+		{
+			return isRecommendedVersion;
+		}
+
+		public String getLatestVersion()
+		{
+			return latestVersion;
+		}
+
+		public String getRecommendedVersion()
+		{
+			return recommendedVersion;
+		}
+
+		public String getHomepageUrl()
+		{
+			return homepageUrl;
+		}
+
+	}
+
+
 	public static class VersionCheckEventHandler
 	{
 
@@ -42,7 +130,7 @@ public class VersionChecker
 		public void onPlayerTick(PlayerTickEvent event)
 		{
 			// if we haven't already notified of a new version...
-			if (event.player.worldObj.isRemote && !haveWarnedVersionOutOfDate)
+			if (!haveWarnedVersionOutOfDate && event.player.worldObj.isRemote)
 			{
 				String chatMessageText = "";
 
@@ -52,7 +140,6 @@ public class VersionChecker
 					// build a message string to diaplay in chat for the new latest version
 					chatMessageText = I18n.format("chat.update.newlatest", ModUncrafting.MODNAME);
 				}
-
 				// if we're not running the latest version or the recommended version, and the user wishes to be notified for recommended versions
 				else if (ModConfiguration.promptForRecommended && !versionCheckerTask.isLatestVersion() && !versionCheckerTask.isRecommendedVersion())
 				{
@@ -71,14 +158,16 @@ public class VersionChecker
 
 					// display the message in chat
 					event.player.addChatMessage(versionWarningChatComponent);
-
-					// store the fact that we've done that so we don't keep spamming people
-					haveWarnedVersionOutOfDate = true;
-
 				}
+
+				// store the fact that we've done the version check
+				haveWarnedVersionOutOfDate = true;
+
+				// unregister from the event bus
+				FMLCommonHandler.instance().bus().unregister(versionCheckEventHandler);
 			}
 		}
-			
+
 	}
 
 }

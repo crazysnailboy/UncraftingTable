@@ -2,6 +2,7 @@ package org.jglrxavpok.mods.decraft.proxy;
 
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
+import org.jglrxavpok.mods.decraft.common.network.ModGuiHandler;
 import org.jglrxavpok.mods.decraft.common.network.message.ConfigSyncMessage;
 import org.jglrxavpok.mods.decraft.common.network.message.RecipeNavigationMessage;
 import org.jglrxavpok.mods.decraft.init.ModBlocks;
@@ -9,6 +10,7 @@ import org.jglrxavpok.mods.decraft.init.ModItems;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers;
 import org.jglrxavpok.mods.decraft.stats.ModAchievementList;
 
+import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 
 
@@ -16,7 +18,7 @@ public class CommonProxy
 {
 
 	/**
-	 * Run before anything else. Read your config, create blocks, items, etc, and register them with the GameRegistry
+	 * Run before anything else. Read your config, create blocks, items, etc, and register them with the GameRegistry.
 	 */
 	public void preInit()
 	{
@@ -34,14 +36,16 @@ public class CommonProxy
 
 
 	/**
-	 * Do your mod setup. Build whatever data structures you care about. Register recipes,
-	 * send FMLInterModComms messages to other mods.
+	 * Do your mod setup. Build whatever data structures you care about. Register recipes, send FMLInterModComms messages to other mods.
 	 */
 	public void init()
 	{
 		// create the crafting recipes
 		ModBlocks.init();
 		ModItems.init();
+
+		// register the gui handler
+		NetworkRegistry.INSTANCE.registerGuiHandler(ModUncrafting.instance, new ModGuiHandler());
 
 		// initialize the achievements
 		ModAchievementList.init();
