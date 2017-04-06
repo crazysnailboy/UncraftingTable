@@ -264,8 +264,11 @@ public class UncraftingManager
 						}
 
 						// add the stack size and the crafting grid to the results list
-						Map.Entry<NonNullList<ItemStack>,Integer> pair = new AbstractMap.SimpleEntry<NonNullList<ItemStack>,Integer>(craftingGrid, minStackSize);
-						list.add(pair);
+						if (countFilledSlotsInCraftingGrid(craftingGrid) > 0)
+						{
+							Map.Entry<NonNullList<ItemStack>,Integer> pair = new AbstractMap.SimpleEntry<NonNullList<ItemStack>,Integer>(craftingGrid, minStackSize);
+							list.add(pair);
+						}
 					}
 				}
 				// if we couldn't find a handler class for this IRecipe implementation, write some details to the log for debugging.
@@ -274,6 +277,17 @@ public class UncraftingManager
 		}
 
 		return list;
+	}
+
+
+	private static int countFilledSlotsInCraftingGrid(NonNullList<ItemStack> craftingGrid)
+	{
+		int result = 0;
+		for ( int i = 0 ; i < craftingGrid.size() ; i++ )
+		{
+			if (!craftingGrid.get(i).isEmpty()) result++;
+		}
+		return result;
 	}
 
 
@@ -421,7 +435,6 @@ public class UncraftingManager
 				// rounding down to the nearest item
 				itemCount = (int)Math.floor(amount * (durabilityPercentage / (double)100));
 			}
-
 
 			// ensure that at least one nugget is returned regardless of durability
 			if (ModConfiguration.ensureReturn && itemCount == 0 && nuggetCount == 0 && nuggetStack != null) nuggetCount = 1;
