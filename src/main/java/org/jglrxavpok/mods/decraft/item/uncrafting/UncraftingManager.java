@@ -259,8 +259,11 @@ public class UncraftingManager
 						}
 
 						// add the stack size and the crafting grid to the results list
-						Map.Entry<ItemStack[],Integer> pair = new AbstractMap.SimpleEntry<ItemStack[],Integer>(craftingGrid, minStackSize);
-						list.add(pair);
+						if (countFilledSlotsInCraftingGrid(craftingGrid) > 0)
+						{
+							Map.Entry<ItemStack[],Integer> pair = new AbstractMap.SimpleEntry<ItemStack[],Integer>(craftingGrid, minStackSize);
+							list.add(pair);
+						}
 					}
 				}
 				// if we couldn't find a handler class for this IRecipe implementation, write some details to the log for debugging.
@@ -269,6 +272,20 @@ public class UncraftingManager
 		}
 
 		return list;
+	}
+
+
+	private static int countFilledSlotsInCraftingGrid(ItemStack[] craftingGrid)
+	{
+		int result = 0;
+		if (craftingGrid != null)
+		{
+			for ( int i = 0 ; i < craftingGrid.length ; i++ )
+			{
+				if (craftingGrid[i] != null) result++;
+			}
+		}
+		return result;
 	}
 
 
