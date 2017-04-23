@@ -1,10 +1,11 @@
 {
 	"homepage": "https://minecraft.curseforge.com/projects/jglrxavpoks-uncrafting-table/files/",
 	"promos": {
-		"1.11.2-latest": "1.7.1-pre14",
-		"1.11.2-recommended": "1.7.1-pre14"
+		"1.11.2-latest": "1.7.1-pre15",
+		"1.11.2-recommended": "1.7.1-pre15"
 	},
 	"1.11.2": {
+		"1.7.1-pre15": "Added support for Industrial Craft",
 		"1.7.1-pre14": "leather strips and rabbit hide, unenchanting now costs XP, more config options",
 		"1.7.1-pre13": "added ability to uncraft fireworks and tipped arrows, fixed bug with input stack not being cleared after uncrafting",
 		"1.7.1-pre12": "CraftTweaker bug fix, Chinese translation",
