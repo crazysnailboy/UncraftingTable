@@ -4,10 +4,10 @@ package org.jglrxavpok.mods.decraft.item.uncrafting.handlers;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.NBTSensitiveRecipeHandlers.FireworksRecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.NBTSensitiveRecipeHandlers.TippedArrowRecipeHandler;
-
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.IC2RecipeHandlers.ShapedIC2RecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.IC2RecipeHandlers.ShapelessIC2RecipeHandler;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -68,6 +68,11 @@ public final class RecipeHandlers
 		// Forge Ore Dictionary recipe handlers
 		HANDLERS.put(ShapedOreRecipe.class, new ShapedOreRecipeHandler());
 		HANDLERS.put(ShapelessOreRecipe.class, new ShapelessOreRecipeHandler());
+
+		// industrialcraft 2 recipe handlers
+		if (ShapedIC2RecipeHandler.recipeClass != null) HANDLERS.put(ShapedIC2RecipeHandler.recipeClass, new ShapedIC2RecipeHandler());
+		if (ShapelessIC2RecipeHandler.recipeClass != null) HANDLERS.put(ShapelessIC2RecipeHandler.recipeClass, new ShapelessIC2RecipeHandler());
+
 	}
 
 	private static void buildRecipeOutputMap()
