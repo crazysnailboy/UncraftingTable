@@ -1,10 +1,10 @@
-#fr_CA
+#fr_FR
 
 tile.uncraftingtable.name=Table de décrafting
 
-item.diamondNugget.name=Diamond Nugget
-item.emeraldNugget.name=Emerald Nugget
-item.leatherStrip.name=Leather Strip
+item.diamondNugget.name=Pépite de diamant
+item.emeraldNugget.name=Pépite d'émeraude
+item.leatherStrip.name=Bande de cuir
 
 achievement.createDecraftTable=Comme au bon vieux temps
 achievement.createDecraftTable.desc=Craftez une table de décrafting!
@@ -20,7 +20,7 @@ achievement.porteManteauAchievement=Du 4 en 1!
 achievement.porteManteauAchievement.desc=§k <3 All Players
 
 container.uncrafting=Table de décrafting
-container.uncrafting.cost=XP Cost: %1$s
+container.uncrafting.cost=Coût (XP): %1$s
 
 uncrafting.result.ready=Prêt
 uncrafting.result.impossible=Impossible avec cet objet
@@ -32,20 +32,20 @@ uncrafting.options.standardLevel=Niveau minimum d'XP
 uncrafting.options.standardLevel.tooltip=Niveau minimum d'XP requis
 uncrafting.options.maxUsedLevel=Niveau maximum d'XP
 uncrafting.options.maxUsedLevel.tooltip=Niveau maximum d'XP requis
-uncrafting.options.enchantmentCost=Enchantment Cost
-uncrafting.options.enchantmentCost.tooltip=Cost per enchantment when removing enchantments onto books
+uncrafting.options.enchantmentCost=Coût de l'enchantement
+uncrafting.options.enchantmentCost.tooltip=Coût par enchantement lors de leur transfert vers les livres
 uncrafting.options.method=Méthode de décrafting
-uncrafting.options.method.tooltip=ID of the used uncrafting equation
-uncrafting.options.excludedItems=Excluded Items
-uncrafting.options.excludedItems.tooltip=Item IDs for items which cannot be uncrafted
+uncrafting.options.method.tooltip=ID de l'équation de décrafting utilisée
+uncrafting.options.excludedItems=Objets exclus
+uncrafting.options.excludedItems.tooltip=ID des items qui ne peuvent être décraftés
 
 uncrafting.options.nuggets=Nugget Options
-uncrafting.options.nuggets.tooltip=Click to configure options for nuggets
-uncrafting.options.nuggets.useNuggets=Use Nuggets
-uncrafting.options.nuggets.useNuggets.tooltip=Use available nuggets for partial returns of damaged items
-uncrafting.options.nuggets.registerNuggets=Register Nuggets
-uncrafting.options.nuggets.registerNuggets.tooltip=Register additional nuggets to use for partial returns of damaged Vanilla items
-uncrafting.options.nuggets.useRabbitHide=Use Rabbit Hide
-uncrafting.options.nuggets.useRabbitHide.tooltip=Use Rabbit Hide for partial returns of damaged Leather items
-uncrafting.options.nuggets.ensureReturn=Ensure a Return
-uncrafting.options.nuggets.ensureReturn.tooptip=Ensure that at least one nugget is returned, even for items with 0% durability
+uncrafting.options.nuggets.tooltip=Configuration des options pour les pépites
+uncrafting.options.nuggets.useNuggets=Utiliser des pépites
+uncrafting.options.nuggets.useNuggets.tooltip=Utilise les pépites disponibles pour les retours partiels des objets endommagés
+uncrafting.options.nuggets.registerNuggets=Enregistrer des pépites
+uncrafting.options.nuggets.registerNuggets.tooltip=Enregistrer des pépites supplémentaires pour les retours partiels
+uncrafting.options.nuggets.useRabbitHide=Utiliser la peau de lapin
+uncrafting.options.nuggets.useRabbitHide.tooltip=Utiliser la peau de lapin pour les retours partiels
+uncrafting.options.nuggets.ensureReturn=Assurance de retour
+uncrafting.options.nuggets.ensureReturn.tooptip=Assure qu'au moins une pépite est donnée, même pour des objets à 0% de durabilité
