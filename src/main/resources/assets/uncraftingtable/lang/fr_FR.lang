@@ -51,11 +51,11 @@ uncrafting.options.nuggets.useRabbitHide.tooltip=Utiliser la peau de lapin pour 
 uncrafting.options.nuggets.ensureReturn=Assurance de retour
 uncrafting.options.nuggets.ensureReturn.tooptip=Assure qu'au moins une pépite est donnée, même pour des objets à 0% de durabilité
 
-uncrafting.options.updates=Update Notifications
-uncrafting.options.updates.tooltip=Click to configure options for update notifications
-uncrafting.options.updates.checkForUpdates=Check for Updates
-uncrafting.options.updates.promptForLatest=Prompt for Latest
-uncrafting.options.updates.promptForRecommended=Prompt for Recommended
+uncrafting.options.updates=Notifications de mise à jour
+uncrafting.options.updates.tooltip=Cliquez ici pour configurer les notifications de mise à jour.
+uncrafting.options.updates.checkForUpdates=Vérifier les mises à jour
+uncrafting.options.updates.promptForLatest=Chercher les plus récents
+uncrafting.options.updates.promptForRecommended=Chercher les recommandées
 
-chat.update.newlatest=A new version of %1$s is available. Click here to update.
-chat.update.newrecommended=A new recommended version of %1$s is available. Click here to update.
+chat.update.newlatest=Une nouvelle version de %1$s est disponible. Cliquez ici pour y accéder.
+chat.update.newrecommended=Une nouvelle version recommandée de %1$s est disponible. Cliquez ici pour y accéder.
