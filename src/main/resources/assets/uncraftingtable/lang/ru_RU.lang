@@ -1,13 +1,13 @@
 #ru_RU
 
-tile.uncrafting_table.name=Антиверстак
+tile.uncrafting_table.name=Верстак для разборки
 
 item.diamondNugget.name=Алмазный самородок
 item.emeraldNugget.name=Изумрудный самородок
-item.leatherStrip.name=Leather Strip
+item.leatherStrip.name=Кожаные полоски
 
 achievement.createDecraftTable=Как в старые времена
-achievement.createDecraftTable.desc=Создайте антиверстак !
+achievement.createDecraftTable.desc=Создайте верстак для разборки !
 achievement.uncraftAnything=Разбери вещь !
 achievement.uncraftAnything.desc=Вы только что разобрали вещь !
 achievement.uncraftDiamondHoe=Разбери алмазную мотыгу !
@@ -17,9 +17,9 @@ achievement.uncraftJunk.desc=Эта вещь была бесполезной.
 achievement.uncraftDiamondShovel=Время для более дешевого подхода.
 achievement.uncraftDiamondShovel.desc=Железные лопаты лучше.
 achievement.porteManteauAchievement=Все в одном !
-achievement.porteManteauAchievement.desc=ยงk <3 всех
+achievement.porteManteauAchievement.desc=§k <3 всех
 
-container.uncrafting=Антиверстак
+container.uncrafting=Верстак для разборки
 container.uncrafting.cost=Уровней требуется: %1$s
 
 uncrafting.result.ready=Готово
@@ -32,20 +32,20 @@ uncrafting.options.standardLevel=Минимальный уровень
 uncrafting.options.standardLevel.tooltip=Минимально требуемый уровень для разборки вещи
 uncrafting.options.maxUsedLevel=Максимальный уровень
 uncrafting.options.maxUsedLevel.tooltip=Максимально требуемый уровень для разборки вещи
-uncrafting.options.enchantmentCost=Enchantment Cost
-uncrafting.options.enchantmentCost.tooltip=Cost per enchantment when removing enchantments onto books
+uncrafting.options.enchantmentCost=Стоимость зачарования
+uncrafting.options.enchantmentCost.tooltip=Цена за зачарование при переносе чар на книги
 uncrafting.options.method=Метод разборки
-uncrafting.options.method.tooltip=ID используемой формулы для разборки.
+uncrafting.options.method.tooltip=ID используемой формулы для разборки
 uncrafting.options.excludedItems=Исключенные вещи
 uncrafting.options.excludedItems.tooltip=ID предметов, которые не могут быть разобраны
 
-uncrafting.options.nuggets=Nugget Options
-uncrafting.options.nuggets.tooltip=Click to configure options for nuggets
-uncrafting.options.nuggets.useNuggets=Use Nuggets
-uncrafting.options.nuggets.useNuggets.tooltip=Use available nuggets for partial returns of damaged items
-uncrafting.options.nuggets.registerNuggets=Register Nuggets
-uncrafting.options.nuggets.registerNuggets.tooltip=Register additional nuggets to use for partial returns of damaged Vanilla items
-uncrafting.options.nuggets.useRabbitHide=Use Rabbit Hide
-uncrafting.options.nuggets.useRabbitHide.tooltip=Use Rabbit Hide for partial returns of damaged Leather items
-uncrafting.options.nuggets.ensureReturn=Ensure a Return
-uncrafting.options.nuggets.ensureReturn.tooptip=Ensure that at least one nugget is returned, even for items with 0% durability
+uncrafting.options.nuggets=Параметры самородков
+uncrafting.options.nuggets.tooltip=Настройка параметров для самородков
+uncrafting.options.nuggets.useNuggets=Использовать самородок
+uncrafting.options.nuggets.useNuggets.tooltip=Использовать доступные самородки как возвращаемые части от повреждённых вещей
+uncrafting.options.nuggets.registerNuggets=Регистрация самородков
+uncrafting.options.nuggets.registerNuggets.tooltip=Регистрация дополнительных самородков как возвращаемых частей от повреждённых стандартных вещей
+uncrafting.options.nuggets.useRabbitHide=Использовать шкурку кролика
+uncrafting.options.nuggets.useRabbitHide.tooltip=Использовать шкурку кролика как возвращаемую часть от повреждённых кожаных вещей
+uncrafting.options.nuggets.ensureReturn=Обеспечение возврата
+uncrafting.options.nuggets.ensureReturn.tooptip=Обеспечение возврата хотя бы одного самородка, даже для вещей с 0% прочностью
