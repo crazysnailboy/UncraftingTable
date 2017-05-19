@@ -8,6 +8,8 @@ import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.NBTSensitiveRecipeHa
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.NBTSensitiveRecipeHandlers.TippedArrowRecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.IC2RecipeHandlers.ShapedIC2RecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.IC2RecipeHandlers.ShapelessIC2RecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.IGCMRecipeHandlers.ShapedIGCMRecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.IGCMRecipeHandlers.ShapelessIGCMRecipeHandler;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -72,6 +74,10 @@ public final class RecipeHandlers
 		// industrialcraft 2 recipe handlers
 		if (ShapedIC2RecipeHandler.recipeClass != null) HANDLERS.put(ShapedIC2RecipeHandler.recipeClass, new ShapedIC2RecipeHandler());
 		if (ShapelessIC2RecipeHandler.recipeClass != null) HANDLERS.put(ShapelessIC2RecipeHandler.recipeClass, new ShapelessIC2RecipeHandler());
+
+		// igcm recipe handlers
+		if (ShapedIGCMRecipeHandler.recipeClass != null) HANDLERS.put(ShapedIGCMRecipeHandler.recipeClass, new ShapedIGCMRecipeHandler());
+		if (ShapelessIGCMRecipeHandler.recipeClass != null) HANDLERS.put(ShapelessIGCMRecipeHandler.recipeClass, new ShapelessIGCMRecipeHandler());
 
 	}
 
@@ -174,7 +180,7 @@ public final class RecipeHandlers
 
 			for ( int i = 0 ; i < inputStacks.size() ; i++ )
 			{
-				ItemStack outputStack = inputStacks.get(i).copy();
+				ItemStack outputStack = (inputStacks.get(i) == null ? ItemStack.EMPTY : inputStacks.get(i)).copy();
 				if (outputStack.getItemDamage() == Short.MAX_VALUE) outputStack.setItemDamage(0);
 				outputStacks.set(i, outputStack);
 			}
