@@ -9,7 +9,13 @@
 		"recipeType": "slimeknights.tconstruct.tools.common.TableRecipe",
 		"replaceSlots": [3,5,6,8]
 	},
-	"tconstruct:tooltables": {
+	
+	"tconstruct:tooltables,1": {
+		"singleRecipe": true,
+		"recipeType": "slimeknights.tconstruct.tools.common.TableRecipe",
+		"replaceSlots": [3]
+	},
+	"tconstruct:tooltables,2": {
 		"singleRecipe": true,
 		"recipeType": "slimeknights.tconstruct.tools.common.TableRecipe",
 		"replaceSlots": [3]
