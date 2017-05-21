@@ -3,14 +3,13 @@ package org.jglrxavpok.mods.decraft.common.config;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.util.FileUtils;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import net.minecraft.item.ItemStack;
 
 public class ModJsonConfiguration
 {
@@ -28,9 +27,23 @@ public class ModJsonConfiguration
 		public String[] fieldNames = null;
 	}
 
+	public static class ItemMappingMap extends HashMap<String, ItemMapping>
+	{
+		public ItemMapping get(ItemStack stack)
+		{
+			String registryName = stack.getItem().getRegistryName().toString();
+			int meta = stack.getMetadata();
 
+			ItemMapping result = this.get(registryName + "," + meta);
+			if (result == null) result = this.get(registryName);
 
-	public static HashMap<String, ItemMapping> itemMappings;
+			return result;
+		}
+
+	}
+
+	public static ItemMappingMap itemMappings;
+
 
 	public static void preInit()
 	{
@@ -50,7 +63,7 @@ public class ModJsonConfiguration
 
 	private static void loadItemMappings()
 	{
-		itemMappings = new HashMap<String, ItemMapping>();
+		itemMappings = new ItemMappingMap();
 
 		String fileContents = FileUtils.readFileContentsFromMod("assets/" + ModUncrafting.MODID.toLowerCase() + "/data/item-mappings.json");
 
