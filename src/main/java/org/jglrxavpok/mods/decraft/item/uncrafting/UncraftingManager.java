@@ -8,15 +8,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
+import org.jglrxavpok.mods.decraft.common.config.ModJsonConfiguration;
+import org.jglrxavpok.mods.decraft.common.config.ModJsonConfiguration.ItemMapping;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult.ResultType;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.NBTSensitiveRecipeHandlers.INBTSensitiveRecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.RecipeHandler;
-
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,7 +25,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.oredict.OreDictionary;
 
 
@@ -241,6 +244,23 @@ public class UncraftingManager
 
 			if (ItemStack.areItemsEqualIgnoreDurability(itemStack, recipeOutput))
 			{
+				System.out.println( recipe.getClass().getCanonicalName() );
+
+
+				// load any custom mapping data we have for this item
+				ItemMapping mapping = ModJsonConfiguration.itemMappings.get(itemStack);
+				// if we have mapping data...
+				if (mapping != null)
+				{
+					// if the mapping data specifies a particular IRecipe instance, and the current recipe does not match, continue
+					if ((mapping.recipeType != null) && (!recipe.getClass().getCanonicalName().equals(mapping.recipeType))) continue;
+					// if the mapping data specifies a match on NBT data, and the data does not match, continue
+					if ((mapping.matchTag == true) && (!areItemStackSubTagsEqual(itemStack, recipeOutput, mapping.tagName))) continue;
+					// if the mapping data specifies a match on a private field, and the field values do not match, continue
+					if ((mapping.matchField == true) && (!arePrivateFieldValuesEqual(itemStack, recipeOutput, mapping.fieldNames))) continue;
+				}
+
+
 				// get an instance of the appropriate handler class for the IRecipe type of the crafting recipe
 				RecipeHandler handler = RecipeHandlers.HANDLERS.get(recipe.getClass());
 				if (handler != null)
@@ -269,6 +289,13 @@ public class UncraftingManager
 							Map.Entry<NonNullList<ItemStack>,Integer> pair = new AbstractMap.SimpleEntry<NonNullList<ItemStack>,Integer>(craftingGrid, minStackSize);
 							list.add(pair);
 						}
+
+						// if we have custom mapping data which specifies a single recipe
+						if (mapping != null && mapping.singleRecipe == true)
+						{
+							// we've found that recipe, so break out of the loop
+							break;
+						}
 					}
 				}
 				// if we couldn't find a handler class for this IRecipe implementation, write some details to the log for debugging.
@@ -277,6 +304,30 @@ public class UncraftingManager
 		}
 
 		return list;
+	}
+
+
+	private static boolean areItemStackSubTagsEqual(ItemStack stackA, ItemStack stackB, String tagName)
+	{
+		NBTTagCompound tagA = stackA.getTagCompound();
+		NBTTagCompound tagB = stackB.getTagCompound();
+
+		if (tagA != null && tagB != null)
+		{
+			NBTBase subTagA = tagA.getTag(tagName);
+			NBTBase subTagB = tagB.getTag(tagName);
+			return subTagA.equals(subTagB);
+		}
+
+		return false;
+	}
+
+	private static boolean arePrivateFieldValuesEqual(ItemStack stackA, ItemStack stackB, String[] fieldNames)
+	{
+		Object oA = ObfuscationReflectionHelper.getPrivateValue(ItemStack.class, stackA, fieldNames);
+		Object oB = ObfuscationReflectionHelper.getPrivateValue(ItemStack.class, stackB, fieldNames);
+
+		return oA.equals(oB);
 	}
 
 
