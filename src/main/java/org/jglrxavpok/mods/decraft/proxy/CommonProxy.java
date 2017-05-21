@@ -2,6 +2,7 @@ package org.jglrxavpok.mods.decraft.proxy;
 
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
+import org.jglrxavpok.mods.decraft.common.config.ModJsonConfiguration;
 import org.jglrxavpok.mods.decraft.common.network.ModGuiHandler;
 import org.jglrxavpok.mods.decraft.common.network.message.ConfigSyncMessage;
 import org.jglrxavpok.mods.decraft.common.network.message.RecipeNavigationMessage;
@@ -9,7 +10,6 @@ import org.jglrxavpok.mods.decraft.init.ModBlocks;
 import org.jglrxavpok.mods.decraft.init.ModItems;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers;
 import org.jglrxavpok.mods.decraft.stats.ModAchievementList;
-
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -24,6 +24,7 @@ public class CommonProxy
 	{
 		// initialize the configuration
 		ModConfiguration.preInit();
+		ModJsonConfiguration.preInit();
 
 		// register the blocks and items
 		ModBlocks.preInit();
