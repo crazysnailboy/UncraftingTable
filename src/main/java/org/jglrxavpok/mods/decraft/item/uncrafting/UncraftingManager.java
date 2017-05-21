@@ -8,7 +8,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
@@ -18,7 +17,6 @@ import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult.ResultType;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.NBTSensitiveRecipeHandlers.INBTSensitiveRecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.RecipeHandler;
-
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -246,7 +244,7 @@ public class UncraftingManager
 			if (ItemStack.areItemsEqualIgnoreDurability(itemStack, recipeOutput))
 			{
 				// load any custom mapping data we have for this item
-				ItemMapping mapping = ModJsonConfiguration.itemMappings.get(itemName);
+				ItemMapping mapping = ModJsonConfiguration.itemMappings.get(itemStack);
 				// if we have mapping data...
 				if (mapping != null)
 				{

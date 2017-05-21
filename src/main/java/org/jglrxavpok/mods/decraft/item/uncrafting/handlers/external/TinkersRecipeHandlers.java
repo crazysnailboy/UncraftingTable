@@ -5,8 +5,6 @@ import org.jglrxavpok.mods.decraft.common.config.ModJsonConfiguration;
 import org.jglrxavpok.mods.decraft.common.config.ModJsonConfiguration.ItemMapping;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.NBTSensitiveRecipeHandlers.INBTSensitiveRecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.ShapedOreRecipeHandler;
-
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 
@@ -35,12 +33,9 @@ public class TinkersRecipeHandlers
 		{
 			ItemStack[] result = super.getCraftingGrid(r);
 
-
-			String itemName = Item.REGISTRY.getNameForObject(inputStack.getItem()).toString();
-			if (ModJsonConfiguration.itemMappings.containsKey(itemName))
+			ItemMapping mapping = ModJsonConfiguration.itemMappings.get(inputStack);
+			if (mapping != null)
 			{
-				ItemMapping mapping = ModJsonConfiguration.itemMappings.get(itemName);
-
 				if (mapping.replaceSlots != null)
 				{
 					ItemStack textureBlock = ItemStack.loadItemStackFromNBT(inputStack.getTagCompound().getCompoundTag("textureBlock"));
