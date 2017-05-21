@@ -206,10 +206,6 @@ public class ModConfiguration
 		@SubscribeEvent
 		public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event)
 		{
-			if (ModUncrafting.MODID.equals(event.getModID()) && !event.isWorldRunning())
-			{
-				syncFromGUI();
-			}
 			if (ModUncrafting.MODID.equals(event.getModID()))
 			{
 				if (!event.isWorldRunning() || Minecraft.getMinecraft().isSingleplayer())
