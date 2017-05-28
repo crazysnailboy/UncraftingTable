@@ -10,6 +10,8 @@ import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.IC2RecipeHa
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.IC2RecipeHandlers.ShapelessIC2RecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.IGCMRecipeHandlers.ShapedIGCMRecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.IGCMRecipeHandlers.ShapelessIGCMRecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.MekanismRecipeHandlers.ShapedMekanismRecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.MekanismRecipeHandlers.ShapelessMekanismRecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.TinkersRecipeHandlers;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -79,6 +81,10 @@ public final class RecipeHandlers
 		// igcm recipe handlers
 		if (ShapedIGCMRecipeHandler.recipeClass != null) HANDLERS.put(ShapedIGCMRecipeHandler.recipeClass, new ShapedIGCMRecipeHandler());
 		if (ShapelessIGCMRecipeHandler.recipeClass != null) HANDLERS.put(ShapelessIGCMRecipeHandler.recipeClass, new ShapelessIGCMRecipeHandler());
+
+		// mekanism recipe handlers
+		if (ShapedMekanismRecipeHandler.recipeClass != null) HANDLERS.put(ShapedMekanismRecipeHandler.recipeClass, new ShapedMekanismRecipeHandler());
+		if (ShapelessMekanismRecipeHandler.recipeClass != null) HANDLERS.put(ShapelessMekanismRecipeHandler.recipeClass, new ShapelessMekanismRecipeHandler());
 
 		// tinker's construct recipe handlers
 		if (TinkersRecipeHandlers.TableRecipeHandler.recipeClass != null) HANDLERS.put(TinkersRecipeHandlers.TableRecipeHandler.recipeClass, new TinkersRecipeHandlers.TableRecipeHandler());

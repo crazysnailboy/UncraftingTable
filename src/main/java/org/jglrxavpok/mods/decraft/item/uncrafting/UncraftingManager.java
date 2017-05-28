@@ -244,9 +244,6 @@ public class UncraftingManager
 
 			if (ItemStack.areItemsEqualIgnoreDurability(itemStack, recipeOutput))
 			{
-				System.out.println( recipe.getClass().getCanonicalName() );
-
-
 				// load any custom mapping data we have for this item
 				ItemMapping mapping = ModJsonConfiguration.itemMappings.get(itemStack);
 				// if we have mapping data...
