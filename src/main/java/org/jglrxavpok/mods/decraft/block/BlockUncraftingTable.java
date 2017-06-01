@@ -1,11 +1,9 @@
 package org.jglrxavpok.mods.decraft.block;
 
 import javax.annotation.Nullable;
-
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.common.network.ModGuiHandler;
 import org.jglrxavpok.mods.decraft.stats.ModAchievementList;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;

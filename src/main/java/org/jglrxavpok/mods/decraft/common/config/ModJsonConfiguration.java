@@ -45,20 +45,10 @@ public class ModJsonConfiguration
 	public static ItemMappingMap itemMappings;
 
 
-	public static void preInit()
+	public static void initializeItemMapppings()
 	{
 		loadItemMappings();
 	}
-
-	public static void init()
-	{
-	}
-
-	public static void postInit()
-	{
-	}
-
-
 
 
 	private static void loadItemMappings()

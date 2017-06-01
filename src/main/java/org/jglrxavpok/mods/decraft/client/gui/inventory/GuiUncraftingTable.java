@@ -5,7 +5,6 @@ import org.jglrxavpok.mods.decraft.common.network.message.RecipeNavigationMessag
 import org.jglrxavpok.mods.decraft.inventory.ContainerUncraftingTable;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult.ResultType;
 import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -233,8 +232,8 @@ public class GuiUncraftingTable extends GuiContainer
 				{
 					// find the screen position of the corresponding slot from the output inventory
 					Slot renderSlot = container.getSlotFromInventory(container.uncraftOut, i);
-					slotX = renderSlot.xDisplayPosition;
-					slotY = renderSlot.yDisplayPosition;
+					slotX = renderSlot.xPos;
+					slotY = renderSlot.yPos;
 
 
 					// if the inventory slot is empty, render the item from the crafting recipe as the slot background

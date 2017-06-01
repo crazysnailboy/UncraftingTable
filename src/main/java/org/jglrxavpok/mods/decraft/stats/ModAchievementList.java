@@ -2,7 +2,6 @@ package org.jglrxavpok.mods.decraft.stats;
 
 import org.jglrxavpok.mods.decraft.event.ItemUncraftedEvent;
 import org.jglrxavpok.mods.decraft.init.ModBlocks;
-
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -10,16 +9,13 @@ import net.minecraft.stats.Achievement;
 import net.minecraft.stats.StatBasic;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.AchievementPage;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
 
 public class ModAchievementList
 {
-
-	// event handler
-	private static AchievementEventHandler achievementEventHandler = new AchievementEventHandler();
 
 	// achievements
 	public static final Achievement CRAFT_TABLE = new Achievement("createDecraftTable", "createDecraftTable", 1 - 2 - 2, -1 - 3, ModBlocks.UNCRAFTING_TABLE, null).registerStat();
@@ -30,10 +26,10 @@ public class ModAchievementList
 	public static final Achievement PORTEMANTEAU = new Achievement("porteManteauAchievement", "porteManteauAchievement", 3 - 2, -4 - 2, Blocks.OAK_FENCE, CRAFT_TABLE).registerStat();
 
 	// stats
-	public static final StatBasic uncraftedItemsStat = (StatBasic)(new StatBasic("stat.uncrafteditems", new TextComponentTranslation("stat.uncrafteditems", new Object[0])).registerStat());
+	public static final StatBasic ITEMS_UNCRAFTED_STATS = (StatBasic)(new StatBasic("stat.uncrafteditems", new TextComponentTranslation("stat.uncrafteditems", new Object[0])).registerStat());
 
 
-	public static void init()
+	public static void registerAchievementPage()
 	{
 		// register the acheivements page
 		AchievementPage.registerAchievementPage(new AchievementPage("Uncrafting Table",
@@ -44,19 +40,13 @@ public class ModAchievementList
 		);
 	}
 
-	public static void clientInit()
-	{
-		// register the event handlers with the event bus
-		MinecraftForge.EVENT_BUS.register(achievementEventHandler);
-	}
 
-
-
+	@EventBusSubscriber
 	public static class AchievementEventHandler
 	{
 
 		@SubscribeEvent
-		public void onItemCrafted(PlayerEvent.ItemCraftedEvent event)
+		public static void onItemCrafted(PlayerEvent.ItemCraftedEvent event)
 		{
 			Item item = event.crafting.getItem();
 
@@ -66,12 +56,8 @@ public class ModAchievementList
 			}
 		}
 
-		/**
-		 * Event handler for a successful uncrafting operation
-		 * @param event
-		 */
 		@SubscribeEvent
-		public void onItemUncrafted(ItemUncraftedEvent event)
+		public static void onItemUncrafted(ItemUncraftedEvent event)
 		{
 			// trigger the "uncrafted anything" achievement
 			event.player.addStat(UNCRAFT_ANY);
@@ -98,7 +84,7 @@ public class ModAchievementList
 			}
 
 			// increment the stat counter for the number of uncrafted items
-			event.player.addStat(uncraftedItemsStat, event.quantity);
+			event.player.addStat(ITEMS_UNCRAFTED_STATS, event.quantity);
 		}
 
 	}

@@ -3,7 +3,6 @@ package org.jglrxavpok.mods.decraft.common.network;
 import org.jglrxavpok.mods.decraft.block.BlockUncraftingTable;
 import org.jglrxavpok.mods.decraft.client.gui.inventory.GuiUncraftingTable;
 import org.jglrxavpok.mods.decraft.inventory.ContainerUncraftingTable;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;

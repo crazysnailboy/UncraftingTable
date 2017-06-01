@@ -4,7 +4,6 @@ import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
 import org.jglrxavpok.mods.decraft.item.ItemNugget;
 import org.jglrxavpok.mods.decraft.item.ItemNugget.EnumNuggetType;
-
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -22,7 +21,7 @@ public class ModItems
 	public static final Item NUGGET = new ItemNugget();
 
 
-	public static void preInit()
+	public static void registerItems()
 	{
 		if (ModConfiguration.registerNuggets)
 		{
@@ -31,7 +30,7 @@ public class ModItems
 		}
 	}
 
-	public static void clientPreInit()
+	public static void registerInventoryModels()
 	{
 		if (ModConfiguration.registerNuggets)
 		{
@@ -44,8 +43,7 @@ public class ModItems
 		}
 	}
 
-
-	public static void init()
+	public static void registerOreDictionaryEntries()
 	{
 		if (ModConfiguration.registerNuggets)
 		{
@@ -56,7 +54,13 @@ public class ModItems
 			OreDictionary.registerOre("shardEmerald", new ItemStack(NUGGET, 1, EnumNuggetType.EMERALD.getMetadata()));  // added for compatibility with Magic Bees
 			OreDictionary.registerOre("nuggetIron", new ItemStack(NUGGET, 1, EnumNuggetType.IRON.getMetadata()));
 			OreDictionary.registerOre("nuggetLeather", new ItemStack(NUGGET, 1, EnumNuggetType.LEATHER.getMetadata()));
+		}
+	}
 
+	public static void registerCraftingRecipes()
+	{
+		if (ModConfiguration.registerNuggets)
+		{
 			// register crafting recipes
 			// items to nuggets
 			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.NUGGET, 9, EnumNuggetType.DIAMOND.getMetadata()), new Object[] { Items.DIAMOND }));

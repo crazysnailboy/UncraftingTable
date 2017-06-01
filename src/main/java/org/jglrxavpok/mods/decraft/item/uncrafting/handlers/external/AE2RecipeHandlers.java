@@ -4,12 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.RecipeHandler;
-
 import com.google.common.collect.Lists;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 
@@ -149,7 +146,7 @@ public class AE2RecipeHandlers
 							ItemStack[] is = (ItemStack[])(inputObj.getClass().getMethod("getItemStackSet", (Class[])null).invoke(inputObj));
 							inputs.add(Lists.newArrayList(is));
 						}
-						catch (Exception ex) { ModUncrafting.instance.getLogger().catching(ex); }
+						catch (Exception ex) { ModUncrafting.LOGGER.catching(ex); }
 					}
 				}
 				// *** adapted from appeng.integration.modules.jei.ShapelessRecipeWrapper ***

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.NBTSensitiveRecipeHandlers.FireworksRecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.NBTSensitiveRecipeHandlers.TippedArrowRecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.AE2RecipeHandlers.ShapedAE2RecipeHandler;
@@ -14,7 +13,6 @@ import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.IC2RecipeHa
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.MekanismRecipeHandlers.ShapedMekanismRecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.MekanismRecipeHandlers.ShapelessMekanismRecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.TinkersRecipeHandlers;
-
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;

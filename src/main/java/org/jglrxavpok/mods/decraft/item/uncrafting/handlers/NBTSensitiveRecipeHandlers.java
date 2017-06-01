@@ -2,10 +2,8 @@ package org.jglrxavpok.mods.decraft.item.uncrafting.handlers;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.RecipeHandler;
-
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;

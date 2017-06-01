@@ -2,9 +2,7 @@ package org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.RecipeHandler;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 
