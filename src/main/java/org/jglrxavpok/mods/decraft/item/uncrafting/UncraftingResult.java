@@ -3,9 +3,7 @@ package org.jglrxavpok.mods.decraft.item.uncrafting;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.lang3.ArrayUtils;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 

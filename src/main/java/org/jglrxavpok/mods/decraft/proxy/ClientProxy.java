@@ -14,11 +14,8 @@ public class ClientProxy extends CommonProxy
 	{
 		super.preInit();
 
-		// initialize the configuration
-		ModConfiguration.clientPreInit();
-
-		// register the item models
-		ModItems.clientPreInit();
+		this.initializeConfig();
+		this.registerItemInventoryModels();
 	}
 
 	@Override
@@ -26,17 +23,36 @@ public class ClientProxy extends CommonProxy
 	{
 		super.init();
 
-		// register the block model
-		ModBlocks.clientInit();
-
-		// initialize the achievement event handlers
-		ModAchievementList.clientInit();
+		this.registerBlockInventoryModels();
+		this.registerAchievements();
 	}
 
 	@Override
 	public void postInit()
 	{
 		super.postInit();
+	}
+
+
+	private void initializeConfig()
+	{
+		ModConfiguration.clientPreInit();
+	}
+
+
+	private void registerAchievements()
+	{
+		ModAchievementList.registerEventHandler();
+	}
+
+	private void registerBlockInventoryModels()
+	{
+		ModBlocks.registerInventoryModels();
+	}
+
+	private void registerItemInventoryModels()
+	{
+		ModItems.registerInventoryModels();
 	}
 
 }

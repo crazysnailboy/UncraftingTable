@@ -10,7 +10,7 @@ buildscript {
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.7.2"
+version = "1.7.3-beta1"
 group = "org.jglrxavpok.mods.decraft"
 archivesBaseName = "[1.11.2]UncraftingTable"
 
@@ -29,7 +29,16 @@ minecraft {
     replaceIn "ModUncrafting.java"
 }
 
+repositories {
+    maven {
+        name = "jared maven"
+        url "http://blamejared.com/maven"
+    }
+}
+
 dependencies {
+	deobfCompile 'MineTweaker3:MineTweaker3-API:3.0.25.93'
+	deobfCompile 'MineTweaker3:MineTweaker3-MC1112-Main:1.11.2-3.0.25.93'
 }
 
 processResources {

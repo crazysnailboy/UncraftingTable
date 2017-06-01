@@ -177,7 +177,7 @@ public class IC2RecipeHandlers
 			}
 			catch (Exception ex)
 			{
-				ModUncrafting.instance.getLogger().catching(ex);
+				ModUncrafting.LOGGER.catching(ex);
 			}
 			return NonNullList.<ItemStack>create();
 		}

@@ -3,7 +3,6 @@ package org.jglrxavpok.mods.decraft;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jglrxavpok.mods.decraft.proxy.CommonProxy;
-
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -35,16 +34,10 @@ public class ModUncrafting
 	@SidedProxy(clientSide = CLIENT_PROXY_CLASS, serverSide = SERVER_PROXY_CLASS)
 	public static CommonProxy proxy;
 
-
-	private static Logger logger = LogManager.getLogger(MODID);
+	public static final Logger LOGGER = LogManager.getLogger(MODID);
 
 	private static SimpleNetworkWrapper network = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
 
-
-	public Logger getLogger()
-	{
-		return logger;
-	}
 
 	public SimpleNetworkWrapper getNetwork()
 	{

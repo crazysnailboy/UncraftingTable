@@ -25,7 +25,7 @@ public class FileUtils
 			stream.close();
 
 		}
-		catch(Exception ex){ ModUncrafting.instance.getLogger().catching(ex); }
+		catch(Exception ex){ ModUncrafting.LOGGER.catching(ex); }
 		return fileContents;
 	}
 

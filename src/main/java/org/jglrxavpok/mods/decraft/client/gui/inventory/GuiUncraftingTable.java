@@ -5,7 +5,6 @@ import org.jglrxavpok.mods.decraft.common.network.message.RecipeNavigationMessag
 import org.jglrxavpok.mods.decraft.inventory.ContainerUncraftingTable;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult.ResultType;
 import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;

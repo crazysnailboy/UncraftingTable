@@ -3,11 +3,9 @@ package org.jglrxavpok.mods.decraft.common.config;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.client.config.ModGuiConfigEntries;
 import org.jglrxavpok.mods.decraft.common.network.message.ConfigSyncMessage;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;

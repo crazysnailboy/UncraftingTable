@@ -1,7 +1,6 @@
 package org.jglrxavpok.mods.decraft.inventory;
 
 import org.jglrxavpok.mods.decraft.inventory.InventoryUncraftResult.StackType;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;

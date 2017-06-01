@@ -1,7 +1,6 @@
 package org.jglrxavpok.mods.decraft.common.network.message;
 
 import org.jglrxavpok.mods.decraft.inventory.ContainerUncraftingTable;
-
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;

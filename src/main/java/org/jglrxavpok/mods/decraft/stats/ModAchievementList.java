@@ -2,7 +2,6 @@ package org.jglrxavpok.mods.decraft.stats;
 
 import org.jglrxavpok.mods.decraft.event.ItemUncraftedEvent;
 import org.jglrxavpok.mods.decraft.init.ModBlocks;
-
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -33,7 +32,7 @@ public class ModAchievementList
 	public static final StatBasic uncraftedItemsStat = (StatBasic)(new StatBasic("stat.uncrafteditems", new TextComponentTranslation("stat.uncrafteditems", new Object[0])).registerStat());
 
 
-	public static void init()
+	public static void registerAchievementPage()
 	{
 		// register the acheivements page
 		AchievementPage.registerAchievementPage(new AchievementPage("Uncrafting Table",
@@ -44,7 +43,7 @@ public class ModAchievementList
 		);
 	}
 
-	public static void clientInit()
+	public static void registerEventHandler()
 	{
 		// register the event handlers with the event bus
 		MinecraftForge.EVENT_BUS.register(achievementEventHandler);

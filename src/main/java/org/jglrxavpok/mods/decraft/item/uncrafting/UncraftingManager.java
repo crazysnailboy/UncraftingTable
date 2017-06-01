@@ -235,7 +235,11 @@ public class UncraftingManager
 
 
 		// iterate over all the crafting recipes known to the crafting manager
-		List<IRecipe> recipeList = CraftingManager.getInstance().getRecipeList();
+		List<IRecipe> recipeList = new ArrayList<IRecipe>(CraftingManager.getInstance().getRecipeList());
+		recipeList.addAll(UncraftingRegistry.getInstance().getRecipeList());
+
+//		List<IRecipe> recipeList = UncraftingRegistry.getInstance().getRecipeList();
+//		List<IRecipe> recipeList = CraftingManager.getInstance().getRecipeList();
 		for ( IRecipe recipe : recipeList )
 		{
 			// if the current recipe can be used to craft the item
@@ -271,8 +275,17 @@ public class UncraftingManager
 
 					if (!craftingGrid.isEmpty())
 					{
+
+						if (UncraftingRegistry.getInstance().isRecipeBlocked(craftingGrid)) continue;
+						if (UncraftingRegistry.getInstance().recipeContainsBlockedItems(craftingGrid)) continue;
+
+
 						// if the recipe output contains the input item, disallow use of this recipe for uncrafting (e.g. white wool -> white wool + bonemeal)
 						if (craftingGridContainsInputItem(itemStack, craftingGrid)) continue;
+
+						// if the recipe contains items blocked by crafttweaker, remove them from the crafting grid
+						craftingGrid = removeItemsFromOutputBecauseCraftTweaker(craftingGrid);
+
 
 						// if we're doing a partial material return on a damaged item, remove items from the crafting grid as appropriate
 						if (ModConfiguration.uncraftMethod == UncraftingMethod.JGLRXAVPOK && itemStack.isItemStackDamageable() && itemStack.isItemDamaged())
@@ -296,7 +309,7 @@ public class UncraftingManager
 					}
 				}
 				// if we couldn't find a handler class for this IRecipe implementation, write some details to the log for debugging.
-				else ModUncrafting.instance.getLogger().error("findMatchingRecipes :: Unknown IRecipe implementation " + recipe.getClass().getCanonicalName() + " for item " + itemName);
+				else ModUncrafting.LOGGER.error("findMatchingRecipes :: Unknown IRecipe implementation " + recipe.getClass().getCanonicalName() + " for item " + itemName);
 			}
 		}
 
@@ -551,6 +564,18 @@ public class UncraftingManager
 		return ItemStack.EMPTY;
 	}
 
+
+	private static NonNullList<ItemStack> removeItemsFromOutputBecauseCraftTweaker(NonNullList<ItemStack> craftingGrid)
+	{
+		for ( int i = 0 ; i < craftingGrid.size() ; i++ )
+		{
+			if (UncraftingRegistry.getInstance().shouldIngredientBeRemoved(craftingGrid.get(i)))
+			{
+				craftingGrid.set(i, ItemStack.EMPTY);
+			}
+		}
+		return craftingGrid;
+	}
 
 
 	/**
