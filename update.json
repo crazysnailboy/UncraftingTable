@@ -1,10 +1,11 @@
 {
 	"homepage": "https://minecraft.curseforge.com/projects/jglrxavpoks-uncrafting-table/files/",
 	"promos": {
-		"1.11.2-latest": "1.7.2",
+		"1.11.2-latest": "1.7.3-beta1",
 		"1.11.2-recommended": "1.7.2"
 	},
 	"1.11.2": {
+		"1.7.3-beta1": "Support for Mekanism recipes, CraftTweaker scripting support (experimental)",
 		"1.7.2": "Added support for Tinker's Construct and InGameConfigManager",
 		"1.7.1": "Full release version of 1.7.1-pre15",
 		"1.7.1-pre15": "Added support for Industrial Craft",
