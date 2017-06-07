@@ -1,10 +1,14 @@
 package org.jglrxavpok.mods.decraft.common.config;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import org.apache.commons.io.IOUtils;
 import org.jglrxavpok.mods.decraft.ModUncrafting;
-import org.jglrxavpok.mods.decraft.util.FileUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -42,30 +46,12 @@ public class ModJsonConfiguration
 
 	}
 
+	public static final ItemMappingMap ITEM_MAPPINGS = new ItemMappingMap();
 
-	public static ItemMappingMap itemMappings;
 
-	public static void preInit()
+	public static void loadItemMappings()
 	{
-		loadItemMappings();
-	}
-
-	public static void init()
-	{
-	}
-
-	public static void postInit()
-	{
-	}
-
-
-
-
-	private static void loadItemMappings()
-	{
-		itemMappings = new ItemMappingMap();
-
-		String fileContents = FileUtils.readFileContentsFromMod("assets/" + ModUncrafting.MODID + "/data/item-mappings.json");
+		String fileContents = readFileContentsFromMod("assets/" + ModUncrafting.MODID + "/data/item-mappings.json");
 
 		JsonObject jsonObject = new JsonParser().parse(fileContents).getAsJsonObject();
 		Gson gson = new Gson();
@@ -88,8 +74,27 @@ public class ModJsonConfiguration
 			if (jsonMapping.has("matchField")) itemMapping.matchField = jsonMapping.get("matchField").getAsBoolean();
 			if (jsonMapping.has("fieldNames")) itemMapping.fieldNames = gson.fromJson(jsonMapping.get("fieldNames").getAsJsonArray(), String[].class);
 
-			itemMappings.put(itemName, itemMapping);
+			ITEM_MAPPINGS.put(itemName, itemMapping);
 		}
+	}
+
+
+	private static String readFileContentsFromMod(String fileName)
+	{
+		String fileContents = "";
+		try
+		{
+			InputStream stream = ModUncrafting.instance.getClass().getClassLoader().getResourceAsStream(fileName);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
+
+			fileContents = IOUtils.toString(stream);
+
+			reader.close();
+			stream.close();
+
+		}
+		catch(Exception ex){ ModUncrafting.LOGGER.catching(ex); }
+		return fileContents;
 	}
 
 }

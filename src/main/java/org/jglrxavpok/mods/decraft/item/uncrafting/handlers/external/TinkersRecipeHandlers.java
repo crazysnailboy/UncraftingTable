@@ -34,7 +34,7 @@ public class TinkersRecipeHandlers
 		{
 			NonNullList<ItemStack> result = super.getCraftingGrid(r);
 
-			ItemMapping mapping = ModJsonConfiguration.itemMappings.get(inputStack);
+			ItemMapping mapping = ModJsonConfiguration.ITEM_MAPPINGS.get(inputStack);
 			if (mapping != null)
 			{
 				if (mapping.replaceSlots != null)
