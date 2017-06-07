@@ -20,7 +20,7 @@ archivesBaseName = "[1.9.4]UncraftingTable"
 minecraft {
     version = "1.9.4-12.17.0.2051"
     runDir = "run"
-    mappings = "snapshot_20160518"
+    mappings = "stable_26"
     makeObfSourceJar = false
     
     replace "\${version}", project.version
