@@ -9,7 +9,7 @@ import org.jglrxavpok.mods.decraft.common.network.message.RecipeNavigationMessag
 import org.jglrxavpok.mods.decraft.init.ModBlocks;
 import org.jglrxavpok.mods.decraft.init.ModItems;
 import org.jglrxavpok.mods.decraft.integration.ModIntegrations;
-import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingRegistry;
+import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingManager;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers;
 import org.jglrxavpok.mods.decraft.stats.ModAchievementList;
 import net.minecraft.init.Blocks;
@@ -51,7 +51,7 @@ public class CommonProxy
 	private void initializeConfig()
 	{
 		ModConfiguration.initializeConfiguration();
-		ModJsonConfiguration.initializeItemMapppings();
+		ModJsonConfiguration.loadItemMappings();
 	}
 
 	private void initializeRecipeHandlers()
@@ -102,17 +102,17 @@ public class CommonProxy
 	private void registerUncraftingRecipes()
 	{
 		// damaged anvil recipes
-		UncraftingRegistry.getInstance().addUncraftingRecipe(new ShapedOreRecipe(new ItemStack(Blocks.ANVIL, 1, 1), new Object[] { "B B", " I ", "I I", 'B', "blockIron", 'I', "ingotIron" }));
-		UncraftingRegistry.getInstance().addUncraftingRecipe(new ShapedOreRecipe(new ItemStack(Blocks.ANVIL, 1, 2), new Object[] { "B  ", " I ", "  I", 'B', "blockIron", 'I', "ingotIron" }));
+		UncraftingManager.addUncraftingRecipe(new ShapedOreRecipe(new ItemStack(Blocks.ANVIL, 1, 1), new Object[] { "B B", " I ", "I I", 'B', "blockIron", 'I', "ingotIron" }));
+		UncraftingManager.addUncraftingRecipe(new ShapedOreRecipe(new ItemStack(Blocks.ANVIL, 1, 2), new Object[] { "B  ", " I ", "  I", 'B', "blockIron", 'I', "ingotIron" }));
 
 		if (!Loader.isModLoaded("craftablehorsearmour"))
 		{
 			// horse armor recipes
-			UncraftingRegistry.getInstance().addUncraftingRecipe(new ShapedOreRecipe(Items.IRON_HORSE_ARMOR, new Object[] { "  I", "IWI", "III", 'I', "ingotIron", 'W', Item.getItemFromBlock(Blocks.WOOL) }));
-			UncraftingRegistry.getInstance().addUncraftingRecipe(new ShapedOreRecipe(Items.GOLDEN_HORSE_ARMOR, new Object[] { "  G", "GWG", "GGG", 'G', "ingotGold", 'W', new ItemStack(Item.getItemFromBlock(Blocks.WOOL), 1, 4) }));
-			UncraftingRegistry.getInstance().addUncraftingRecipe(new ShapedOreRecipe(Items.DIAMOND_HORSE_ARMOR, new Object[] { "  D", "DWD", "DDD", 'D', "gemDiamond", 'W', new ItemStack(Item.getItemFromBlock(Blocks.WOOL), 1, 3) }));
+			UncraftingManager.addUncraftingRecipe(new ShapedOreRecipe(Items.IRON_HORSE_ARMOR, new Object[] { "  I", "IWI", "III", 'I', "ingotIron", 'W', Item.getItemFromBlock(Blocks.WOOL) }));
+			UncraftingManager.addUncraftingRecipe(new ShapedOreRecipe(Items.GOLDEN_HORSE_ARMOR, new Object[] { "  G", "GWG", "GGG", 'G', "ingotGold", 'W', new ItemStack(Item.getItemFromBlock(Blocks.WOOL), 1, 4) }));
+			UncraftingManager.addUncraftingRecipe(new ShapedOreRecipe(Items.DIAMOND_HORSE_ARMOR, new Object[] { "  D", "DWD", "DDD", 'D', "gemDiamond", 'W', new ItemStack(Item.getItemFromBlock(Blocks.WOOL), 1, 3) }));
 			// saddle recipe
-			UncraftingRegistry.getInstance().addUncraftingRecipe(new ShapedOreRecipe(Items.SADDLE, new Object[] { "LLL", "S S", "I I", 'L', "leather", 'S', Items.STRING, 'I', "ingotIron" }));
+			UncraftingManager.addUncraftingRecipe(new ShapedOreRecipe(Items.SADDLE, new Object[] { "LLL", "S S", "I I", 'L', "leather", 'S', Items.STRING, 'I', "ingotIron" }));
 
 		}
 	}

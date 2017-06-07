@@ -2,7 +2,7 @@ package org.jglrxavpok.mods.decraft.integration.crafttweaker;
 
 import java.util.List;
 import org.jglrxavpok.mods.decraft.integration.crafttweaker.mtlib.BaseListAddition;
-import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingRegistry;
+import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingManager;
 import minetweaker.MineTweakerAPI;
 import minetweaker.api.item.IIngredient;
 import minetweaker.api.item.IItemStack;
@@ -39,8 +39,7 @@ public class CraftTweakerIntegration
 			ShapedRecipe recipe = new ShapedRecipe(output, ingredients, function, action, false);
 			IRecipe irecipe = RecipeConverter.convert(recipe);
 
-			MineTweakerAPI.apply(new ActionAddRecipe(irecipe, UncraftingRegistry.recipes, "Added Shaped Recipe"));
-//			MineTweakerAPI.apply(new ActionAddUncraftingRecipe(irecipe));
+			MineTweakerAPI.apply(new ActionAddRecipe(irecipe, UncraftingManager.recipes, "Added Shaped Recipe"));
 		}
 
 		@ZenMethod
@@ -49,8 +48,7 @@ public class CraftTweakerIntegration
 			ShapelessRecipe recipe = new ShapelessRecipe(output, ingredients, function, action);
 			IRecipe irecipe = RecipeConverter.convert(recipe);
 
-			MineTweakerAPI.apply(new ActionAddRecipe(irecipe, UncraftingRegistry.recipes, "Added Shapeless Recipe"));
-//			MineTweakerAPI.apply(new ActionAddUncraftingRecipe(irecipe));
+			MineTweakerAPI.apply(new ActionAddRecipe(irecipe, UncraftingManager.recipes, "Added Shapeless Recipe"));
 		}
 
 		@ZenMethod
@@ -59,8 +57,7 @@ public class CraftTweakerIntegration
 			ShapedRecipe recipe = new ShapedRecipe(output, ingredients, function, action, false);
 			IRecipe irecipe = RecipeConverter.convert(recipe);
 
-			MineTweakerAPI.apply(new ActionAddRecipe(irecipe, UncraftingRegistry.blockedRecipes, "Blocked Shaped Recipe"));
-//			MineTweakerAPI.apply(new ActionAddBlockedRecipe(irecipe));
+			MineTweakerAPI.apply(new ActionAddRecipe(irecipe, UncraftingManager.blockedRecipes, "Blocked Shaped Recipe"));
 		}
 
 		@ZenMethod
@@ -69,8 +66,7 @@ public class CraftTweakerIntegration
 			ShapelessRecipe recipe = new ShapelessRecipe(output, ingredients, function, action);
 			IRecipe irecipe = RecipeConverter.convert(recipe);
 
-			MineTweakerAPI.apply(new ActionAddRecipe(irecipe, UncraftingRegistry.blockedRecipes, "Blocked Shapeless Recipe"));
-//			MineTweakerAPI.apply(new ActionAddBlockedRecipe(irecipe));
+			MineTweakerAPI.apply(new ActionAddRecipe(irecipe, UncraftingManager.blockedRecipes, "Blocked Shapeless Recipe"));
 		}
 
 	}
@@ -94,22 +90,19 @@ public class CraftTweakerIntegration
 		@ZenMethod
 		public static void blockUncrafting(IIngredient ingredient)
 		{
-			MineTweakerAPI.apply(new ActionAddItemStack(getItemStack(ingredient), UncraftingRegistry.blockedItems, "Blocked Item"));
-//			MineTweakerAPI.apply(new ActionAddBlockedItem(getItemStack(ingredient)));
+			MineTweakerAPI.apply(new ActionAddItemStack(getItemStack(ingredient), UncraftingManager.blockedItems, "Blocked Item"));
 		}
 
 		@ZenMethod
 		public static void blockIngredient(IIngredient ingredient)
 		{
-			MineTweakerAPI.apply(new ActionAddItemStack(getItemStack(ingredient), UncraftingRegistry.blockedIngredients, "Blocked Ingredient"));
-//			MineTweakerAPI.apply(new ActionAddBlockedIngredient(getItemStack(ingredient)));
+			MineTweakerAPI.apply(new ActionAddItemStack(getItemStack(ingredient), UncraftingManager.blockedIngredients, "Blocked Ingredient"));
 		}
 
 		@ZenMethod
 		public static void removeIngredient(IIngredient ingredient)
 		{
-			MineTweakerAPI.apply(new ActionAddItemStack(getItemStack(ingredient), UncraftingRegistry.removedIngredients, "Removed Ingredient"));
-//			MineTweakerAPI.apply(new ActionAddRemovedIngredient(getItemStack(ingredient)));
+			MineTweakerAPI.apply(new ActionAddItemStack(getItemStack(ingredient), UncraftingManager.removedIngredients, "Removed Ingredient"));
 		}
 
 	}
