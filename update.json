@@ -1,25 +1,10 @@
 {
 	"homepage": "https://minecraft.curseforge.com/projects/jglrxavpoks-uncrafting-table/files/",
 	"promos": {
-		"1.11-latest": "1.7.1",
-		"1.11-recommended": "1.7.1"
+		"1.12-latest": "1.8-beta1",
+		"1.12-recommended": "1.8-beta1"
 	},
-	"1.11": {
-		"1.7.1": "Full release version of 1.7.1-pre14",
-		"1.7.1-pre14": "leather strips and rabbit hide, unenchanting now costs XP, more config options",
-		"1.7.1-pre13": "added ability to uncraft fireworks and tipped arrows, fixed bug with input stack not being cleared after uncrafting",
-		"1.7.1-pre12": "CraftTweaker bug fix, Chinese translation",
-		"1.7.1-pre11": "fixed bug with excluded items config",
-		"1.7.1-pre10": "various bug fixes",
-		"1.7.1-pre9": "added network message to sync config when player joins server",
-		"1.7.1-pre8": "fixed dupe glitch, fixed shift click into wrong slot",
-		"1.7.1-pre7": "fixed two bugs",
-		"1.7.1-pre6": "minor changes only",
-		"1.7.1-pre5": "fixed bug with multiplier not being correctly applied to stacked items",
-		"1.7.1-pre4": "fixed duplication glitch if player doesn't have enough XP",
-		"1.7.1-pre3": "fixed incompatibility with Iron Chests",
-		"1.7.1-pre2": "fixed ItemStack bug with nugget lookup in Ore Dictionary",
-		"1.7.1-pre1": "new version with lots of new features!",
-		"1.7": ""
+	"1.12": {
+		"1.8-beta1": "Initial 1.12 release"
 	}
 }

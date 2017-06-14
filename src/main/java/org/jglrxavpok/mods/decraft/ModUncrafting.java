@@ -3,7 +3,6 @@ package org.jglrxavpok.mods.decraft;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jglrxavpok.mods.decraft.proxy.CommonProxy;
-
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -15,15 +14,15 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
 
-@Mod(modid = ModUncrafting.MODID, name = ModUncrafting.MODNAME, version = ModUncrafting.VERSION, guiFactory = ModUncrafting.GUIFACTORY, updateJSON = ModUncrafting.UPDATEJSON)
+@Mod(modid = ModUncrafting.MODID, name = ModUncrafting.NAME, version = ModUncrafting.VERSION, guiFactory = ModUncrafting.GUIFACTORY, updateJSON = ModUncrafting.UPDATEJSON)
 public class ModUncrafting
 {
 
 	public static final String MODID = "uncraftingtable";
-	public static final String MODNAME = "jglrxavpok's Uncrafting Table";
+	public static final String NAME = "jglrxavpok's Uncrafting Table";
 	public static final String VERSION = "${version}";
 	public static final String GUIFACTORY = "org.jglrxavpok.mods.decraft.client.config.ModGuiFactory";
-	public static final String UPDATEJSON = "https://raw.githubusercontent.com/crazysnailboy/UncraftingTable/1.11/update.json";
+	public static final String UPDATEJSON = "https://raw.githubusercontent.com/crazysnailboy/UncraftingTable/1.12/update.json";
 
 	private static final String CLIENT_PROXY_CLASS = "org.jglrxavpok.mods.decraft.proxy.ClientProxy";
 	private static final String SERVER_PROXY_CLASS = "org.jglrxavpok.mods.decraft.proxy.CommonProxy";
@@ -35,16 +34,10 @@ public class ModUncrafting
 	@SidedProxy(clientSide = CLIENT_PROXY_CLASS, serverSide = SERVER_PROXY_CLASS)
 	public static CommonProxy proxy;
 
-
-	private static Logger logger = LogManager.getLogger(MODID);
+	public static final Logger LOGGER = LogManager.getLogger(MODID);
 
 	private static SimpleNetworkWrapper network = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
 
-
-	public Logger getLogger()
-	{
-		return logger;
-	}
 
 	public SimpleNetworkWrapper getNetwork()
 	{

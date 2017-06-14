@@ -28,11 +28,11 @@ public class ItemNugget extends Item
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list)
+	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
 	{
 		for (EnumNuggetType nuggetType : EnumNuggetType.values())
 		{
-			list.add(new ItemStack(item, 1, nuggetType.getMetadata()));
+			list.add(new ItemStack(this, 1, nuggetType.getMetadata()));
 		}
 	}
 

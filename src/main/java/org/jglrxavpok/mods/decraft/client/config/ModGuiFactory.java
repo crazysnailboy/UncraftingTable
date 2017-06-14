@@ -1,36 +1,23 @@
 package org.jglrxavpok.mods.decraft.client.config;
 
-import java.util.Set;
-
-import net.minecraft.client.Minecraft;
+import org.jglrxavpok.mods.decraft.ModUncrafting;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraftforge.fml.client.IModGuiFactory;
+import net.minecraftforge.fml.client.DefaultGuiFactory;
 
 
-public class ModGuiFactory implements IModGuiFactory
+public class ModGuiFactory extends DefaultGuiFactory
 {
-	@Override
-	public void initialize(Minecraft minecraftInstance)
-	{
 
+	public ModGuiFactory()
+	{
+		super(ModUncrafting.MODID, ModUncrafting.NAME);
 	}
 
 	@Override
-	public Class<? extends GuiScreen> mainConfigGuiClass()
+	public GuiScreen createConfigGui(GuiScreen parentScreen)
 	{
-		return ModGuiConfig.class;
+		return new ModGuiConfig(parentScreen);
 	}
 
-	@Override
-	public Set<RuntimeOptionCategoryElement> runtimeGuiCategories()
-	{
-		return null;
-	}
 
-	@SuppressWarnings("deprecation")
-	@Override
-	public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element)
-	{
-		return null;
-	}
 }

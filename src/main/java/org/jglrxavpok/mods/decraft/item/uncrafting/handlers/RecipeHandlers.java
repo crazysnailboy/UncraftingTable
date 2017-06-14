@@ -1,16 +1,14 @@
 package org.jglrxavpok.mods.decraft.item.uncrafting.handlers;
 
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.NBTSensitiveRecipeHandlers.FireworksRecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.NBTSensitiveRecipeHandlers.TippedArrowRecipeHandler;
-
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.RecipeFireworks;
 import net.minecraft.item.crafting.RecipeTippedArrow;
 import net.minecraft.item.crafting.RecipesMapExtending;
@@ -128,48 +126,49 @@ public final class RecipeHandlers
 		/**
 		 * Converts a collection of OreDictionary recipe items into a list of ItemStacks
 		 */
-		protected static NonNullList<ItemStack> getOreRecipeItems(List<Object> itemObjects)
-		{
-			NonNullList<ItemStack> itemStacks = NonNullList.<ItemStack>withSize(9, ItemStack.EMPTY);
-			for ( int i = 0 ; i < itemObjects.size() ; i++ )
-			{
-				Object itemObject = itemObjects.get(i);
-				ItemStack itemStack;
-
-				if (itemObject instanceof ItemStack)
-				{
-					itemStack = (ItemStack)itemObject;
-				}
-				else if (itemObject instanceof List)
-				{
-					List list = (List)itemObject;
-
-					if (list.isEmpty()) // this happens if there's an ore dictionary recipe registered, but no items registered for that dictionary entry
-					{
-						// abort parsing this recipe and return an empty list
-						return NonNullList.<ItemStack>create();
-					}
-
-					itemStack = ((List<ItemStack>)itemObject).get(0);
-				}
-				else itemStack = ItemStack.EMPTY;
-
-				itemStacks.set(i, itemStack);
-			}
-			return itemStacks;
-		}
+//		protected static NonNullList<ItemStack> getOreRecipeItems(List<Object> itemObjects)
+//		{
+//			NonNullList<ItemStack> itemStacks = NonNullList.<ItemStack>withSize(9, ItemStack.EMPTY);
+//			for ( int i = 0 ; i < itemObjects.size() ; i++ )
+//			{
+//				Object itemObject = itemObjects.get(i);
+//				ItemStack itemStack;
+//
+//				if (itemObject instanceof ItemStack)
+//				{
+//					itemStack = (ItemStack)itemObject;
+//				}
+//				else if (itemObject instanceof List)
+//				{
+//					List list = (List)itemObject;
+//
+//					if (list.isEmpty()) // this happens if there's an ore dictionary recipe registered, but no items registered for that dictionary entry
+//					{
+//						// abort parsing this recipe and return an empty list
+//						return NonNullList.<ItemStack>create();
+//					}
+//
+//					itemStack = ((List<ItemStack>)itemObject).get(0);
+//				}
+//				else itemStack = ItemStack.EMPTY;
+//
+//				itemStacks.set(i, itemStack);
+//			}
+//			return itemStacks;
+//		}
 
 
 		/**
 		 * Copies the ItemStacks in a list to a new list, whilst normalising the item damage for the OreDictionary wildcard value
 		 */
-		protected static NonNullList<ItemStack> copyRecipeStacks(List<ItemStack> inputStacks)
+		protected static NonNullList<ItemStack> copyRecipeStacks(NonNullList<Ingredient> inputStacks)
 		{
 			NonNullList<ItemStack> outputStacks = NonNullList.<ItemStack>withSize(9, ItemStack.EMPTY);
 
 			for ( int i = 0 ; i < inputStacks.size() ; i++ )
 			{
-				ItemStack outputStack = inputStacks.get(i).copy();
+				ItemStack[] matchingStacks = inputStacks.get(i).getMatchingStacks();
+				ItemStack outputStack = (matchingStacks.length > 0 ? matchingStacks[0].copy() : ItemStack.EMPTY);
 				if (outputStack.getItemDamage() == Short.MAX_VALUE) outputStack.setItemDamage(0);
 				outputStacks.set(i, outputStack);
 			}
@@ -193,14 +192,14 @@ public final class RecipeHandlers
 			ShapedRecipes shapedRecipe = (ShapedRecipes)r;
 
 			// get a copy of the recipe items with normalised metadata
-			List<ItemStack> recipeItems = copyRecipeStacks(Arrays.asList(shapedRecipe.recipeItems));
+			NonNullList<ItemStack> recipeStacks = copyRecipeStacks(shapedRecipe.recipeItems);
 
 			// get the recipe dimensions
 			int recipeWidth = shapedRecipe.recipeWidth;
 			int recipeHeight = shapedRecipe.recipeHeight;
 
 			// rearrange the itemstacks according to the recipe width and height
-			return reshapeRecipe(recipeItems, recipeWidth, recipeHeight);
+			return reshapeRecipe(recipeStacks, recipeWidth, recipeHeight);
 		}
 	}
 
@@ -218,10 +217,10 @@ public final class RecipeHandlers
 			ShapelessRecipes shapelessRecipe = (ShapelessRecipes)r;
 
 			// get a copy of the recipe items with normalised metadata
-			NonNullList<ItemStack> recipeItems = copyRecipeStacks(shapelessRecipe.recipeItems);
+			NonNullList<ItemStack> recipeStacks = copyRecipeStacks(shapelessRecipe.recipeItems);
 
 			// return the itemstacks
-			return recipeItems;
+			return recipeStacks;
 		}
 	}
 
@@ -239,16 +238,16 @@ public final class RecipeHandlers
 			ShapedOreRecipe shapedRecipe = (ShapedOreRecipe)r;
 
 			// obtain the recipe items and the recipe dimensions
-			List<ItemStack> recipeItems = copyRecipeStacks(getOreRecipeItems(Arrays.asList(shapedRecipe.getInput())));
+			NonNullList<ItemStack> recipeStacks = copyRecipeStacks(shapedRecipe.getIngredients()); // copyRecipeStacks(getOreRecipeItems(shapedRecipe.getIngredients()));
 
-			if (!recipeItems.isEmpty())
+			if (!recipeStacks.isEmpty())
 			{
 				// get the recipe dimensions
 				int recipeWidth = shapedRecipe.getWidth();
 				int recipeHeight = shapedRecipe.getHeight();
 
 				// rearrange the itemstacks according to the recipe width and height
-				return reshapeRecipe(recipeItems, recipeWidth, recipeHeight);
+				return reshapeRecipe(recipeStacks, recipeWidth, recipeHeight);
 			}
 			else return NonNullList.<ItemStack>create();
 		}
@@ -268,12 +267,12 @@ public final class RecipeHandlers
 			ShapelessOreRecipe shapelessRecipe = (ShapelessOreRecipe)r;
 
 			// get a copy of the recipe items with normalised metadata
-			NonNullList<ItemStack> recipeItems = copyRecipeStacks(getOreRecipeItems(shapelessRecipe.getInput()));
+			NonNullList<ItemStack> recipeStacks = copyRecipeStacks(shapelessRecipe.getIngredients()); // copyRecipeStacks(getOreRecipeItems(shapelessRecipe.getIngredients()));
 
-			if (!recipeItems.isEmpty())
+			if (!recipeStacks.isEmpty())
 			{
 				// return the itemstacks
-				return recipeItems;
+				return recipeStacks;
 			}
 			else return NonNullList.<ItemStack>create();
 		}

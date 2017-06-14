@@ -2,8 +2,6 @@ package org.jglrxavpok.mods.decraft.block;
 
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.common.network.ModGuiHandler;
-import org.jglrxavpok.mods.decraft.stats.ModAchievementList;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -32,30 +30,30 @@ public class BlockUncraftingTable extends Block
 
 
 	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		if (!worldIn.isRemote)
+		if (!world.isRemote)
 		{
-			playerIn.openGui(ModUncrafting.instance, ModGuiHandler.GUI_TABLE, worldIn, pos.getX(), pos.getY(), pos.getZ());
-			checkForPorteManteau(playerIn, worldIn, pos);
+			player.openGui(ModUncrafting.instance, ModGuiHandler.GUI_TABLE, world, pos.getX(), pos.getY(), pos.getZ());
+			checkForPorteManteau(player, world, pos);
 		}
 		return true;
 	}
 
 
-	private void checkForPorteManteau(EntityPlayer playerIn, World worldIn, BlockPos pos)
+	private void checkForPorteManteau(EntityPlayer player, World world, BlockPos pos)
 	{
 		boolean furnace = false;
 		boolean chest = false;
 		boolean workbench = false;
 
 		// if the block beneath is a fence...
-		if (worldIn.getBlockState(pos.down()).getBlock() instanceof net.minecraft.block.BlockFence)
+		if (world.getBlockState(pos.down()).getBlock() instanceof net.minecraft.block.BlockFence)
 		{
-			Block blockEast = worldIn.getBlockState(pos.east()).getBlock();
-			Block blockWest = worldIn.getBlockState(pos.west()).getBlock();
-			Block blockNorth = worldIn.getBlockState(pos.north()).getBlock();
-			Block blockSouth = worldIn.getBlockState(pos.south()).getBlock();
+			Block blockEast = world.getBlockState(pos.east()).getBlock();
+			Block blockWest = world.getBlockState(pos.west()).getBlock();
+			Block blockNorth = world.getBlockState(pos.north()).getBlock();
+			Block blockSouth = world.getBlockState(pos.south()).getBlock();
 
 			// check if one of the adjacent blocks is a furnace
 			if (
@@ -93,7 +91,7 @@ public class BlockUncraftingTable extends Block
 			// if the block is adjacent to all three, trigger the achievement
 			if (furnace && chest && workbench)
 			{
-				playerIn.addStat(ModAchievementList.PORTEMANTEAU);
+//				player.addStat(ModAchievementList.PORTEMANTEAU);
 			}
 		}
 	}

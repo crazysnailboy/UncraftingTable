@@ -4,7 +4,7 @@ import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
 import org.jglrxavpok.mods.decraft.item.ItemNugget;
 import org.jglrxavpok.mods.decraft.item.ItemNugget.EnumNuggetType;
-
+import org.jglrxavpok.mods.decraft.item.crafting.RecipeHelper;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -12,8 +12,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.oredict.ShapedOreRecipe;
-import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 
 public class ModItems
@@ -21,7 +19,8 @@ public class ModItems
 
 	public static final Item NUGGET = new ItemNugget();
 
-	public static void preInit()
+
+	public static void registerItems()
 	{
 		if (ModConfiguration.registerNuggets)
 		{
@@ -30,21 +29,23 @@ public class ModItems
 		}
 	}
 
-	public static void clientPreInit()
+	public static void registerInventoryModels()
 	{
 		if (ModConfiguration.registerNuggets)
 		{
 			// register the item models
-			for (ItemNugget.EnumNuggetType nuggetType : ItemNugget.EnumNuggetType.values())
+			for (EnumNuggetType nuggetType : EnumNuggetType.values())
 			{
-				ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation(ModUncrafting.MODID + ":" + nuggetType.getRegistryName(), "inventory");
-				ModelLoader.setCustomModelResourceLocation(NUGGET, nuggetType.getMetadata(), itemModelResourceLocation);
+				if (nuggetType.getRegistryName() != null)
+				{
+					ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation(ModUncrafting.MODID + ":" + nuggetType.getRegistryName(), "inventory");
+					ModelLoader.setCustomModelResourceLocation(NUGGET, nuggetType.getMetadata(), itemModelResourceLocation);
+				}
 			}
 		}
 	}
 
-
-	public static void init()
+	public static void registerOreDictionaryEntries()
 	{
 		if (ModConfiguration.registerNuggets)
 		{
@@ -53,20 +54,23 @@ public class ModItems
 			OreDictionary.registerOre("shardDiamond", new ItemStack(NUGGET, 1, EnumNuggetType.DIAMOND.getMetadata()));  // added for compatibility with Magic Bees
 			OreDictionary.registerOre("nuggetEmerald", new ItemStack(NUGGET, 1, EnumNuggetType.EMERALD.getMetadata()));
 			OreDictionary.registerOre("shardEmerald", new ItemStack(NUGGET, 1, EnumNuggetType.EMERALD.getMetadata()));  // added for compatibility with Magic Bees
-			OreDictionary.registerOre("nuggetIron", new ItemStack(NUGGET, 1, EnumNuggetType.IRON.getMetadata()));
 			OreDictionary.registerOre("nuggetLeather", new ItemStack(NUGGET, 1, EnumNuggetType.LEATHER.getMetadata()));
+		}
+	}
 
+	public static void registerCraftingRecipes()
+	{
+		if (ModConfiguration.registerNuggets)
+		{
 			// register crafting recipes
 			// items to nuggets
-			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.NUGGET, 9, EnumNuggetType.DIAMOND.getMetadata()), new Object[] { Items.DIAMOND }));
-			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.NUGGET, 9, EnumNuggetType.EMERALD.getMetadata()), new Object[] { Items.EMERALD }));
-			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.NUGGET, 9, EnumNuggetType.IRON.getMetadata()), new Object[] { Items.IRON_INGOT }));
-			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.NUGGET, 9, EnumNuggetType.LEATHER.getMetadata()), new Object[] { Items.LEATHER }));
+			RecipeHelper.addShapelessRecipe(new ItemStack(ModItems.NUGGET, 9, EnumNuggetType.DIAMOND.getMetadata()), new Object[] { Items.DIAMOND });
+			RecipeHelper.addShapelessRecipe(new ItemStack(ModItems.NUGGET, 9, EnumNuggetType.EMERALD.getMetadata()), new Object[] { Items.EMERALD });
+			RecipeHelper.addShapelessRecipe(new ItemStack(ModItems.NUGGET, 9, EnumNuggetType.LEATHER.getMetadata()), new Object[] { Items.LEATHER });
 			// nuggets to items
-			GameRegistry.addRecipe(new ShapedOreRecipe(Items.DIAMOND, new Object[] { "FFF", "FFF", "FFF", Character.valueOf('F'), "nuggetDiamond" }));
-			GameRegistry.addRecipe(new ShapedOreRecipe(Items.EMERALD, new Object[] { "FFF", "FFF", "FFF", Character.valueOf('F'), "nuggetEmerald" }));
-			GameRegistry.addRecipe(new ShapedOreRecipe(Items.IRON_INGOT, new Object[] { "FFF", "FFF", "FFF", Character.valueOf('F'), "nuggetIron" }));
-			GameRegistry.addRecipe(new ShapedOreRecipe(Items.LEATHER, new Object[] { "FFF", "FFF", "FFF", Character.valueOf('F'), "nuggetLeather" }));
+			RecipeHelper.addShapedRecipe(Items.DIAMOND, new Object[] { "FFF", "FFF", "FFF", 'F', new ItemStack(NUGGET, 1, EnumNuggetType.DIAMOND.getMetadata()) });
+			RecipeHelper.addShapedRecipe(Items.EMERALD, new Object[] { "FFF", "FFF", "FFF", 'F', new ItemStack(NUGGET, 1, EnumNuggetType.EMERALD.getMetadata()) });
+			RecipeHelper.addShapedRecipe(Items.LEATHER, new Object[] { "FFF", "FFF", "FFF", 'F', new ItemStack(NUGGET, 1, EnumNuggetType.LEATHER.getMetadata()) });
 		}
 	}
 

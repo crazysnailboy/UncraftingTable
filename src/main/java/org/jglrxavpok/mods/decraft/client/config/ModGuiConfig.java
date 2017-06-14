@@ -21,7 +21,7 @@ public class ModGuiConfig extends GuiConfig
 
 	public ModGuiConfig(GuiScreen parent)
 	{
-		super(parent, getConfigElements(), ModUncrafting.MODID, false, false, ModUncrafting.MODNAME);
+		super(parent, getConfigElements(), ModUncrafting.MODID, false, false, ModUncrafting.NAME);
 	}
 
 

@@ -1,13 +1,17 @@
 package org.jglrxavpok.mods.decraft.inventory;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
-
+import java.util.Map;
 import org.jglrxavpok.mods.decraft.event.ItemUncraftedEvent;
 import org.jglrxavpok.mods.decraft.inventory.InventoryUncraftResult.StackType;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingManager;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult.ResultType;
-
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
@@ -140,7 +144,7 @@ public class ContainerUncraftingTable extends Container
 		if (uncraftIn.getStackInSlot(0).isItemEnchanted() && calculInput.getStackInSlot(0) != ItemStack.EMPTY && calculInput.getStackInSlot(0).getItem() == Items.BOOK)
 		{
 			// copy the item enchantments onto one or more books
-			List<ItemStack> enchantedBooks = UncraftingManager.getItemEnchantments(uncraftIn.getStackInSlot(0), calculInput.getStackInSlot(0));
+			List<ItemStack> enchantedBooks = this.getItemEnchantments(uncraftIn.getStackInSlot(0), calculInput.getStackInSlot(0));
 
 			// for each enchanted book
 			for (ItemStack enchantedBook : enchantedBooks)
@@ -174,6 +178,60 @@ public class ContainerUncraftingTable extends Container
 		// decrement the number of items in the input slot by the minimum stack size
 		uncraftIn.decrStackSize(0, (minStackSize * multiplier));
 		if (uncraftIn.getStackInSlot(0).getCount() == 0) uncraftIn.setInventorySlotContents(0, ItemStack.EMPTY);
+	}
+
+
+	private List<ItemStack> getItemEnchantments(ItemStack itemStack, ItemStack containerItems)
+	{
+		// initialise a list of itemstacks to hold enchanted books
+		ArrayList<ItemStack> enchantedBooks = new ArrayList<ItemStack>();
+
+		// if the item being uncrafted has enchantments, and the container itemstack contains books
+		if (itemStack.isItemEnchanted() && !containerItems.isEmpty() && containerItems.getItem() == Items.BOOK)
+		{
+			// build a map of the enchantments on the item in the input stack
+			Map itemEnchantments = EnchantmentHelper.getEnchantments(itemStack);
+
+			// if the item has more than one enchantment, and we have at least the same number of books as enchantments
+			// create an itemstack of enchanted books with a single enchantment per book
+			if (itemEnchantments.size() > 1 && itemEnchantments.size() <= containerItems.getCount())
+			{
+				// iterate through the enchantments in the map
+				Iterator<?> enchantmentIds = itemEnchantments.keySet().iterator();
+				while (enchantmentIds.hasNext())
+				{
+					Enchantment bookEnchantment = (Enchantment)enchantmentIds.next();
+					// create a new map of enchantments which will be applied to this book
+					Map<Enchantment, Integer> bookEnchantments = new LinkedHashMap<Enchantment, Integer>();
+					// copy the current enchantment into the map
+					bookEnchantments.put(bookEnchantment, (Integer)itemEnchantments.get(bookEnchantment));
+					// create an itemstack containing an enchanted book
+					ItemStack enchantedBook = new ItemStack(Items.ENCHANTED_BOOK, 1);
+					// place the enchantment onto the book
+					EnchantmentHelper.setEnchantments(bookEnchantments, enchantedBook);
+					// add the book to the enchanted books collection
+					enchantedBooks.add(enchantedBook);
+					// clear the book enchantments map
+					bookEnchantments.clear();
+				}
+			}
+
+			// if there's a single enchantment, or fewer books than enchantments
+			// copy all of the enchantments from the item onto a single book
+			else
+			{
+				// create an itemstack containing an enchanted book
+				ItemStack enchantedBook = new ItemStack(Items.ENCHANTED_BOOK, 1);
+				// copy all of the enchantments from the map onto the book
+				EnchantmentHelper.setEnchantments(itemEnchantments, enchantedBook);
+				// add the book to the enchanted books collection
+				enchantedBooks.add(enchantedBook);
+			}
+
+		}
+
+		// return the list of enchanted books
+		return enchantedBooks;
 	}
 
 
