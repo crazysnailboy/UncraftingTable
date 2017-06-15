@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
 
-@Mod(modid = ModUncrafting.MODID, name = ModUncrafting.NAME, version = ModUncrafting.VERSION, guiFactory = ModUncrafting.GUIFACTORY, updateJSON = ModUncrafting.UPDATEJSON)
+@Mod(modid = ModUncrafting.MODID, name = ModUncrafting.NAME, version = ModUncrafting.VERSION, guiFactory = ModUncrafting.GUIFACTORY, updateJSON = ModUncrafting.UPDATEJSON, dependencies = "required-after:forge@[14.21.0.2324,);")
 public class ModUncrafting
 {
 

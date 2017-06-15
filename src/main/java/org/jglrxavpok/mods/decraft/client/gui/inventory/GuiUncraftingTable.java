@@ -60,6 +60,16 @@ public class GuiUncraftingTable extends GuiContainer
 
 
 	/**
+	 * Draws the screen and all the components in it.
+	 */
+	@Override
+	public void drawScreen(int mouseX, int mouseY, float partialTicks)
+	{
+		this.drawDefaultBackground();
+		super.drawScreen(mouseX, mouseY, partialTicks);
+	}
+
+	/**
 	 * Called from the main game loop to update the screen.
 	 */
 	@Override
@@ -151,7 +161,7 @@ public class GuiUncraftingTable extends GuiContainer
 
 			// *** copied from GuiRepair ***
 			// determine the text and shadow colours based on the uncrafting status
-			int textColor = (container.uncraftingResult.isError() ? 16736352 : 8453920);
+			int textColor = (container.uncraftingResult.isError() ? 0xFF6060 : 0x80FF20);
 			int shadowColor = -16777216 | (textColor & 16579836) >> 2 | textColor & -16777216;
 
 			// render the string 4 times at different positions in different colours to achieve the desired effect
@@ -167,20 +177,20 @@ public class GuiUncraftingTable extends GuiContainer
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		GlStateManager.disableLighting();
+//		GlStateManager.disableLighting();
 
 		// render the block name at the top of the gui
 		String title = I18n.format("container.uncrafting");
-		fontRenderer.drawString(title, xSize / 2 - fontRenderer.getStringWidth(title) / 2, 6, 4210752);
+		fontRenderer.drawString(title, xSize / 2 - fontRenderer.getStringWidth(title) / 2, 6, 0x404040);
 
 		// write "inventory" above the player inventory
-		fontRenderer.drawString(I18n.format("container.inventory"), 8, ySize - 96 + 2, 4210752); // y = 72
+		fontRenderer.drawString(I18n.format("container.inventory"), 8, ySize - 96 + 2, 0x404040); // y = 72
 
 		// draw a status message in red or green if appropriate for the status of the uncrafting operation
 		drawUncraftingStatusMessage();
 
 
-		GlStateManager.enableLighting();
+//		GlStateManager.enableLighting();
 	}
 
 	@Override
