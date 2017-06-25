@@ -8,7 +8,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 
 public class ModBlocks
@@ -20,8 +20,8 @@ public class ModBlocks
 	public static void registerBlocks()
 	{
 		// register the block
-		GameRegistry.register(UNCRAFTING_TABLE);
-		GameRegistry.register(new ItemBlock(UNCRAFTING_TABLE).setRegistryName(UNCRAFTING_TABLE.getRegistryName()));
+		ForgeRegistries.BLOCKS.register(UNCRAFTING_TABLE);
+		ForgeRegistries.ITEMS.register(new ItemBlock(UNCRAFTING_TABLE).setRegistryName(UNCRAFTING_TABLE.getRegistryName()));
 	}
 
 	public static void registerCraftingRecipes()

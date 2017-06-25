@@ -11,7 +11,7 @@ import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 public class RecipeHelper
 {
@@ -98,7 +98,7 @@ public class RecipeHelper
 				}
 			}
 
-			GameRegistry.register(new ShapedRecipes(name, j, k, aitemstack, stack).setRegistryName(new ResourceLocation(name)));
+			ForgeRegistries.RECIPES.register(new ShapedRecipes(name, j, k, aitemstack, stack).setRegistryName(new ResourceLocation(name)));
 		}
 		catch (Exception ex)
 		{
@@ -140,7 +140,7 @@ public class RecipeHelper
 				}
 			}
 
-			GameRegistry.register(new ShapelessRecipes(name, stack, list).setRegistryName(new ResourceLocation(name)));
+			ForgeRegistries.RECIPES.register(new ShapelessRecipes(name, stack, list).setRegistryName(new ResourceLocation(name)));
 		}
 		catch (Exception ex)
 		{

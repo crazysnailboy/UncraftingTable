@@ -11,7 +11,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 
-version = "1.8-beta2"
+version = "1.8-beta3"
 group = "org.jglrxavpok.mods.decraft"
 archivesBaseName = "[1.12]UncraftingTable"
 
@@ -21,9 +21,9 @@ compileJava {
 }
 
 minecraft {
-    version = "1.12-14.21.0.2327"
+    version = "1.12-14.21.0.2363"
     runDir = "run"
-    mappings = "snapshot_20170615"
+    mappings = "snapshot_20170625"
     makeObfSourceJar = false
 
     replace "\${version}", project.version
