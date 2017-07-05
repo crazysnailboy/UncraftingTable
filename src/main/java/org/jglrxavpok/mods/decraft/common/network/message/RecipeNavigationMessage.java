@@ -1,7 +1,6 @@
 package org.jglrxavpok.mods.decraft.common.network.message;
 
 import org.jglrxavpok.mods.decraft.inventory.ContainerUncraftingTable;
-
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
@@ -47,7 +46,7 @@ public class RecipeNavigationMessage implements IMessage
 		@Override
 		public IMessage onMessage(final RecipeNavigationMessage message, MessageContext ctx)
 		{
-			final EntityPlayerMP player = ctx.getServerHandler().playerEntity;
+			final EntityPlayerMP player = ctx.getServerHandler().player;
 
 			IThreadListener threadListener = (WorldServer)player.world;
 			threadListener.addScheduledTask(new Runnable()

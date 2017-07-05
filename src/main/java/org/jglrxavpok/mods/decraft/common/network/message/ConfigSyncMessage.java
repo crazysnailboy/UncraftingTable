@@ -2,7 +2,6 @@ package org.jglrxavpok.mods.decraft.common.network.message;
 
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
-
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.IThreadListener;
@@ -68,7 +67,7 @@ public class ConfigSyncMessage implements IMessage
 		{
 			try
 			{
-				if (ctx.side == Side.SERVER) return (WorldServer)ctx.getServerHandler().playerEntity.world;
+				if (ctx.side == Side.SERVER) return (WorldServer)ctx.getServerHandler().player.world;
 				else if (ctx.side == Side.CLIENT) return Minecraft.getMinecraft();
 				else return null;
 			}
