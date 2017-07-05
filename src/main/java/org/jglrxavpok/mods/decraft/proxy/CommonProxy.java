@@ -50,7 +50,7 @@ public class CommonProxy
 
 	private void initializeConfig()
 	{
-		ModConfiguration.preInit();
+		ModConfiguration.initializeConfiguration();
 		ModJsonConfiguration.loadItemMappings();
 	}
 

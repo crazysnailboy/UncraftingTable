@@ -1,9 +1,7 @@
 package org.jglrxavpok.mods.decraft.proxy;
 
-import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
 import org.jglrxavpok.mods.decraft.init.ModBlocks;
 import org.jglrxavpok.mods.decraft.init.ModItems;
-import org.jglrxavpok.mods.decraft.stats.ModAchievementList;
 
 
 public class ClientProxy extends CommonProxy
@@ -13,8 +11,6 @@ public class ClientProxy extends CommonProxy
 	public void preInit()
 	{
 		super.preInit();
-
-		this.initializeConfig();
 		this.registerItemInventoryModels();
 	}
 
@@ -22,9 +18,7 @@ public class ClientProxy extends CommonProxy
 	public void init()
 	{
 		super.init();
-
 		this.registerBlockInventoryModels();
-		this.registerAchievements();
 	}
 
 	@Override
@@ -33,17 +27,6 @@ public class ClientProxy extends CommonProxy
 		super.postInit();
 	}
 
-
-	private void initializeConfig()
-	{
-		ModConfiguration.clientPreInit();
-	}
-
-
-	private void registerAchievements()
-	{
-		ModAchievementList.registerEventHandler();
-	}
 
 	private void registerBlockInventoryModels()
 	{

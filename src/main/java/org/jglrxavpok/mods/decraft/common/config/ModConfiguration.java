@@ -8,14 +8,16 @@ import org.jglrxavpok.mods.decraft.client.config.ModGuiConfigEntries;
 import org.jglrxavpok.mods.decraft.common.network.message.ConfigSyncMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.config.GuiConfigEntries.NumberSliderEntry;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 
 public class ModConfiguration
@@ -38,7 +40,13 @@ public class ModConfiguration
 	public static boolean ensureReturn = true;
 
 
-	public static void preInit()
+	public static Configuration getConfig()
+	{
+		return config;
+	}
+
+
+	public static void initializeConfiguration()
 	{
 		File configFile = new File(Loader.instance().getConfigDir(), ModUncrafting.MODID + ".cfg");
 
@@ -46,18 +54,6 @@ public class ModConfiguration
 		config.load();
 
 		syncFromFile();
-
-		MinecraftForge.EVENT_BUS.register(new ConfigEventHandler());
-	}
-
-	public static void clientPreInit()
-	{
-		MinecraftForge.EVENT_BUS.register(new ClientConfigEventHandler());
-	}
-
-	public static Configuration getConfig()
-	{
-		return config;
 	}
 
 
@@ -70,12 +66,6 @@ public class ModConfiguration
 	{
 		syncConfig(false, true);
 	}
-
-	public static void syncFromFields()
-	{
-		syncConfig(false, false);
-	}
-
 
 	private static void syncConfig(boolean loadConfigFromFile, boolean readFieldsFromConfig)
 	{
@@ -186,23 +176,22 @@ public class ModConfiguration
 
 
 
-
+	@EventBusSubscriber
 	public static class ConfigEventHandler
 	{
+
 		@SubscribeEvent
-		public void onPlayerLoggedIn(PlayerLoggedInEvent event)
+		public static void onPlayerLoggedIn(PlayerLoggedInEvent event)
 		{
 			if (!event.player.world.isRemote)
 			{
 				ModUncrafting.instance.getNetwork().sendTo(new ConfigSyncMessage(), (EntityPlayerMP)event.player);
 			}
 		}
-	}
 
-	public static class ClientConfigEventHandler
-	{
+		@SideOnly(Side.CLIENT)
 		@SubscribeEvent
-		public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event)
+		public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event)
 		{
 			if (ModUncrafting.MODID.equals(event.getModID()))
 			{
@@ -216,6 +205,7 @@ public class ModConfiguration
 				}
 			}
 		}
+
 	}
 
 
