@@ -46,7 +46,7 @@ public class RecipeNavigationMessage implements IMessage
 		@Override
 		public IMessage onMessage(final RecipeNavigationMessage message, MessageContext ctx)
 		{
-			final EntityPlayerMP player = ctx.getServerHandler().playerEntity;
+			final EntityPlayerMP player = ctx.getServerHandler().player;
 
 			IThreadListener threadListener = (WorldServer)player.world;
 			threadListener.addScheduledTask(new Runnable()

@@ -147,7 +147,7 @@ public class GuiUncraftingTable extends GuiContainer
 		if (!statusMessage.equals(""))
 		{
 			int textX = 8;
-			int textY = ySize - 96 + 2 - fontRendererObj.FONT_HEIGHT - 4; // 60
+			int textY = ySize - 96 + 2 - fontRenderer.FONT_HEIGHT - 4; // 60
 
 			// *** copied from GuiRepair ***
 			// determine the text and shadow colours based on the uncrafting status
@@ -155,10 +155,10 @@ public class GuiUncraftingTable extends GuiContainer
 			int shadowColor = -16777216 | (textColor & 16579836) >> 2 | textColor & -16777216;
 
 			// render the string 4 times at different positions in different colours to achieve the desired effect
-			this.fontRendererObj.drawString(statusMessage, textX, textY + 1, shadowColor);
-			this.fontRendererObj.drawString(statusMessage, textX + 1, textY, shadowColor);
-			this.fontRendererObj.drawString(statusMessage, textX + 1, textY + 1, shadowColor);
-			this.fontRendererObj.drawString(statusMessage, textX, textY, textColor);
+			this.fontRenderer.drawString(statusMessage, textX, textY + 1, shadowColor);
+			this.fontRenderer.drawString(statusMessage, textX + 1, textY, shadowColor);
+			this.fontRenderer.drawString(statusMessage, textX + 1, textY + 1, shadowColor);
+			this.fontRenderer.drawString(statusMessage, textX, textY, textColor);
 			// *** copied from GuiRepair ***
 		}
 	}
@@ -171,10 +171,10 @@ public class GuiUncraftingTable extends GuiContainer
 
 		// render the block name at the top of the gui
 		String title = I18n.format("container.uncrafting");
-		fontRendererObj.drawString(title, xSize / 2 - fontRendererObj.getStringWidth(title) / 2, 6, 4210752);
+		fontRenderer.drawString(title, xSize / 2 - fontRenderer.getStringWidth(title) / 2, 6, 4210752);
 
 		// write "inventory" above the player inventory
-		fontRendererObj.drawString(I18n.format("container.inventory"), 8, ySize - 96 + 2, 4210752); // y = 72
+		fontRenderer.drawString(I18n.format("container.inventory"), 8, ySize - 96 + 2, 4210752); // y = 72
 
 		// draw a status message in red or green if appropriate for the status of the uncrafting operation
 		drawUncraftingStatusMessage();
@@ -245,7 +245,7 @@ public class GuiUncraftingTable extends GuiContainer
 						itemRender.renderItemAndEffectIntoGUI(itemStack, guiX + slotX, guiY + slotY);
 						if (itemStack.getCount() > 1)
 						{
-							itemRender.renderItemOverlayIntoGUI(this.fontRendererObj, itemStack, guiX + slotX, guiY + slotY, String.valueOf(itemStack.getCount()));
+							itemRender.renderItemOverlayIntoGUI(this.fontRenderer, itemStack, guiX + slotX, guiY + slotY, String.valueOf(itemStack.getCount()));
 						}
 
 						GL11.glDisable(GL11.GL_LIGHTING);
@@ -303,14 +303,14 @@ public class GuiUncraftingTable extends GuiContainer
 
 				mc.getTextureManager().bindTexture(UNCRAFTING_TABLE_GUI_TEXTURES);
 
-				boolean mouseOnButton = (mouseX >= this.xPosition) && (mouseY >= this.yPosition) && (mouseX < this.xPosition + this.width) && (mouseY < this.yPosition + this.height);
+				boolean mouseOnButton = (mouseX >= this.x) && (mouseY >= this.y) && (mouseX < this.x + this.width) && (mouseY < this.y + this.height);
 				int textureX = (this.facing == ButtonFacing.LEFT ? 177 : 185);
 				int textureY = (mouseOnButton ? 35 : 23);
 
 				GL11.glDisable(GL11.GL_LIGHTING);
 				GL11.glDisable(GL11.GL_DEPTH_TEST);
 
-				drawTexturedModalRect(this.xPosition, this.yPosition, textureX, textureY, this.width, this.height);
+				drawTexturedModalRect(this.x, this.y, textureX, textureY, this.width, this.height);
 
 				GL11.glEnable(GL11.GL_LIGHTING);
 				GL11.glEnable(GL11.GL_DEPTH_TEST);
