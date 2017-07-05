@@ -1,17 +1,15 @@
 package org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.RecipeHandler;
-
 import com.google.common.collect.Lists;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import scala.actors.threadpool.Arrays;
+
 
 public class AE2RecipeHandlers
 {
