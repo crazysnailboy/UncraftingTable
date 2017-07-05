@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.NBTSensitiveRecipeHandlers.FireworksRecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.NBTSensitiveRecipeHandlers.TippedArrowRecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.CoFHRecipeHandlers;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.IC2RecipeHandlers.ShapedIC2RecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.IC2RecipeHandlers.ShapelessIC2RecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.IGCMRecipeHandlers.ShapedIGCMRecipeHandler;
@@ -73,6 +74,9 @@ public final class RecipeHandlers
 		// Forge Ore Dictionary recipe handlers
 		HANDLERS.put(ShapedOreRecipe.class, new ShapedOreRecipeHandler());
 		HANDLERS.put(ShapelessOreRecipe.class, new ShapelessOreRecipeHandler());
+
+		// cofh recipe handlers
+		if (CoFHRecipeHandlers.CoverRecipeHandler.recipeClass != null) HANDLERS.put(CoFHRecipeHandlers.CoverRecipeHandler.recipeClass, new CoFHRecipeHandlers.CoverRecipeHandler());
 
 		// industrialcraft 2 recipe handlers
 		if (ShapedIC2RecipeHandler.recipeClass != null) HANDLERS.put(ShapedIC2RecipeHandler.recipeClass, new ShapedIC2RecipeHandler());
