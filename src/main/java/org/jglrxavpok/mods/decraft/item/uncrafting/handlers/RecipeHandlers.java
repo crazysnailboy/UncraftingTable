@@ -8,6 +8,7 @@ import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.NBTSensitiveRecipeHa
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.NBTSensitiveRecipeHandlers.TippedArrowRecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.AE2RecipeHandlers.ShapedAE2RecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.AE2RecipeHandlers.ShapelessAE2RecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.CoFHRecipeHandlers;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.IC2RecipeHandlers.ShapedIC2RecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.IC2RecipeHandlers.ShapelessIC2RecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.MekanismRecipeHandlers.ShapedMekanismRecipeHandler;
@@ -77,6 +78,9 @@ public final class RecipeHandlers
 		// applied energistics 2 handlers
 		if (ShapedAE2RecipeHandler.recipeClass != null) HANDLERS.put(ShapedAE2RecipeHandler.recipeClass, new ShapedAE2RecipeHandler());
 		if (ShapelessAE2RecipeHandler.recipeClass != null) HANDLERS.put(ShapelessAE2RecipeHandler.recipeClass, new ShapelessAE2RecipeHandler());
+
+		// cofh recipe handlers
+		if (CoFHRecipeHandlers.CoverRecipeHandler.recipeClass != null) HANDLERS.put(CoFHRecipeHandlers.CoverRecipeHandler.recipeClass, new CoFHRecipeHandlers.CoverRecipeHandler());
 
 		// industrialcraft 2 recipe handlers
 		if (ShapedIC2RecipeHandler.recipeClass != null) HANDLERS.put(ShapedIC2RecipeHandler.recipeClass, new ShapedIC2RecipeHandler());

@@ -57,7 +57,6 @@ public class ModConfiguration
 	}
 
 
-
 	private static void syncFromFile()
 	{
 		syncConfig(true, true);

@@ -11,7 +11,6 @@ public class ClientProxy extends CommonProxy
 	public void preInit()
 	{
 		super.preInit();
-
 		this.registerItemInventoryModels();
 	}
 
@@ -19,7 +18,6 @@ public class ClientProxy extends CommonProxy
 	public void init()
 	{
 		super.init();
-
 		this.registerBlockInventoryModels();
 	}
 
