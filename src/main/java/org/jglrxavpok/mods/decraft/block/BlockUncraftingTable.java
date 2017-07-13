@@ -21,8 +21,6 @@ public class BlockUncraftingTable extends Block
 	public BlockUncraftingTable()
 	{
 		super(Material.ROCK);
-		setRegistryName("uncrafting_table");
-		setUnlocalizedName("uncrafting_table");
 		setHardness(3.5F);
 		setSoundType(SoundType.STONE);
 		this.setCreativeTab(CreativeTabs.DECORATIONS);

@@ -15,8 +15,6 @@ public class ItemNugget extends Item
 	{
 		super();
 		this.setHasSubtypes(true);
-		this.setUnlocalizedName("nugget");
-		this.setRegistryName("nugget");
 		this.setCreativeTab(CreativeTabs.MATERIALS);
 	}
 
@@ -30,9 +28,12 @@ public class ItemNugget extends Item
 	@Override
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
 	{
-		for (EnumNuggetType nuggetType : EnumNuggetType.values())
+		if (this.isInCreativeTab(tab))
 		{
-			list.add(new ItemStack(this, 1, nuggetType.getMetadata()));
+			for (EnumNuggetType nuggetType : EnumNuggetType.values())
+			{
+				if (nuggetType.getRegistryName() != null) list.add(new ItemStack(this, 1, nuggetType.getMetadata()));
+			}
 		}
 	}
 
@@ -40,7 +41,7 @@ public class ItemNugget extends Item
 	{
 		DIAMOND(0, "diamondNugget", "diamond_nugget"),
 		EMERALD(1, "emeraldNugget", "emerald_nugget"),
-		IRON(2, "ironNugget", "iron_nugget"),
+		IRON(2, null, null), // IRON(2, "ironNugget", "iron_nugget"),
 		LEATHER(3, "leatherStrip", "leather_strip");
 
 		private final int meta;

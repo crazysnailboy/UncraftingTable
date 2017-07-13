@@ -1,0 +1,17 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"group": "uncraftingtable:nugget",
+	"pattern": [
+		"#"
+	],
+	"key": {
+		"#": {
+			"item": "minecraft:emerald"
+		}
+	},
+	"result": {
+		"item": "uncraftingtable:nugget",
+		"data": 1,
+		"count": 9
+	}
+}

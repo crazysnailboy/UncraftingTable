@@ -5,7 +5,6 @@ import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
 import org.jglrxavpok.mods.decraft.common.network.ModGuiHandler;
 import org.jglrxavpok.mods.decraft.common.network.message.ConfigSyncMessage;
 import org.jglrxavpok.mods.decraft.common.network.message.RecipeNavigationMessage;
-import org.jglrxavpok.mods.decraft.init.ModBlocks;
 import org.jglrxavpok.mods.decraft.init.ModItems;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers;
 import org.jglrxavpok.mods.decraft.stats.ModAchievementList;
@@ -19,15 +18,12 @@ public class CommonProxy
 	public void preInit()
 	{
 		this.initializeConfig();
-		this.registerBlocksAndItems();
 		this.registerNetworkMessages();
 	}
 
 	public void init()
 	{
 		this.registerOreDictionaryEntries();
-		this.registerCraftingRecipes();
-//		this.registerUncraftingRecipes();
 		this.registerGuiHandler();
 		this.registerAchievements();
 	}
@@ -52,18 +48,6 @@ public class CommonProxy
 	private void registerAchievements()
 	{
 		ModAchievementList.registerAchievementPage();
-	}
-
-	private void registerBlocksAndItems()
-	{
-		ModBlocks.registerBlocks();
-		ModItems.registerItems();
-	}
-
-	private void registerCraftingRecipes()
-	{
-		ModBlocks.registerCraftingRecipes();
-		ModItems.registerCraftingRecipes();
 	}
 
 	private void registerGuiHandler()

@@ -1,0 +1,17 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"group": "uncraftingtable:nugget",
+	"pattern": [
+		"#"
+	],
+	"key": {
+		"#": {
+			"item": "minecraft:leather"
+		}
+	},
+	"result": {
+		"item": "uncraftingtable:nugget",
+		"data": 3,
+		"count": 9
+	}
+}

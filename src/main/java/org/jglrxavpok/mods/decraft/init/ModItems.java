@@ -4,46 +4,57 @@ import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
 import org.jglrxavpok.mods.decraft.item.ItemNugget;
 import org.jglrxavpok.mods.decraft.item.ItemNugget.EnumNuggetType;
-import org.jglrxavpok.mods.decraft.item.crafting.RecipeHelper;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 
 
 public class ModItems
 {
 
-	public static final Item NUGGET = new ItemNugget();
+	public static final Item NUGGET = new ItemNugget().setRegistryName("nugget").setUnlocalizedName("nugget");
 
 
-	public static void registerItems()
+
+	@EventBusSubscriber(modid = ModUncrafting.MODID)
+	public static class EventHandlers
 	{
-		if (ModConfiguration.registerNuggets)
+		@SubscribeEvent
+		public static void registerItems(final RegistryEvent.Register<Item> event)
 		{
-			// register the items
-			ForgeRegistries.ITEMS.register(NUGGET);
-		}
-	}
-
-	public static void registerInventoryModels()
-	{
-		if (ModConfiguration.registerNuggets)
-		{
-			// register the item models
-			for (EnumNuggetType nuggetType : EnumNuggetType.values())
+			if (ModConfiguration.registerNuggets)
 			{
-				if (nuggetType.getRegistryName() != null)
+				event.getRegistry().register(NUGGET);
+			}
+		}
+
+		@SideOnly(Side.CLIENT)
+		@SubscribeEvent
+		public static void onModelRegistry(final ModelRegistryEvent event)
+		{
+			if (ModConfiguration.registerNuggets)
+			{
+				for (EnumNuggetType nuggetType : EnumNuggetType.values())
 				{
-					ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation(ModUncrafting.MODID + ":" + nuggetType.getRegistryName(), "inventory");
-					ModelLoader.setCustomModelResourceLocation(NUGGET, nuggetType.getMetadata(), itemModelResourceLocation);
+					if (nuggetType.getRegistryName() != null)
+					{
+						ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation(ModUncrafting.MODID + ":" + nuggetType.getRegistryName(), "inventory");
+						ModelLoader.setCustomModelResourceLocation(NUGGET, nuggetType.getMetadata(), itemModelResourceLocation);
+					}
 				}
 			}
 		}
+
 	}
+
 
 	public static void registerOreDictionaryEntries()
 	{
@@ -55,22 +66,6 @@ public class ModItems
 			OreDictionary.registerOre("nuggetEmerald", new ItemStack(NUGGET, 1, EnumNuggetType.EMERALD.getMetadata()));
 			OreDictionary.registerOre("shardEmerald", new ItemStack(NUGGET, 1, EnumNuggetType.EMERALD.getMetadata()));  // added for compatibility with Magic Bees
 			OreDictionary.registerOre("nuggetLeather", new ItemStack(NUGGET, 1, EnumNuggetType.LEATHER.getMetadata()));
-		}
-	}
-
-	public static void registerCraftingRecipes()
-	{
-		if (ModConfiguration.registerNuggets)
-		{
-			// register crafting recipes
-			// items to nuggets
-			RecipeHelper.addShapelessRecipe(new ItemStack(ModItems.NUGGET, 9, EnumNuggetType.DIAMOND.getMetadata()), new Object[] { Items.DIAMOND });
-			RecipeHelper.addShapelessRecipe(new ItemStack(ModItems.NUGGET, 9, EnumNuggetType.EMERALD.getMetadata()), new Object[] { Items.EMERALD });
-			RecipeHelper.addShapelessRecipe(new ItemStack(ModItems.NUGGET, 9, EnumNuggetType.LEATHER.getMetadata()), new Object[] { Items.LEATHER });
-			// nuggets to items
-			RecipeHelper.addShapedRecipe(Items.DIAMOND, new Object[] { "FFF", "FFF", "FFF", 'F', new ItemStack(NUGGET, 1, EnumNuggetType.DIAMOND.getMetadata()) });
-			RecipeHelper.addShapedRecipe(Items.EMERALD, new Object[] { "FFF", "FFF", "FFF", 'F', new ItemStack(NUGGET, 1, EnumNuggetType.EMERALD.getMetadata()) });
-			RecipeHelper.addShapedRecipe(Items.LEATHER, new Object[] { "FFF", "FFF", "FFF", 'F', new ItemStack(NUGGET, 1, EnumNuggetType.LEATHER.getMetadata()) });
 		}
 	}
 
