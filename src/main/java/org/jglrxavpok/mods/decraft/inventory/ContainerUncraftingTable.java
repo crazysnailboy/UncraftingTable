@@ -368,7 +368,14 @@ public class ContainerUncraftingTable extends Container
 				if (this.uncraftingResult.resultType != ResultType.UNCRAFTED)
 				{
 					// update the uncrafting result type for the updated input stack
-					UncraftingManager.recalculateResultType(uncraftingResult, playerInventory.player, uncraftIn.getStackInSlot(0));
+					if (this.uncraftingResult.resultType == ResultType.INACTIVE)
+					{
+						this.uncraftingResult = UncraftingManager.getUncraftingResult(playerInventory.player, inputStack);
+					}
+					else
+					{
+						UncraftingManager.recalculateResultType(uncraftingResult, playerInventory.player, inputStack);
+					}
 
 					// if the item in the input stack can be uncrafted...
 					if (this.uncraftingResult.canPopulateInventory())
@@ -526,6 +533,12 @@ public class ContainerUncraftingTable extends Container
 					}
 					// clear the slot
 					slot.putStack(ItemStack.EMPTY);
+
+					if (uncraftOut.isEmpty())
+					{
+						this.uncraftingResult = new UncraftingResult();
+					}
+
 
 					return stack;
 				}
