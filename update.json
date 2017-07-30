@@ -1,27 +1,28 @@
 {
 	"homepage": "https://minecraft.curseforge.com/projects/jglrxavpoks-uncrafting-table/files/",
 	"promos": {
-		"1.11.2-latest": "1.7.3",
-		"1.11.2-recommended": "1.7.2"
+		"1.11.2-latest": "1.7.4-beta1",
+		"1.11.2-recommended": "1.7.4-beta1"
 	},
 	"1.11.2": {
+		"1.7.4-beta1": "Fixed uncrafting message not clearing when shift-clicking from output grid",
 		"1.7.3": "Improved CraftTweaker scripting, added support for Thermal Dynamics Covers",
 		"1.7.3-beta1": "Support for Mekanism recipes, CraftTweaker scripting support (experimental)",
 		"1.7.2": "Added support for Tinker's Construct and InGameConfigManager",
 		"1.7.1": "Full release version of 1.7.1-pre15",
 		"1.7.1-pre15": "Added support for Industrial Craft",
-		"1.7.1-pre14": "leather strips and rabbit hide, unenchanting now costs XP, more config options",
-		"1.7.1-pre13": "added ability to uncraft fireworks and tipped arrows, fixed bug with input stack not being cleared after uncrafting",
+		"1.7.1-pre14": "Leather strips and rabbit hide, unenchanting now costs XP, more config options",
+		"1.7.1-pre13": "Added ability to uncraft fireworks and tipped arrows, fixed bug with input stack not being cleared after uncrafting",
 		"1.7.1-pre12": "CraftTweaker bug fix, Chinese translation",
-		"1.7.1-pre11": "fixed bug with excluded items config",
-		"1.7.1-pre10": "various bug fixes",
-		"1.7.1-pre9": "added network message to sync config when player joins server",
-		"1.7.1-pre8": "fixed dupe glitch, fixed shift click into wrong slot",
-		"1.7.1-pre7": "fixed two bugs",
-		"1.7.1-pre6": "minor changes only",
-		"1.7.1-pre5": "fixed bug with multiplier not being correctly applied to stacked items",
-		"1.7.1-pre4": "fixed duplication glitch if player doesn't have enough XP",
-		"1.7.1-pre3": "fixed incompatibility with Iron Chests",
-		"1.7.1-pre2": "new version with lots of new features!"
+		"1.7.1-pre11": "Fixed bug with excluded items config",
+		"1.7.1-pre10": "Various bug fixes",
+		"1.7.1-pre9": "Added network message to sync config when player joins server",
+		"1.7.1-pre8": "Fixed dupe glitch, fixed shift click into wrong slot",
+		"1.7.1-pre7": "Fixed two bugs",
+		"1.7.1-pre6": "Minor changes only",
+		"1.7.1-pre5": "Fixed bug with multiplier not being correctly applied to stacked items",
+		"1.7.1-pre4": "Fixed duplication glitch if player doesn't have enough XP",
+		"1.7.1-pre3": "Fixed incompatibility with Iron Chests",
+		"1.7.1-pre2": "New version with lots of new features!"
 	}
 }
