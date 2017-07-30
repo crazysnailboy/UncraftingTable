@@ -1,24 +1,25 @@
 {
 	"homepage": "https://minecraft.curseforge.com/projects/jglrxavpoks-uncrafting-table/files/",
 	"promos": {
-		"1.10.2-latest": "1.6.3",
-		"1.10.2-recommended": "1.6.3"
+		"1.10.2-latest": "1.6.4-beta1",
+		"1.10.2-recommended": "1.6.4-beta1"
 	},
 	"1.10.2": {
+		"1.6.4-beta1": "Fixed uncrafting message not clearing when shift-clicking from output grid",
 		"1.6.3": "Improved CraftTweaker scripting, added support for Thermal Dynamics Covers",
 		"1.6.3-beta1": "CraftTweaker scripting support (experimental), ability to uncraft non-craftable items",
-		"1.6.2": "fixed compatibility issue with tinker's construct",
+		"1.6.2": "Fixed compatibility issue with tinker's construct",
 		"1.6.1": "Full release version of 1.6.1-pre12",
-		"1.6.1-pre12": "leather strips and rabbit hide, unenchanting now costs XP, more config options",
-		"1.6.1-pre11": "added ability to uncraft fireworks and tipped arrows",
+		"1.6.1-pre12": "Leather strips and rabbit hide, unenchanting now costs XP, more config options",
+		"1.6.1-pre11": "Added ability to uncraft fireworks and tipped arrows",
 		"1.6.1-pre10": "Applied Energistics support, Thermal Expansion support, CraftTweaker bug fix, Chinese translation",
-		"1.6.1-pre9": "fixed bug with excluded items config",
-		"1.6.1-pre8": "various bug fixes, improved mod support",
-		"1.6.1-pre7": "added network message to sync config when player joins server",
-		"1.6.1-pre6": "fixed dupe glitch, fixed shift click into wrong slot",
-		"1.6.1-pre5": "fixed two bugs",
-		"1.6.1-pre4": "minor changes only",
-		"1.6.1-pre3": "fixed incompatibility with Iron Chests",
+		"1.6.1-pre9": "Fixed bug with excluded items config",
+		"1.6.1-pre8": "Various bug fixes, improved mod support",
+		"1.6.1-pre7": "Added network message to sync config when player joins server",
+		"1.6.1-pre6": "Fixed dupe glitch, fixed shift click into wrong slot",
+		"1.6.1-pre5": "Fixed two bugs",
+		"1.6.1-pre4": "Minor changes only",
+		"1.6.1-pre3": "Fixed incompatibility with Iron Chests",
 		"1.6.1-pre2": "New version with lots of new features!",
 		"1.6": ""
 	}

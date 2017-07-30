@@ -10,7 +10,7 @@ buildscript {
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.6.3"
+version = "1.6.4-beta1"
 group = "org.jglrxavpok.mods.decraft"
 archivesBaseName = "[1.10.2]UncraftingTable"
 
