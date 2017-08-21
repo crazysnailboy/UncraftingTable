@@ -3,12 +3,9 @@ package org.jglrxavpok.mods.decraft.item.uncrafting;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
@@ -17,15 +14,12 @@ import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult.ResultType;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.NBTSensitiveRecipeHandlers.INBTSensitiveRecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.RecipeHandler;
-
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -152,67 +146,6 @@ public class UncraftingManager
 	}
 
 
-
-	/**
-	 * Copies enchantments from an item onto a collection of enchanted books.
-	 * @param itemStack The item which has the enchantments to copy
-	 * @param containerItems One or more empty books onto which to place the enchantments
-	 * @return A collection of itemstacks of enchanted books
-	 */
-	public static List<ItemStack> getItemEnchantments(ItemStack itemStack, ItemStack containerItems)
-	{
-		// initialise a list of itemstacks to hold enchanted books
-		ArrayList<ItemStack> enchantedBooks = new ArrayList<ItemStack>();
-
-		// if the item being uncrafted has enchantments, and the container itemstack contains books
-		if (itemStack.isItemEnchanted() && containerItems != null && containerItems.getItem() == Items.book)
-		{
-			// build a map of the enchantments on the item in the input stack
-			Map itemEnchantments = EnchantmentHelper.getEnchantments(itemStack);
-
-			// if the item has more than one enchantment, and we have at least the same number of books as enchantments
-			// create an itemstack of enchanted books with a single enchantment per book
-			if (itemEnchantments.size() > 1 && itemEnchantments.size() <= containerItems.stackSize)
-			{
-				// iterate through the enchantments in the map
-				Iterator<?> enchantmentIds = itemEnchantments.keySet().iterator();
-				while (enchantmentIds.hasNext())
-				{
-					int enchantmentId = (Integer)enchantmentIds.next();
-					// create a new map of enchantments which will be applied to this book
-					Map<Integer, Integer> bookEnchantments = new LinkedHashMap<Integer, Integer>();
-					// copy the current enchantment into the map
-					bookEnchantments.put(enchantmentId, (Integer)itemEnchantments.get(enchantmentId));
-					// create an itemstack containing an enchanted book
-					ItemStack enchantedBook = new ItemStack(Items.enchanted_book, 1);
-					// place the enchantment onto the book
-					EnchantmentHelper.setEnchantments(bookEnchantments, enchantedBook);
-					// add the book to the enchanted books collection
-					enchantedBooks.add(enchantedBook);
-					// clear the book enchantments map
-					bookEnchantments.clear();
-				}
-			}
-
-			// if there's a single enchantment, or fewer books than enchantments
-			// copy all of the enchantments from the item onto a single book
-			else
-			{
-				// create an itemstack containing an enchanted book
-				ItemStack enchantedBook = new ItemStack(Items.enchanted_book, 1);
-				// copy all of the enchantments from the map onto the book
-				EnchantmentHelper.setEnchantments(itemEnchantments, enchantedBook);
-				// add the book to the enchanted books collection
-				enchantedBooks.add(enchantedBook);
-			}
-
-		}
-
-		// return the list of enchanted books
-		return enchantedBooks;
-	}
-
-
 	/**
 	 * Returns the available crafting recipes and associated minimum stack sizes which can be used to perform an uncrafting operation
 	 * @param itemStack The ItemStack containing the target item
@@ -330,8 +263,12 @@ public class UncraftingManager
 		// if we're using Xell75's & Zenen's uncrafting method...
 		if (ModConfiguration.uncraftMethod == UncraftingMethod.XELL75_ZENEN)
 		{
+			if (itemStack == null)
+			{
+				return 0;
+			}
 			// if the item isn't damageable
-			if (!itemStack.getItem().isDamageable())
+			else if (!itemStack.getItem().isDamageable())
 			{
 				// the xp cost is the standard cost
 				return ModConfiguration.standardLevel;
@@ -351,7 +288,7 @@ public class UncraftingManager
 			}
 		}
 
-		return -1; // return ModConfiguration.standardLevel;
+		return ModConfiguration.standardLevel;
 	}
 
 

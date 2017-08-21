@@ -1,7 +1,6 @@
 package org.jglrxavpok.mods.decraft.proxy;
 
 import org.jglrxavpok.mods.decraft.client.update.VersionChecker;
-import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
 import org.jglrxavpok.mods.decraft.stats.ModAchievementList;
 
 
@@ -12,9 +11,6 @@ public class ClientProxy extends CommonProxy
 	public void preInit()
 	{
 		super.preInit();
-
-		// initialize the configuration
-		ModConfiguration.clientPreInit();
 	}
 
 	@Override

@@ -23,7 +23,7 @@ public class CommonProxy
 	public void preInit()
 	{
 		// initialize the configuration
-		ModConfiguration.preInit();
+		ModConfiguration.initializeConfiguration();
 
 		// register the blocks and items
 		ModBlocks.preInit();
