@@ -1,6 +1,6 @@
 # jglrxavpok's Uncrafting Table
 
-### A mod for Minecraft 1.12
+### A mod for Minecraft 1.12.x
 
 This mod adds an Uncrafting Table which allows you to convert unwanted items back into the resources they're crafted from, in exchange for XP.
 

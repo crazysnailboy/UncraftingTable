@@ -1,0 +1,19 @@
+{
+	"tconstruct:toolforge": {
+		"singleRecipe": true,
+		"recipeType": "slimeknights.tconstruct.tools.common.TableRecipeFactory$TableRecipe",
+		"replaceSlots": [3,5,6,8]
+	},
+	
+	"tconstruct:tooltables,1": {
+		"singleRecipe": true,
+		"recipeType": "slimeknights.tconstruct.tools.common.TableRecipeFactory$TableRecipe",
+		"replaceSlots": [3]
+	},
+	"tconstruct:tooltables,2": {
+		"singleRecipe": true,
+		"recipeType": "slimeknights.tconstruct.tools.common.TableRecipeFactory$TableRecipe",
+		"replaceSlots": [3]
+	}
+
+}

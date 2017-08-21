@@ -9,19 +9,24 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
+import org.jglrxavpok.mods.decraft.common.config.ModJsonConfiguration;
+import org.jglrxavpok.mods.decraft.common.config.ModJsonConfiguration.ItemMapping;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult.ResultType;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.NBTSensitiveRecipeHandlers.INBTSensitiveRecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.RecipeHandler;
+import com.google.common.collect.Lists;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.oredict.OreDictionary;
 
 
@@ -31,6 +36,19 @@ import net.minecraftforge.oredict.OreDictionary;
  */
 public class UncraftingManager
 {
+
+	public static final List<IRecipe> recipes = Lists.<IRecipe>newArrayList();
+	public static final List<IRecipe> blockedRecipes = Lists.<IRecipe>newArrayList();
+	public static final List<ItemStack> blockedItems = Lists.<ItemStack>newArrayList();
+	public static final List<ItemStack> blockedIngredients = Lists.<ItemStack>newArrayList();
+	public static final List<ItemStack> removedIngredients = Lists.<ItemStack>newArrayList();
+
+
+	public static void addUncraftingRecipe(IRecipe recipe)
+	{
+		recipes.add(recipe);
+	}
+
 
 	/**
 	 * Performs the recipe lookup, XP cost calculation and other associated checks for an uncrafting operation.
@@ -153,8 +171,12 @@ public class UncraftingManager
 		// if we're using Xell75's & Zenen's uncrafting method...
 		if (ModConfiguration.uncraftMethod == UncraftingMethod.XELL75_ZENEN)
 		{
+			if (itemStack == null)
+			{
+				return 0;
+			}
 			// if the item isn't damageable
-			if (!itemStack.getItem().isDamageable())
+			else if (!itemStack.getItem().isDamageable())
 			{
 				// the xp cost is the standard cost
 				return ModConfiguration.standardLevel;
@@ -206,16 +228,32 @@ public class UncraftingManager
 		if (isOutputBlocked(itemStack)) return list;
 
 		// iterate over all the crafting recipes known to the crafting manager
-		for ( ResourceLocation key : CraftingManager.REGISTRY.getKeys() )
-		{
-			IRecipe recipe = CraftingManager.REGISTRY.getObject(key);
+		List<IRecipe> recipeList = new ArrayList<IRecipe>(ForgeRegistries.RECIPES.getValues());
+		recipeList.addAll(recipes);
 
+		for ( IRecipe recipe : recipeList )
+		{
 			// if the current recipe can be used to craft the item
 			ItemStack recipeOutput = recipe.getRecipeOutput();
 			if (recipeOutput.isEmpty()) recipeOutput = RecipeHandler.getPossibleRecipeOutput(recipe, itemStack);
 
 			if (ItemStack.areItemsEqualIgnoreDurability(itemStack, recipeOutput))
 			{
+				// load any custom mapping data we have for this item
+				ItemMapping mapping = ModJsonConfiguration.ITEM_MAPPINGS.get(itemStack);
+
+				// if we have mapping data...
+				if (mapping != null)
+				{
+					// if the mapping data specifies a particular IRecipe instance, and the current recipe does not match, continue
+					if ((mapping.recipeType != null) && (!recipe.getClass().getName().equals(mapping.recipeType))) continue;
+					// if the mapping data specifies a match on NBT data, and the data does not match, continue
+					if ((mapping.matchTag == true) && (!areItemStackSubTagsEqual(itemStack, recipeOutput, mapping.tagName))) continue;
+					// if the mapping data specifies a match on a private field, and the field values do not match, continue
+					if ((mapping.matchField == true) && (!arePrivateFieldValuesEqual(itemStack, recipeOutput, mapping.fieldNames))) continue;
+				}
+
+
 				// get an instance of the appropriate handler class for the IRecipe type of the crafting recipe
 				RecipeHandler handler = RecipeHandlers.HANDLERS.get(recipe.getClass());
 				if (handler != null)
@@ -231,8 +269,13 @@ public class UncraftingManager
 					{
 
 						// if the recipe is disallowed for uncrafting, continue
+						if (isRecipeBlocked(craftingGrid)) continue; // recipe is blocked by CraftTweaker
+						if (recipeContainsBlockedItems(craftingGrid)) continue; // recipe contains items blocked by CraftTweaker
 						if (craftingGridContainsInputItem(itemStack, craftingGrid)) continue; // recipe output contains the input item (e.g. white wool -> white wool + bonemeal)
 
+
+						// if the recipe contains items blocked by crafttweaker, remove them from the crafting grid
+						craftingGrid = removeItemsFromOutputBecauseCraftTweaker(craftingGrid);
 
 						// if we're doing a partial material return on a damaged item, remove items from the crafting grid as appropriate
 						if (ModConfiguration.uncraftMethod == UncraftingMethod.JGLRXAVPOK && itemStack.isItemStackDamageable() && itemStack.isItemDamaged())
@@ -246,6 +289,13 @@ public class UncraftingManager
 							Map.Entry<NonNullList<ItemStack>,Integer> pair = new AbstractMap.SimpleEntry<NonNullList<ItemStack>,Integer>(craftingGrid, minStackSize);
 							list.add(pair);
 						}
+
+						// if we have custom mapping data which specifies a single recipe
+						if (mapping != null && mapping.singleRecipe == true)
+						{
+							// we've found that recipe, so break out of the loop
+							break;
+						}
 					}
 				}
 				// if we couldn't find a handler class for this IRecipe implementation, write some details to the log for debugging.
@@ -254,6 +304,33 @@ public class UncraftingManager
 		}
 
 		return list;
+	}
+
+
+	private static boolean areItemStackSubTagsEqual(ItemStack stackA, ItemStack stackB, String tagName)
+	{
+		final String regex = "(?<=\\d+)[bdfsL](?=[,}])"; // type indicators ("b", "f", etc) preceded by digits and followed by "," or "}"
+
+		NBTTagCompound tagA = stackA.getTagCompound();
+		NBTTagCompound tagB = stackB.getTagCompound();
+
+		if (tagA != null && tagB != null)
+		{
+			NBTBase subTagA = tagA.getTag(tagName);
+			NBTBase subTagB = tagB.getTag(tagName);
+
+			return (subTagA.equals(subTagB) || subTagA.toString().replaceAll(regex, "").equals(subTagB.toString().replaceAll(regex, "")));
+		}
+
+		return false;
+	}
+
+	private static boolean arePrivateFieldValuesEqual(ItemStack stackA, ItemStack stackB, String[] fieldNames)
+	{
+		Object oA = ObfuscationReflectionHelper.getPrivateValue(ItemStack.class, stackA, fieldNames);
+		Object oB = ObfuscationReflectionHelper.getPrivateValue(ItemStack.class, stackB, fieldNames);
+
+		return oA.equals(oB);
 	}
 
 
@@ -279,8 +356,6 @@ public class UncraftingManager
 		}
 		return false;
 	}
-
-
 
 
 	/**
@@ -434,34 +509,121 @@ public class UncraftingManager
 	}
 
 
+	private static NonNullList<ItemStack> removeItemsFromOutputBecauseCraftTweaker(NonNullList<ItemStack> craftingGrid)
+	{
+		for ( int i = 0 ; i < craftingGrid.size() ; i++ )
+		{
+			if (shouldIngredientBeRemoved(craftingGrid.get(i)))
+			{
+				craftingGrid.set(i, ItemStack.EMPTY);
+			}
+		}
+		return craftingGrid;
+	}
+
+
 	private static boolean isRecipeBlocked(NonNullList<ItemStack> craftingGrid)
 	{
+		InventoryCrafting craftMatrix = new InventoryCrafting(craftingGrid);
+		for (IRecipe irecipe : blockedRecipes)
+		{
+			if (irecipe.matches(craftMatrix, null)) return true;
+		}
 		return false;
 	}
 
 	private static boolean isOutputBlocked(ItemStack stack)
 	{
-		// if uncrafting of this item is disabled in config, return the empty list
+		// first check to see if the output is blocked by config
 		String registryName = stack.getItem().getRegistryName().toString();
 		if (ArrayUtils.indexOf(ModConfiguration.excludedItems, registryName) >= 0) return true;
 		if (ArrayUtils.indexOf(ModConfiguration.excludedItems, registryName + "," + Integer.toString(stack.getItemDamage())) >= 0) return true;
+
+		// then check to see if it's blocked by crafttweaker
+		for ( ItemStack stackB : blockedItems )
+		{
+			// if the items are equal...
+			if (ItemStack.areItemsEqualIgnoreDurability(stack, stackB))
+			{
+				// if the blocked stack doesn't have an NBT tag, consider this a match regardless of the NBT data on the test stack.
+				// if it does, then it's a match if the two tags match.
+				if (!stackB.hasTagCompound())
+				{
+					return true;
+				}
+				else if (ItemStack.areItemStackTagsEqual(stack, stackB))
+				{
+					return true;
+				}
+				else if (stack.hasTagCompound())
+				{
+					for (String key : stackB.getTagCompound().getKeySet())
+					{
+						if (areItemStackSubTagsEqual(stack, stackB, key))
+						{
+							return true;
+						}
+					}
+				}
+			}
+		}
 		return false;
 	}
 
 	private static boolean isIngredientBlocked(ItemStack stack)
 	{
+		for ( ItemStack stackB : blockedIngredients )
+		{
+			if (ItemStack.areItemsEqualIgnoreDurability(stack, stackB) && ItemStack.areItemStackTagsEqual(stack, stackB)) return true;
+		}
 		return false;
 	}
 
 	private static boolean recipeContainsBlockedItems(NonNullList<ItemStack> craftingGrid)
 	{
+		for ( ItemStack stack : craftingGrid )
+		{
+			if (isIngredientBlocked(stack)) return true;
+		}
 		return false;
 	}
 
 	private static boolean shouldIngredientBeRemoved(ItemStack stack)
 	{
+		for ( ItemStack stackB : removedIngredients )
+		{
+			if (ItemStack.areItemsEqualIgnoreDurability(stack, stackB) && ItemStack.areItemStackTagsEqual(stack, stackB)) return true;
+		}
 		return false;
 	}
+
+
+	/**
+	 * extended InventoryCrafting class used for comparing recipe outputs
+	 *
+	 */
+	private static class InventoryCrafting extends net.minecraft.inventory.InventoryCrafting
+	{
+
+		public InventoryCrafting(NonNullList<ItemStack> craftingGrid)
+		{
+			super(null, 3, 3);
+			for ( int i = 0 ; i < craftingGrid.size() ; i++ ) this.setInventorySlotContents(i, craftingGrid.get(i));
+		}
+
+	    @Override
+		public void setInventorySlotContents(int index, ItemStack stack)
+	    {
+			// the super class will throw an exception when attempting to call "this.eventHandler.onCraftMatrixChanged(this);", but we don't care
+	    	try
+	    	{
+	    		super.setInventorySlotContents(index, stack);
+	    	}
+	    	catch(NullPointerException ex){}
+	    }
+
+	}
+
 
 	/**
 	 * Constants to identify the different uncrafting algorithms
