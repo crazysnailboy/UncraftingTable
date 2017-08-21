@@ -6,6 +6,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
 
+
+/**
+ * Handlers for IRecipe implementations from the InGameConfigManager mod
+ *
+ */
 public class IGCMRecipeHandlers
 {
 
@@ -15,16 +20,9 @@ public class IGCMRecipeHandlers
 	 */
 	public static class ShapedIGCMRecipeHandler extends RecipeHandler
 	{
-		public static Class<? extends IRecipe> recipeClass;
 
-		static
-		{
-			try
-			{
-				recipeClass = Class.forName("com.creativemd.creativecore.common.recipe.BetterShapedRecipe").asSubclass(IRecipe.class);
-			}
-			catch(ClassNotFoundException ex) { }
-		}
+		public static final Class<? extends IRecipe> recipeClass = getRecipeClass("com.creativemd.creativecore.common.recipe.BetterShapedRecipe");
+
 
 		@Override
 		public NonNullList<ItemStack> getCraftingGrid(IRecipe r)
@@ -52,16 +50,9 @@ public class IGCMRecipeHandlers
 	 */
 	public static class ShapelessIGCMRecipeHandler extends RecipeHandler
 	{
-		public static Class<? extends IRecipe> recipeClass;
 
-		static
-		{
-			try
-			{
-				recipeClass = Class.forName("com.creativemd.creativecore.common.recipe.BetterShapelessRecipe").asSubclass(IRecipe.class);
-			}
-			catch(ClassNotFoundException ex) { }
-		}
+		public static final Class<? extends IRecipe> recipeClass = getRecipeClass("com.creativemd.creativecore.common.recipe.BetterShapelessRecipe");
+
 
 		@Override
 		public NonNullList<ItemStack> getCraftingGrid(IRecipe r)

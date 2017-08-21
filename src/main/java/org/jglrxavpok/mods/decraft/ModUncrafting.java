@@ -35,14 +35,7 @@ public class ModUncrafting
 	public static CommonProxy proxy;
 
 	public static final Logger LOGGER = LogManager.getLogger(MODID);
-
-	private static SimpleNetworkWrapper network = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
-
-
-	public SimpleNetworkWrapper getNetwork()
-	{
-		return network;
-	}
+	public static final SimpleNetworkWrapper NETWORK = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
 
 
 	@EventHandler

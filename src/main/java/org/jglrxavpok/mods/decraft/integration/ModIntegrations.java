@@ -4,6 +4,7 @@ import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.integration.crafttweaker.CraftTweakerIntegration;
 import net.minecraftforge.fml.common.Loader;
 
+
 public class ModIntegrations
 {
 
@@ -21,7 +22,10 @@ public class ModIntegrations
 			{
 				CraftTweakerIntegration.register();
 			}
-			catch(Exception ex){ ModUncrafting.LOGGER.catching(ex); }
+			catch (Exception ex)
+			{
+				ModUncrafting.LOGGER.catching(ex);
+			}
 		}
 	}
 

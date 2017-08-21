@@ -15,8 +15,6 @@ public class ItemNugget extends Item
 	{
 		super();
 		this.setHasSubtypes(true);
-		this.setUnlocalizedName("nugget");
-		this.setRegistryName("nugget");
 		this.setCreativeTab(CreativeTabs.MATERIALS);
 	}
 
@@ -69,6 +67,11 @@ public class ItemNugget extends Item
 		{
 			if (meta < 0 || meta >= META_LOOKUP.length) meta = 0;
 			return META_LOOKUP[meta];
+		}
+
+		public static EnumNuggetType[] usedValues()
+		{
+			return new EnumNuggetType[] { DIAMOND, EMERALD, LEATHER };
 		}
 
 

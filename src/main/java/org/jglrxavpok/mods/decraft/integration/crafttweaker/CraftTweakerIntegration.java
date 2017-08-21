@@ -19,6 +19,7 @@ import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
+
 public class CraftTweakerIntegration
 {
 
@@ -104,7 +105,6 @@ public class CraftTweakerIntegration
 	}
 
 
-
 	private static class ActionAddRecipe extends BaseListAddition<IRecipe>
 	{
 		public ActionAddRecipe(IRecipe recipe, List<IRecipe> recipeList, String listName)
@@ -127,6 +127,7 @@ public class CraftTweakerIntegration
 			super(listName, stackList);
 			recipes.add(stack);
 		}
+
 		@Override
 		public String getRecipeInfo(ItemStack stack)
 		{

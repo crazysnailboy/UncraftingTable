@@ -9,6 +9,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
 
+
+/**
+ * Handlers for IRecipe implementations from the IndustrialCraft2 mod
+ *
+ */
 public class IC2RecipeHandlers
 {
 
@@ -18,16 +23,9 @@ public class IC2RecipeHandlers
 	 */
 	public static class ShapedIC2RecipeHandler extends RecipeHandler
 	{
-		public static Class<? extends IRecipe> recipeClass;
 
-		static
-		{
-			try
-			{
-				recipeClass = Class.forName("ic2.core.recipe.AdvRecipe").asSubclass(IRecipe.class);
-			}
-			catch(ClassNotFoundException ex) { }
-		}
+		public static final Class<? extends IRecipe> recipeClass = getRecipeClass("ic2.core.recipe.AdvRecipe");
+
 
 		private static List<List<ItemStack>> replaceRecipeInputs(List list)
 		{
@@ -135,16 +133,9 @@ public class IC2RecipeHandlers
 	 */
 	public static class ShapelessIC2RecipeHandler extends RecipeHandler
 	{
-		public static Class<? extends IRecipe> recipeClass;
 
-		static
-		{
-			try
-			{
-				recipeClass = Class.forName("ic2.core.recipe.AdvShapelessRecipe").asSubclass(IRecipe.class);
-			}
-			catch(ClassNotFoundException ex) { }
-		}
+		public static final Class<? extends IRecipe> recipeClass = getRecipeClass("ic2.core.recipe.AdvShapelessRecipe");
+
 
 		private static List<List<ItemStack>> getInputs(IRecipe r)
 		{

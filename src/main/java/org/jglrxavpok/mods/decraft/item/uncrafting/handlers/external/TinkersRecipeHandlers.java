@@ -9,24 +9,24 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
 
+
+/**
+ * Handlers for IRecipe implementations from the Tinker's Construct mod
+ *
+ */
 public class TinkersRecipeHandlers
 {
 
+	/**
+	 * Handler for Part Builders, Stencil Tables, Tool Forges and Tool Tables
+	 *
+	 */
 	public static class TableRecipeHandler extends ShapedOreRecipeHandler implements INBTSensitiveRecipeHandler
 	{
 
+		public static final Class<? extends IRecipe> recipeClass = getRecipeClass("slimeknights.tconstruct.tools.common.TableRecipe");
+
 		private ItemStack inputStack;
-
-		public static Class<? extends IRecipe> recipeClass;
-
-		static
-		{
-			try
-			{
-				recipeClass = Class.forName("slimeknights.tconstruct.tools.common.TableRecipe").asSubclass(IRecipe.class);
-			}
-			catch(ClassNotFoundException ex) { }
-		}
 
 
 		@Override

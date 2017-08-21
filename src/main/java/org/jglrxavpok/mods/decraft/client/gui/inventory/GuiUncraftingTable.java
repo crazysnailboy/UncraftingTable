@@ -23,7 +23,7 @@ import net.minecraft.world.World;
 
 public class GuiUncraftingTable extends GuiContainer
 {
-	private static final ResourceLocation UNCRAFTING_TABLE_GUI_TEXTURES = new ResourceLocation(ModUncrafting.MODID + ":textures/gui/container/uncrafting_table.png");
+	private static final ResourceLocation UNCRAFTING_TABLE_GUI_TEXTURES = new ResourceLocation(ModUncrafting.MODID, "textures/gui/container/uncrafting_table.png");
 
 	public ContainerUncraftingTable container;
 	private World worldObj;
@@ -98,7 +98,7 @@ public class GuiUncraftingTable extends GuiContainer
 			container.switchRecipe();
 
 			int recipeIndex = container.uncraftingResult.selectedCraftingGrid;
-			ModUncrafting.instance.getNetwork().sendToServer(new RecipeNavigationMessage(recipeIndex));
+			ModUncrafting.NETWORK.sendToServer(new RecipeNavigationMessage(recipeIndex));
 		}
 	}
 

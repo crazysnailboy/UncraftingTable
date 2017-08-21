@@ -7,6 +7,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
 
+
+/**
+ * Handlers for IRecipe implementations from the Mekanism mod
+ *
+ */
 public class MekanismRecipeHandlers
 {
 
@@ -16,16 +21,9 @@ public class MekanismRecipeHandlers
 	 */
 	public static class ShapedMekanismRecipeHandler extends RecipeHandler
 	{
-		public static Class<? extends IRecipe> recipeClass;
 
-		static
-		{
-			try
-			{
-				recipeClass = Class.forName("mekanism.common.recipe.ShapedMekanismRecipe").asSubclass(IRecipe.class);
-			}
-			catch(ClassNotFoundException ex) { }
-		}
+		public static final Class<? extends IRecipe> recipeClass = getRecipeClass("mekanism.common.recipe.ShapedMekanismRecipe");
+
 
 		@Override
 		public NonNullList<ItemStack> getCraftingGrid(IRecipe r)
@@ -63,16 +61,9 @@ public class MekanismRecipeHandlers
 	 */
 	public static class ShapelessMekanismRecipeHandler extends RecipeHandler
 	{
-		public static Class<? extends IRecipe> recipeClass;
 
-		static
-		{
-			try
-			{
-				recipeClass = Class.forName("mekanism.common.recipe.ShapelessMekanismRecipe").asSubclass(IRecipe.class);
-			}
-			catch(ClassNotFoundException ex) { }
-		}
+		public static final Class<? extends IRecipe> recipeClass = getRecipeClass("mekanism.common.recipe.ShapelessMekanismRecipe");
+
 
 		@Override
 		public NonNullList<ItemStack> getCraftingGrid(IRecipe r)

@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.NBTSensitiveRecipeHandlers.FireworksRecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.NBTSensitiveRecipeHandlers.TippedArrowRecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.AE2RecipeHandlers.ShapedAE2RecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.AE2RecipeHandlers.ShapelessAE2RecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.CoFHRecipeHandlers;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.IC2RecipeHandlers.ShapedIC2RecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.IC2RecipeHandlers.ShapelessIC2RecipeHandler;
@@ -75,6 +77,10 @@ public final class RecipeHandlers
 		HANDLERS.put(ShapedOreRecipe.class, new ShapedOreRecipeHandler());
 		HANDLERS.put(ShapelessOreRecipe.class, new ShapelessOreRecipeHandler());
 
+		// applied energistics 2 handlers
+		if (ShapedAE2RecipeHandler.recipeClass != null) HANDLERS.put(ShapedAE2RecipeHandler.recipeClass, new ShapedAE2RecipeHandler());
+		if (ShapelessAE2RecipeHandler.recipeClass != null) HANDLERS.put(ShapelessAE2RecipeHandler.recipeClass, new ShapelessAE2RecipeHandler());
+
 		// cofh recipe handlers
 		if (CoFHRecipeHandlers.CoverRecipeHandler.recipeClass != null) HANDLERS.put(CoFHRecipeHandlers.CoverRecipeHandler.recipeClass, new CoFHRecipeHandlers.CoverRecipeHandler());
 
@@ -107,7 +113,24 @@ public final class RecipeHandlers
 	 */
 	public static abstract class RecipeHandler
 	{
+
 		public abstract NonNullList<ItemStack> getCraftingGrid(IRecipe r);
+
+
+		/**
+		 * Used by subclasses referencing external IRecipe implementations
+		 */
+		protected static Class<? extends IRecipe> getRecipeClass(String className)
+		{
+			try
+			{
+				return Class.forName(className).asSubclass(IRecipe.class);
+			}
+			catch(ClassNotFoundException ex)
+			{
+				return null;
+			}
+		}
 
 
 		/**
