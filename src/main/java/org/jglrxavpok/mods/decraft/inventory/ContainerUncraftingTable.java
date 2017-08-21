@@ -31,16 +31,17 @@ public class ContainerUncraftingTable extends Container
 	public InventoryBasic calculInput = new InventoryBasic(null, false, 1);
 	public InventoryCrafting uncraftIn = new InventoryCrafting(this, 1, 1);
 	public InventoryUncraftResult uncraftOut = new InventoryUncraftResult(this);
-	public InventoryPlayer playerInventory;
 
-	private World worldObj;
+	private InventoryPlayer playerInventory;
+	private World world;
 
 	public UncraftingResult uncraftingResult = new UncraftingResult();
 
 
-	public ContainerUncraftingTable(InventoryPlayer playerInventoryIn, World worldIn)
+	public ContainerUncraftingTable(InventoryPlayer playerInventory, World world)
 	{
-		this.worldObj = worldIn;
+		this.playerInventory = playerInventory;
+		this.world = world;
 
 		// uncrafting book inventory for capturing enchantments (left standalone slot)
 		this.addSlotToContainer(new SlotBook(this.calculInput, 0, 20, 35, this));
@@ -63,17 +64,15 @@ public class ContainerUncraftingTable extends Container
 		{
 			for (int col = 0; col < 9; ++col)
 			{
-				this.addSlotToContainer(new Slot(playerInventoryIn, col + row * 9 + 9, 8 + col * 18, 84 + row * 18));
+				this.addSlotToContainer(new Slot(this.playerInventory, col + row * 9 + 9, 8 + col * 18, 84 + row * 18));
 			}
 		}
 
 		// player hotbar inventory
 		for (int col = 0; col < 9; ++col)
 		{
-			this.addSlotToContainer(new Slot(playerInventoryIn, col, 8 + col * 18, 142));
+			this.addSlotToContainer(new Slot(this.playerInventory, col, 8 + col * 18, 142));
 		}
-
-		playerInventory = playerInventoryIn;
 	}
 
 
@@ -125,20 +124,20 @@ public class ContainerUncraftingTable extends Container
 
 	private void doUncraft()
 	{
-		// if we're not in creative mode
-		if (!playerInventory.player.capabilities.isCreativeMode)
-		{
-			// if we don't have enough xp
-			if (playerInventory.player.experienceLevel < uncraftingResult.experienceCost)
-			{
-				// set the status to error, not enough xp and return
-				uncraftingResult.resultType = ResultType.NOT_ENOUGH_XP;
-				return;
-			}
-
-			// deduct the appropriate number of levels from the player
-			playerInventory.player.experienceLevel -= uncraftingResult.experienceCost;
-		}
+//		// if we're not in creative mode
+//		if (!playerInventory.player.capabilities.isCreativeMode)
+//		{
+//			// if we don't have enough xp
+//			if (playerInventory.player.experienceLevel < uncraftingResult.experienceCost)
+//			{
+//				// set the status to error, not enough xp and return
+//				uncraftingResult.resultType = ResultType.NOT_ENOUGH_XP;
+//				return;
+//			}
+//
+//			// deduct the appropriate number of levels from the player
+//			playerInventory.player.experienceLevel -= uncraftingResult.experienceCost;
+//		}
 
 		// if the item being uncrafted has enchantments, and there are books in the left hand slot
 		if (uncraftIn.getStackInSlot(0).isItemEnchanted() && calculInput.getStackInSlot(0) != ItemStack.EMPTY && calculInput.getStackInSlot(0).getItem() == Items.BOOK)
@@ -157,8 +156,7 @@ public class ContainerUncraftingTable extends Container
 			}
 			// decrement the stack size for the books in the left hand slot
 			calculInput.decrStackSize(0, enchantedBooks.size());
-
-		} // end of enchantment processing
+		}
 
 
 		// get the minimum stack size and the crafting grid from the uncrafting result
@@ -171,16 +169,21 @@ public class ContainerUncraftingTable extends Container
 		// fire an event indicating a successful uncrafting operation
 		MinecraftForge.EVENT_BUS.post(new ItemUncraftedEvent(playerInventory.player, uncraftIn.getStackInSlot(0), (minStackSize * multiplier)));
 
-
 		// change the status to uncrafted
 		this.uncraftingResult.resultType = ResultType.UNCRAFTED;
 
 		// decrement the number of items in the input slot by the minimum stack size
 		uncraftIn.decrStackSize(0, (minStackSize * multiplier));
 		if (uncraftIn.getStackInSlot(0).getCount() == 0) uncraftIn.setInventorySlotContents(0, ItemStack.EMPTY);
+
+		// trigger an update on the input slot so that it knows it's changed
+		this.getSlot(1).onSlotChanged();
 	}
 
 
+	/**
+	 * Copies enchantments from an item onto a collection of enchanted books.
+	 */
 	private List<ItemStack> getItemEnchantments(ItemStack itemStack, ItemStack containerItems)
 	{
 		// initialise a list of itemstacks to hold enchanted books
@@ -438,7 +441,7 @@ public class ContainerUncraftingTable extends Container
 	{
 		super.onContainerClosed(player);
 
-		if (!this.worldObj.isRemote)
+		if (!this.world.isRemote)
 		{
 			ItemStack itemstack;
 

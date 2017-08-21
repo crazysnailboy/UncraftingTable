@@ -17,56 +17,46 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 
 
+@EventBusSubscriber(modid = ModUncrafting.MODID)
 public class ModItems
 {
 
 	public static final Item NUGGET = new ItemNugget().setRegistryName("nugget").setUnlocalizedName("nugget");
 
 
-
-	@EventBusSubscriber(modid = ModUncrafting.MODID)
-	public static class EventHandlers
+	@SubscribeEvent
+	public static void registerItems(final RegistryEvent.Register<Item> event)
 	{
-		@SubscribeEvent
-		public static void registerItems(final RegistryEvent.Register<Item> event)
-		{
-			if (ModConfiguration.registerNuggets)
-			{
-				event.getRegistry().register(NUGGET);
-			}
-		}
+		if (!ModConfiguration.registerNuggets) return;
 
-		@SideOnly(Side.CLIENT)
-		@SubscribeEvent
-		public static void onModelRegistry(final ModelRegistryEvent event)
-		{
-			if (ModConfiguration.registerNuggets)
-			{
-				for (EnumNuggetType nuggetType : EnumNuggetType.values())
-				{
-					if (nuggetType.getRegistryName() != null)
-					{
-						ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation(ModUncrafting.MODID + ":" + nuggetType.getRegistryName(), "inventory");
-						ModelLoader.setCustomModelResourceLocation(NUGGET, nuggetType.getMetadata(), itemModelResourceLocation);
-					}
-				}
-			}
-		}
-
+		// register the items
+		event.getRegistry().register(NUGGET);
 	}
 
+	@SideOnly(Side.CLIENT)
+	@SubscribeEvent
+	public static void onModelRegistry(final ModelRegistryEvent event)
+	{
+		if (!ModConfiguration.registerNuggets) return;
+
+		// register the inventory models
+		for (EnumNuggetType nuggetType : EnumNuggetType.usedValues())
+		{
+			ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation(ModUncrafting.MODID + ":" + nuggetType.getRegistryName(), "inventory");
+			ModelLoader.setCustomModelResourceLocation(NUGGET, nuggetType.getMetadata(), itemModelResourceLocation);
+		}
+	}
 
 	public static void registerOreDictionaryEntries()
 	{
-		if (ModConfiguration.registerNuggets)
-		{
-			// register the ore dictionary entries
-			OreDictionary.registerOre("nuggetDiamond", new ItemStack(NUGGET, 1, EnumNuggetType.DIAMOND.getMetadata()));
-			OreDictionary.registerOre("shardDiamond", new ItemStack(NUGGET, 1, EnumNuggetType.DIAMOND.getMetadata()));  // added for compatibility with Magic Bees
-			OreDictionary.registerOre("nuggetEmerald", new ItemStack(NUGGET, 1, EnumNuggetType.EMERALD.getMetadata()));
-			OreDictionary.registerOre("shardEmerald", new ItemStack(NUGGET, 1, EnumNuggetType.EMERALD.getMetadata()));  // added for compatibility with Magic Bees
-			OreDictionary.registerOre("nuggetLeather", new ItemStack(NUGGET, 1, EnumNuggetType.LEATHER.getMetadata()));
-		}
+		if (!ModConfiguration.registerNuggets) return;
+
+		// register the ore dictionary entries
+		OreDictionary.registerOre("nuggetDiamond", new ItemStack(NUGGET, 1, EnumNuggetType.DIAMOND.getMetadata()));
+		OreDictionary.registerOre("shardDiamond", new ItemStack(NUGGET, 1, EnumNuggetType.DIAMOND.getMetadata()));  // added for compatibility with Magic Bees
+		OreDictionary.registerOre("nuggetEmerald", new ItemStack(NUGGET, 1, EnumNuggetType.EMERALD.getMetadata()));
+		OreDictionary.registerOre("shardEmerald", new ItemStack(NUGGET, 1, EnumNuggetType.EMERALD.getMetadata()));  // added for compatibility with Magic Bees
+		OreDictionary.registerOre("nuggetLeather", new ItemStack(NUGGET, 1, EnumNuggetType.LEATHER.getMetadata()));
 	}
 
 }

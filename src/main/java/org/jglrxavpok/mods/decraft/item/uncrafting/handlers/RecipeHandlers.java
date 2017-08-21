@@ -5,6 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.NBTSensitiveRecipeHandlers.FireworksRecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.NBTSensitiveRecipeHandlers.TippedArrowRecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.CoFHRecipeHandlers;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.IC2RecipeHandlers.ShapedIC2RecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.IC2RecipeHandlers.ShapelessIC2RecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.TinkersRecipeHandlers;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -66,6 +70,16 @@ public final class RecipeHandlers
 		// Forge Ore Dictionary recipe handlers
 		HANDLERS.put(ShapedOreRecipe.class, new ShapedOreRecipeHandler());
 		HANDLERS.put(ShapelessOreRecipe.class, new ShapelessOreRecipeHandler());
+
+		// cofh recipe handlers
+		if (CoFHRecipeHandlers.CoverRecipeHandler.recipeClass != null) HANDLERS.put(CoFHRecipeHandlers.CoverRecipeHandler.recipeClass, new CoFHRecipeHandlers.CoverRecipeHandler());
+
+		// industrialcraft 2 recipe handlers
+		if (ShapedIC2RecipeHandler.recipeClass != null) HANDLERS.put(ShapedIC2RecipeHandler.recipeClass, new ShapedIC2RecipeHandler());
+		if (ShapelessIC2RecipeHandler.recipeClass != null) HANDLERS.put(ShapelessIC2RecipeHandler.recipeClass, new ShapelessIC2RecipeHandler());
+
+		// tinker's construct recipe handlers
+		if (TinkersRecipeHandlers.TableRecipeHandler.recipeClass != null) HANDLERS.put(TinkersRecipeHandlers.TableRecipeHandler.recipeClass, new TinkersRecipeHandlers.TableRecipeHandler());
 	}
 
 	private static void buildRecipeOutputMap()
@@ -81,7 +95,24 @@ public final class RecipeHandlers
 	 */
 	public static abstract class RecipeHandler
 	{
+
 		public abstract NonNullList<ItemStack> getCraftingGrid(IRecipe r);
+
+
+		/**
+		 * Used by subclasses referencing external IRecipe implementations
+		 */
+		protected static Class<? extends IRecipe> getRecipeClass(String className)
+		{
+			try
+			{
+				return Class.forName(className).asSubclass(IRecipe.class);
+			}
+			catch(ClassNotFoundException ex)
+			{
+				return null;
+			}
+		}
 
 
 		/**
@@ -159,7 +190,7 @@ public final class RecipeHandlers
 
 
 		/**
-		 * Copies the ItemStacks in a list to a new list, whilst normalising the item damage for the OreDictionary wildcard value
+		 * Copies the ItemStacks from a list of Ingredients to a new list, whilst normalising the item damage for the OreDictionary wildcard value
 		 */
 		protected static NonNullList<ItemStack> copyRecipeStacks(NonNullList<Ingredient> inputStacks)
 		{
@@ -175,6 +206,24 @@ public final class RecipeHandlers
 
 			return outputStacks;
 		}
+
+		/**
+		 * Copies the ItemStacks in a list to a new list, whilst normalising the item damage for the OreDictionary wildcard value
+		 */
+		protected static NonNullList<ItemStack> copyRecipeStacks(List<ItemStack> inputStacks)
+		{
+			NonNullList<ItemStack> outputStacks = NonNullList.<ItemStack>withSize(9, ItemStack.EMPTY);
+
+			for ( int i = 0 ; i < inputStacks.size() ; i++ )
+			{
+				ItemStack outputStack = (inputStacks.get(i) == null ? ItemStack.EMPTY : inputStacks.get(i)).copy();
+				if (outputStack.getItemDamage() == Short.MAX_VALUE) outputStack.setItemDamage(0);
+				outputStacks.set(i, outputStack);
+			}
+
+			return outputStacks;
+		}
+
 
 	}
 

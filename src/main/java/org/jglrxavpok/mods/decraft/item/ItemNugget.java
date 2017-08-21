@@ -72,6 +72,11 @@ public class ItemNugget extends Item
 			return META_LOOKUP[meta];
 		}
 
+		public static EnumNuggetType[] usedValues()
+		{
+			return new EnumNuggetType[] { DIAMOND, EMERALD, LEATHER };
+		}
+
 
 		private EnumNuggetType(int meta, String unlocalizedName, String registryName)
 		{

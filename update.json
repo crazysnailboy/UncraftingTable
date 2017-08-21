@@ -1,10 +1,16 @@
 {
 	"homepage": "https://minecraft.curseforge.com/projects/jglrxavpoks-uncrafting-table/files/",
 	"promos": {
-		"1.12-latest": "1.8-beta4",
-		"1.12-recommended": "1.8-beta4"
+		"1.12.1-latest": "1.8-beta5",
+		"1.12.1-recommended": "1.8-beta5",
+		"1.12-latest": "1.8-beta5",
+		"1.12-recommended": "1.8-beta5"
+	},
+	"1.12.1": {
+		"1.8-beta5": "Initial 1.12.1 release"
 	},
 	"1.12": {
+		"1.8-beta5": "External mod support, CraftTweaker support, Uncrafting-specific recipes",
 		"1.8-beta4": "Converted recipes to JSON, minor bug fixes",
 		"1.8-beta3": "Changed registrations to work with Forge 2363 and later",
 		"1.8-beta2": "Changed recipe registration to work with Forge 2324 and later",
