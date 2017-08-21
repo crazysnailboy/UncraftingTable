@@ -15,8 +15,6 @@ public class ItemNugget extends Item
 	{
 		super();
 		this.setHasSubtypes(true);
-		this.setUnlocalizedName("nugget");
-		this.setRegistryName("nugget");
 		this.setCreativeTab(CreativeTabs.MATERIALS);
 	}
 

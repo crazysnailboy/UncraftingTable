@@ -11,23 +11,25 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
+
+/**
+ * Handlers for IRecipe implementations from the Team CoFH suite of mods
+ *
+ */
 public class CoFHRecipeHandlers
 {
+
+	/**
+	 * Handler for Thermal Dynamics Covers
+	 *
+	 */
 	public static class CoverRecipeHandler extends RecipeHandler implements INBTSensitiveRecipeHandler
 	{
 
+		public static final Class<? extends IRecipe> recipeClass = getRecipeClass("cofh.thermaldynamics.util.RecipeCover");
+
 		private ItemStack inputStack;
 
-		public static Class<? extends IRecipe> recipeClass;
-
-		static
-		{
-			try
-			{
-				recipeClass = Class.forName("cofh.thermaldynamics.util.RecipeCover").asSubclass(IRecipe.class);
-			}
-			catch(ClassNotFoundException ex) { }
-		}
 
 		@Override
 		public ItemStack[] getCraftingGrid(IRecipe r)

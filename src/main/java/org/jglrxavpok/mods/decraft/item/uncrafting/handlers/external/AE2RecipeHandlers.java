@@ -10,6 +10,11 @@ import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 
+
+/**
+ * Handlers for IRecipe implementations from the Applied Energistics 2 mod
+ *
+ */
 public class AE2RecipeHandlers
 {
 
@@ -19,16 +24,8 @@ public class AE2RecipeHandlers
 	 */
 	public static class ShapedAE2RecipeHandler extends RecipeHandler
 	{
-		public static Class<? extends IRecipe> recipeClass;
 
-		static
-		{
-			try
-			{
-				recipeClass = Class.forName("appeng.recipes.game.ShapedRecipe").asSubclass(IRecipe.class);
-			}
-			catch(ClassNotFoundException ex) { }
-		}
+		public static final Class<? extends IRecipe> recipeClass = getRecipeClass("appeng.recipes.game.ShapedRecipe");
 
 
 		private List<List<ItemStack>> getIngredients(IRecipe r)
@@ -58,7 +55,7 @@ public class AE2RecipeHandlers
 							catch (Exception ex) { }
 							in.add(slotList);
 						}
-						else in.add(new ArrayList<ItemStack>());
+						else in.add(Collections.<ItemStack>emptyList());
 					}
 				}
 				// *** adapted from appeng.integration.modules.jei.ShapedRecipeWrapper ***
@@ -101,12 +98,10 @@ public class AE2RecipeHandlers
 						}
 					}
 				}
-
 			}
 			catch(Exception ex) { }
 			return reshapeRecipe(copyRecipeStacks(itemStacks), r);
 		}
-
 	}
 
 
@@ -116,16 +111,9 @@ public class AE2RecipeHandlers
 	 */
 	public static class ShapelessAE2RecipeHandler extends RecipeHandler
 	{
-		public static Class<? extends IRecipe> recipeClass;
 
-		static
-		{
-			try
-			{
-				recipeClass = Class.forName("appeng.recipes.game.ShapelessRecipe").asSubclass(IRecipe.class);
-			}
-			catch(ClassNotFoundException ex) { }
-		}
+		public static final Class<? extends IRecipe> recipeClass = getRecipeClass("appeng.recipes.game.ShapelessRecipe");
+
 
 		private List<List<ItemStack>> getIngredients(IRecipe r)
 		{

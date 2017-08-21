@@ -107,7 +107,24 @@ public final class RecipeHandlers
 	 */
 	public static abstract class RecipeHandler
 	{
+
 		public abstract ItemStack[] getCraftingGrid(IRecipe r);
+
+
+		/**
+		 * Used by subclasses referencing external IRecipe implementations
+		 */
+		protected static Class<? extends IRecipe> getRecipeClass(String className)
+		{
+			try
+			{
+				return Class.forName(className).asSubclass(IRecipe.class);
+			}
+			catch(ClassNotFoundException ex)
+			{
+				return null;
+			}
+		}
 
 
 		/**

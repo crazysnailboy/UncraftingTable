@@ -6,6 +6,11 @@ import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.Recip
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 
+
+/**
+ * Handlers for IRecipe implementations from the IndustrialCraft2 mod
+ *
+ */
 public class IC2RecipeHandlers
 {
 
@@ -15,16 +20,9 @@ public class IC2RecipeHandlers
 	 */
 	public static class ShapedIC2RecipeHandler extends RecipeHandler
 	{
-		public static Class<? extends IRecipe> recipeClass;
 
-		static
-		{
-			try
-			{
-				recipeClass = Class.forName("ic2.core.recipe.AdvRecipe").asSubclass(IRecipe.class);
-			}
-			catch(ClassNotFoundException ex) { }
-		}
+		public static final Class<? extends IRecipe> recipeClass = getRecipeClass("ic2.core.recipe.AdvRecipe");
+
 
 		private List<List<ItemStack>> getInputs(IRecipe r)
 		{
@@ -128,16 +126,9 @@ public class IC2RecipeHandlers
 	 */
 	public static class ShapelessIC2RecipeHandler extends RecipeHandler
 	{
-		public static Class<? extends IRecipe> recipeClass;
 
-		static
-		{
-			try
-			{
-				recipeClass = Class.forName("ic2.core.recipe.AdvShapelessRecipe").asSubclass(IRecipe.class);
-			}
-			catch(ClassNotFoundException ex) { }
-		}
+		public static final Class<? extends IRecipe> recipeClass = getRecipeClass("ic2.core.recipe.AdvShapelessRecipe");
+
 
 		@Override
 		public ItemStack[] getCraftingGrid(IRecipe r)

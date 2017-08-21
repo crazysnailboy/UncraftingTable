@@ -28,18 +28,17 @@ public class CommonProxy
 	public void preInit()
 	{
 		this.initializeConfig();
-		this.registerBlocksAndItems();
-		this.registerNetworkMessages();
 		this.registerIntegrations();
+		this.registerNetworkMessages();
 	}
 
 	public void init()
 	{
-		this.registerOreDictionaryEntries();
-		this.registerCraftingRecipes();
-		this.registerUncraftingRecipes();
-		this.registerGuiHandler();
 		this.registerAchievements();
+		this.registerCraftingRecipes();
+		this.registerGuiHandler();
+		this.registerOreDictionaryEntries();
+		this.registerUncraftingRecipes();
 	}
 
 	public void postInit()
@@ -65,12 +64,6 @@ public class CommonProxy
 		ModAchievementList.registerAchievementPage();
 	}
 
-	private void registerBlocksAndItems()
-	{
-		ModBlocks.registerBlocks();
-		ModItems.registerItems();
-	}
-
 	private void registerCraftingRecipes()
 	{
 		ModBlocks.registerCraftingRecipes();
@@ -89,9 +82,9 @@ public class CommonProxy
 
 	private void registerNetworkMessages()
 	{
-		ModUncrafting.instance.getNetwork().registerMessage(RecipeNavigationMessage.MessageHandler.class, RecipeNavigationMessage.class, 0, Side.SERVER);
-		ModUncrafting.instance.getNetwork().registerMessage(ConfigSyncMessage.MessageHandler.class, ConfigSyncMessage.class, 1, Side.CLIENT);
-		ModUncrafting.instance.getNetwork().registerMessage(ConfigSyncMessage.MessageHandler.class, ConfigSyncMessage.class, 2, Side.SERVER);
+		ModUncrafting.NETWORK.registerMessage(RecipeNavigationMessage.MessageHandler.class, RecipeNavigationMessage.class, 0, Side.SERVER);
+		ModUncrafting.NETWORK.registerMessage(ConfigSyncMessage.MessageHandler.class, ConfigSyncMessage.class, 1, Side.CLIENT);
+		ModUncrafting.NETWORK.registerMessage(ConfigSyncMessage.MessageHandler.class, ConfigSyncMessage.class, 2, Side.SERVER);
 	}
 
 	private void registerOreDictionaryEntries()

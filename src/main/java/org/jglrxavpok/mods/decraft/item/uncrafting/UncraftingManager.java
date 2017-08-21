@@ -170,8 +170,12 @@ public class UncraftingManager
 		// if we're using Xell75's & Zenen's uncrafting method...
 		if (ModConfiguration.uncraftMethod == UncraftingMethod.XELL75_ZENEN)
 		{
+			if (itemStack == null)
+			{
+				return 0;
+			}
 			// if the item isn't damageable
-			if (!itemStack.getItem().isDamageable())
+			else if (!itemStack.getItem().isDamageable())
 			{
 				// the xp cost is the standard cost
 				return ModConfiguration.standardLevel;
