@@ -1,0 +1,52 @@
+#es_MX
+
+tile.uncrafting_table.name=Mesa de destrucción
+
+item.diamondNugget.name=Pepita de diamante
+item.emeraldNugget.name=Pepita de esmeralda
+item.ironNugget.name=Iron Nugget
+item.leatherStrip.name=Tira de cuero
+
+achievement.createDecraftTable=Como en los viejos tiempos
+achievement.createDecraftTable.desc=¡Fabrica una mesa de destrucción!
+achievement.uncraftAnything=¡Destruyelo!
+achievement.uncraftAnything.desc=¡Por destruir tu primer objeto!
+achievement.uncraftDiamondHoe=¡Destruye un azadón de diamante!
+achievement.uncraftDiamondHoe.desc=Al menos tendrás algo devuelta.
+achievement.uncraftJunk=¡Hora de reciclar!
+achievement.uncraftJunk.desc=Este objeto no tiene usos.
+achievement.uncraftDiamondShovel=Enfoque más barato
+achievement.uncraftDiamondShovel.desc=Las palas de hierro son mejores.
+achievement.porteManteauAchievement=¡Todo en uno!
+achievement.porteManteauAchievement.desc=§k <3 Para todos los jugadores
+
+container.uncrafting=Mesa de destrucción
+container.uncrafting.cost=Costo de EXP: %1$s
+
+uncrafting.result.ready=Listo
+uncrafting.result.impossible=Imposible de destruir
+uncrafting.result.needMoreStacks=Necesitas %1$s objetos(s)
+
+stat.uncrafteditems=Objetos destruidos
+
+uncrafting.options.standardLevel=Minimum Level
+uncrafting.options.standardLevel.tooltip=Minimum required level to uncraft an item
+uncrafting.options.maxUsedLevel=Maximum Level
+uncrafting.options.maxUsedLevel.tooltip=Maximum required level to uncraft an item
+uncrafting.options.enchantmentCost=Enchantment Cost
+uncrafting.options.enchantmentCost.tooltip=Cost per enchantment when removing enchantments onto books
+uncrafting.options.method=Uncrafting Method
+uncrafting.options.method.tooltip=ID of the used uncrafting equation
+uncrafting.options.excludedItems=Excluded Items
+uncrafting.options.excludedItems.tooltip=Item IDs for items which cannot be uncrafted
+
+uncrafting.options.nuggets=Nugget Options
+uncrafting.options.nuggets.tooltip=Click to configure options for nuggets
+uncrafting.options.nuggets.useNuggets=Use Nuggets
+uncrafting.options.nuggets.useNuggets.tooltip=Use available nuggets for partial returns of damaged items
+uncrafting.options.nuggets.registerNuggets=Register Nuggets
+uncrafting.options.nuggets.registerNuggets.tooltip=Register additional nuggets to use for partial returns of damaged Vanilla items
+uncrafting.options.nuggets.useRabbitHide=Use Rabbit Hide
+uncrafting.options.nuggets.useRabbitHide.tooltip=Use Rabbit Hide for partial returns of damaged Leather items
+uncrafting.options.nuggets.ensureReturn=Ensure a Return
+uncrafting.options.nuggets.ensureReturn.tooptip=Ensure that at least one nugget is returned, even for items with 0% durability
