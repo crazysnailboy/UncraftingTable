@@ -8,8 +8,8 @@
 	],
 	"key": {
 		"#": {
-			"item": "uncraftingtable:nugget",
-			"data": 1
+			"type": "forge:ore_dict",
+			"ore": "nuggetEmerald"
 		}
 	},
 	"result": {
