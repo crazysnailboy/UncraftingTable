@@ -135,19 +135,19 @@ public class ContainerUncraftingTable extends Container
 	private void doUncraft()
 	{
 		// if we're not in creative mode
-//		if (!playerInventory.player.capabilities.isCreativeMode)
-//		{
-//			// if we don't have enough xp
-//			if (playerInventory.player.experienceLevel < uncraftingResult.experienceCost)
-//			{
-//				// set the status to error, not enough xp and return
-//				uncraftingResult.resultType = ResultType.NOT_ENOUGH_XP;
-//				return;
-//			}
-//
-//			// deduct the appropriate number of levels from the player
-//			playerInventory.player.experienceLevel -= uncraftingResult.experienceCost;
-//		}
+		if (!playerInventory.player.capabilities.isCreativeMode)
+		{
+			// if we don't have enough xp
+			if (playerInventory.player.experienceLevel < uncraftingResult.experienceCost)
+			{
+				// set the status to error, not enough xp and return
+				uncraftingResult.resultType = ResultType.NOT_ENOUGH_XP;
+				return;
+			}
+
+			// deduct the appropriate number of levels from the player
+			playerInventory.player.experienceLevel -= uncraftingResult.experienceCost;
+		}
 
 		// if the item being uncrafted has enchantments, and there are books in the left hand slot
 		if (uncraftIn.getStackInSlot(0).isItemEnchanted() && calculInput.getStackInSlot(0) != null && calculInput.getStackInSlot(0).getItem() == Items.BOOK)

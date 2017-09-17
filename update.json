@@ -1,10 +1,11 @@
 {
 	"homepage": "https://minecraft.curseforge.com/projects/jglrxavpoks-uncrafting-table/files/",
 	"promos": {
-		"1.10.2-latest": "1.6.4",
-		"1.10.2-recommended": "1.6.4"
+		"1.10.2-latest": "1.6.5",
+		"1.10.2-recommended": "1.6.5"
 	},
 	"1.10.2": {
+		"1.6.5": "Fixed XP not being removed from the player",
 		"1.6.4": "Couple of bug fixes",
 		"1.6.4-beta1": "Fixed uncrafting message not clearing when shift-clicking from output grid",
 		"1.6.3": "Improved CraftTweaker scripting, added support for Thermal Dynamics Covers",
