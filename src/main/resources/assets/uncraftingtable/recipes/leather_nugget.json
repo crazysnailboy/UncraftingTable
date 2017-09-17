@@ -6,7 +6,8 @@
 	],
 	"key": {
 		"#": {
-			"item": "minecraft:leather"
+			"type": "forge:ore_dict",
+			"ore": "leather"
 		}
 	},
 	"result": {
