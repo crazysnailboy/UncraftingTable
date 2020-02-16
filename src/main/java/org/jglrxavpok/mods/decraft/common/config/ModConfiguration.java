@@ -3,22 +3,18 @@ package org.jglrxavpok.mods.decraft.common.config;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.network.PacketDistributor;
 import org.jglrxavpok.mods.decraft.ModUncrafting;
-import org.jglrxavpok.mods.decraft.client.config.ModGuiConfigEntries;
 import org.jglrxavpok.mods.decraft.common.network.message.ConfigSyncMessage;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
-import net.minecraftforge.fml.client.config.GuiConfigEntries.NumberSliderEntry;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
 
 public class ModConfiguration
 {
@@ -196,24 +192,24 @@ public class ModConfiguration
 	{
 
 		@SubscribeEvent
-		public static void onPlayerLoggedIn(PlayerLoggedInEvent event)
+		public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event)
 		{
-			if (!event.player.world.isRemote)
+			if (!event.getPlayer().world.isRemote)
 			{
-				ModUncrafting.NETWORK.sendTo(new ConfigSyncMessage(), (EntityPlayerMP)event.player);
+				ModUncrafting.NETWORK.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)event.getPlayer()), new ConfigSyncMessage());
 			}
 		}
 
-		@SideOnly(Side.CLIENT)
+		@OnlyIn(Dist.CLIENT)
 		@SubscribeEvent
 		public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event)
 		{
 			if (event.getModID().equals(ModUncrafting.MODID))
 			{
-				if (!event.isWorldRunning() || Minecraft.getMinecraft().isSingleplayer())
+				if (!event.isWorldRunning() || Minecraft.getInstance().isSingleplayer())
 				{
 					syncFromGUI();
-					if (event.isWorldRunning() && Minecraft.getMinecraft().isSingleplayer())
+					if (event.isWorldRunning() && Minecraft.getInstance().isSingleplayer())
 					{
 						ModUncrafting.NETWORK.sendToServer(new ConfigSyncMessage());
 					}

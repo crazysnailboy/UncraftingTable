@@ -1,42 +1,41 @@
 package org.jglrxavpok.mods.decraft.client.gui.inventory;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.World;
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.common.network.message.RecipeNavigationMessage;
 import org.jglrxavpok.mods.decraft.inventory.ContainerUncraftingTable;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult.ResultType;
 import org.lwjgl.opengl.GL11;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
 
 
-public class GuiUncraftingTable extends GuiContainer
+public class GuiUncraftingTable extends ContainerScreen<ContainerUncraftingTable>
 {
 	private static final ResourceLocation UNCRAFTING_TABLE_GUI_TEXTURES = new ResourceLocation(ModUncrafting.MODID, "textures/gui/container/uncrafting_table.png");
 
-	public ContainerUncraftingTable container;
 	private World worldObj;
-	private EntityPlayer player;
+	private PlayerEntity player;
 	private GuiButton previousRecipeButton;
 	private GuiButton nextRecipeButton;
 
-	public GuiUncraftingTable(InventoryPlayer playerInventory, World world)
+	public GuiUncraftingTable(ContainerUncraftingTable container, PlayerInventory playerInventory, ITextComponent title)
 	{
-		super(new ContainerUncraftingTable(playerInventory, world));
-		container = (ContainerUncraftingTable)inventorySlots;
-		this.worldObj = world;
+		super(container, playerInventory, title);
 		this.player = playerInventory.player;
+		this.worldObj = this.player.world;
 	}
 
 
@@ -44,18 +43,40 @@ public class GuiUncraftingTable extends GuiContainer
 	 * Adds the buttons (and other controls) to the screen in question.
 	 */
 	@Override
-	public void initGui()
+	public void init()
 	{
-		super.initGui();
+		super.init();
 
 		int guiX = (this.width - this.xSize) / 2;
 		int guiY = (this.height - this.ySize) / 2;
 
-		this.buttonList.add(this.nextRecipeButton = new GuiButton(1, guiX + 162, guiY + 20, ButtonFacing.RIGHT));
-		this.buttonList.add(this.previousRecipeButton = new GuiButton(2, guiX + 95, guiY + 20, ButtonFacing.LEFT));
+		this.buttons.add(this.nextRecipeButton = new GuiButton(guiX + 162, guiY + 20, ButtonFacing.RIGHT, this::nextRecipe));
+		this.buttons.add(this.previousRecipeButton = new GuiButton(guiX + 95, guiY + 20, ButtonFacing.LEFT, this::previousRecipe));
 
 		this.previousRecipeButton.visible = false;
 		this.nextRecipeButton.visible = false;
+	}
+
+	private void switchRecipe()
+	{
+		container.switchRecipe();
+
+		int recipeIndex = container.uncraftingResult.selectedCraftingGrid;
+		ModUncrafting.NETWORK.sendToServer(new RecipeNavigationMessage(recipeIndex));
+	}
+
+	private void previousRecipe()
+	{
+		if (container.uncraftingResult.selectedCraftingGrid == (container.uncraftingResult.getRecipeCount() - 1)) return;
+		container.uncraftingResult.selectedCraftingGrid++;
+		switchRecipe();
+	}
+
+	private void nextRecipe()
+	{
+		if (container.uncraftingResult.selectedCraftingGrid == 0) return;
+		container.uncraftingResult.selectedCraftingGrid--;
+		switchRecipe();
 	}
 
 
@@ -63,10 +84,10 @@ public class GuiUncraftingTable extends GuiContainer
 	 * Draws the screen and all the components in it.
 	 */
 	@Override
-	public void drawScreen(int mouseX, int mouseY, float partialTicks)
+	public void render(int mouseX, int mouseY, float partialTicks)
 	{
-		this.drawDefaultBackground();
-		super.drawScreen(mouseX, mouseY, partialTicks);
+		this.renderBackground();
+		super.render(mouseX, mouseY, partialTicks);
 		this.renderHoveredToolTip(mouseX, mouseY);
 	}
 
@@ -74,9 +95,9 @@ public class GuiUncraftingTable extends GuiContainer
 	 * Called from the main game loop to update the screen.
 	 */
 	@Override
-	public void updateScreen()
+	public void tick()
 	{
-		super.updateScreen();
+		super.tick();
 
 		boolean haveMultipleRecipes = (container.uncraftingResult.getRecipeCount() > 1);
 		boolean hasNextRecipe = (container.uncraftingResult.selectedCraftingGrid < (container.uncraftingResult.getRecipeCount() - 1));
@@ -84,35 +105,11 @@ public class GuiUncraftingTable extends GuiContainer
 		boolean canChangeRecipe = (container.uncraftingResult.resultType != ResultType.UNCRAFTED);
 
 		this.nextRecipeButton.visible = (haveMultipleRecipes && canChangeRecipe && hasNextRecipe);
-		this.nextRecipeButton.enabled = this.nextRecipeButton.visible;
+		this.nextRecipeButton.active = this.nextRecipeButton.visible;
 
 		this.previousRecipeButton.visible = (haveMultipleRecipes && canChangeRecipe && hasPreviousRecipe);
-		this.nextRecipeButton.enabled = this.nextRecipeButton.visible;
+		this.nextRecipeButton.active = this.nextRecipeButton.visible;
 	}
-
-
-	@Override
-	protected void actionPerformed(net.minecraft.client.gui.GuiButton button)
-	{
-		if (button == this.previousRecipeButton || button == this.nextRecipeButton)
-		{
-			if (button == this.previousRecipeButton)
-			{
-				if (container.uncraftingResult.selectedCraftingGrid == 0) return;
-				container.uncraftingResult.selectedCraftingGrid--;
-			}
-			if (button == this.nextRecipeButton)
-			{
-				if (container.uncraftingResult.selectedCraftingGrid == (container.uncraftingResult.getRecipeCount() - 1)) return;
-				container.uncraftingResult.selectedCraftingGrid++;
-			}
-			container.switchRecipe();
-
-			int recipeIndex = container.uncraftingResult.selectedCraftingGrid;
-			ModUncrafting.NETWORK.sendToServer(new RecipeNavigationMessage(recipeIndex));
-		}
-	}
-
 
 	private void drawUncraftingStatusMessage()
 	{
@@ -158,7 +155,7 @@ public class GuiUncraftingTable extends GuiContainer
 		if (!statusMessage.equals(""))
 		{
 			int textX = 8;
-			int textY = ySize - 96 + 2 - fontRenderer.FONT_HEIGHT - 4; // 60
+			int textY = ySize - 96 + 2 - font.FONT_HEIGHT - 4; // 60
 
 			// *** copied from GuiRepair ***
 			// determine the text and shadow colours based on the uncrafting status
@@ -166,10 +163,10 @@ public class GuiUncraftingTable extends GuiContainer
 			int shadowColor = -16777216 | (textColor & 16579836) >> 2 | textColor & -16777216;
 
 			// render the string 4 times at different positions in different colours to achieve the desired effect
-			this.fontRenderer.drawString(statusMessage, textX, textY + 1, shadowColor);
-			this.fontRenderer.drawString(statusMessage, textX + 1, textY, shadowColor);
-			this.fontRenderer.drawString(statusMessage, textX + 1, textY + 1, shadowColor);
-			this.fontRenderer.drawString(statusMessage, textX, textY, textColor);
+			this.font.drawString(statusMessage, textX, textY + 1, shadowColor);
+			this.font.drawString(statusMessage, textX + 1, textY, shadowColor);
+			this.font.drawString(statusMessage, textX + 1, textY + 1, shadowColor);
+			this.font.drawString(statusMessage, textX, textY, textColor);
 			// *** copied from GuiRepair ***
 		}
 	}
@@ -182,10 +179,10 @@ public class GuiUncraftingTable extends GuiContainer
 
 		// render the block name at the top of the gui
 		String title = I18n.format("container.uncrafting");
-		fontRenderer.drawString(title, xSize / 2 - fontRenderer.getStringWidth(title) / 2, 6, 0x404040);
+		font.drawString(title, xSize / 2 - font.getStringWidth(title) / 2, 6, 0x404040);
 
 		// write "inventory" above the player inventory
-		fontRenderer.drawString(I18n.format("container.inventory"), 8, ySize - 96 + 2, 0x404040); // y = 72
+		font.drawString(I18n.format("container.inventory"), 8, ySize - 96 + 2, 0x404040); // y = 72
 
 		// draw a status message in red or green if appropriate for the status of the uncrafting operation
 		drawUncraftingStatusMessage();
@@ -198,21 +195,21 @@ public class GuiUncraftingTable extends GuiContainer
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
 	{
 		GlStateManager.pushMatrix();
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
 		// bind the background gui texture
-		this.mc.getTextureManager().bindTexture(UNCRAFTING_TABLE_GUI_TEXTURES);
+		this.minecraft.getTextureManager().bindTexture(UNCRAFTING_TABLE_GUI_TEXTURES);
 
 		int guiX = (this.width - this.xSize) / 2;
 		int guiY = (this.height - this.ySize) / 2;
 
 		// render the gui background
-		this.drawTexturedModalRect(guiX, guiY, 0, 0, this.xSize, this.ySize);
+		this.blit(guiX, guiY, 0, 0, this.xSize, this.ySize);
 
 		// if the uncrafting status of the container is "error", render the arrow with the cross over it
 		if (container.uncraftingResult.isError())
 		{
-			this.drawTexturedModalRect(guiX + 71, guiY + 33, 176, 0, 28, 21);
+			this.blit(guiX + 71, guiY + 33, 176, 0, 28, 21);
 		}
 
 
@@ -220,12 +217,12 @@ public class GuiUncraftingTable extends GuiContainer
 
 		// render a book over the left slot
 		int slotX = 20; int slotY = 35;
-		itemRender.renderItemIntoGUI(new ItemStack(Items.BOOK), guiX + slotX, guiY + slotY);
+		itemRenderer.renderItemIntoGUI(new ItemStack(Items.BOOK), guiX + slotX, guiY + slotY);
 
 		// draw a gray rectangle over the item
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
-		this.drawRect(guiX + slotX, guiY + slotY, guiX + slotX + 16, guiY + slotY + 16, 0x9f8b8b8b);
+		AbstractGui.fill(guiX + slotX, guiY + slotY, guiX + slotX + 16, guiY + slotY + 16, 0x9f8b8b8b);
 		GL11.glEnable(GL11.GL_LIGHTING);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 
@@ -253,10 +250,10 @@ public class GuiUncraftingTable extends GuiContainer
 					{
 
 						// render the item in the position of the slot
-						itemRender.renderItemAndEffectIntoGUI(itemStack, guiX + slotX, guiY + slotY);
+						itemRenderer.renderItemAndEffectIntoGUI(itemStack, guiX + slotX, guiY + slotY);
 						if (itemStack.getCount() > 1)
 						{
-							itemRender.renderItemOverlayIntoGUI(this.fontRenderer, itemStack, guiX + slotX, guiY + slotY, String.valueOf(itemStack.getCount()));
+							itemRenderer.renderItemOverlayIntoGUI(this.font, itemStack, guiX + slotX, guiY + slotY, String.valueOf(itemStack.getCount()));
 						}
 
 						GL11.glDisable(GL11.GL_LIGHTING);
@@ -275,7 +272,7 @@ public class GuiUncraftingTable extends GuiContainer
 								color = 0x80FF8B8B;
 							}
 						}
-						this.drawRect(guiX + slotX, guiY + slotY, guiX + slotX + 16, guiY + slotY + 16, color);
+						AbstractGui.fill(guiX + slotX, guiY + slotY, guiX + slotX + 16, guiY + slotY + 16, color);
 
 						GL11.glEnable(GL11.GL_LIGHTING);
 						GL11.glEnable(GL11.GL_DEPTH_TEST);
@@ -293,26 +290,28 @@ public class GuiUncraftingTable extends GuiContainer
 
 
 
-	private class GuiButton extends net.minecraft.client.gui.GuiButton
+	private class GuiButton extends net.minecraft.client.gui.widget.button.AbstractButton
 	{
 
 		private final ButtonFacing facing;
+		private final Runnable onPress;
 
-		public GuiButton(int buttonId, int x, int y, ButtonFacing facing)
+		public GuiButton(int x, int y, ButtonFacing facing, Runnable onPress)
 		{
-			super(buttonId, x, y, 7, 11, "");
+			super(x, y, 7, 11, "");
+			this.onPress = onPress;
 			this.facing = facing;
 		}
 
 		@Override
-		public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks)
+		public void renderButton(int mouseX, int mouseY, float partialTicks)
 		{
 			if (this.visible)
 			{
 				GL11.glPushMatrix();
 				GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
-				mc.getTextureManager().bindTexture(UNCRAFTING_TABLE_GUI_TEXTURES);
+				minecraft.getTextureManager().bindTexture(UNCRAFTING_TABLE_GUI_TEXTURES);
 
 				boolean mouseOnButton = (mouseX >= this.x) && (mouseY >= this.y) && (mouseX < this.x + this.width) && (mouseY < this.y + this.height);
 				int textureX = (this.facing == ButtonFacing.LEFT ? 177 : 185);
@@ -321,7 +320,7 @@ public class GuiUncraftingTable extends GuiContainer
 				GL11.glDisable(GL11.GL_LIGHTING);
 				GL11.glDisable(GL11.GL_DEPTH_TEST);
 
-				drawTexturedModalRect(this.x, this.y, textureX, textureY, this.width, this.height);
+				blit(this.x, this.y, textureX, textureY, this.width, this.height);
 
 				GL11.glEnable(GL11.GL_LIGHTING);
 				GL11.glEnable(GL11.GL_DEPTH_TEST);
@@ -329,6 +328,12 @@ public class GuiUncraftingTable extends GuiContainer
 				GL11.glPopMatrix();
 			}
 
+		}
+
+		@Override
+		public void onPress()
+		{
+			onPress.run();
 		}
 	}
 

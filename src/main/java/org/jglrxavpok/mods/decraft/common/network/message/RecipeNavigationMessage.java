@@ -1,22 +1,17 @@
 package org.jglrxavpok.mods.decraft.common.network.message;
 
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.concurrent.TickDelayedTask;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.fml.network.NetworkEvent;
 import org.jglrxavpok.mods.decraft.inventory.ContainerUncraftingTable;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.Container;
-import net.minecraft.util.IThreadListener;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-
 
 public class RecipeNavigationMessage implements IMessage
 {
 
 	private int recipeIndex;
-
 
 	public RecipeNavigationMessage()
 	{
@@ -28,15 +23,15 @@ public class RecipeNavigationMessage implements IMessage
 	}
 
 	@Override
-	public void fromBytes(ByteBuf buf)
+	public void decode(PacketBuffer buf)
 	{
-		this.recipeIndex = ByteBufUtils.readVarShort(buf);
+		this.recipeIndex = buf.readVarInt();
 	}
 
 	@Override
-	public void toBytes(ByteBuf buf)
+	public void encode(PacketBuffer buf)
 	{
-		ByteBufUtils.writeVarShort(buf, this.recipeIndex);
+		buf.writeVarInt(this.recipeIndex);
 	}
 
 
@@ -44,26 +39,20 @@ public class RecipeNavigationMessage implements IMessage
 	{
 
 		@Override
-		public IMessage onMessage(final RecipeNavigationMessage message, MessageContext ctx)
+		public IMessage onMessage(RecipeNavigationMessage message, NetworkEvent.Context ctx)
 		{
-			final EntityPlayerMP player = ctx.getServerHandler().player;
+			final ServerPlayerEntity player = ctx.getSender();
 
-			IThreadListener threadListener = (WorldServer)player.world;
-			threadListener.addScheduledTask(new Runnable()
-			{
-				@Override
-				public void run()
+			ServerWorld serverWorld = (ServerWorld)player.world;
+			serverWorld.getServer().enqueue(new TickDelayedTask(0, () -> {
+				Container container = player.openContainer;
+				if (container instanceof ContainerUncraftingTable)
 				{
-					Container container = player.openContainer;
-					if (container instanceof ContainerUncraftingTable)
-					{
-						ContainerUncraftingTable uncraftingContainer = (ContainerUncraftingTable)container;
-						uncraftingContainer.uncraftingResult.selectedCraftingGrid = message.recipeIndex;
-						uncraftingContainer.switchRecipe();
-					}
+					ContainerUncraftingTable uncraftingContainer = (ContainerUncraftingTable)container;
+					uncraftingContainer.uncraftingResult.selectedCraftingGrid = message.recipeIndex;
+					uncraftingContainer.switchRecipe();
 				}
-			});
-
+			}));
 			return null;
 		}
 	}

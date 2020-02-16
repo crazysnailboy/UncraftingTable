@@ -36,7 +36,7 @@ public class ModJsonConfiguration
 		public ItemMapping get(ItemStack stack)
 		{
 			String registryName = stack.getItem().getRegistryName().toString();
-			int meta = stack.getMetadata();
+			int meta = stack.getDamage();
 
 			ItemMapping result = this.get(registryName + "," + meta);
 			if (result == null) result = this.get(registryName);

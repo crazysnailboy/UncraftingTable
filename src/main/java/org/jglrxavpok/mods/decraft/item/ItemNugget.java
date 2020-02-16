@@ -1,40 +1,28 @@
 package org.jglrxavpok.mods.decraft.item;
 
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import org.jglrxavpok.mods.decraft.ModUncrafting;
 
 public class ItemNugget extends Item
 {
 
-	public ItemNugget()
+	private final EnumNuggetType type;
+
+	public ItemNugget(EnumNuggetType type)
 	{
-		super();
-		this.setHasSubtypes(true);
-		this.setCreativeTab(CreativeTabs.MATERIALS);
+		super(new Item.Properties().group(ItemGroup.MATERIALS));
+		this.type = type;
+		setRegistryName(ModUncrafting.MODID, type.registryName);
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack stack)
+	public ITextComponent getDisplayName(ItemStack stack)
 	{
-		return "item." + EnumNuggetType.byMetadata(stack.getMetadata()).getUnlocalizedName();
-	}
-
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
-	{
-		if (this.isInCreativeTab(tab))
-		{
-			for (EnumNuggetType nuggetType : EnumNuggetType.values())
-			{
-				if (nuggetType.getRegistryName() != null) list.add(new ItemStack(this, 1, nuggetType.getMetadata()));
-			}
-		}
+		return new TranslationTextComponent("item." + type.getUnlocalizedName());
 	}
 
 	public static enum EnumNuggetType

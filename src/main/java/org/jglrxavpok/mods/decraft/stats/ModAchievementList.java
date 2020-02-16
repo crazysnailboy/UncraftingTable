@@ -1,12 +1,13 @@
 package org.jglrxavpok.mods.decraft.stats;
 
+import net.minecraft.item.Item;
+import net.minecraft.item.Items;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.jglrxavpok.mods.decraft.event.ItemUncraftedEvent;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.stats.StatBasic;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import org.jglrxavpok.mods.decraft.init.ModBlocks;
 
 
 public class ModAchievementList
@@ -24,7 +25,8 @@ public class ModAchievementList
 	public static final Advancement PORTEMANTEAU = null; //new Achievement("porteManteauAchievement", "porteManteauAchievement", 3 - 2, -4 - 2, Blocks.OAK_FENCE, CRAFT_TABLE).registerStat();
 
 	// stats
-	public static final StatBasic uncraftedItemsStat = (StatBasic)(new StatBasic("stat.uncrafteditems", new TextComponentTranslation("stat.uncrafteditems", new Object[0])).registerStat());
+	// FIXME
+//	public static final StatBasic uncraftedItemsStat = (StatBasic)(new StatBasic("stat.uncrafteditems", new TextComponentTranslation("stat.uncrafteditems", new Object[0])).registerStat());
 
 
 	public static void registerAchievementPage()
@@ -46,12 +48,12 @@ public class ModAchievementList
 		@SubscribeEvent
 		public void onItemCrafted(PlayerEvent.ItemCraftedEvent event)
 		{
-//			Item item = event.crafting.getItem();
-//
-//			if (item == Item.getItemFromBlock(ModBlocks.UNCRAFTING_TABLE))
-//			{
-//				event.player.addStat(CRAFT_TABLE);
-//			}
+			Item item = event.getCrafting().getItem();
+
+			if (item == Item.getItemFromBlock(ModBlocks.UNCRAFTING_TABLE))
+			{
+// FIXME				event.getPlayer().addStat(CRAFT_TABLE);
+			}
 		}
 
 		/**
@@ -61,32 +63,32 @@ public class ModAchievementList
 		@SubscribeEvent
 		public void onItemUncrafted(ItemUncraftedEvent event)
 		{
-//			// trigger the "uncrafted anything" achievement
-//			event.player.addStat(UNCRAFT_ANY);
-//
-//			// if the uncrafted item was one of those with a specific achievement associated with it, trigegr that achievement
-//			Item uncraftedItem = event.stack.getItem();
-//			if (uncraftedItem == Items.DIAMOND_HOE)
-//			{
-//				event.player.addStat(UNCRAFT_DIAMOND_HOE);
-//			}
-//			else if (uncraftedItem == Items.DIAMOND_SHOVEL)
-//			{
-//				event.player.addStat(UNCRAFT_DIAMOND_SHOVEL);
-//			}
-//			else if (
-//				(uncraftedItem == Items.LEATHER_LEGGINGS) ||
-//				(uncraftedItem == Items.LEATHER_HELMET) ||
-//				(uncraftedItem == Items.LEATHER_BOOTS) ||
-//				(uncraftedItem == Items.LEATHER_CHESTPLATE) ||
-//				(uncraftedItem == Items.GLASS_BOTTLE)
-//			)
-//			{
-//				event.player.addStat(UNCRAFT_JUNK);
-//			}
-//
-//			// increment the stat counter for the number of uncrafted items
-//			event.player.addStat(uncraftedItemsStat, event.quantity);
+			// trigger the "uncrafted anything" achievement
+// FIXME			event.player.addStat(UNCRAFT_ANY);
+
+			// if the uncrafted item was one of those with a specific achievement associated with it, trigegr that achievement
+			Item uncraftedItem = event.stack.getItem();
+			if (uncraftedItem == Items.DIAMOND_HOE)
+			{
+// FIXME				event.player.addStat(UNCRAFT_DIAMOND_HOE);
+			}
+			else if (uncraftedItem == Items.DIAMOND_SHOVEL)
+			{
+// FIXME				event.player.addStat(UNCRAFT_DIAMOND_SHOVEL);
+			}
+			else if (
+				(uncraftedItem == Items.LEATHER_LEGGINGS) ||
+				(uncraftedItem == Items.LEATHER_HELMET) ||
+				(uncraftedItem == Items.LEATHER_BOOTS) ||
+				(uncraftedItem == Items.LEATHER_CHESTPLATE) ||
+				(uncraftedItem == Items.GLASS_BOTTLE)
+			)
+			{
+// FIXME				event.player.addStat(UNCRAFT_JUNK);
+			}
+
+			// increment the stat counter for the number of uncrafted items
+// FIXME			event.player.addStat(uncraftedItemsStat, event.quantity);
 		}
 
 	}

@@ -1,58 +1,48 @@
 package org.jglrxavpok.mods.decraft;
 
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jglrxavpok.mods.decraft.proxy.ClientProxy;
 import org.jglrxavpok.mods.decraft.proxy.CommonProxy;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.Mod.Instance;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
-
-@Mod(modid = ModUncrafting.MODID, name = ModUncrafting.NAME, version = ModUncrafting.VERSION, guiFactory = ModUncrafting.GUIFACTORY, updateJSON = ModUncrafting.UPDATEJSON, dependencies = "required-after:forge@[14.21.0.2363,);")
+@Mod(ModUncrafting.MODID)
 public class ModUncrafting
 {
 
 	public static final String MODID = "uncraftingtable";
 	public static final String NAME = "jglrxavpok's Uncrafting Table";
-	public static final String VERSION = "${version}";
 	public static final String GUIFACTORY = "org.jglrxavpok.mods.decraft.client.config.ModGuiFactory";
 	public static final String UPDATEJSON = "https://raw.githubusercontent.com/crazysnailboy/UncraftingTable/1.12/update.json";
 
 	private static final String CLIENT_PROXY_CLASS = "org.jglrxavpok.mods.decraft.proxy.ClientProxy";
 	private static final String SERVER_PROXY_CLASS = "org.jglrxavpok.mods.decraft.proxy.CommonProxy";
 
-
-	@Instance(MODID)
 	public static ModUncrafting instance;
 
-	@SidedProxy(clientSide = CLIENT_PROXY_CLASS, serverSide = SERVER_PROXY_CLASS)
-	public static CommonProxy proxy;
+	public static CommonProxy proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new CommonProxy());
 
 	public static final Logger LOGGER = LogManager.getLogger(MODID);
-	public static final SimpleNetworkWrapper NETWORK = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
 
+	private static final String NETWORK_VERSION = "1.0";
+	public static final SimpleChannel NETWORK = NetworkRegistry.newSimpleChannel(new ResourceLocation(MODID, "network"), () -> NETWORK_VERSION, NETWORK_VERSION::equalsIgnoreCase, NETWORK_VERSION::equalsIgnoreCase);
 
-	@EventHandler
-	public void preInit(FMLPreInitializationEvent event)
+	public ModUncrafting()
+	{
+		instance = this;
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::preInit);
+	}
+
+	public void preInit(FMLCommonSetupEvent event)
 	{
 		proxy.preInit();
-	}
-
-	@EventHandler
-	public void init(FMLInitializationEvent event)
-	{
 		proxy.init();
-	}
-
-	@EventHandler
-	public void postInit(FMLPostInitializationEvent event)
-	{
 		proxy.postInit();
 	}
 

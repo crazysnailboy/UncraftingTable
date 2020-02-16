@@ -41,7 +41,7 @@ public class CraftTweakerIntegration
 		{
 			ShapedRecipe recipe = new ShapedRecipe(output, ingredients, function, action, false);
 			IRecipe irecipe = RecipeConverter.convert(recipe, randomResourceLocation());
-			CraftTweakerAPI.apply(new ActionAddRecipe(irecipe, UncraftingManager.recipes, "Added Shaped Recipe"));
+			CraftTweakerAPI.apply(new ActionAddRecipe(irecipe, UncraftingManager.hardCodedRecipes, "Added Shaped Recipe"));
 		}
 
 		@ZenMethod
@@ -50,7 +50,7 @@ public class CraftTweakerIntegration
 			ShapelessRecipe recipe = new ShapelessRecipe(output, ingredients, function, action);
 			IRecipe irecipe = RecipeConverter.convert(recipe, randomResourceLocation());
 
-			CraftTweakerAPI.apply(new ActionAddRecipe(irecipe, UncraftingManager.recipes, "Added Shapeless Recipe"));
+			CraftTweakerAPI.apply(new ActionAddRecipe(irecipe, UncraftingManager.hardCodedRecipes, "Added Shapeless Recipe"));
 		}
 
 		@ZenMethod

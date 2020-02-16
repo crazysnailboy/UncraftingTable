@@ -4,7 +4,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.jglrxavpok.mods.decraft.common.config.ModJsonConfiguration;
 import org.jglrxavpok.mods.decraft.common.config.ModJsonConfiguration.ItemMapping;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.NBTSensitiveRecipeHandlers.INBTSensitiveRecipeHandler;
-import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.ShapedOreRecipeHandler;
+import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
@@ -21,7 +21,7 @@ public class TinkersRecipeHandlers
 	 * Handler for Part Builders, Stencil Tables, Tool Forges and Tool Tables
 	 *
 	 */
-	public static class TableRecipeHandler extends ShapedOreRecipeHandler implements INBTSensitiveRecipeHandler
+	public static class TableRecipeHandler extends RecipeHandlers.ShapedRecipeHandler implements INBTSensitiveRecipeHandler
 	{
 
 		public static final Class<? extends IRecipe> recipeClass = getRecipeClass("slimeknights.tconstruct.tools.common.TableRecipeFactory$TableRecipe");
@@ -39,7 +39,7 @@ public class TinkersRecipeHandlers
 			{
 				if (mapping.replaceSlots != null)
 				{
-					ItemStack textureBlock = new ItemStack(inputStack.getTagCompound().getCompoundTag("textureBlock"));
+					ItemStack textureBlock = ItemStack.read(inputStack.getTag().getCompound("textureBlock"));
 					for ( int i = 0 ; i < result.size() ; i++ )
 					{
 						if (ArrayUtils.indexOf(mapping.replaceSlots, i) >= 0)

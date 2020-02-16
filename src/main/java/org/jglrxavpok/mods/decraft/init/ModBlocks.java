@@ -1,25 +1,21 @@
 package org.jglrxavpok.mods.decraft.init;
 
+import net.minecraft.block.Block;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.block.BlockUncraftingTable;
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 
 @EventBusSubscriber(modid = ModUncrafting.MODID)
 public class ModBlocks
 {
 
-	public static final Block UNCRAFTING_TABLE = new BlockUncraftingTable().setRegistryName("uncrafting_table").setUnlocalizedName("uncrafting_table");
+	public static final Block UNCRAFTING_TABLE = new BlockUncraftingTable().setRegistryName(ModUncrafting.MODID, "uncrafting_table");
 
 
 	@SubscribeEvent
@@ -33,16 +29,7 @@ public class ModBlocks
 	public static void registerItems(final RegistryEvent.Register<Item> event)
 	{
 		// register the itemblock
-		event.getRegistry().register(new ItemBlock(UNCRAFTING_TABLE).setRegistryName(UNCRAFTING_TABLE.getRegistryName()));
-	}
-
-	@SubscribeEvent
-	@SideOnly(Side.CLIENT)
-	public static void registerModels(final ModelRegistryEvent event)
-	{
-		// register the inventory model
-		Item item = Item.getItemFromBlock(UNCRAFTING_TABLE);
-		ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(UNCRAFTING_TABLE.getRegistryName().toString(), "inventory"));
+		event.getRegistry().register(new BlockItem(UNCRAFTING_TABLE, new Item.Properties().group(ItemGroup.DECORATIONS)).setRegistryName(UNCRAFTING_TABLE.getRegistryName()));
 	}
 
 }

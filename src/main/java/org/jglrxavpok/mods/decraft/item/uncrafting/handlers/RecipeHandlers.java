@@ -3,25 +3,17 @@ package org.jglrxavpok.mods.decraft.item.uncrafting.handlers;
 
 import java.util.HashMap;
 import java.util.List;
+
+import net.minecraft.item.Items;
+import net.minecraft.item.crafting.*;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.NBTSensitiveRecipeHandlers.FireworksRecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.NBTSensitiveRecipeHandlers.TippedArrowRecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.CoFHRecipeHandlers;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.IC2RecipeHandlers.ShapedIC2RecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.IC2RecipeHandlers.ShapelessIC2RecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.external.TinkersRecipeHandlers;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.RecipeFireworks;
-import net.minecraft.item.crafting.RecipeTippedArrow;
-import net.minecraft.item.crafting.RecipesMapExtending;
-import net.minecraft.item.crafting.ShapedRecipes;
-import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.oredict.ShapedOreRecipe;
-import net.minecraftforge.oredict.ShapelessOreRecipe;
-
 
 /**
  * Recipe Handlers return the "crafting grid" depending on a crafting recipe.
@@ -58,18 +50,14 @@ public final class RecipeHandlers
 
 	private static void buildHandlerMap()
 	{
-		// RecipesMapExtending extends ShapedRecipes, and causes a crash when attempting to uncraft a map
-		HANDLERS.put(RecipesMapExtending.class, null);
+		// RecipesMapExtending extends ShapedRecipe, and causes a crash when attempting to uncraft a map
+		HANDLERS.put(MapExtendingRecipe.class, null);
 
 		// vanilla Minecraft recipe handlers
-		HANDLERS.put(ShapedRecipes.class, new ShapedRecipeHandler());
-		HANDLERS.put(ShapelessRecipes.class, new ShapelessRecipeHandler());
-		HANDLERS.put(RecipeFireworks.class, new FireworksRecipeHandler());
-		HANDLERS.put(RecipeTippedArrow.class, new TippedArrowRecipeHandler());
-
-		// Forge Ore Dictionary recipe handlers
-		HANDLERS.put(ShapedOreRecipe.class, new ShapedOreRecipeHandler());
-		HANDLERS.put(ShapelessOreRecipe.class, new ShapelessOreRecipeHandler());
+		HANDLERS.put(ShapedRecipe.class, new ShapedRecipeHandler());
+		HANDLERS.put(ShapelessRecipe.class, new ShapelessRecipeHandler());
+		HANDLERS.put(FireworkStarRecipe.class, new FireworksRecipeHandler());
+		HANDLERS.put(TippedArrowRecipe.class, new TippedArrowRecipeHandler());
 
 		// cofh recipe handlers
 		if (CoFHRecipeHandlers.CoverRecipeHandler.recipeClass != null) HANDLERS.put(CoFHRecipeHandlers.CoverRecipeHandler.recipeClass, new CoFHRecipeHandlers.CoverRecipeHandler());
@@ -84,8 +72,8 @@ public final class RecipeHandlers
 
 	private static void buildRecipeOutputMap()
 	{
-		RECIPE_OUTPUTS.put(RecipeFireworks.class, new ItemStack[] { new ItemStack(Items.FIREWORK_CHARGE), new ItemStack(Items.FIREWORKS, 3) });
-		RECIPE_OUTPUTS.put(RecipeTippedArrow.class, new ItemStack[] { new ItemStack(Items.TIPPED_ARROW, 8) });
+		RECIPE_OUTPUTS.put(FireworkStarRecipe.class, new ItemStack[] { new ItemStack(Items.FIRE_CHARGE), new ItemStack(Items.FIREWORK_ROCKET, 3) });
+		RECIPE_OUTPUTS.put(TippedArrowRecipe.class, new ItemStack[] { new ItemStack(Items.TIPPED_ARROW, 8) });
 	}
 
 
@@ -190,7 +178,7 @@ public final class RecipeHandlers
 
 
 		/**
-		 * Copies the ItemStacks from a list of Ingredients to a new list, whilst normalising the item damage for the OreDictionary wildcard value
+		 * Copies the ItemStacks from a list of Ingredients to a new list
 		 */
 		protected static NonNullList<ItemStack> copyRecipeStacks(NonNullList<Ingredient> inputStacks)
 		{
@@ -200,7 +188,6 @@ public final class RecipeHandlers
 			{
 				ItemStack[] matchingStacks = inputStacks.get(i).getMatchingStacks();
 				ItemStack outputStack = (matchingStacks.length > 0 ? matchingStacks[0].copy() : ItemStack.EMPTY);
-				if (outputStack.getItemDamage() == Short.MAX_VALUE) outputStack.setItemDamage(0);
 				outputStacks.set(i, outputStack);
 			}
 
@@ -208,7 +195,7 @@ public final class RecipeHandlers
 		}
 
 		/**
-		 * Copies the ItemStacks in a list to a new list, whilst normalising the item damage for the OreDictionary wildcard value
+		 * Copies the ItemStacks in a list to a new list
 		 */
 		protected static NonNullList<ItemStack> copyRecipeStacks(List<ItemStack> inputStacks)
 		{
@@ -217,7 +204,6 @@ public final class RecipeHandlers
 			for ( int i = 0 ; i < inputStacks.size() ; i++ )
 			{
 				ItemStack outputStack = (inputStacks.get(i) == null ? ItemStack.EMPTY : inputStacks.get(i)).copy();
-				if (outputStack.getItemDamage() == Short.MAX_VALUE) outputStack.setItemDamage(0);
 				outputStacks.set(i, outputStack);
 			}
 
@@ -238,14 +224,14 @@ public final class RecipeHandlers
 		public NonNullList<ItemStack> getCraftingGrid(IRecipe r)
 		{
 			// cast the IRecipe instance
-			ShapedRecipes shapedRecipe = (ShapedRecipes)r;
+			ShapedRecipe shapedRecipe = (ShapedRecipe)r;
 
 			// get a copy of the recipe items with normalised metadata
-			NonNullList<ItemStack> recipeStacks = copyRecipeStacks(shapedRecipe.recipeItems);
+			NonNullList<ItemStack> recipeStacks = copyRecipeStacks(shapedRecipe.getIngredients());
 
 			// get the recipe dimensions
-			int recipeWidth = shapedRecipe.recipeWidth;
-			int recipeHeight = shapedRecipe.recipeHeight;
+			int recipeWidth = shapedRecipe.getRecipeWidth();
+			int recipeHeight = shapedRecipe.getRecipeHeight();
 
 			// rearrange the itemstacks according to the recipe width and height
 			return reshapeRecipe(recipeStacks, recipeWidth, recipeHeight);
@@ -263,68 +249,13 @@ public final class RecipeHandlers
 		public NonNullList<ItemStack> getCraftingGrid(IRecipe r)
 		{
 			// cast the IRecipe instance
-			ShapelessRecipes shapelessRecipe = (ShapelessRecipes)r;
+			ShapelessRecipe shapelessRecipe = (ShapelessRecipe)r;
 
 			// get a copy of the recipe items with normalised metadata
-			NonNullList<ItemStack> recipeStacks = copyRecipeStacks(shapelessRecipe.recipeItems);
+			NonNullList<ItemStack> recipeStacks = copyRecipeStacks(shapelessRecipe.getIngredients());
 
 			// return the itemstacks
 			return recipeStacks;
 		}
 	}
-
-
-	/**
-	 * Handler for shaped recipes which utilise the Forge Ore Dictionary
-	 *
-	 */
-	public static class ShapedOreRecipeHandler extends RecipeHandler
-	{
-		@Override
-		public NonNullList<ItemStack> getCraftingGrid(IRecipe r)
-		{
-			// cast the IRecipe instance
-			ShapedOreRecipe shapedRecipe = (ShapedOreRecipe)r;
-
-			// obtain the recipe items and the recipe dimensions
-			NonNullList<ItemStack> recipeStacks = copyRecipeStacks(shapedRecipe.getIngredients()); // copyRecipeStacks(getOreRecipeItems(shapedRecipe.getIngredients()));
-
-			if (!recipeStacks.isEmpty())
-			{
-				// get the recipe dimensions
-				int recipeWidth = shapedRecipe.getWidth();
-				int recipeHeight = shapedRecipe.getHeight();
-
-				// rearrange the itemstacks according to the recipe width and height
-				return reshapeRecipe(recipeStacks, recipeWidth, recipeHeight);
-			}
-			else return NonNullList.<ItemStack>create();
-		}
-	}
-
-
-	/**
-	 * Handler for shapeless recipes which utilise the Forge Ore Dictionary
-	 *
-	 */
-	public static class ShapelessOreRecipeHandler extends RecipeHandler
-	{
-		@Override
-		public NonNullList<ItemStack> getCraftingGrid(IRecipe r)
-		{
-			// cast the IRecipe instance
-			ShapelessOreRecipe shapelessRecipe = (ShapelessOreRecipe)r;
-
-			// get a copy of the recipe items with normalised metadata
-			NonNullList<ItemStack> recipeStacks = copyRecipeStacks(shapelessRecipe.getIngredients()); // copyRecipeStacks(getOreRecipeItems(shapelessRecipe.getIngredients()));
-
-			if (!recipeStacks.isEmpty())
-			{
-				// return the itemstacks
-				return recipeStacks;
-			}
-			else return NonNullList.<ItemStack>create();
-		}
-	}
-
 }

@@ -3,15 +3,15 @@ package org.jglrxavpok.mods.decraft.item.uncrafting.handlers;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.ArrayUtils;
+import net.minecraft.item.DyeColor;
+import net.minecraft.item.DyeItem;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.RecipeHandler;
 
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.NonNullList;
 
@@ -62,32 +62,32 @@ public final class NBTSensitiveRecipeHandlers
 			// add the gunpowder
 			recipeItems.add(new ItemStack(Items.GUNPOWDER, 1));
 
-			if (inputStack.hasTagCompound())
+			if (inputStack.hasTag())
 			{
 				// read the nbt tag from the input item
-				NBTTagCompound tag = inputStack.getTagCompound().getCompoundTag("Explosion");
+				CompoundNBT tag = inputStack.getTag().getCompound("Explosion");
 
 				// add a dye item of the appropriate color for each value in the colors array
 				for ( int color : tag.getIntArray("Colors"))
 				{
-					int index = ArrayUtils.indexOf(ItemDye.DYE_COLORS, color);
-					if (index >= 0) recipeItems.add(new ItemStack(Items.DYE, 1, index));
+					DyeColor dyeColor = DyeColor.byId(color);
+					if (dyeColor != null) recipeItems.add(new ItemStack(DyeItem.getItem(dyeColor), 1));
 				}
 
 				// add the item which corresponds to the exlosion type
-				switch (tag.getInteger("Type"))
+				switch (tag.getInt("Type"))
 				{
 					case 0: break;
 					case 1: recipeItems.add(new ItemStack(Items.FIRE_CHARGE, 1)); break;
 					case 2: recipeItems.add(new ItemStack(Items.GOLD_NUGGET, 1)); break;
-					case 3: recipeItems.add(new ItemStack(Items.SKULL, 1, 4)); break;
+					case 3: recipeItems.add(new ItemStack(Items.SKELETON_SKULL, 1)); break;
 					case 4: recipeItems.add(new ItemStack(Items.FEATHER, 1)); break;
 				}
 
 				// if the explosion has a trail, add a diamond
-				if (tag.hasKey("Trail") && tag.getByte("Trail") == 1) recipeItems.add(new ItemStack(Items.DIAMOND, 1));
+				if (tag.contains("Trail") && tag.getByte("Trail") == 1) recipeItems.add(new ItemStack(Items.DIAMOND, 1));
 				// if the explosion has a flicker, add a glowstone dust
-				if (tag.hasKey("Flicker") && tag.getByte("Flicker") == 1) recipeItems.add(new ItemStack(Items.GLOWSTONE_DUST, 1));
+				if (tag.contains("Flicker") && tag.getByte("Flicker") == 1) recipeItems.add(new ItemStack(Items.GLOWSTONE_DUST, 1));
 			}
 
 			return recipeItems;
@@ -98,28 +98,28 @@ public final class NBTSensitiveRecipeHandlers
 		{
 			List<ItemStack> recipeItems = new ArrayList<ItemStack>();
 
-			if (inputStack.hasTagCompound())
+			if (inputStack.hasTag())
 			{
 				// read the nbt tag from the input item
-				NBTTagCompound tag = inputStack.getTagCompound().getCompoundTag("Fireworks");
+				CompoundNBT tag = inputStack.getTag().getCompound("Fireworks");
 
 				// add the gunpowder
-				if (tag.hasKey("Flight")) recipeItems.add(new ItemStack(Items.GUNPOWDER, tag.getInteger("Flight")));
+				if (tag.contains("Flight")) recipeItems.add(new ItemStack(Items.GUNPOWDER, tag.getInt("Flight")));
 
 				// add the paper
 				recipeItems.add(new ItemStack(Items.PAPER, 1));
 
 				// add a firework star for each explosion in the explosions array
-				NBTTagList explosions = tag.getTagList("Explosions", 10);
+				ListNBT explosions = tag.getList("Explosions", 10);
 
-				for ( int i = 0 ; i < explosions.tagCount() ; i++ )
+				for ( int i = 0 ; i < explosions.size() ; i++ )
 				{
-					NBTTagCompound explosion = explosions.getCompoundTagAt(i);
+					CompoundNBT explosion = explosions.getCompound(i);
 
-					ItemStack stack = new ItemStack(Items.FIREWORK_CHARGE, 1);
-					NBTTagCompound stackTag = new NBTTagCompound();
-					stackTag.setTag("Explosion", explosion);
-					stack.setTagCompound(stackTag);
+					ItemStack stack = new ItemStack(Items.FIREWORK_STAR, 1);
+					CompoundNBT stackTag = new CompoundNBT();
+					stackTag.put("Explosion", explosion);
+					stack.setTag(stackTag);
 
 					recipeItems.add(stack);
 				}
@@ -135,8 +135,8 @@ public final class NBTSensitiveRecipeHandlers
 		{
 			NonNullList<ItemStack> recipeItems = NonNullList.<ItemStack>create();
 
-	        if (inputStack.getItem() == Items.FIREWORK_CHARGE) recipeItems.addAll(getFireworkStarItems());
-	        if (inputStack.getItem() == Items.FIREWORKS) recipeItems.addAll(getFireworkRocketItems());
+	        if (inputStack.getItem() == Items.FIREWORK_STAR) recipeItems.addAll(getFireworkStarItems());
+	        if (inputStack.getItem() == Items.FIREWORK_ROCKET) recipeItems.addAll(getFireworkRocketItems());
 
 	        return recipeItems;
 		}

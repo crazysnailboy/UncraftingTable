@@ -1,11 +1,22 @@
 package org.jglrxavpok.mods.decraft.item.uncrafting;
 
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
+import com.google.common.collect.Lists;
+import net.minecraft.client.Minecraft;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.RecipeManager;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag;
+import net.minecraft.util.NonNullList;
+import net.minecraftforge.common.Tags;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jglrxavpok.mods.decraft.ModUncrafting;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
@@ -15,19 +26,9 @@ import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult.ResultType;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.NBTSensitiveRecipeHandlers.INBTSensitiveRecipeHandler;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers.RecipeHandler;
-import com.google.common.collect.Lists;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.NonNullList;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.oredict.OreDictionary;
+
+import java.lang.reflect.Field;
+import java.util.*;
 
 
 /**
@@ -37,18 +38,16 @@ import net.minecraftforge.oredict.OreDictionary;
 public class UncraftingManager
 {
 
-	public static final List<IRecipe> recipes = Lists.<IRecipe>newArrayList();
-	public static final List<IRecipe> blockedRecipes = Lists.<IRecipe>newArrayList();
+	public static final List<IRecipe<?>> hardCodedRecipes = Lists.newArrayList();
+	public static final List<IRecipe<?>> blockedRecipes = Lists.newArrayList();
 	public static final List<ItemStack> blockedItems = Lists.<ItemStack>newArrayList();
 	public static final List<ItemStack> blockedIngredients = Lists.<ItemStack>newArrayList();
 	public static final List<ItemStack> removedIngredients = Lists.<ItemStack>newArrayList();
-
-
+	
 	public static void addUncraftingRecipe(IRecipe recipe)
 	{
-		recipes.add(recipe);
+		hardCodedRecipes.add(recipe);
 	}
-
 
 	/**
 	 * Performs the recipe lookup, XP cost calculation and other associated checks for an uncrafting operation.
@@ -56,7 +55,7 @@ public class UncraftingManager
 	 * @param itemStack The stack of items being uncrafted
 	 * @return An object containing the details of the operation to be performed
 	 */
-	public static UncraftingResult getUncraftingResult(EntityPlayer player, ItemStack itemStack)
+	public static UncraftingResult getUncraftingResult(PlayerEntity player, ItemStack itemStack)
 	{
 
 		UncraftingResult uncraftingResult = new UncraftingResult();
@@ -79,7 +78,7 @@ public class UncraftingManager
 			uncraftingResult.resultType = ResultType.NOT_UNCRAFTABLE;
 		}
 		// if the player is not in creative mode, and doesn't have enough XP levels
-		else if (!player.capabilities.isCreativeMode && player.experienceLevel < uncraftingResult.experienceCost)
+		else if (!player.isCreative() && player.experienceLevel < uncraftingResult.experienceCost)
 		{
 			// set the result type as "not enough xp"
 			uncraftingResult.resultType = ResultType.NOT_ENOUGH_XP;
@@ -108,7 +107,7 @@ public class UncraftingManager
 	}
 
 
-	public static void recalculateResultType(UncraftingResult uncraftingResult, EntityPlayer player, ItemStack itemStack)
+	public static void recalculateResultType(UncraftingResult uncraftingResult, PlayerEntity player, ItemStack itemStack)
 	{
 		uncraftingResult.resultType = ResultType.INACTIVE;
 		if (itemStack.isEmpty()) return;
@@ -126,7 +125,7 @@ public class UncraftingManager
 			uncraftingResult.resultType = ResultType.NOT_UNCRAFTABLE;
 		}
 		// if the player is not in creative mode, and doesn't have enough XP levels
-		else if (!player.capabilities.isCreativeMode && player.experienceLevel < uncraftingResult.experienceCost)
+		else if (!player.isCreative() && player.experienceLevel < uncraftingResult.experienceCost)
 		{
 			// set the result type as "not enough xp"
 			uncraftingResult.resultType = ResultType.NOT_ENOUGH_XP;
@@ -182,7 +181,7 @@ public class UncraftingManager
 				return ModConfiguration.standardLevel;
 			}
 			// if the item is damageable, but isn't damaged
-			else if (itemStack.getItem().isDamageable() && itemStack.getItemDamage() == 0)
+			else if (itemStack.getItem().isDamageable() && itemStack.getDamage() == 0)
 			{
 				// the xp cost is the standard cost
 				return ModConfiguration.standardLevel;
@@ -191,7 +190,7 @@ public class UncraftingManager
 			else
 			{
 				// the xp cost is standard level + (damage percentage * the max level)
-				int damagePercentage = (int)(((double)itemStack.getItemDamage() / (double)itemStack.getMaxDamage()) * 100);
+				int damagePercentage = (int)(((double)itemStack.getDamage() / (double)itemStack.getMaxDamage()) * 100);
 				return ((ModConfiguration.maxUsedLevel * damagePercentage) / 100);
 			}
 		}
@@ -204,7 +203,7 @@ public class UncraftingManager
 	{
 		int experienceCost = getUncraftingXpCost(inputStack);
 
-		if (!bookStack.isEmpty() && !inputStack.isEmpty() && inputStack.isItemEnchanted())
+		if (!bookStack.isEmpty() && !inputStack.isEmpty() && inputStack.isEnchanted())
 		{
 			int enchantmentCount = EnchantmentHelper.getEnchantments(inputStack).size();
 			experienceCost += (enchantmentCount * ModConfiguration.enchantmentCost);
@@ -228,8 +227,8 @@ public class UncraftingManager
 		if (isOutputBlocked(itemStack)) return list;
 
 		// iterate over all the crafting recipes known to the crafting manager
-		List<IRecipe> recipeList = new ArrayList<IRecipe>(ForgeRegistries.RECIPES.getValues());
-		recipeList.addAll(recipes);
+		List<IRecipe<?>> recipeList = getAllRecipes();
+		recipeList.addAll(hardCodedRecipes);
 
 		for ( IRecipe recipe : recipeList )
 		{
@@ -278,7 +277,7 @@ public class UncraftingManager
 						craftingGrid = removeItemsFromOutputBecauseCraftTweaker(craftingGrid);
 
 						// if we're doing a partial material return on a damaged item, remove items from the crafting grid as appropriate
-						if (ModConfiguration.uncraftMethod == UncraftingMethod.JGLRXAVPOK && itemStack.isItemStackDamageable() && itemStack.isItemDamaged())
+						if (ModConfiguration.uncraftMethod == UncraftingMethod.JGLRXAVPOK && itemStack.isDamageable() && itemStack.isDamaged())
 						{
 							craftingGrid = removeItemsFromOutputByDamage(itemStack, craftingGrid);
 						}
@@ -306,18 +305,23 @@ public class UncraftingManager
 		return list;
 	}
 
+	private static List<IRecipe<?>> getAllRecipes() {
+		RecipeManager recipeManager = Minecraft.getInstance().world.getRecipeManager();
+		return new LinkedList<>(recipeManager.getRecipes());
+	}
+
 
 	private static boolean areItemStackSubTagsEqual(ItemStack stackA, ItemStack stackB, String tagName)
 	{
 		final String regex = "(?<=\\d+)[bdfsL](?=[,}])"; // type indicators ("b", "f", etc) preceded by digits and followed by "," or "}"
 
-		NBTTagCompound tagA = stackA.getTagCompound();
-		NBTTagCompound tagB = stackB.getTagCompound();
+		CompoundNBT tagA = stackA.getTag();
+		CompoundNBT tagB = stackB.getTag();
 
 		if (tagA != null && tagB != null)
 		{
-			NBTBase subTagA = tagA.getTag(tagName);
-			NBTBase subTagB = tagB.getTag(tagName);
+			INBT subTagA = tagA.get(tagName);
+			INBT subTagB = tagB.get(tagName);
 
 			return (subTagA.equals(subTagB) || subTagA.toString().replaceAll(regex, "").equals(subTagB.toString().replaceAll(regex, "")));
 		}
@@ -327,10 +331,25 @@ public class UncraftingManager
 
 	private static boolean arePrivateFieldValuesEqual(ItemStack stackA, ItemStack stackB, String[] fieldNames)
 	{
-		Object oA = ObfuscationReflectionHelper.getPrivateValue(ItemStack.class, stackA, fieldNames);
-		Object oB = ObfuscationReflectionHelper.getPrivateValue(ItemStack.class, stackB, fieldNames);
+		Field field = null;
+		for (String fieldNameA : fieldNames) {
+			try {
+				field = ObfuscationReflectionHelper.findField(ItemStack.class, fieldNameA);
+				break; // found our field
+			} catch (ObfuscationReflectionHelper.UnableToFindFieldException e) {
+				// silence it
+			}
+		}
+		try {
+			field.setAccessible(true);
+			Object oA = field.get(stackA);
+			Object oB = field.get(stackB);
+			return ((oA != null) == (oB != null)) && oA.equals(oB);
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
 
-		return oA.equals(oB);
+		return false;
 	}
 
 
@@ -367,8 +386,8 @@ public class UncraftingManager
 	private static NonNullList<ItemStack> removeItemsFromOutputByDamage(ItemStack stack, NonNullList<ItemStack> craftingGrid)
 	{
 		// calculate the percentage durability remaining on the item
-		double damagePercentage = (100 * ((double)stack.getItemDamage() / (double)stack.getMaxDamage()));
-		double durabilityPercentage = 100 - (100 * ((double)stack.getItemDamage() / (double)stack.getMaxDamage()));
+		double damagePercentage = (100 * ((double)stack.getDamage() / (double)stack.getMaxDamage()));
+		double durabilityPercentage = 100 - (100 * ((double)stack.getDamage() / (double)stack.getMaxDamage()));
 
 		// iterate through the itemstacks in the crafting recipe to determine the unique materials used, and the total number of each item
 		HashMap<String, Map.Entry<ItemStack,Integer>> materials = new HashMap<String, Map.Entry<ItemStack,Integer>>();
@@ -377,8 +396,8 @@ public class UncraftingManager
 			if (!recipeStack.isEmpty())
 			{
 				// get the unique identifier string for the item in the current stack, and append a metadata value if appropriate
-				String key = Item.REGISTRY.getNameForObject(recipeStack.getItem()).toString();
-				if (recipeStack.getItemDamage() != 0) key += "," + recipeStack.getItemDamage();
+				String key = ForgeRegistries.ITEMS.getKey(recipeStack.getItem()).toString();
+				if (recipeStack.getDamage() != 0) key += "," + recipeStack.getDamage();
 
 				// if the map already contains a stack for this item, increment the number of items in the map
 				if (materials.containsKey(key))
@@ -410,16 +429,16 @@ public class UncraftingManager
 			int nuggetCount = 0;
 
 			// if the stack contains sticks
-			if (ArrayUtils.contains(OreDictionary.getOreIDs(materialStack), OreDictionary.getOreID("stickWood")))
+			if (materialStack.getItem().isIn(Tags.Items.RODS_WOODEN))
 			{
 				// calculate the total number of full items which most closely represent the percentage durability remaining on the item
 				// rounding up to the nearest item
 				itemCount = (int)Math.ceil(amount * (durabilityPercentage / (double)100));
 			}
 			// if the stack contains leather and we should use rabbit hide
-			else if (ModConfiguration.useRabbitHide && ArrayUtils.contains(OreDictionary.getOreIDs(materialStack), OreDictionary.getOreID("leather")))
+			else if (ModConfiguration.useRabbitHide && materialStack.getItem().isIn(Tags.Items.LEATHER))
 			{
-				nuggetStack = new ItemStack(Items.RABBIT_HIDE, 1, 0);
+				nuggetStack = new ItemStack(Items.RABBIT_HIDE, 1);
 
 				// calculate the number of pieces of leather and pieces of rabbit hide which most closely represent the percentage durability remaining on the item
 				// rounding down to the nearest piece of rabbit hide
@@ -461,7 +480,7 @@ public class UncraftingManager
 					}
 					if (itemCount == 0 && nuggetCount > 0)
 					{
-						craftingGrid.set(i, new ItemStack(nuggetStack.getItem(), nuggetCount, nuggetStack.getItemDamage()));
+						craftingGrid.set(i, new ItemStack(nuggetStack.getItem(), nuggetCount));
 						nuggetCount = 0;
 					}
 				}
@@ -480,28 +499,24 @@ public class UncraftingManager
 	 */
 	private static ItemStack getNuggetForOre(ItemStack oreStack)
 	{
-		String[] oreTypes = { "gem", "ingot" };
+		Tag[] oreTypes = { Tags.Items.GEMS, Tags.Items.NUGGETS };
 
-		int[] oreIds = OreDictionary.getOreIDs(oreStack);
-		for ( int oreId : oreIds )
+		Tag[] oreIds = oreStack.getItem().getTags().stream().map(rl -> ItemTags.getCollection().get(rl)).toArray(size -> new Tag[size]);
+		for ( Tag oreId : oreIds )
 		{
-			String oreName = OreDictionary.getOreName(oreId); // e.g. "gemDiamond"
-			String[] oreNameParts = oreName.split("(?=\\p{Upper})"); // e.g. { "gem", "Diamond" }
+			String oreName = oreId.getId().getPath(); // e.g. "gems/diamond"
+			String[] oreNameParts = oreName.split("/"); // e.g. { "gem", "diamond" }
 
 			if ((oreNameParts.length == 1) || (oreNameParts.length == 2 && ArrayUtils.indexOf(oreTypes, oreNameParts[0]) >= 0))
 			{
 				String oreNamePart = oreNameParts[oreNameParts.length - 1];
-				if (Pattern.matches("^[a-z]+", oreNamePart)) oreNamePart = oreNamePart.substring(0, 1).toUpperCase() + oreNamePart.substring(1); // e.g. "leather" -> "Leather"
 
 				String nuggetName = "nugget" + oreNamePart; // e.g. "nuggetDiamond"
 
-				List<ItemStack> nuggetOres = OreDictionary.getOres(nuggetName);
-				if (!nuggetOres.isEmpty())
-				{
-					ItemStack nuggetOre = nuggetOres.get(0);
-					return nuggetOre;
+				if(!oreId.getAllElements().isEmpty()) {
+					Item nuggetOres = (Item) oreId.getAllElements().iterator().next(); // get first
+					return new ItemStack(nuggetOres);
 				}
-
 			}
 
 		}
@@ -537,7 +552,7 @@ public class UncraftingManager
 		// first check to see if the output is blocked by config
 		String registryName = stack.getItem().getRegistryName().toString();
 		if (ArrayUtils.indexOf(ModConfiguration.excludedItems, registryName) >= 0) return true;
-		if (ArrayUtils.indexOf(ModConfiguration.excludedItems, registryName + "," + Integer.toString(stack.getItemDamage())) >= 0) return true;
+		if (ArrayUtils.indexOf(ModConfiguration.excludedItems, registryName + "," + Integer.toString(stack.getDamage())) >= 0) return true;
 
 		// then check to see if it's blocked by crafttweaker
 		for ( ItemStack stackB : blockedItems )
@@ -547,7 +562,7 @@ public class UncraftingManager
 			{
 				// if the blocked stack doesn't have an NBT tag, consider this a match regardless of the NBT data on the test stack.
 				// if it does, then it's a match if the two tags match.
-				if (!stackB.hasTagCompound())
+				if (!stackB.hasTag())
 				{
 					return true;
 				}
@@ -555,9 +570,9 @@ public class UncraftingManager
 				{
 					return true;
 				}
-				else if (stack.hasTagCompound())
+				else if (stack.hasTag())
 				{
-					for (String key : stackB.getTagCompound().getKeySet())
+					for (String key : stackB.getTag().keySet())
 					{
 						if (areItemStackSubTagsEqual(stack, stackB, key))
 						{
@@ -602,7 +617,7 @@ public class UncraftingManager
 	 * extended InventoryCrafting class used for comparing recipe outputs
 	 *
 	 */
-	private static class InventoryCrafting extends net.minecraft.inventory.InventoryCrafting
+	private static class InventoryCrafting extends net.minecraft.inventory.CraftingInventory
 	{
 
 		public InventoryCrafting(NonNullList<ItemStack> craftingGrid)
