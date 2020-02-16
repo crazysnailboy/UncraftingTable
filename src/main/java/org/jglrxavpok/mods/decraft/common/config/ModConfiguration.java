@@ -18,6 +18,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 public class ModConfiguration
 {
+	// FIXME
 
 	private static class DefaultValues
 	{
@@ -33,10 +34,10 @@ public class ModConfiguration
 		private static final boolean ensureReturn = true;
 	}
 
-	private static Configuration config = null;
+//	private static Configuration config = null;
 
 
-	public static final String CATEGORY_GENERAL = Configuration.CATEGORY_GENERAL;
+	public static final String CATEGORY_GENERAL = "general";
 	public static final String CATEGORY_NUGGETS = "nuggets";
 
 
@@ -51,7 +52,7 @@ public class ModConfiguration
 	public static boolean useRabbitHide = DefaultValues.useRabbitHide;
 	public static boolean ensureReturn = DefaultValues.ensureReturn;
 
-
+/*
 	public static Configuration getConfig()
 	{
 		return config;
@@ -218,5 +219,5 @@ public class ModConfiguration
 		}
 
 	}
-
+*/
 }

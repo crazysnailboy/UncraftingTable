@@ -14,6 +14,7 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.Items;
 import org.jglrxavpok.mods.decraft.event.ItemUncraftedEvent;
+import org.jglrxavpok.mods.decraft.init.ModContainers;
 import org.jglrxavpok.mods.decraft.inventory.InventoryUncraftResult.StackType;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingManager;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult;
@@ -41,7 +42,7 @@ public class ContainerUncraftingTable extends Container
 
 	public ContainerUncraftingTable(int windowIndex, PlayerInventory playerInventory, World world)
 	{
-		super(windowIndex);
+		super(ModContainers.UNCRAFTING_CONTAINER, windowIndex);
 		this.playerInventory = playerInventory;
 		this.world = world;
 
@@ -106,12 +107,13 @@ public class ContainerUncraftingTable extends Container
 					if (amount > craftingGrid.get(index).getMaxStackSize()) amount = craftingGrid.get(index).getMaxStackSize();
 
 					// create the new itemstack to place in the uncrafting inventory
-					ItemStack newStack = new ItemStack(craftingGrid.get(index).getItem(), amount, craftingGrid.get(index).getItemDamage());
+					ItemStack newStack = new ItemStack(craftingGrid.get(index).getItem(), amount);
+					newStack.setDamage(craftingGrid.get(index).getDamage());
 
 					// if the crafting recipe item has NBT data, copy that onto the new itemstack
-					if (craftingGrid.get(index).hasTagCompound())
+					if (craftingGrid.get(index).hasTag())
 					{
-						newStack.setTagCompound(craftingGrid.get(index).getTag());
+						newStack.setTag(craftingGrid.get(index).getTag());
 					}
 
 					// add the new itemstack to the inventory
@@ -621,7 +623,7 @@ public class ContainerUncraftingTable extends Container
 	public Slot getSlotFromInventory(IInventory inv, int index) {
 		for(Slot slot : this.inventorySlots) {
 			if(slot.inventory == inv) {
-				if(slot.slotNumber == index) {
+				if(slot.getSlotIndex() == index) {
 					return slot;
 				}
 			}

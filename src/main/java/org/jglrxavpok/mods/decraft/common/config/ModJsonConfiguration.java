@@ -51,7 +51,7 @@ public class ModJsonConfiguration
 
 	public static void loadItemMappings()
 	{
-		String fileContents = readFileContentsFromMod("assets/" + ModUncrafting.MODID + "/data/item-mappings.json");
+		String fileContents = readFileContentsFromMod("data/" + ModUncrafting.MODID + "/data/item-mappings.json");
 
 		JsonObject jsonObject = new JsonParser().parse(fileContents).getAsJsonObject();
 		Gson gson = new Gson();

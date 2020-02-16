@@ -103,10 +103,6 @@ minecraft {
 }
 
 repositories {
-    maven {
-        name = "jared maven"
-        url "http://blamejared.com/maven"
-    }
 }
 
 configurations {
@@ -118,10 +114,6 @@ dependencies {
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft 'net.minecraftforge:forge:1.14.4-28.1.111'
-
-    // TODO
-//    deobfCompile 'CraftTweaker2:CraftTweaker2-API:4.0.0.7'
-//    deobfCompile 'CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.0.0.7'
 }
 
 task installMods(type: Copy, dependsOn: "deinstallMods") {

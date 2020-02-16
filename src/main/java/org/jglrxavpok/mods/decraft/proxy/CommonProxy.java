@@ -30,7 +30,6 @@ public class CommonProxy
 	public void init()
 	{
 		this.registerAchievements();
-		this.registerGuiHandler();
 		this.registerOreDictionaryEntries();
 		this.registerUncraftingRecipes();
 	}
@@ -43,7 +42,7 @@ public class CommonProxy
 
 	private void initializeConfig()
 	{
-		ModConfiguration.initializeConfiguration();
+		// FIXME ModConfiguration.initializeConfiguration();
 		ModJsonConfiguration.loadItemMappings();
 	}
 
@@ -56,11 +55,6 @@ public class CommonProxy
 	private void registerAchievements()
 	{
 		ModAchievementList.registerAchievementPage();
-	}
-
-	private void registerGuiHandler()
-	{
-		NetworkRegistry.INSTANCE.registerGuiHandler(ModUncrafting.instance, new ModGuiHandler());
 	}
 
 	private void registerIntegrations()

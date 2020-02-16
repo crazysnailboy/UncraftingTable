@@ -11,7 +11,7 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 
-@EventBusSubscriber(modid = ModUncrafting.MODID)
+@EventBusSubscriber(modid = ModUncrafting.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class ModItems
 {
 
@@ -31,14 +31,6 @@ public class ModItems
 	public static void registerOreDictionaryEntries()
 	{
 		if (!ModConfiguration.registerNuggets) return;
-
-		// FIXME: use Tags
-		// register the ore dictionary entries
-		OreDictionary.registerOre("nuggetDiamond", new ItemStack(DIAMOND_NUGGET, 1));
-		OreDictionary.registerOre("shardDiamond", new ItemStack(DIAMOND_NUGGET, 1));  // added for compatibility with Magic Bees
-		OreDictionary.registerOre("nuggetEmerald", new ItemStack(EMERALD_NUGGET, 1));
-		OreDictionary.registerOre("shardEmerald", new ItemStack(EMERALD_NUGGET, 1));  // added for compatibility with Magic Bees
-		OreDictionary.registerOre("nuggetLeather", new ItemStack(LEATHER_STRIP, 1));
 	}
 
 }

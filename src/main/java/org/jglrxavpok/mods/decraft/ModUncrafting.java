@@ -1,13 +1,19 @@
 package org.jglrxavpok.mods.decraft;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jglrxavpok.mods.decraft.init.ModBlocks;
+import org.jglrxavpok.mods.decraft.init.ModContainers;
+import org.jglrxavpok.mods.decraft.init.ModItems;
 import org.jglrxavpok.mods.decraft.proxy.ClientProxy;
 import org.jglrxavpok.mods.decraft.proxy.CommonProxy;
 import net.minecraftforge.fml.common.Mod;
@@ -36,10 +42,16 @@ public class ModUncrafting
 	public ModUncrafting()
 	{
 		instance = this;
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::preInit);
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
 	}
 
-	public void preInit(FMLCommonSetupEvent event)
+	public void clientSetup(FMLClientSetupEvent event)
+	{
+		ClientProxy.setup(event);
+	}
+
+	public void setup(FMLCommonSetupEvent event)
 	{
 		proxy.preInit();
 		proxy.init();
