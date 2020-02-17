@@ -1,0 +1,54 @@
+{
+	"_comment": "fr_CA",
+
+	"block.uncraftingtable.uncrafting_table": "Table de décrafting",
+
+	"item.diamondNugget": "Pépite de diamant",
+	"item.emeraldNugget": "Pépite d'émeraude",
+	"item.ironNugget": "Pépite de fer",
+	"item.leatherStrip": "Bande de cuir",
+
+	"achievement.createDecraftTable": "Comme au bon vieux temps",
+	"achievement.createDecraftTable.desc": "Craftez une table de décrafting!",
+	"achievement.uncraftAnything": "Décraftez un objet!",
+	"achievement.uncraftAnything.desc": "Premier objet décrafté!",
+	"achievement.uncraftDiamondHoe": "Décraftez une pelle en diamants!",
+	"achievement.uncraftDiamondHoe.desc": "On allait pas tarder à mettre les clés sous la porte avec ça.",
+	"achievement.uncraftJunk": "Recyclage!",
+	"achievement.uncraftJunk.desc": "Cet objet était inutile de toute façon.",
+	"achievement.uncraftDiamondShovel": "Ce fût un mauvais investissement.",
+	"achievement.uncraftDiamondShovel.desc": "Les pelles en fer ont toujours été meilleures.",
+	"achievement.porteManteauAchievement": "Du 4 en 1!",
+	"achievement.porteManteauAchievement.desc": "§k <3 All Players",
+
+	"container.uncrafting": "Table de décrafting",
+	"container.uncrafting.cost": "Coût (XP): %1$s",
+
+	"uncrafting.result.ready": "Prêt",
+	"uncrafting.result.impossible": "Impossible avec cet objet",
+	"uncrafting.result.needMoreStacks": "Il manque %1$s objet(s).",
+
+	"stat.uncrafteditems": "Nombre d'objets décraftés",
+
+	"uncrafting.options.standardLevel": "Niveau minimum d'XP",
+	"uncrafting.options.standardLevel.tooltip": "Niveau minimum d'XP requis",
+	"uncrafting.options.maxUsedLevel": "Niveau maximum d'XP",
+	"uncrafting.options.maxUsedLevel.tooltip": "Niveau maximum d'XP requis",
+	"uncrafting.options.enchantmentCost": "Coût de l'enchantement",
+	"uncrafting.options.enchantmentCost.tooltip": "Coût par enchantement lors de leur transfert vers les livres",
+	"uncrafting.options.method": "Méthode de décrafting",
+	"uncrafting.options.method.tooltip": "ID de l'équation de décrafting utilisée",
+	"uncrafting.options.excludedItems": "Objets exclus",
+	"uncrafting.options.excludedItems.tooltip": "ID des items qui ne peuvent être décraftés",
+
+	"uncrafting.options.nuggets": "Nugget Options",
+	"uncrafting.options.nuggets.tooltip": "Configuration des options pour les pépites",
+	"uncrafting.options.nuggets.useNuggets": "Utiliser des pépites",
+	"uncrafting.options.nuggets.useNuggets.tooltip": "Utilise les pépites disponibles pour les retours partiels des objets endommagés",
+	"uncrafting.options.nuggets.registerNuggets": "Enregistrer des pépites",
+	"uncrafting.options.nuggets.registerNuggets.tooltip": "Enregistrer des pépites supplémentaires pour les retours partiels",
+	"uncrafting.options.nuggets.useRabbitHide": "Utiliser la peau de lapin",
+	"uncrafting.options.nuggets.useRabbitHide.tooltip": "Utiliser la peau de lapin pour les retours partiels",
+	"uncrafting.options.nuggets.ensureReturn": "Assurance de retour",
+	"uncrafting.options.nuggets.ensureReturn.tooptip": "Assure qu'au moins une pépite est donnée, même pour des objets à 0% de durabilité"
+}

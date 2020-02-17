@@ -50,8 +50,8 @@ public class GuiUncraftingTable extends ContainerScreen<ContainerUncraftingTable
 		int guiX = (this.width - this.xSize) / 2;
 		int guiY = (this.height - this.ySize) / 2;
 
-		this.buttons.add(this.nextRecipeButton = new GuiButton(guiX + 162, guiY + 20, ButtonFacing.RIGHT, this::nextRecipe));
-		this.buttons.add(this.previousRecipeButton = new GuiButton(guiX + 95, guiY + 20, ButtonFacing.LEFT, this::previousRecipe));
+		addButton(this.nextRecipeButton = new GuiButton(guiX + 162, guiY + 20, ButtonFacing.RIGHT, this::nextRecipe));
+		addButton(this.previousRecipeButton = new GuiButton(guiX + 95, guiY + 20, ButtonFacing.LEFT, this::previousRecipe));
 
 		this.previousRecipeButton.visible = false;
 		this.nextRecipeButton.visible = false;
@@ -67,15 +67,15 @@ public class GuiUncraftingTable extends ContainerScreen<ContainerUncraftingTable
 
 	private void previousRecipe()
 	{
-		if (container.uncraftingResult.selectedCraftingGrid == (container.uncraftingResult.getRecipeCount() - 1)) return;
-		container.uncraftingResult.selectedCraftingGrid++;
+		if (container.uncraftingResult.selectedCraftingGrid == 0) return;
+		container.uncraftingResult.selectedCraftingGrid--;
 		switchRecipe();
 	}
 
 	private void nextRecipe()
 	{
-		if (container.uncraftingResult.selectedCraftingGrid == 0) return;
-		container.uncraftingResult.selectedCraftingGrid--;
+		if (container.uncraftingResult.selectedCraftingGrid == (container.uncraftingResult.getRecipeCount() - 1)) return;
+		container.uncraftingResult.selectedCraftingGrid++;
 		switchRecipe();
 	}
 
@@ -108,7 +108,7 @@ public class GuiUncraftingTable extends ContainerScreen<ContainerUncraftingTable
 		this.nextRecipeButton.active = this.nextRecipeButton.visible;
 
 		this.previousRecipeButton.visible = (haveMultipleRecipes && canChangeRecipe && hasPreviousRecipe);
-		this.nextRecipeButton.active = this.nextRecipeButton.visible;
+		this.previousRecipeButton.active = this.previousRecipeButton.visible;
 	}
 
 	private void drawUncraftingStatusMessage()

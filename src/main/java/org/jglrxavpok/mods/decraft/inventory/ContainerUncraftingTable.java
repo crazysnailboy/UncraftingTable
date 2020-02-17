@@ -30,7 +30,7 @@ import net.minecraftforge.common.MinecraftForge;
 
 public class ContainerUncraftingTable extends Container
 {
-	public Inventory previewAndBookInput = new Inventory(1);
+	public Inventory bookInput = new Inventory(1);
 	public CraftingInventory uncraftIn = new CraftingInventory(this, 1, 1);
 	public InventoryUncraftResult uncraftOut = new InventoryUncraftResult(this);
 
@@ -47,7 +47,7 @@ public class ContainerUncraftingTable extends Container
 		this.world = world;
 
 		// uncrafting book inventory for capturing enchantments (left standalone slot)
-		this.addSlot(new SlotBook(this.previewAndBookInput, 0, 20, 35, this));
+		this.addSlot(new SlotBook(this.bookInput, 0, 20, 35, this));
 
 		// incrafting input inventory (right standalone slot)
 		this.addSlot(new SlotUncrafting(this.uncraftIn, 0, 45, 35, this));
@@ -144,10 +144,10 @@ public class ContainerUncraftingTable extends Container
 		}
 
 		// if the item being uncrafted has enchantments, and there are books in the left hand slot
-		if (uncraftIn.getStackInSlot(0).isEnchanted() && previewAndBookInput.getStackInSlot(0) != ItemStack.EMPTY && previewAndBookInput.getStackInSlot(0).getItem() == Items.BOOK)
+		if (uncraftIn.getStackInSlot(0).isEnchanted() && bookInput.getStackInSlot(0) != ItemStack.EMPTY && bookInput.getStackInSlot(0).getItem() == Items.BOOK)
 		{
 			// copy the item enchantments onto one or more books
-			List<ItemStack> enchantedBooks = this.getItemEnchantments(uncraftIn.getStackInSlot(0), previewAndBookInput.getStackInSlot(0));
+			List<ItemStack> enchantedBooks = this.getItemEnchantments(uncraftIn.getStackInSlot(0), bookInput.getStackInSlot(0));
 
 			// for each enchanted book
 			for (ItemStack enchantedBook : enchantedBooks)
@@ -159,7 +159,7 @@ public class ContainerUncraftingTable extends Container
 				}
 			}
 			// decrement the stack size for the books in the left hand slot
-			previewAndBookInput.decrStackSize(0, enchantedBooks.size());
+			bookInput.decrStackSize(0, enchantedBooks.size());
 		}
 
 
@@ -322,7 +322,7 @@ public class ContainerUncraftingTable extends Container
 				returnUncraftingOutputItemsToPlayer();
 			}
 			this.uncraftingResult = UncraftingManager.getUncraftingResult(playerInventory.player, inputStack);
-			this.uncraftingResult.experienceCost = UncraftingManager.recalculateExperienceCost(inputStack, previewAndBookInput.getStackInSlot(0));
+			this.uncraftingResult.experienceCost = UncraftingManager.recalculateExperienceCost(inputStack, bookInput.getStackInSlot(0));
 		}
 
 		onCraftMatrixChanged(uncraftIn);
@@ -336,9 +336,9 @@ public class ContainerUncraftingTable extends Container
 	public void onCraftMatrixChanged(IInventory inventory)
 	{
 
-		if (inventory == previewAndBookInput)
+		if (inventory == bookInput)
 		{
-			this.uncraftingResult.experienceCost = UncraftingManager.recalculateExperienceCost(uncraftIn.getStackInSlot(0), previewAndBookInput.getStackInSlot(0));
+			this.uncraftingResult.experienceCost = UncraftingManager.recalculateExperienceCost(uncraftIn.getStackInSlot(0), bookInput.getStackInSlot(0));
 		}
 
 		// if the right input slot changes
@@ -457,7 +457,7 @@ public class ContainerUncraftingTable extends Container
 			}
 
 			// if there's an itemstack in the calculation slot, drop the stack into the world
-			itemstack = this.previewAndBookInput.removeStackFromSlot(0);
+			itemstack = this.bookInput.removeStackFromSlot(0);
 			if (itemstack != ItemStack.EMPTY)
 			{
 				player.dropItem(itemstack, false);
@@ -490,7 +490,7 @@ public class ContainerUncraftingTable extends Container
 		if (slot != null && slot.getHasStack())
 		{
 			// if the slot belongs to the calculation inventory
-			if (slot.inventory.equals(previewAndBookInput))
+			if (slot.inventory.equals(bookInput))
 			{
 				// attempt to add the stack to the player's inventory
 				if (!playerInventory.addItemStackToInventory(slot.getStack()))
