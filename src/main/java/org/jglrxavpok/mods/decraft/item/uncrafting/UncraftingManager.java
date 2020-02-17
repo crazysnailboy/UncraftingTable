@@ -230,7 +230,7 @@ public class UncraftingManager
 		List<IRecipe<?>> recipeList = getAllRecipes();
 		recipeList.addAll(hardCodedRecipes);
 
-		for ( IRecipe recipe : recipeList )
+		recipeLoop: for ( IRecipe recipe : recipeList )
 		{
 			// if the current recipe can be used to craft the item
 			ItemStack recipeOutput = recipe.getRecipeOutput();
@@ -238,7 +238,6 @@ public class UncraftingManager
 
 			if (ItemStack.areItemsEqualIgnoreDurability(itemStack, recipeOutput))
 			{
-				System.out.println(">> "+recipe.getId().toString());
 				// load any custom mapping data we have for this item
 				ItemMapping mapping = ModJsonConfiguration.ITEM_MAPPINGS.get(itemStack);
 
@@ -263,38 +262,41 @@ public class UncraftingManager
 
 					// get the minimum stack size required to uncraft, and the itemstacks that comprise the crafting ingredients
 					int minStackSize = recipeOutput.getCount();
-					NonNullList<ItemStack> craftingGrid = handler.getCraftingGrid(recipe);
+					NonNullList<NonNullList<ItemStack>> craftingGrids = handler.getCraftingGrids(recipe);
 
-					if (!craftingGrid.isEmpty())
+					for(NonNullList<ItemStack> craftingGrid : craftingGrids)
 					{
-
-						// if the recipe is disallowed for uncrafting, continue
-						if (isRecipeBlocked(craftingGrid)) continue; // recipe is blocked by CraftTweaker
-						if (recipeContainsBlockedItems(craftingGrid)) continue; // recipe contains items blocked by CraftTweaker
-						if (craftingGridContainsInputItem(itemStack, craftingGrid)) continue; // recipe output contains the input item (e.g. white wool -> white wool + bonemeal)
-
-
-						// if the recipe contains items blocked by crafttweaker, remove them from the crafting grid
-						craftingGrid = removeItemsFromOutputBecauseCraftTweaker(craftingGrid);
-
-						// if we're doing a partial material return on a damaged item, remove items from the crafting grid as appropriate
-						if (ModConfiguration.uncraftMethod == UncraftingMethod.JGLRXAVPOK && itemStack.isDamageable() && itemStack.isDamaged())
+						if (!craftingGrid.isEmpty())
 						{
-							craftingGrid = removeItemsFromOutputByDamage(itemStack, craftingGrid);
-						}
 
-						// add the stack size and the crafting grid to the results list
-						if (countFilledSlotsInCraftingGrid(craftingGrid) > 0)
-						{
-							Map.Entry<NonNullList<ItemStack>,Integer> pair = new AbstractMap.SimpleEntry<NonNullList<ItemStack>,Integer>(craftingGrid, minStackSize);
-							list.add(pair);
-						}
+							// if the recipe is disallowed for uncrafting, continue
+							if (isRecipeBlocked(craftingGrid)) continue; // recipe is blocked by CraftTweaker
+							if (recipeContainsBlockedItems(craftingGrid)) continue; // recipe contains items blocked by CraftTweaker
+							if (craftingGridContainsInputItem(itemStack, craftingGrid)) continue; // recipe output contains the input item (e.g. white wool -> white wool + bonemeal)
 
-						// if we have custom mapping data which specifies a single recipe
-						if (mapping != null && mapping.singleRecipe == true)
-						{
-							// we've found that recipe, so break out of the loop
-							break;
+
+							// if the recipe contains items blocked by crafttweaker, remove them from the crafting grid
+							craftingGrid = removeItemsFromOutputBecauseCraftTweaker(craftingGrid);
+
+							// if we're doing a partial material return on a damaged item, remove items from the crafting grid as appropriate
+							if (ModConfiguration.uncraftMethod == UncraftingMethod.JGLRXAVPOK && itemStack.isDamageable() && itemStack.isDamaged())
+							{
+								craftingGrid = removeItemsFromOutputByDamage(itemStack, craftingGrid);
+							}
+
+							// add the stack size and the crafting grid to the results list
+							if (countFilledSlotsInCraftingGrid(craftingGrid) > 0)
+							{
+								Map.Entry<NonNullList<ItemStack>,Integer> pair = new AbstractMap.SimpleEntry<NonNullList<ItemStack>,Integer>(craftingGrid, minStackSize);
+								list.add(pair);
+							}
+
+							// if we have custom mapping data which specifies a single recipe
+							if (mapping != null && mapping.singleRecipe == true)
+							{
+								// we've found that recipe, so break out of the loop
+								break recipeLoop;
+							}
 						}
 					}
 				}

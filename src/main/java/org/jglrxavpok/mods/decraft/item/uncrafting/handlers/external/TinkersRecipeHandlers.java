@@ -30,9 +30,9 @@ public class TinkersRecipeHandlers
 
 
 		@Override
-		public NonNullList<ItemStack> getCraftingGrid(IRecipe r)
+		public NonNullList<NonNullList<ItemStack>> getCraftingGrids(IRecipe r)
 		{
-			NonNullList<ItemStack> result = super.getCraftingGrid(r);
+			NonNullList<NonNullList<ItemStack>> result = super.getCraftingGrids(r);
 
 			ItemMapping mapping = ModJsonConfiguration.ITEM_MAPPINGS.get(inputStack);
 			if (mapping != null)
@@ -40,11 +40,14 @@ public class TinkersRecipeHandlers
 				if (mapping.replaceSlots != null)
 				{
 					ItemStack textureBlock = ItemStack.read(inputStack.getTag().getCompound("textureBlock"));
-					for ( int i = 0 ; i < result.size() ; i++ )
+					for (NonNullList<ItemStack> ingredients : result)
 					{
-						if (ArrayUtils.indexOf(mapping.replaceSlots, i) >= 0)
+						for ( int i = 0 ; i < ingredients.size() ; i++ )
 						{
-							result.set(i, textureBlock.copy());
+							if (ArrayUtils.indexOf(mapping.replaceSlots, i) >= 0)
+							{
+								ingredients.set(i, textureBlock.copy());
+							}
 						}
 					}
 				}

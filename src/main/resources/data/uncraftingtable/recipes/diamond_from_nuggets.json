@@ -8,8 +8,7 @@
 	],
 	"key": {
 		"#": {
-			"type": "forge:ore_dict",
-			"ore": "nuggetDiamond"
+			"tag": "forge:nuggets/diamond"
 		}
 	},
 	"result": {

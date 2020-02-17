@@ -131,14 +131,14 @@ public final class NBTSensitiveRecipeHandlers
 
 
 		@Override
-		public NonNullList<ItemStack> getCraftingGrid(IRecipe r)
+		public NonNullList<NonNullList<ItemStack>> getCraftingGrids(IRecipe r)
 		{
 			NonNullList<ItemStack> recipeItems = NonNullList.<ItemStack>create();
 
 	        if (inputStack.getItem() == Items.FIREWORK_STAR) recipeItems.addAll(getFireworkStarItems());
 	        if (inputStack.getItem() == Items.FIREWORK_ROCKET) recipeItems.addAll(getFireworkRocketItems());
 
-	        return recipeItems;
+	        return NonNullList.withSize(1, recipeItems);
 		}
 	}
 
@@ -150,7 +150,7 @@ public final class NBTSensitiveRecipeHandlers
 	public static class TippedArrowRecipeHandler extends NBTSensitiveRecipeHandler
 	{
 		@Override
-		public NonNullList<ItemStack> getCraftingGrid(IRecipe r)
+		public NonNullList<NonNullList<ItemStack>> getCraftingGrids(IRecipe r)
 		{
 			NonNullList<ItemStack> recipeItems = NonNullList.<ItemStack>create();
 
@@ -169,7 +169,7 @@ public final class NBTSensitiveRecipeHandlers
 				}
 			}
 
-			return recipeItems;
+			return NonNullList.withSize(1, recipeItems);
 		}
 	}
 

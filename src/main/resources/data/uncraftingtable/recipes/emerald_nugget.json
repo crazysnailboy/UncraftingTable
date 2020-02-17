@@ -6,13 +6,11 @@
 	],
 	"key": {
 		"#": {
-			"type": "forge:ore_dict",
-			"ore": "gemEmerald"
+			"tag": "forge:gems/emerald"
 		}
 	},
 	"result": {
-		"item": "uncraftingtable:nugget",
-		"data": 1,
+		"item": "uncraftingtable:emerald_nugget",
 		"count": 9
 	}
 }

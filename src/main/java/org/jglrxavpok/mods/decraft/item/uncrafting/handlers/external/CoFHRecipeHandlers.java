@@ -32,7 +32,7 @@ public class CoFHRecipeHandlers
 
 
 		@Override
-		public NonNullList<ItemStack> getCraftingGrid(IRecipe r)
+		public NonNullList<NonNullList<ItemStack>> getCraftingGrids(IRecipe r)
 		{
 			NonNullList<ItemStack> recipeStacks = NonNullList.<ItemStack>withSize(9, ItemStack.EMPTY);
 
@@ -41,7 +41,7 @@ public class CoFHRecipeHandlers
 			CompoundNBT tag = this.inputStack.getTag();
 			recipeStacks.set(1, new ItemStack(ForgeRegistries.BLOCKS.getValue((new ResourceLocation(tag.getString("Block"))))));
 
-			return recipeStacks;
+			return NonNullList.withSize(1, recipeStacks);
 		}
 
 		@Override

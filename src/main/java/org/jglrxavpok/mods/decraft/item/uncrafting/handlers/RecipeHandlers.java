@@ -84,7 +84,7 @@ public final class RecipeHandlers
 	public static abstract class RecipeHandler
 	{
 
-		public abstract NonNullList<ItemStack> getCraftingGrid(IRecipe r);
+		public abstract NonNullList<NonNullList<ItemStack>> getCraftingGrids(IRecipe r);
 
 
 		/**
@@ -180,18 +180,26 @@ public final class RecipeHandlers
 		/**
 		 * Copies the ItemStacks from a list of Ingredients to a new list
 		 */
-		protected static NonNullList<ItemStack> copyRecipeStacks(NonNullList<Ingredient> inputStacks)
+		protected static NonNullList<NonNullList<ItemStack>> copyRecipeStacks(NonNullList<Ingredient> inputStacks)
 		{
-			NonNullList<ItemStack> outputStacks = NonNullList.<ItemStack>withSize(9, ItemStack.EMPTY);
+			int resultCount = inputStacks.stream().mapToInt(i -> i.getMatchingStacks().length).max().getAsInt();
+			NonNullList<NonNullList<ItemStack>> grids = NonNullList.create();
 
-			for ( int i = 0 ; i < inputStacks.size() ; i++ )
+			// we use the maximum length as the limit so we don't have every single combination possible.
+			// This choice also allows to keep the same item for a given #tag (always suggest the same wood plank type for a crafting table for instance)
+			for (int tagIndex = 0; tagIndex < resultCount; tagIndex++)
 			{
-				ItemStack[] matchingStacks = inputStacks.get(i).getMatchingStacks();
-				ItemStack outputStack = (matchingStacks.length > 0 ? matchingStacks[0].copy() : ItemStack.EMPTY);
-				outputStacks.set(i, outputStack);
+				NonNullList<ItemStack> outputStacks = NonNullList.<ItemStack>withSize(9, ItemStack.EMPTY);
+				for ( int i = 0 ; i < inputStacks.size() ; i++ )
+				{
+					ItemStack[] matchingStacks = inputStacks.get(i).getMatchingStacks();
+					ItemStack outputStack = (matchingStacks.length > 0 ? matchingStacks[tagIndex % matchingStacks.length].copy() : ItemStack.EMPTY);
+					outputStacks.set(i, outputStack);
+				}
+				grids.add(outputStacks);
 			}
 
-			return outputStacks;
+			return grids;
 		}
 
 		/**
@@ -221,20 +229,24 @@ public final class RecipeHandlers
 	public static class ShapedRecipeHandler extends RecipeHandler
 	{
 		@Override
-		public NonNullList<ItemStack> getCraftingGrid(IRecipe r)
+		public NonNullList<NonNullList<ItemStack>> getCraftingGrids(IRecipe r)
 		{
 			// cast the IRecipe instance
 			ShapedRecipe shapedRecipe = (ShapedRecipe)r;
 
 			// get a copy of the recipe items with normalised metadata
-			NonNullList<ItemStack> recipeStacks = copyRecipeStacks(shapedRecipe.getIngredients());
+			NonNullList<NonNullList<ItemStack>> grids = copyRecipeStacks(shapedRecipe.getIngredients());
 
 			// get the recipe dimensions
 			int recipeWidth = shapedRecipe.getRecipeWidth();
 			int recipeHeight = shapedRecipe.getRecipeHeight();
 
 			// rearrange the itemstacks according to the recipe width and height
-			return reshapeRecipe(recipeStacks, recipeWidth, recipeHeight);
+			NonNullList<NonNullList<ItemStack>> result = NonNullList.create();
+			for(NonNullList<ItemStack> ingredients : grids) {
+				result.add(reshapeRecipe(ingredients, recipeWidth, recipeHeight));
+			}
+			return result;
 		}
 	}
 
@@ -246,13 +258,13 @@ public final class RecipeHandlers
 	public static class ShapelessRecipeHandler extends RecipeHandler
 	{
 		@Override
-		public NonNullList<ItemStack> getCraftingGrid(IRecipe r)
+		public NonNullList<NonNullList<ItemStack>> getCraftingGrids(IRecipe r)
 		{
 			// cast the IRecipe instance
 			ShapelessRecipe shapelessRecipe = (ShapelessRecipe)r;
 
 			// get a copy of the recipe items with normalised metadata
-			NonNullList<ItemStack> recipeStacks = copyRecipeStacks(shapelessRecipe.getIngredients());
+			NonNullList<NonNullList<ItemStack>> recipeStacks = copyRecipeStacks(shapelessRecipe.getIngredients());
 
 			// return the itemstacks
 			return recipeStacks;

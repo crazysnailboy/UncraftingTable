@@ -8,8 +8,7 @@
 	],
 	"key": {
 		"#": {
-			"type": "forge:ore_dict",
-			"ore": "nuggetLeather"
+			"tag": "forge:nuggets/leather"
 		}
 	},
 	"result": {

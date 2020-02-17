@@ -8,8 +8,7 @@
 	],
 	"key": {
 		"#": {
-			"type": "forge:ore_dict",
-			"ore": "nuggetEmerald"
+			"tag": "forge:nuggets/emerald"
 		}
 	},
 	"result": {
