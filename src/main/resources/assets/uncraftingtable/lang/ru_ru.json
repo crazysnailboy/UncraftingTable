@@ -1,0 +1,54 @@
+{
+	"_comment": "ru_RU",
+
+	"block.uncraftingtable.uncrafting_table": "Верстак для разборки",
+
+	"item.diamondNugget": "Алмазный самородок",
+	"item.emeraldNugget": "Изумрудный самородок",
+	"item.ironNugget": "Железный самородок",
+	"item.leatherStrip": "Кожаные полоски",
+
+	"advancements.uncraftingtable.craft_uncrafting_table.title": "Как в старые времена",
+	"advancements.uncraftingtable.craft_uncrafting_table.description": "Создайте верстак для разборки !",
+	"advancements.uncrafting_table.uncraft_any.title": "Разбери вещь !",
+	"advancements.uncrafting_table.uncraft_any.description": "Вы только что разобрали вещь !",
+	"advancements.uncrafting_table.uncraft_diamond_hoe.title": "Разбери алмазную мотыгу !",
+	"advancements.uncrafting_table.uncraft_diamond_hoe.description": "Мы почти обанкротились.",
+	"advancements.uncrafting_table.uncraft_leather_boots.title": "Время переработки !",
+	"advancements.uncrafting_table.uncraft_leather_boots.description": "Эта вещь была бесполезной.",
+	"advancements.uncrafting_table.uncraft_diamond_shovel.title": "Время для более дешевого подхода.",
+	"advancements.uncrafting_table.uncraft_diamond_shovel.description": "Железные лопаты лучше.",
+	"achievement.porteManteauAchievement": "Все в одном !",
+	"achievement.porteManteauAchievement.desc": "§k <3 всех",
+
+	"container.uncrafting": "Верстак для разборки",
+	"container.uncrafting.cost": "Уровней требуется: %1$s",
+
+	"uncrafting.result.ready": "Готово",
+	"uncrafting.result.impossible": "Не разбираемое",
+	"uncrafting.result.needMoreStacks": "Требуется еще %1$s вещи(ей)",
+
+	"stat.uncrafteditems": "Разобранные вещи",
+
+	"uncrafting.options.standardLevel": "Минимальный уровень",
+	"uncrafting.options.standardLevel.tooltip": "Минимально требуемый уровень для разборки вещи",
+	"uncrafting.options.maxUsedLevel": "Максимальный уровень",
+	"uncrafting.options.maxUsedLevel.tooltip": "Максимально требуемый уровень для разборки вещи",
+	"uncrafting.options.enchantmentCost": "Стоимость зачарования",
+	"uncrafting.options.enchantmentCost.tooltip": "Цена за зачарование при переносе чар на книги",
+	"uncrafting.options.method": "Метод разборки",
+	"uncrafting.options.method.tooltip": "ID используемой формулы для разборки",
+	"uncrafting.options.excludedItems": "Исключенные вещи",
+	"uncrafting.options.excludedItems.tooltip": "ID предметов, которые не могут быть разобраны",
+
+	"uncrafting.options.nuggets": "Параметры самородков",
+	"uncrafting.options.nuggets.tooltip": "Настройка параметров для самородков",
+	"uncrafting.options.nuggets.useNuggets": "Использовать самородок",
+	"uncrafting.options.nuggets.useNuggets.tooltip": "Использовать доступные самородки как возвращаемые части от повреждённых вещей",
+	"uncrafting.options.nuggets.registerNuggets": "Регистрация самородков",
+	"uncrafting.options.nuggets.registerNuggets.tooltip": "Регистрация дополнительных самородков как возвращаемых частей от повреждённых стандартных вещей",
+	"uncrafting.options.nuggets.useRabbitHide": "Использовать шкурку кролика",
+	"uncrafting.options.nuggets.useRabbitHide.tooltip": "Использовать шкурку кролика как возвращаемую часть от повреждённых кожаных вещей",
+	"uncrafting.options.nuggets.ensureReturn": "Обеспечение возврата",
+"uncrafting.options.nuggets.ensureReturn.tooptip": "Обеспечение возврата хотя бы одного самородка, даже для вещей с 0% прочностью"
+}

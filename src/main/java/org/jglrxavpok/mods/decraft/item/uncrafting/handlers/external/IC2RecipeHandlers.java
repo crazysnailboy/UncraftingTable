@@ -93,7 +93,7 @@ public class IC2RecipeHandlers
 		}
 
 		@Override
-		public NonNullList<ItemStack> getCraftingGrid(IRecipe r)
+		public NonNullList<NonNullList<ItemStack>> getCraftingGrids(IRecipe r)
 		{
 			List<ItemStack> itemStacks = new ArrayList<ItemStack>();
 
@@ -118,11 +118,11 @@ public class IC2RecipeHandlers
 				int inputWidth = (Integer)(recipeClass.getField("inputWidth").get(r));
 				int inputHeight = (Integer)(recipeClass.getField("inputHeight").get(r));
 
-				return reshapeRecipe(copyRecipeStacks(itemStacks), inputWidth, inputHeight);
+				return NonNullList.withSize(1, reshapeRecipe(copyRecipeStacks(itemStacks), inputWidth, inputHeight));
 			}
 			catch (Exception ex)
 			{
-				return NonNullList.<ItemStack>withSize(9, ItemStack.EMPTY);
+				return NonNullList.withSize(1, NonNullList.withSize(9, ItemStack.EMPTY));
 			}
 		}
 	}
@@ -155,7 +155,7 @@ public class IC2RecipeHandlers
 
 
 		@Override
-		public NonNullList<ItemStack> getCraftingGrid(IRecipe r)
+		public NonNullList<NonNullList<ItemStack>> getCraftingGrids(IRecipe r)
 		{
 			try
 			{
@@ -164,13 +164,14 @@ public class IC2RecipeHandlers
 				{
 					recipeStacks.add(input.size() > 0 ? input.get(0) : ItemStack.EMPTY);
 				}
-				return copyRecipeStacks(recipeStacks);
+				NonNullList<ItemStack> result = copyRecipeStacks(recipeStacks);
+				return NonNullList.withSize(1, result);
 			}
 			catch (Exception ex)
 			{
 				ModUncrafting.LOGGER.catching(ex);
 			}
-			return NonNullList.<ItemStack>create();
+			return NonNullList.create();
 		}
 	}
 

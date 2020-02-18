@@ -6,13 +6,11 @@
 	],
 	"key": {
 		"#": {
-			"type": "forge:ore_dict",
-			"ore": "leather"
+			"tag": "forge:leather"
 		}
 	},
 	"result": {
-		"item": "uncraftingtable:nugget",
-		"data": 3,
+		"item": "uncraftingtable:leather_strip",
 		"count": 9
 	}
 }

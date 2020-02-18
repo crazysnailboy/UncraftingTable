@@ -1,0 +1,29 @@
+{
+  "parent": "uncraftingtable:uncrafting_table/craft_uncrafting_table",
+  "display": {
+    "icon": {
+      "item": "minecraft:iron_hoe"
+    },
+    "title": {
+      "translate": "advancements.uncrafting_table.uncraft_any.title"
+    },
+    "description": {
+      "translate": "advancements.uncrafting_table.uncraft_any.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "uncraft_any": {
+      "trigger": "uncraftingtable:uncraft",
+      "conditions": {}
+    }
+  },
+  "requirements": [
+    [
+      "uncraft_any"
+    ]
+  ]
+}

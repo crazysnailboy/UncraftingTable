@@ -1,8 +1,8 @@
 package org.jglrxavpok.mods.decraft.inventory;
 
+import net.minecraft.entity.player.PlayerEntity;
 import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingResult.ResultType;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -220,37 +220,6 @@ public class InventoryUncraftResult implements IInventory
 		}
 	}
 
-
-	/**
-	 * Returns the name of the inventory
-	 */
-	@Override
-	public String getName()
-	{
-		return null;
-	}
-
-
-	/**
-	 * Returns if the inventory is named
-	 */
-	@Override
-	public boolean hasCustomName()
-	{
-		return false;
-	}
-
-
-	/**
-	 * Get the formatted ChatComponent that will be used for the sender's username in chat
-	 */
-	@Override
-	public ITextComponent getDisplayName()
-	{
-		return null;
-	}
-
-
 	/**
 	 * Returns the maximum stack size for a inventory slot.
 	 */
@@ -275,20 +244,20 @@ public class InventoryUncraftResult implements IInventory
 	 * Do not make give this method the name canInteractWith because it clashes with Container
 	 */
 	@Override
-	public boolean isUsableByPlayer(EntityPlayer player)
+	public boolean isUsableByPlayer(PlayerEntity player)
 	{
 		return true;
 	}
 
 
 	@Override
-	public void openInventory(EntityPlayer player)
+	public void openInventory(PlayerEntity player)
 	{
 	}
 
 
 	@Override
-	public void closeInventory(EntityPlayer player)
+	public void closeInventory(PlayerEntity player)
 	{
 	}
 
@@ -326,26 +295,6 @@ public class InventoryUncraftResult implements IInventory
 //			return (stack.getItem() == containerItem);
 		}
 		else return false;
-	}
-
-
-	@Override
-	public int getField(int id)
-	{
-		return 0;
-	}
-
-
-	@Override
-	public void setField(int id, int value)
-	{
-	}
-
-
-	@Override
-	public int getFieldCount()
-	{
-		return 0;
 	}
 
 

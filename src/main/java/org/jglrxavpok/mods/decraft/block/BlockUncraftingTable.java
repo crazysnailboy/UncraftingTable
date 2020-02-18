@@ -1,52 +1,65 @@
 package org.jglrxavpok.mods.decraft.block;
 
-import org.jglrxavpok.mods.decraft.ModUncrafting;
-import org.jglrxavpok.mods.decraft.common.network.ModGuiHandler;
-import net.minecraft.block.Block;
-import net.minecraft.block.SoundType;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
+import org.jglrxavpok.mods.decraft.inventory.ContainerUncraftingTable;
+
+import javax.annotation.Nullable;
 
 
 public class BlockUncraftingTable extends Block
 {
 
+	private static final INamedContainerProvider CONTAINER_SUPPLIER = new INamedContainerProvider() {
+		@Override
+		public ITextComponent getDisplayName() {
+			return new StringTextComponent("gui.uncrafting_table.table.title");
+		}
+
+		@Nullable
+		@Override
+		public Container createMenu(int index, PlayerInventory playerInv, PlayerEntity player) {
+			return new ContainerUncraftingTable(index, playerInv, player.world);
+		}
+	};
+
 	public BlockUncraftingTable()
 	{
-		super(Material.ROCK);
-		setHardness(3.5F);
-		setSoundType(SoundType.STONE);
-		this.setCreativeTab(CreativeTabs.DECORATIONS);
+		super(Block.Properties.create(Material.ROCK).hardnessAndResistance(3f).sound(SoundType.STONE));
 	}
 
-
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit)
 	{
 		if (!world.isRemote)
 		{
-			player.openGui(ModUncrafting.instance, ModGuiHandler.GUI_TABLE, world, pos.getX(), pos.getY(), pos.getZ());
+			NetworkHooks.openGui((ServerPlayerEntity)player, CONTAINER_SUPPLIER, pos);
 			checkForPorteManteau(player, world, pos);
 		}
 		return true;
 	}
 
-
-	private void checkForPorteManteau(EntityPlayer player, World world, BlockPos pos)
+	private void checkForPorteManteau(PlayerEntity player, World world, BlockPos pos)
 	{
 		boolean furnace = false;
 		boolean chest = false;
 		boolean workbench = false;
 
 		// if the block beneath is a fence...
-		if (world.getBlockState(pos.down()).getBlock() instanceof net.minecraft.block.BlockFence)
+		if (world.getBlockState(pos.down()).getBlock() instanceof FenceBlock)
 		{
 			Block blockEast = world.getBlockState(pos.east()).getBlock();
 			Block blockWest = world.getBlockState(pos.west()).getBlock();
@@ -55,10 +68,10 @@ public class BlockUncraftingTable extends Block
 
 			// check if one of the adjacent blocks is a furnace
 			if (
-				(blockNorth == Blocks.FURNACE || blockNorth == Blocks.LIT_FURNACE) ||
-				(blockSouth == Blocks.FURNACE || blockSouth == Blocks.LIT_FURNACE) ||
-				(blockEast == Blocks.FURNACE || blockEast == Blocks.LIT_FURNACE) ||
-				(blockWest == Blocks.FURNACE || blockWest == Blocks.LIT_FURNACE)
+				blockNorth == Blocks.FURNACE ||
+				blockSouth == Blocks.FURNACE ||
+				blockEast == Blocks.FURNACE ||
+				blockWest == Blocks.FURNACE
 			)
 			{
 				furnace = true;
@@ -89,7 +102,7 @@ public class BlockUncraftingTable extends Block
 			// if the block is adjacent to all three, trigger the achievement
 			if (furnace && chest && workbench)
 			{
-//				player.addStat(ModAchievementList.PORTEMANTEAU);
+// FIXME				player.addStat(ModAchievementList.PORTEMANTEAU);
 			}
 		}
 	}

@@ -1,0 +1,35 @@
+{
+  "parent": "uncraftingtable:uncrafting_table/uncraft_any",
+  "display": {
+    "icon": {
+      "item": "minecraft:diamond_shovel"
+    },
+    "title": {
+      "translate": "advancements.uncrafting_table.uncraft_diamond_shovel.title"
+    },
+    "description": {
+      "translate": "advancements.uncrafting_table.uncraft_diamond_shovel.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "uncraft_diamond_shovel": {
+      "trigger": "uncraftingtable:uncraft",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:diamond_shovel"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "uncraft_diamond_shovel"
+    ]
+  ]
+}

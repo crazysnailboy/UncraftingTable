@@ -1,25 +1,18 @@
 package org.jglrxavpok.mods.decraft.proxy;
 
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fml.network.PacketDistributor;
 import org.jglrxavpok.mods.decraft.ModUncrafting;
-import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
 import org.jglrxavpok.mods.decraft.common.config.ModJsonConfiguration;
-import org.jglrxavpok.mods.decraft.common.network.ModGuiHandler;
 import org.jglrxavpok.mods.decraft.common.network.message.ConfigSyncMessage;
+import org.jglrxavpok.mods.decraft.common.network.message.IMessage;
+import org.jglrxavpok.mods.decraft.common.network.message.IMessageHandler;
 import org.jglrxavpok.mods.decraft.common.network.message.RecipeNavigationMessage;
 import org.jglrxavpok.mods.decraft.init.ModItems;
 import org.jglrxavpok.mods.decraft.integration.ModIntegrations;
-import org.jglrxavpok.mods.decraft.item.uncrafting.UncraftingManager;
 import org.jglrxavpok.mods.decraft.item.uncrafting.handlers.RecipeHandlers;
 import org.jglrxavpok.mods.decraft.stats.ModAchievementList;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.oredict.ShapedOreRecipe;
 
 
 public class CommonProxy
@@ -35,7 +28,6 @@ public class CommonProxy
 	public void init()
 	{
 		this.registerAchievements();
-		this.registerGuiHandler();
 		this.registerOreDictionaryEntries();
 		this.registerUncraftingRecipes();
 	}
@@ -48,7 +40,7 @@ public class CommonProxy
 
 	private void initializeConfig()
 	{
-		ModConfiguration.initializeConfiguration();
+		// FIXME ModConfiguration.initializeConfiguration();
 		ModJsonConfiguration.loadItemMappings();
 	}
 
@@ -60,12 +52,7 @@ public class CommonProxy
 
 	private void registerAchievements()
 	{
-		ModAchievementList.registerAchievementPage();
-	}
-
-	private void registerGuiHandler()
-	{
-		NetworkRegistry.INSTANCE.registerGuiHandler(ModUncrafting.instance, new ModGuiHandler());
+		ModAchievementList.registerTriggers();
 	}
 
 	private void registerIntegrations()
@@ -80,18 +67,51 @@ public class CommonProxy
 
 	private void registerNetworkMessages()
 	{
-		ModUncrafting.NETWORK.registerMessage(RecipeNavigationMessage.MessageHandler.class, RecipeNavigationMessage.class, 0, Side.SERVER);
-		ModUncrafting.NETWORK.registerMessage(ConfigSyncMessage.MessageHandler.class, ConfigSyncMessage.class, 1, Side.CLIENT);
-		ModUncrafting.NETWORK.registerMessage(ConfigSyncMessage.MessageHandler.class, ConfigSyncMessage.class, 2, Side.SERVER);
+		registerMessage(RecipeNavigationMessage.class, new RecipeNavigationMessage.MessageHandler(), 0);
+		registerMessage(ConfigSyncMessage.class, new ConfigSyncMessage.MessageHandler(), 1);
+	}
+
+	private <T extends IMessage> void registerMessage(Class<T> messageClass, IMessageHandler<T, ?> handler, int index)
+	{
+		ModUncrafting.NETWORK.<T>messageBuilder(messageClass, index)
+				.decoder(buf -> {
+					T message = null;
+					try {
+						message = messageClass.newInstance();
+						message.decode(buf);
+					} catch (InstantiationException | IllegalAccessException e) {
+						e.printStackTrace();
+					}
+					return message;
+				})
+				.encoder((msg, buf) -> msg.encode(buf))
+				.consumer((msg, contextSupplier) -> {
+					handle(msg, contextSupplier.get(), handler);
+				})
+				.add();
+	}
+
+	private <T extends IMessage> void handle(T msg, NetworkEvent.Context context, IMessageHandler<T, ?> handler)
+	{
+		IMessage response = handler.onMessage(msg, context);
+		context.setPacketHandled(true);
+		if(response != null) {
+			PacketDistributor.PacketTarget target =
+					DistExecutor.runForDist(
+							() -> () -> PacketDistributor.SERVER.noArg(), // client side
+							() -> () -> PacketDistributor.PLAYER.with(() -> context.getSender() // server side
+					));
+		}
 	}
 
 	private void registerUncraftingRecipes()
 	{
+		/* TODO
 		// damaged anvil recipes
 		UncraftingManager.addUncraftingRecipe(new ShapedOreRecipe(new ResourceLocation(ModUncrafting.MODID, "damaged_anvil_1"), new ItemStack(Blocks.ANVIL, 1, 1), new Object[] { "B B", " I ", "I I", 'B', "blockIron", 'I', "ingotIron" }));
 		UncraftingManager.addUncraftingRecipe(new ShapedOreRecipe(new ResourceLocation(ModUncrafting.MODID, "damaged_anvil_2"), new ItemStack(Blocks.ANVIL, 1, 2), new Object[] { "B  ", " I ", "  I", 'B', "blockIron", 'I', "ingotIron" }));
 
-		if (!Loader.isModLoaded("craftablehorsearmour"))
+		if (!ModList.get().isLoaded("craftablehorsearmour"))
 		{
 			// horse armor recipes
 			UncraftingManager.addUncraftingRecipe(new ShapedOreRecipe(new ResourceLocation(ModUncrafting.MODID, "iron_horse_armor"), Items.IRON_HORSE_ARMOR, new Object[] { "  I", "IWI", "III", 'I', "ingotIron", 'W', Item.getItemFromBlock(Blocks.WOOL) }));
@@ -100,6 +120,7 @@ public class CommonProxy
 			// saddle recipe
 			UncraftingManager.addUncraftingRecipe(new ShapedOreRecipe(new ResourceLocation(ModUncrafting.MODID, "saddle"), Items.SADDLE, new Object[] { "LLL", "S S", "I I", 'L', "leather", 'S', Items.STRING, 'I', "ingotIron" }));
 		}
+		*/
 	}
 
 }

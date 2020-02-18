@@ -36,7 +36,7 @@ public class ModJsonConfiguration
 		public ItemMapping get(ItemStack stack)
 		{
 			String registryName = stack.getItem().getRegistryName().toString();
-			int meta = stack.getMetadata();
+			int meta = stack.getDamage();
 
 			ItemMapping result = this.get(registryName + "," + meta);
 			if (result == null) result = this.get(registryName);
@@ -51,7 +51,7 @@ public class ModJsonConfiguration
 
 	public static void loadItemMappings()
 	{
-		String fileContents = readFileContentsFromMod("assets/" + ModUncrafting.MODID + "/data/item-mappings.json");
+		String fileContents = readFileContentsFromMod("data/" + ModUncrafting.MODID + "/data/item-mappings.json");
 
 		JsonObject jsonObject = new JsonParser().parse(fileContents).getAsJsonObject();
 		Gson gson = new Gson();

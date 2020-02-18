@@ -1,17 +1,8 @@
 package org.jglrxavpok.mods.decraft.common.network.message;
 
-import org.jglrxavpok.mods.decraft.ModUncrafting;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.IThreadListener;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
-
 
 public class ConfigSyncMessage implements IMessage
 {
@@ -32,73 +23,50 @@ public class ConfigSyncMessage implements IMessage
 	}
 
 	@Override
-	public void fromBytes(ByteBuf buf)
+	public void decode(PacketBuffer buf)
 	{
-		standardLevel = ByteBufUtils.readVarShort(buf);
-		maxUsedLevel = ByteBufUtils.readVarShort(buf);
-		enchantmentCost = ByteBufUtils.readVarShort(buf);
-		uncraftMethod = ByteBufUtils.readVarShort(buf);
-		excludedItems = ByteBufUtils.readUTF8String(buf).split("\\|");
-		useNuggets = (ByteBufUtils.readVarShort(buf) == 1);
-		registerNuggets = (ByteBufUtils.readVarShort(buf) == 1);
-		useRabbitHide = (ByteBufUtils.readVarShort(buf) == 1);
-		ensureReturn = (ByteBufUtils.readVarShort(buf) == 1);
+		standardLevel = buf.readVarInt();
+		maxUsedLevel = buf.readVarInt();
+		enchantmentCost = buf.readVarInt();
+		uncraftMethod = buf.readVarInt();
+		excludedItems = buf.readString().split("\\|");
+		useNuggets = (buf.readVarInt() == 1);
+		registerNuggets = (buf.readVarInt() == 1);
+		useRabbitHide = (buf.readVarInt() == 1);
+		ensureReturn = (buf.readVarInt() == 1);
 	}
 
 	@Override
-	public void toBytes(ByteBuf buf)
+	public void encode(PacketBuffer buf)
 	{
-		ByteBufUtils.writeVarShort(buf, standardLevel);
-		ByteBufUtils.writeVarShort(buf, maxUsedLevel);
-		ByteBufUtils.writeVarShort(buf, enchantmentCost);
-		ByteBufUtils.writeVarShort(buf, uncraftMethod);
-		ByteBufUtils.writeUTF8String(buf, String.join("|", excludedItems));
-		ByteBufUtils.writeVarShort(buf, (useNuggets ? 1 : 0));
-		ByteBufUtils.writeVarShort(buf, (registerNuggets ? 1 : 0));
-		ByteBufUtils.writeVarShort(buf, (useRabbitHide ? 1 : 0));
-		ByteBufUtils.writeVarShort(buf, (ensureReturn ? 1 : 0));
+		buf.writeVarInt(standardLevel);
+		buf.writeVarInt(maxUsedLevel);
+		buf.writeVarInt(enchantmentCost);
+		buf.writeVarInt(uncraftMethod);
+		buf.writeString(String.join("|", excludedItems));
+		buf.writeVarInt((useNuggets ? 1 : 0));
+		buf.writeVarInt((registerNuggets ? 1 : 0));
+		buf.writeVarInt((useRabbitHide ? 1 : 0));
+		buf.writeVarInt((ensureReturn ? 1 : 0));
 	}
-
 
 	public static final class MessageHandler implements IMessageHandler<ConfigSyncMessage, IMessage>
 	{
 
-		private IThreadListener getThreadListener(MessageContext ctx)
-		{
-			try
-			{
-				if (ctx.side == Side.SERVER) return (WorldServer)ctx.getServerHandler().player.world;
-				else if (ctx.side == Side.CLIENT) return Minecraft.getMinecraft();
-				else return null;
-			}
-			catch(Exception ex)
-			{
-				ModUncrafting.LOGGER.catching(ex);
-				return null;
-			}
-		}
-
 		@Override
-		public IMessage onMessage(final ConfigSyncMessage message, MessageContext ctx)
+		public IMessage onMessage(ConfigSyncMessage message, NetworkEvent.Context ctx)
 		{
-			IThreadListener threadListener = getThreadListener(ctx);
-			threadListener.addScheduledTask(new Runnable()
-			{
-				@Override
-				public void run()
-				{
-					ModConfiguration.maxUsedLevel = message.maxUsedLevel;
-					ModConfiguration.standardLevel = message.standardLevel;
-					ModConfiguration.enchantmentCost = message.enchantmentCost;
-					ModConfiguration.uncraftMethod = message.uncraftMethod;
-					ModConfiguration.excludedItems = message.excludedItems;
-					ModConfiguration.useNuggets = message.useNuggets;
-					ModConfiguration.registerNuggets = message.registerNuggets;
-					ModConfiguration.useRabbitHide = message.useRabbitHide;
-					ModConfiguration.ensureReturn = message.ensureReturn;
-				}
+			ctx.enqueueWork(() -> {
+				ModConfiguration.maxUsedLevel = message.maxUsedLevel;
+				ModConfiguration.standardLevel = message.standardLevel;
+				ModConfiguration.enchantmentCost = message.enchantmentCost;
+				ModConfiguration.uncraftMethod = message.uncraftMethod;
+				ModConfiguration.excludedItems = message.excludedItems;
+				ModConfiguration.useNuggets = message.useNuggets;
+				ModConfiguration.registerNuggets = message.registerNuggets;
+				ModConfiguration.useRabbitHide = message.useRabbitHide;
+				ModConfiguration.ensureReturn = message.ensureReturn;
 			});
-
 			return null;
 		}
 	}

@@ -1,0 +1,35 @@
+{
+  "parent": "uncraftingtable:uncrafting_table/uncraft_any",
+  "display": {
+    "icon": {
+      "item": "minecraft:diamond_hoe"
+    },
+    "title": {
+      "translate": "advancements.uncrafting_table.uncraft_diamond_hoe.title"
+    },
+    "description": {
+      "translate": "advancements.uncrafting_table.uncraft_diamond_hoe.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "uncraft_diamond_hoe": {
+      "trigger": "uncraftingtable:uncraft",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:diamond_hoe"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "uncraft_diamond_hoe"
+    ]
+  ]
+}

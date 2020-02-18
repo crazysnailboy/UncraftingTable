@@ -1,9 +1,6 @@
 package org.jglrxavpok.mods.decraft.integration;
 
-import org.jglrxavpok.mods.decraft.ModUncrafting;
-import org.jglrxavpok.mods.decraft.integration.crafttweaker.CraftTweakerIntegration;
-import net.minecraftforge.fml.common.Loader;
-
+import net.minecraftforge.fml.ModList;
 
 public class ModIntegrations
 {
@@ -16,16 +13,9 @@ public class ModIntegrations
 
 	private static void registerCraftTweakerIntegration()
 	{
-		if (Loader.isModLoaded("crafttweaker"))
+		if (ModList.get().isLoaded("crafttweaker"))
 		{
-			try
-			{
-				CraftTweakerIntegration.register();
-			}
-			catch (Exception ex)
-			{
-				ModUncrafting.LOGGER.catching(ex);
-			}
+			// FIXME: do later
 		}
 	}
 

@@ -1,5 +1,5 @@
 {
     "variants": {
-        "normal": { "model": "uncraftingtable:uncrafting_table" }
+        "": { "model": "uncraftingtable:block/uncrafting_table" }
     }
 }

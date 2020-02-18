@@ -1,0 +1,53 @@
+{
+	"_comment": "es_ES",
+
+	"block.uncraftingtable.uncrafting_table": "Mesa de destrucción",
+
+	"item.diamondNugget": "Pepita de diamante",
+	"item.emeraldNugget": "Pepita de esmeralda",
+	"item.leatherStrip": "Tira de cuero",
+
+	"advancements.uncraftingtable.craft_uncrafting_table.title": "Como en los viejos tiempos",
+	"advancements.uncraftingtable.craft_uncrafting_table.description": "¡Fabrica una mesa de destrucción!",
+	"advancements.uncrafting_table.uncraft_any.title": "¡Destruyelo!",
+	"advancements.uncrafting_table.uncraft_any.description": "¡Por destruir tu primer objeto!",
+	"advancements.uncrafting_table.uncraft_diamond_hoe.title": "¡Destruye un azadón de diamante!",
+	"advancements.uncrafting_table.uncraft_diamond_hoe.description": "Al menos tendrás algo devuelta.",
+	"advancements.uncrafting_table.uncraft_leather_boots.title": "¡Hora de reciclar!",
+	"advancements.uncrafting_table.uncraft_leather_boots.description": "Este objeto no tiene usos.",
+	"advancements.uncrafting_table.uncraft_diamond_shovel.title": "Enfoque más barato",
+	"advancements.uncrafting_table.uncraft_diamond_shovel.description": "Las palas de hierro son mejores.",
+	"achievement.porteManteauAchievement": "¡Todo en uno!",
+	"achievement.porteManteauAchievement.desc": "§k <3 Para todos los jugadores",
+
+	"container.uncrafting": "Mesa de destrucción",
+	"container.uncrafting.cost": "Costo de EXP: %1$s",
+
+	"uncrafting.result.ready": "Listo",
+	"uncrafting.result.impossible": "Imposible de destruir",
+	"uncrafting.result.needMoreStacks": "Necesitas %1$s objetos(s)",
+
+	"stat.uncrafteditems": "Objetos destruidos",
+
+	"uncrafting.options.standardLevel": "Minimum Level",
+	"uncrafting.options.standardLevel.tooltip": "Minimum required level to uncraft an item",
+	"uncrafting.options.maxUsedLevel": "Maximum Level",
+	"uncrafting.options.maxUsedLevel.tooltip": "Maximum required level to uncraft an item",
+	"uncrafting.options.enchantmentCost": "Enchantment Cost",
+	"uncrafting.options.enchantmentCost.tooltip": "Cost per enchantment when removing enchantments onto books",
+	"uncrafting.options.method": "Uncrafting Method",
+	"uncrafting.options.method.tooltip": "ID of the used uncrafting equation",
+	"uncrafting.options.excludedItems": "Excluded Items",
+	"uncrafting.options.excludedItems.tooltip": "Item IDs for items which cannot be uncrafted",
+
+	"uncrafting.options.nuggets": "Nugget Options",
+	"uncrafting.options.nuggets.tooltip": "Click to configure options for nuggets",
+	"uncrafting.options.nuggets.useNuggets": "Use Nuggets",
+	"uncrafting.options.nuggets.useNuggets.tooltip": "Use available nuggets for partial returns of damaged items",
+	"uncrafting.options.nuggets.registerNuggets": "Register Nuggets",
+	"uncrafting.options.nuggets.registerNuggets.tooltip": "Register additional nuggets to use for partial returns of damaged Vanilla items",
+	"uncrafting.options.nuggets.useRabbitHide": "Use Rabbit Hide",
+	"uncrafting.options.nuggets.useRabbitHide.tooltip": "Use Rabbit Hide for partial returns of damaged Leather items",
+	"uncrafting.options.nuggets.ensureReturn": "Ensure a Return",
+	"uncrafting.options.nuggets.ensureReturn.tooptip": "Ensure that at least one nugget is returned, even for items with 0% durability"
+}
