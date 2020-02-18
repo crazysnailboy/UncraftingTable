@@ -1,0 +1,36 @@
+{
+  "parent": "uncraftingtable:uncrafting_table/root",
+  "display": {
+    "icon": {
+      "item": "uncraftingtable:uncrafting_table"
+    },
+    "title": {
+      "translate": "advancements.uncraftingtable.craft_uncrafting_table.title"
+    },
+    "description": {
+      "translate": "advancements.uncraftingtable.craft_uncrafting_table.description"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": false,
+    "background": "minecraft:textures/gui/advancements/backgrounds/stone.png"
+  },
+  "criteria": {
+    "uncrafting_table": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "uncraftingtable:uncrafting_table"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "uncrafting_table"
+    ]
+  ]
+}

@@ -2,10 +2,8 @@ package org.jglrxavpok.mods.decraft.proxy;
 
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.PacketDistributor;
 import org.jglrxavpok.mods.decraft.ModUncrafting;
-import org.jglrxavpok.mods.decraft.common.config.ModConfiguration;
 import org.jglrxavpok.mods.decraft.common.config.ModJsonConfiguration;
 import org.jglrxavpok.mods.decraft.common.network.message.ConfigSyncMessage;
 import org.jglrxavpok.mods.decraft.common.network.message.IMessage;
@@ -54,7 +52,7 @@ public class CommonProxy
 
 	private void registerAchievements()
 	{
-		ModAchievementList.registerAchievementPage();
+		ModAchievementList.registerTriggers();
 	}
 
 	private void registerIntegrations()
